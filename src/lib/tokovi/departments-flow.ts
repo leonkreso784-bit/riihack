@@ -2,6 +2,7 @@
 // (engine/departments.ts, engine/round.ts, engine/economy.ts) nad podacima koje student već ima. Sve brojke i pragovi
 // dolaze iz motora i rules.ts, ništa se ne prepisuje, pa promjena pravila odmah promijeni i ovaj prikaz.
 import { departmentViews, investmentEffects, investmentTotal } from "@/lib/engine/departments";
+import { qualityFactor } from "@/lib/engine/round";
 import {
   DEPARTMENT_METRIC,
   FINANCE_EFFECT_CAP,
@@ -60,6 +61,7 @@ export type DepartmentFlow = {
 
 export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava kriterije.";
 export const CLOSE_NOTE = "Primjenjuje se tek kad se mjesec zatvori. Do tada pokazatelj ostaje isti.";
+export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3.";
 export const WHATIF_LABEL = "Procjena: mijenjaš samo ulaganje ovog odjela, sve ostalo ostaje kako je u planu.";
 
 const DEPARTMENTS = Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[];
@@ -251,8 +253,8 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
         { label: "Odgovorene", value: input.situations ? String(answered.length) : "Nije učitano" },
         { label: "Na ovom pokazatelju", value: String(sit.length) },
       ],
-      rule: ["Promjena pokazatelja = (kvaliteta − 3) × učinak situacije.", "Računaju se samo odgovorene situacije koje imaju učinak na ovaj pokazatelj."],
-      calc: sit.length ? sit.map((r) => `(${r.quality} − 3) × ${r.effect} = ${signed(r.delta)}`).join("  ·  ") : undefined,
+      rule: [FACTOR_RULE, "Računaju se samo odgovorene situacije koje imaju učinak na ovaj pokazatelj."],
+      calc: sit.length ? sit.map((r) => `${signed(qualityFactor(r.quality))} × ${r.effect} = ${signed(r.delta)}`).join("  ·  ") : undefined,
       outputs: sit.length ? [...sit.map((r) => ({ label: r.title, value: `kvaliteta ${r.quality}/5, ${signed(r.delta)}` })), { label: "Zbroj", value: signed(sitSum), strong: true }] : [{ label: "Zbroj", value: "0", strong: true }],
       note: noEffects > 0 ? `Situacije kojima učinak još nije poznat (${noEffects}) ne brojimo.` : undefined,
     });
@@ -302,4 +304,241 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
 
     return { department, label: view.label, metric, metricLabel, metricValue: value, ownEffect: own, situationsDelta: sitSum, expectedValue: expected, steps };
   });
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Staze odjela (v2): jedna staza po odjelu (ljudi, što ih muči, ulaganje, situacije) i stupac rezultata (pokazatelj
+// koji odjel hrani). Brojke su iste kao u koracima gore: ulaganje iz investmentEffects, situacije iz applyRound.
+
+export type LaneSituation = {
+  id: string;
+  title: string;
+  who: string;
+  quality: number;
+  effect: number;
+  delta: number;
+  tone: "good" | "bad" | "neutral";
+  detail: DeptStep;
+};
+export type LaneAlert = { kind: AlertKind; text: string };
+export type DepartmentLane = {
+  department: StaffDepartment;
+  label: string;
+  metric: MetricKey;
+  metricLabel: string;
+  /** Null dok popis osoblja ne stigne. */
+  people: StaffMember[] | null;
+  alerts: LaneAlert[];
+  investment: number;
+  /** Učinak ulaganja ovog odjela na njegov pokazatelj. */
+  ownEffect: number;
+  /** Iznos od kojeg ulaganje daje sljedeći bod; null kad je strop dosegnut. */
+  nextAt: number | null;
+  situations: LaneSituation[];
+  /** Što staza šalje pokazatelju: ulaganje odjela + situacije koje su dodijeljene ovoj stazi. */
+  contribution: number;
+  details: { ljudi: DeptStep; upozorenja: DeptStep; ulaganje: DeptStep };
+};
+export type MetricResult = {
+  metric: MetricKey;
+  label: string;
+  before: number;
+  invest: number;
+  situations: number;
+  expected: number;
+  change: number;
+  departments: StaffDepartment[];
+  detail: DeptStep;
+};
+export type BoardSummary = {
+  month: string;
+  totalCost: number;
+  moves: { metric: MetricKey; label: string; change: number }[];
+  answered: number;
+  waiting: number;
+  unknownEffects: number;
+  /** Nema ni ulaganja ni odgovorenih situacija s učinkom: tok pokazuje što će ovdje teći. */
+  empty: boolean;
+  detail: DeptStep;
+};
+export type DepartmentsBoard = { lanes: DepartmentLane[]; results: MetricResult[]; summary: BoardSummary };
+
+/** Redoslijed staza: odjeli na istom pokazatelju stoje jedan uz drugoga (Recepcija i Kuhinja hrane Zadovoljstvo gostiju). */
+export const LANE_ORDER: StaffDepartment[] = ["reception", "kitchen", "housekeeping", "maintenance", "management"];
+
+const KITCHEN_WORDS = /restoran|kuhinj|hran|doručak|ručak|večer|jel[oa]|kuhar|konobar|alergi/i;
+
+/**
+ * Kojoj stazi pripada situacija za zadani pokazatelj. Kad pokazatelj prati više odjela (Zadovoljstvo gostiju:
+ * Recepcija i Kuhinja), situaciju crtamo u jednoj stazi da se ništa ne broji dvaput: Kuhinja kad područje ili naslov
+ * govore o hrani i restoranu, inače Recepcija. Samo raspored na ekranu, brojke se ne mijenjaju.
+ */
+export function laneForSituation(s: Pick<SituationView, "area" | "title">, metric: MetricKey): StaffDepartment | null {
+  const deps = departmentsForMetric(metric);
+  if (deps.length === 0) return null;
+  if (deps.length === 1) return deps[0];
+  if (deps.includes("kitchen") && KITCHEN_WORDS.test(`${s.area} ${s.title}`)) return "kitchen";
+  return deps.includes("reception") ? "reception" : deps[0];
+}
+
+const MODE_LABEL = { click: "Odabran ponuđeni odgovor", own: "Svoj tekst", none: "Bez odgovora" } as const;
+
+function situationStep(s: SituationView, metric: MetricKey, lane: StaffDepartment, effect: number, delta: number): DeptStep {
+  const q = s.answer!.quality;
+  const all = activeEffects(s.effects);
+  const shared = departmentsForMetric(metric).length > 1;
+  return {
+    id: "situacije",
+    title: s.title,
+    small: `kvaliteta ${q}/5`,
+    inputs: [
+      { label: "Lik", value: `${s.character.name}, ${s.character.role}` },
+      { label: "Područje", value: s.area },
+      { label: "Odgovor", value: MODE_LABEL[s.answer!.mode] },
+      { label: "Kvaliteta", value: `${q} / 5` },
+      { label: `Učinak situacije: ${METRIC_LABELS[metric]}`, value: String(effect) },
+    ],
+    rule: [FACTOR_RULE, "Kvalitetu određuju kriteriji iz rubrike, a ne AI: AI samo označava koje je kriterije odgovor ispunio."],
+    calc: `${signed(qualityFactor(q))} × ${effect} = ${signed(delta)}`,
+    outputs: [
+      { label: METRIC_LABELS[metric], value: signed(delta), strong: true },
+      ...all.filter(([k]) => k !== metric).map(([k, e]) => ({ label: `Usput: ${METRIC_LABELS[k]}`, value: signed(metricDelta(q, e)) })),
+    ],
+    note: shared
+      ? `${CLOSE_NOTE} ${METRIC_LABELS[metric]} prate ${departmentsForMetric(metric).map((d) => STAFF_DEPARTMENT_LABELS[d]).join(" i ")}; ova situacija je u stazi ${STAFF_DEPARTMENT_LABELS[lane]} zbog područja „${s.area}“, a broji se samo jednom.`
+      : CLOSE_NOTE,
+  };
+}
+
+export function buildDepartmentsBoard(input: DepartmentsFlowInput): DepartmentsBoard {
+  const flows = buildDepartmentFlows(input);
+  const byDept = Object.fromEntries(flows.map((f) => [f.department, f])) as Record<StaffDepartment, DepartmentFlow>;
+  const staffList = input.staff ?? [];
+  const views = departmentViews({ metrics: input.metrics, staff: staffList, rooms: input.rooms ?? [], investments: input.plan });
+  const effectsAll = investmentEffects(input.plan);
+  const month = ROUND_LABELS[input.round - 1] ?? `Krug ${input.round}`;
+  const thisMonth = (input.situations ?? []).filter((s) => s.round === input.round);
+  const answered = thisMonth.filter((s) => s.answer);
+
+  // Situacije po stazama: svaka situacija ide u stazu za svaki pokazatelj koji pomiče, ali za isti pokazatelj samo jednom.
+  const laneSits = Object.fromEntries(LANE_ORDER.map((d) => [d, [] as LaneSituation[]])) as Record<StaffDepartment, LaneSituation[]>;
+  for (const s of answered) {
+    for (const [metric, effect] of activeEffects(s.effects)) {
+      const lane = laneForSituation(s, metric);
+      if (!lane) continue;
+      const delta = metricDelta(s.answer!.quality, effect);
+      laneSits[lane].push({
+        id: `${s.id}-${metric}`,
+        title: s.title,
+        who: s.character.name,
+        quality: s.answer!.quality,
+        effect,
+        delta,
+        tone: delta > 0 ? "good" : delta < 0 ? "bad" : "neutral",
+        detail: situationStep(s, metric, lane, effect, delta),
+      });
+    }
+  }
+
+  const lanes: DepartmentLane[] = LANE_ORDER.map((department) => {
+    const f = byDept[department];
+    const view = views.find((v) => v.department === department)!;
+    const step = (id: DeptStepId) => f.steps.find((s) => s.id === id)!;
+    const investment = input.plan[department] ?? 0;
+    const pravilo = step("pravilo");
+    const trosak = step("trosak");
+    const sits = laneSits[department];
+    const nextAt = f.ownEffect >= INVEST_EFFECT_CAP ? null : (Math.floor(investment / INVEST_EFFECT_DIVISOR) + 1) * INVEST_EFFECT_DIVISOR;
+    return {
+      department,
+      label: f.label,
+      metric: f.metric,
+      metricLabel: f.metricLabel,
+      people: input.staff ? staffList.filter((s) => s.department === department) : null,
+      alerts: view.alerts.map((text) => ({ kind: alertKind(text, department, staffList), text })),
+      investment,
+      ownEffect: f.ownEffect,
+      nextAt,
+      situations: sits,
+      contribution: f.ownEffect + sits.reduce((a, r) => a + r.delta, 0),
+      details: {
+        ljudi: step("ljudi"),
+        upozorenja: step("upozorenja"),
+        ulaganje: {
+          ...pravilo,
+          title: `Ulaganje: ${f.label}`,
+          small: investment > 0 ? `${eur(investment)} za ${month.toLowerCase()}` : `nije planirano za ${month.toLowerCase()}`,
+          inputs: [{ label: "Ulaganje iz plana", value: eur(investment) }, ...pravilo.inputs.slice(1), { label: "Najviše po odjelu", value: eur(INVEST_MAX) }],
+          rule: [...pravilo.rule, ...trosak.rule.slice(0, 2)],
+          outputs: [...pravilo.outputs, { label: "Trošak u mjesecu", value: eur(investment), strong: true }],
+          note: pravilo.note ?? (nextAt !== null ? `Sljedeći bod kreće od ${eur(nextAt)}.` : "Strop je dosegnut: više novca ovdje ne donosi više bodova."),
+        },
+      },
+    };
+  });
+
+  const metricsInLanes = [...new Set(LANE_ORDER.map((d) => DEPARTMENT_METRIC[d]))];
+  const results: MetricResult[] = metricsInLanes.map((metric) => {
+    const deps = LANE_ORDER.filter((d) => DEPARTMENT_METRIC[d] === metric);
+    const f = byDept[deps[0]];
+    const invest = effectsAll[metric] ?? 0;
+    const sits = f.situationsDelta;
+    const pok = f.steps.find((s) => s.id === "pokazatelj")!;
+    return {
+      metric,
+      label: METRIC_LABELS[metric],
+      before: f.metricValue,
+      invest,
+      situations: sits,
+      expected: f.expectedValue,
+      change: f.expectedValue - f.metricValue,
+      departments: deps,
+      detail: {
+        ...pok,
+        title: METRIC_LABELS[metric],
+        inputs: [...pok.inputs, ...deps.map((d) => ({ label: `Ulaganje: ${STAFF_DEPARTMENT_LABELS[d]}`, value: signed(byDept[d].ownEffect) }))],
+      },
+    };
+  });
+
+  const totalCost = investmentTotal(input.plan);
+  const moves = results.filter((r) => r.change !== 0).map((r) => ({ metric: r.metric, label: r.label, change: r.change }));
+  const unknownEffects = answered.filter((s) => activeEffects(s.effects).length === 0).length;
+  const withEffect = answered.length - unknownEffects;
+  const waiting = thisMonth.filter((s) => !s.answer && s.state === "open").length;
+  const empty = totalCost === 0 && withEffect === 0;
+
+  return {
+    lanes,
+    results,
+    summary: {
+      month,
+      totalCost,
+      moves,
+      answered: answered.length,
+      waiting,
+      unknownEffects,
+      empty,
+      detail: {
+        id: "trosak",
+        title: `Što odjeli rade hotelu u mjesecu ${month.toLowerCase()}`,
+        small: "",
+        inputs: [
+          ...LANE_ORDER.map((d) => ({ label: `Ulaganje: ${STAFF_DEPARTMENT_LABELS[d]}`, value: eur(input.plan[d] ?? 0) })),
+          { label: "Odgovorene situacije", value: String(answered.length) },
+        ],
+        rule: [
+          `Svaki odjel hrani jedan pokazatelj. Ulaganje daje +1 na svakih ${eur(INVEST_EFFECT_DIVISOR)}, najviše ${signed(INVEST_EFFECT_CAP)} po odjelu.`,
+          FACTOR_RULE,
+          "Ulaganja svih odjela zbrajaju se i ulaze u troškove mjeseca, pa snižavaju dobit.",
+          `Dobit pomiče pokazatelj Financije: dobit podijeljena s ${eur(FINANCE_EFFECT_DIVISOR)}, od ${signed(-FINANCE_EFFECT_CAP)} do ${signed(FINANCE_EFFECT_CAP)}.`,
+        ],
+        outputs: [
+          { label: "Trošak ulaganja", value: eur(totalCost), strong: true },
+          ...(moves.length ? moves.map((m) => ({ label: m.label, value: signed(m.change) })) : [{ label: "Pokazatelji", value: "Još se ništa ne mijenja" }]),
+        ],
+        note: CLOSE_NOTE,
+      },
+    },
+  };
 }
