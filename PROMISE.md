@@ -15,7 +15,8 @@
 - **AI značajka:** AI glumi ljude u gradu i provjerava tvoje odgovore po rubrici, a bodove uvijek računaju pravila igre. Sokratski mentor prvo pita, tek onda objašnjava.
 - **Sigurnost i privatnost (1 rečenica):** u demou samo nadimci i izmišljeni podaci, AI ključ samo na poslužitelju, na ekranu piše da likove i procjenu pokreće AI.
 - **Wow trenutak (30 s):** student spusti cijenu, hotel se napuni, susjedni hotel ostane prazan, a gost na recepciji je ljut jer osoblje ne stiže; na projektoru se grad mijenja uživo.
-- **Što NIJE u opsegu:** računi i lozinke, studenti koji vode druge vrste tvrtki, AI generiranje situacija, Merlin, više jezika.
+- **Što NIJE u opsegu:** studenti koji vode druge vrste tvrtki, Merlin i AAI@EduHr prijava (vizija za tržište), više jezika.
+  (Nakon žirija 1 ipak dodano: profesorski računi (L16) i AI prijedlog situacije koji profesor uvijek pregleda (S9).)
 
 ## Obilazak žirija 1 (sub ~14:45)
 
@@ -29,3 +30,9 @@
   - Jasno pokazujemo da je igra **obična, testirana pravila**, a AI samo jedan sloj: oko 1.700 redaka pravila igre
     naspram oko 450 redaka AI-ja, oko 150 automatskih testova, svaki AI poziv ima rok i rezervu, igra radi i bez AI-ja.
   - Partnerstvo tvrtki i fakulteta ide iz pitanja u glavni dio pitcha (tko plaća, što tko dobiva).
+
+## Obilazak žirija 2 (sub ~19:00)
+
+- Format: 3 minute, samo aplikacija uživo (bez slajdova): ulaz kodom, Moj hotel, Plan, situacija s gostom i presuda suca, grad.
+- Odgovor žirija: **pozitivan, bez primjedbi.** Nismo dobili novih zahtjeva.
+- **Za nedjelju:** obilazak 3 (08:00) žiri sam probava aplikaciju, bez pitcha; pitch (10:45) počinje s „Jutros ste ga probali sami".
