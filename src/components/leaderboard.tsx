@@ -4,33 +4,34 @@ import { cn } from "@/lib/utils";
 import { Delta } from "./metric-bar";
 
 const MEDAL = "text-foreground shadow-[inset_0_1px_0_rgb(255_255_255_/_0.7),0_2px_6px_-2px_rgb(21_27_43_/_0.3)]";
-const MEDALS = [
+export const MEDALS = [
   `bg-gradient-to-b from-[#ffe08a] to-[#e9b730] ${MEDAL}`,
   `bg-gradient-to-b from-[#f1f4f9] to-[#c3ccda] ${MEDAL}`,
   `bg-gradient-to-b from-[#f3c39f] to-[#c98552] ${MEDAL}`,
 ];
 
 // Ranked by progress (not money): top `limit`, plus your own row below if you are further down.
-export function Leaderboard({ rows, youId, limit = 5 }: { rows: LeaderboardRow[]; youId?: string; limit?: number }) {
+// anonymous (R10, projector): only hotel names, no student names.
+export function Leaderboard({ rows, youId, limit = 5, anonymous = false }: { rows: LeaderboardRow[]; youId?: string; limit?: number; anonymous?: boolean }) {
   const ranked = [...rows].sort((a, b) => b.progress - a.progress);
   const youRank = ranked.findIndex((r) => r.companyId === youId);
   const shown = ranked.slice(0, limit);
   return (
     <ol className="divide-y">
       {shown.map((r, i) => (
-        <Row key={r.companyId} row={r} rank={i + 1} you={r.companyId === youId} />
+        <Row key={r.companyId} row={r} rank={i + 1} you={r.companyId === youId} anonymous={anonymous} />
       ))}
       {youRank >= limit && (
         <>
           <li aria-hidden className="py-1 text-center text-muted-foreground">⋯</li>
-          <Row row={ranked[youRank]} rank={youRank + 1} you />
+          <Row row={ranked[youRank]} rank={youRank + 1} you anonymous={anonymous} />
         </>
       )}
     </ol>
   );
 }
 
-function Row({ row, rank, you }: { row: LeaderboardRow; rank: number; you: boolean }) {
+function Row({ row, rank, you, anonymous }: { row: LeaderboardRow; rank: number; you: boolean; anonymous: boolean }) {
   return (
     <li
       style={{ ["--i" as string]: rank }}
@@ -49,7 +50,7 @@ function Row({ row, rank, you }: { row: LeaderboardRow; rank: number; you: boole
           {you && <span className="ml-2 text-xs font-bold text-secondary-foreground">ti</span>}
         </p>
         <p className="truncate text-xs text-muted-foreground">
-          {row.playerName} · {row.place}
+          {anonymous ? row.place : `${row.playerName} · ${row.place}`}
         </p>
       </div>
       <div className="text-right">
