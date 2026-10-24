@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 22:00–22:10 · tester na produkciji
+
+- **Nova sesija:** tester produkcije (samo testira, ne mijenja kod). Prvi nalazi: uvid u studenta piše „klik" za
+  propuštenu situaciju ([BUG-015](BUGS.md#bug-015--uvid-u-studenta-propuštena-situacija-piše-klik)), krivi hrvatski
+  uz brojeve ([BUG-016](BUGS.md#bug-016--krivi-hrvatski-u-brojevima-i-rodu)), sirovi ključ područja kod AI prijedloga
+  ([BUG-017](BUGS.md#bug-017--ai-prijedlog-situacije-područje-kao-sirovi-ključ)); balans cijene potvrđen na produkciji
+  ([BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija)).
+- **Spojeno:** dokumentacija #193 (21:59).
+- **Odluka (Leon):** brisanje testnih podataka iz baze radi graditeljev agent.
+
 ## Sub 24.10. 21:45–22:00 · val 3 skoro gotov, balans cijene
 
 - **Spojeno:** Simonovi Tokovi skica 1 i 2 (#174, #179, 21:44, Leonovo „spoji"; Rinov pregled poveznica naknadno);
