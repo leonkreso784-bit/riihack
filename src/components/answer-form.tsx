@@ -37,11 +37,13 @@ export function OwnAnswerForm({ situationId, firstName, onAnswered }: { situatio
   const { busy, error, submit } = useSubmit(situationId, onAnswered);
   const length = text.trim().length;
   const short = length < MIN_OWN_ANSWER_CHARS;
+  const [tried, setTried] = useState(false); // clicked "Pošalji" while too short: explain instead of doing nothing
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        setTried(short);
         if (!short) submit({ text: text.trim(), pastedChars: Math.min(pastedChars, length) });
       }}
       className="space-y-3"
@@ -61,8 +63,9 @@ export function OwnAnswerForm({ situationId, firstName, onAnswered }: { situatio
       <p className={cn("text-xs font-semibold tabular-nums", short ? "text-muted-foreground" : "text-up")}>
         {short ? charsLeft(MIN_OWN_ANSWER_CHARS - length) : `${length} / ${MAX_OWN_ANSWER_CHARS} znakova`}
       </p>
+      {tried && short && <FormError>Napiši barem {MIN_OWN_ANSWER_CHARS} znakova svojim riječima. {charsLeft(MIN_OWN_ANSWER_CHARS - length)}.</FormError>}
       {error && <FormError key={error}>{error}</FormError>}
-      <SubmitButton busy={busy} disabled={short} busyText={`${firstName} razmišlja o tvom odgovoru…`}>
+      <SubmitButton busy={busy} busyText={`${firstName} razmišlja o tvom odgovoru…`}>
         Pošalji odgovor
       </SubmitButton>
     </form>

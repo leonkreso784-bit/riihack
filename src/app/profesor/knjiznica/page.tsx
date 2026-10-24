@@ -3,13 +3,13 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { api, isUnauthorized, USE_MOCK } from "@/lib/client";
 import type { LibraryItem, ProfGameSummary } from "@/lib/types";
 import { Panel } from "@/components/panel";
 import { Pill } from "@/components/pill";
 import { FormError } from "@/components/form";
+import { BackLink } from "@/components/back-link";
 
 const SOURCE_LABEL = { bank: "Banka", custom: "Profesor", ai: "AI" } as const;
 
@@ -77,12 +77,7 @@ export default function Library() {
   return (
     <div className="mx-auto max-w-3xl space-y-6 pt-4 md:pt-12">
       <header className="space-y-2">
-        <Link
-          href="/profesor/igre"
-          className="inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-muted-foreground hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        >
-          <ArrowLeft className="size-4" aria-hidden /> Moje igre
-        </Link>
+        <BackLink href="/profesor/igre" label="Moje igre" />
         <h1 className="text-4xl font-extrabold tracking-tight">Knjižnica situacija</h1>
         <p className="text-muted-foreground">Tvoje spremljene situacije. Kopija ide u odabranu igru, original ostaje u knjižnici.</p>
       </header>

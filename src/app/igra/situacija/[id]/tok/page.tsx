@@ -1,22 +1,19 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { flowInputFromSituation } from "@/lib/tokovi/answer-flow";
 import { PageHeader } from "@/components/page-header";
 import { FormError } from "@/components/form";
 import { AnswerFlow } from "@/components/tokovi/answer-flow";
+import { BackLink } from "@/components/back-link";
 
 // Tokovi, skica 2: kako je odgovor na situaciju prošao kroz hotel (odgovor, sudac, kvaliteta, učinak, odjeli).
 export default function AnswerFlowPage() {
   const { id } = useParams<{ id: string }>();
   const { data, error } = usePoll(api.me);
   const back = (
-    <Link href={`/igra/situacija/${id}`} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-      <ArrowLeft className="size-4" aria-hidden /> Natrag na situaciju
-    </Link>
+    <BackLink href={`/igra/situacija/${id}`} label="Natrag na situaciju" />
   );
   if (error && !data) return <FormError>{error.message}</FormError>;
   if (!data) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;

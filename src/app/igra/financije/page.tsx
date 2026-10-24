@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { ChartColumn, Percent, Trophy, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, num } from "@/lib/format";
@@ -11,6 +10,7 @@ import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
 import { StatCard } from "@/components/stat-card";
 import { cn } from "@/lib/utils";
+import { FlowLink } from "@/components/flow-link";
 
 type Month = { f: RoundFinance; b: Breakdown; growth: number | null };
 
@@ -59,9 +59,7 @@ export default function FinancePage() {
     <div className="space-y-5 pt-4 md:pt-0">
       <PageHeader title="Financije" subtitle="Novac hotela i obračun po mjesecima." />
       {finances.length > 0 && (
-        <Link href={`/igra/izvjestaj/${finances[finances.length - 1].round}/tok`} className="inline-flex min-h-11 items-center font-semibold text-secondary-foreground hover:underline">
-          Kako je izračunat mjesec →
-        </Link>
+        <FlowLink href={`/igra/izvjestaj/${finances[finances.length - 1].round}/tok`} title="Kako je izračunat mjesec" hint="Obračun korak po korak i „Što ako?“" />
       )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

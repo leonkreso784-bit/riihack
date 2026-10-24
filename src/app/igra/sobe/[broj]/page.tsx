@@ -1,14 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, BedDouble, Eye, Layers, Wallet } from "lucide-react";
+import { BedDouble, Eye, Layers, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { num } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Panel } from "@/components/panel";
 import { FormError } from "@/components/form";
 import { ROOM_STATUS, ROOM_TYPE_LABELS, ROOM_VIEW_LABELS } from "@/components/room-tile";
+import { BackLink } from "@/components/back-link";
 
 // R3: one room in detail.
 export default function RoomDetail() {
@@ -19,9 +19,7 @@ export default function RoomDetail() {
 
   const room = rooms.find((r) => r.number === broj);
   const back = (
-    <Link href="/igra/sobe" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-      <ArrowLeft className="size-4" aria-hidden /> Sve sobe
-    </Link>
+    <BackLink href="/igra/sobe" label="Sve sobe" />
   );
   if (!room)
     return (

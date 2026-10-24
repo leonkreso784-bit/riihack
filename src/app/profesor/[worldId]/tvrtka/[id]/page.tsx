@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, GraduationCap } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, plural } from "@/lib/format";
 import { ROUND_LABELS } from "@/lib/rules";
@@ -13,6 +12,7 @@ import { Panel } from "@/components/panel";
 import { Pill, type Tone } from "@/components/pill";
 import { FormError } from "@/components/form";
 import { Delta } from "@/components/metric-bar";
+import { BackLink } from "@/components/back-link";
 
 const QUALITIES: Quality[] = [1, 2, 3, 4, 5];
 function how(a: AnswerView | undefined, state: SituationView["state"]): { label: string; tone: Tone } {
@@ -28,9 +28,7 @@ export default function StudentPage() {
   const { worldId, id } = useParams<{ worldId: string; id: string }>();
   const { data, error, refresh } = usePoll(() => api.companyDetail(worldId, id), 10_000);
   const back = (
-    <Link href={`/profesor/${worldId}`} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-      <ArrowLeft className="size-4" aria-hidden /> Ploča igre
-    </Link>
+    <BackLink href={`/profesor/${worldId}`} label="Ploča igre" />
   );
   if (error && !data)
     return (
