@@ -13,19 +13,14 @@ opis · uzrok · rješenje · **lekcija**.
 Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
 ~22:05, ~22:20 i ~22:25.
 
-### BUG-026 · Napredak je negativan za sve hotele od prvog mjeseca
-- **Status:** 🟡 PR [#214](https://github.com/leonkreso784-bit/riihack/pull/214) čeka Leonovo „spoji" · **Težina:** visok (ljestvica i podij pokazuju da su svi izgubili)
-- **Opis:** tester (22:35–22:45, produkcija nakon #194): u tri igre svi hoteli imaju negativan napredak već od
-  prvog mjeseca, i uz odgovore 3/5 i 5/5 (pobjednik ▼ −12.7, drugi ▼ −14.9).
-- **Uzrok (graditelj, produkcijska baza samo čitanjem):** nije od #194, sve su dobiti pozitivne. `applyRound` daje
-  (kvaliteta − 3) × učinak, a propuštena situacija ima kvalitetu 1 (`MISSED_QUALITY`) pa daje −2×; ocjena 3 daje 0, a
-  4 samo +1×. Financije mjesečno dobiju najviše +5 (`FINANCE_EFFECT_CAP`). U testerovim igrama 14 od 20 situacija je
-  isteklo, većinom zbog roka „10 min" ([BUG-025](#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec)).
-  Primjer: klima 4/5 i povišica 1/5 u prvom mjesecu → zaposlenici −10, financije −4.
-- **Rješenje:** [ADR-046](DECISIONS.md#adr-046) (Leon, ~22:55): učinak 1 → −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×;
-  radi graditelj zajedno s [BUG-024](#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone).
-- **Lekcija:** nakon promjene motora provjeri i izvedene brojke (napredak, ljestvica, podij), ne samo onu koju si
-  mijenjao.
+### BUG-027 · Kasni student ne može ući u igru koja je počela
+- **Status:** 🟡 u radu (graditelj, od ~23:10) · **Težina:** visok (žiri na obilasku 3 ulazi u demo igru koja je u
+  2. mjesecu)
+- **Opis:** graditelj (~23:05): ploča piše „Kasniš? Uđi na /ulaz s kodom" (Rinov #211), a `join.ts` novom studentu
+  nakon „Pokreni" vraća 409.
+- **Uzrok:** ulaz je bio namjerno zatvoren nakon početka igre; tekst na ploči i pravilo na serveru nisu usklađeni.
+- **Rješenje:** [ADR-048](DECISIONS.md#adr-048): kasni ulaz dopušten, igra od trenutnog mjeseca.
+- **Lekcija:** kad sučelje nešto obeća („Kasniš? Uđi"), provjeri da server to i dopušta, na pravim podacima.
 
 ### BUG-020 · Sitni tekstovi: „2 studenata", tehnički tekst u toku mjeseca
 - **Status:** 🟡 (a) riješen 22:45 ([#208](https://github.com/leonkreso784-bit/riihack/pull/208)); (b) u Simonovom [#206](https://github.com/leonkreso784-bit/riihack/pull/206) · **Težina:** nizak
@@ -58,6 +53,20 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-026 · Napredak je negativan za sve hotele od prvog mjeseca
+- **Status:** ✅ riješen 24.10. 23:06 ([#214](https://github.com/leonkreso784-bit/riihack/pull/214), Leonovo „spoji"; 🟨 tester provjerava cijelu sezonu) · **Težina:** visok (ljestvica i podij pokazuju da su svi izgubili)
+- **Opis:** tester (22:35–22:45, produkcija nakon #194): u tri igre svi hoteli imaju negativan napredak već od
+  prvog mjeseca, i uz odgovore 3/5 i 5/5 (pobjednik ▼ −12.7, drugi ▼ −14.9).
+- **Uzrok (graditelj, produkcijska baza samo čitanjem):** nije od #194, sve su dobiti pozitivne. `applyRound` daje
+  (kvaliteta − 3) × učinak, a propuštena situacija ima kvalitetu 1 (`MISSED_QUALITY`) pa daje −2×; ocjena 3 daje 0, a
+  4 samo +1×. Financije mjesečno dobiju najviše +5 (`FINANCE_EFFECT_CAP`). U testerovim igrama 14 od 20 situacija je
+  isteklo, većinom zbog roka „10 min" ([BUG-025](#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec)).
+  Primjer: klima 4/5 i povišica 1/5 u prvom mjesecu → zaposlenici −10, financije −4.
+- **Rješenje:** [ADR-046](DECISIONS.md#adr-046) (Leon, ~22:55): učinak 1 → −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×;
+  radi graditelj zajedno s [BUG-024](#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone).
+- **Lekcija:** nakon promjene motora provjeri i izvedene brojke (napredak, ljestvica, podij), ne samo onu koju si
+  mijenjao.
 
 ### BUG-024 · Loši pokazatelji jedva utječu na goste u vrhu sezone
 - **Status:** ✅ riješen 24.10. 22:55 ([#213](https://github.com/leonkreso784-bit/riihack/pull/213), Leonovo „spoji") · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
