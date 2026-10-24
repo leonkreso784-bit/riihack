@@ -93,14 +93,15 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R10)
 
-- **Sad radim:** pauza; sljedeća sesija kreće s R5 (#25) situacija s likom
-- **Sljedeće:** za M2 (18:45): R5 (#25), R7 (#27), R6 (#26), R4 (#24) dovršiti; zatim Osoblje uz sobe, R10 (#46)
-- **Čekam od drugih:** Leon: `POST /api/logout` (gumb Odjava), `NEXT_PUBLIC_USE_MOCK=0` kad API radi; odluka o dizajnu (#39)
+- **Sad radim:** pauza; sljedeća sesija: R5 (#25) s opcijama i bez njih + oznaka „od profesora"
+- **Sljedeće:** za M2 (18:45): R5 → R6 (+ poveznica „Situacije") → R4 (+ mjesec umjesto „lipanj"); zatim Osoblje (`api.staff()`), R7, R10; M3: R8 „Promijeni ocjenu"
+- **Čekam od drugih:** Leon: spajanje #91, `POST /api/logout`, ruta za „Promijeni ocjenu"; odluka o dizajnu (#39)
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #78 uspravan logo, logo u igri, mobitel bez prelijevanja (spremno za integratora)
-- **Spojeno:** R0 (#40), `roundGain` (#49), lažni podaci zadano (#52), R1 (#54), R2 (#56), R3 (#57), logo (#65), animacije (#73)
-- **Bilješke za nastavak:** grana `rino/dokumentacija`, `docs/rino/STANJE.md` (stanje, sljedeći koraci, više sesija)
-- **Zadnje ažurirano:** sub 15:42 (popunio Claude, ispravi)
+- **Odluke:** OK da Simon u `client.ts`/`mock.ts` samo doda `createSituation`, `dispatch`, `worldSettings` po istom uzorku i javi prije PR-a
+- **Otvoreno:** #91 logo točno kao V1 (izvorna slika), spremno za integratora
+- **Spojeno:** R0 (#40), #49, #52, R1 (#54), R2 (#56), R3 (#57), logo (#65), animacije (#73), logo u igri i mobitel (#78)
+- **Bilješke za nastavak:** grana `rino/dokumentacija`, `docs/rino/STANJE.md`
+- **Zadnje ažurirano:** sub 16:05 (popunio Claude, ispravi)
 
 ---
 
