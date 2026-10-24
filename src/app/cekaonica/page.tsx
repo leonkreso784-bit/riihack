@@ -23,7 +23,8 @@ export default function WaitingRoom() {
         <Link href="/ulaz" className="font-semibold text-secondary-foreground hover:underline">Natrag na ulaz</Link>
       </div>
     );
-  if (!data) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
+  // Game already running (late join, reload): go straight on without showing the waiting room for a moment.
+  if (!data || started) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
 
   const c = data.company;
   return (

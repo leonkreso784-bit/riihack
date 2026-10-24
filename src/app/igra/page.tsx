@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { BedDouble, ChartColumn, ChevronRight, MessageCircle, Moon, Store, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
-import { METRIC_LABELS } from "@/lib/rules";
+import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
 import type { MetricKey, SituationView } from "@/lib/types";
 import { Panel } from "@/components/panel";
 import { StatCard } from "@/components/stat-card";
@@ -21,7 +21,8 @@ export default function GamePage() {
   if (!data) return <Skeleton />;
 
   const { company, world } = data;
-  const june = data.finances.at(-1);
+  const june = data.finances.at(-1); // last settled month
+  const settled = june ? (ROUND_LABELS[june.round - 1] ?? `krug ${june.round}`).toLowerCase() : undefined;
   const initials = company.hotelName.split(" ").map((w) => w[0]).join("").slice(0, 2);
   return (
     <div className="space-y-5">
@@ -60,8 +61,8 @@ export default function GamePage() {
         <div className="space-y-5">
           <div className="anim-rise grid grid-cols-2 gap-3 [--i:3]">
             <StatCard icon={Wallet} label="Stanje računa" value={<CountUp value={company.cash} />} unit="€" tone="accent" note="obračun kad profesor zatvori mjesec" />
-            <StatCard icon={BedDouble} label="Popunjenost" value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note="lipanj" />
-            <StatCard icon={ChartColumn} label="Dobit" value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note="lipanj" />
+            <StatCard icon={BedDouble} label="Popunjenost" value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note={settled} />
+            <StatCard icon={ChartColumn} label="Dobit" value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note={settled} />
             <StatCard icon={Moon} label="Noćenja" value={june ? <CountUp value={june.nights + june.contractNights} /> : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />
           </div>
 
@@ -109,6 +110,7 @@ function SituationRow({ s }: { s: SituationView }) {
             {s.character.name} · {s.character.role}
           </span>
         </span>
+        {s.source && s.source !== "bank" && <Pill tone="warn">od profesora</Pill>}
         {s.answer ? <Pill tone="up">{s.answer.quality} / 5</Pill> : <Pill tone="accent">Otvorena</Pill>}
         <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       </Link>

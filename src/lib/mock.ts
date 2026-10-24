@@ -119,6 +119,7 @@ const SITUATIONS: SituationView[] = [
   {
     // No offered answers (the professor's kind): only talking and answering in your own words.
     id: "s-recenzija",
+    source: "custom",
     templateId: "losa-recenzija",
     round: 2,
     title: "Loša recenzija na Bookingu",
