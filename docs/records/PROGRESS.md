@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~23:30 · demo spreman za obilazak 3
+
+- **Graditelj:** očišćeno 90 testnih igara i 6 računa, pa još 19 smoke igara; demo `KVRNDM` posijan s `main`-a (s #213,
+  #214 i #221): 2. mjesec, 5 hotela, 15 mjesta, 4 situacije u knjižnici demo računa, pregovor s Agencijom Adria
+  (ponuda 60 €, dogovoreno 66 €), 2 poruke među hotelima. Smoke na produkciji 20/20 (s profesorskim računom i kasnim
+  ulazom). Kasni ulaz provjeren i na `KVRNDM`, pa demo ponovno posijan bez testnog hotela.
+- **Odluka (Leon, izravno integratoru):** zamrzavanja od 00:00 nema, ima još bugova;
+  [ADR-031](DECISIONS.md#adr-031) vrijedi i dalje.
+- **Spojeno:** dokumentacija #222 (23:31).
+- **Sljedeće:** tester igra cijelu sezonu (dobar i loš student) i provjerava podij na 1280×720.
+
 ## Sub 24.10. 23:15–23:30 · kasni ulaz, svi bugovi s testa zatvoreni
 
 - **Spojeno:** #212 (23:15, BUG-019 i 021 ostatak), dokumentacija #220 (23:17), Simonova karta prema broju hotela #215

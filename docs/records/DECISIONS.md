@@ -241,7 +241,7 @@ na pokazatelj odjela (1 bod na 1000 €); vrijednosti vrijede iz `rules.ts`. Mot
 **Posljedice.** Pravilo spajanja (`main` uvijek radi, integrator, smoke) vrijedi do kraja. Dokumenti
 usklađeni: `docs/ROADMAP.md` i pitch (Simon, [#131](https://github.com/leonkreso784-bit/riihack/pull/131)), ploča u
 `TEAM.md` (integrator, 21:15) te `CLAUDE.md`, `PLAN-24H.md` i glavni plan (Rino,
-[#180](https://github.com/leonkreso784-bit/riihack/pull/180), 21:22).
+[#180](https://github.com/leonkreso784-bit/riihack/pull/180), 21:22). Leon je u ~23:30 ponovio: zamrzavanja nema ni od 00:00.
 
 <a id="adr-030"></a>
 ## ADR-030 · Integrator dobiva dozvole i sam prebacuje produkciju na prave podatke

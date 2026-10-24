@@ -5,6 +5,7 @@ prekretnica: [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md#prekretn
 
 | Kad | Prekretnica | Ref |
 | --- | --- | --- |
+| sub 24.10. ~23:30 | **Demo spreman za obilazak 3:** val 3, balans cijene i pokazatelja, botovi, kasni ulaz; baza očišćena, demo `KVRNDM` posijan, smoke na produkciji 20/20; bugovi s testa produkcije (BUG-014 do 027) riješeni | #213, #214, #205, #221 |
 | sub 24.10. ~19:00 | **Obilazak žirija 2 prošao:** aplikacija uživo 3 min, žiri oduševljen („wow"), bez primjedbi; na svako pitanje imali smo odgovor (Leon) | #150 |
 | sub 24.10. ~17:52 | **Produkcija na pravim podacima** (prije samo Preview) ([ADR-030](DECISIONS.md#adr-030)) | #115 |
 | sub 24.10. 17:09–17:15 | **Kod za M3 na `main`-u:** playbook, demo igra, promjena ocjene mentora, AI prijedlog situacije; 272 testa | #100, #103, #104, #111 |
