@@ -6,6 +6,7 @@ import { isUuid, listCompanies } from "@/db/queries";
 import { contracts, mail } from "@/db/schema";
 import type { MailRow } from "@/db/schema";
 import { CITY } from "@/content";
+import { agencyReply } from "@/lib/ai";
 import { eur } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import { MAIL_BODY_MAX, MAIL_SUBJECT_MAX } from "@/lib/rules";
@@ -78,7 +79,7 @@ export function agencyFallback(i: AgencyReplyInput): string {
  * `clip(await agencyReply(i), MAIL_BODY_MAX)` (agencyReply ima svoju rezervu po ishodu).
  */
 export async function agencyText(i: AgencyReplyInput): Promise<string> {
-  return clip(agencyFallback(i), MAIL_BODY_MAX);
+  return clip(await agencyReply(i), MAIL_BODY_MAX);
 }
 
 const businessName = (id: string | null) => (id ? CITY.find((b) => b.id === id)?.name : undefined);
