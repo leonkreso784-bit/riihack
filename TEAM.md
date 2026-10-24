@@ -64,10 +64,11 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica` 200
-- **Zadnja spajanja:** #54 R1 ulaz i čekaonica, #55 slajdovi obilaska, #58 dokumentacija (vraća se s #60)
-- **Red čekanja:** #60 revert #58 (čeka CI); #42 tipovi lika (promjena ugovora, čeka Leonovu odluku)
-- **Zadnje ažurirano:** sub 14:45
+- **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200
+- **Zadnja spajanja (sub 14:38–14:50):** #54 R1, #56 R2, #57 R3, #65 logo, #62 L1, #59 L2, #64 L3, #55 i #61 obilazak, #66 pitch; #58 vraćen s #60
+- **Red čekanja:** #63 ugovor lika (čeka Leonovo „spoji"); #42 duplikat #63 (Simon zatvara)
+- **Napomena:** Rinova pozivnica u Vercel tim nije prihvaćena, pa mu `vercel link` i deploy iz terminala ne rade
+- **Zadnje ažurirano:** sub 14:50
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
