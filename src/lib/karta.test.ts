@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CompanyPublicView, MeResponse } from "./types";
-import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, allocateLots, bonitet, businessLots, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, publicBonitet, rank, reviewsCount, score, simId, terrainCell, word } from "./karta";
+import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, LOTS, allocateLots, bonitet, businessLots, cityTier, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, publicBonitet, rank, reviewsCount, score, simId, terrainCell, visibleBusinesses, word } from "./karta";
 
 describe("ocjena gostiju", () => {
   it("score = 5 + reviews / 20", () => {
@@ -133,6 +133,7 @@ describe("profili: samo pravi podaci", () => {
 
 const PLACES = ["Rijeka", "Opatija", "Crikvenica", "Mali Lošinj", "Rab", "Omišalj, Krk", "Nigdje"];
 const fakeHotels = (n: number) => Array.from({ length: n }, (_, i) => ({ companyId: `c-${String(i).padStart(2, "0")}`, place: PLACES[i % PLACES.length] }));
+const dist = (a: number[], b: number[]) => Math.hypot(a[0] - b[0], a[1] - b[1]);
 const spaced = (a: number[], b: number[], m: number) => Math.abs(a[0] - b[0]) >= m || Math.abs(a[1] - b[1]) >= m;
 
 describe("teren i okruzi", () => {
@@ -188,13 +189,54 @@ describe("raspored hotela", () => {
       }
     });
   }
-  it("hotel ide u okrug svog mjesta, a pun okrug prelijeva u susjedni", () => {
+  it("prvi hotel ide u središte, a hotel iz drugog mjesta dobiva svoj okrug tek kad je blizu", () => {
     const one = allocateLots([{ companyId: "a", place: "Opatija" }]);
-    expect(one.a.district).toBe("setnica");
-    const many = allocateLots(Array.from({ length: 8 }, (_, i) => ({ companyId: `r${i}`, place: "Rijeka" })));
-    const inLuka = Object.values(many).filter((l) => l.district === "luka").length;
-    expect(inLuka).toBe(DISTRICTS[0].slots.length);
-    expect(Object.values(many).some((l) => l.district !== "luka")).toBe(true);
+    expect(one.a.index).toBe(0);
+    expect(dist(one.a.slot, [8.5, 7.5])).toBeLessThan(1.5);
+    const hs = fakeHotels(14).map((h) => ({ ...h, place: "Opatija" }));
+    const many = allocateLots(hs);
+    expect(Object.values(many).some((l) => l.district === "setnica")).toBe(true);
+  });
+  it("kad se okrug napuni, prelijeva se dalje, a prostora ima za barem 40 hotela", () => {
+    expect(LOTS.length).toBeGreaterThanOrEqual(40);
+    const many = allocateLots(Array.from({ length: 12 }, (_, i) => ({ companyId: `r${i}`, place: "Rijeka" })));
+    expect(Object.values(many).filter((l) => l.district === "luka").length).toBe(DISTRICTS[0].slots.length);
+  });
+  for (const n of Array.from({ length: 40 }, (_, i) => i + 1)) {
+    it(`${n} hotela: svaki ima svoju parcelu i nema preklapanja`, () => {
+      const lots = Object.values(allocateLots(fakeHotels(n)));
+      expect(new Set(lots.map((l) => l.index)).size).toBe(n);
+      lots.forEach((a, i) => lots.slice(i + 1).forEach((b) => expect(spaced(a.slot, b.slot, 1.5)).toBe(true)));
+    });
+  }
+  it("pripeti hoteli ne mijenjaju parcelu kad se pridruži novi (N -> N + 1)", () => {
+    let pinned: Record<string, number> = {};
+    let prev: ReturnType<typeof allocateLots> = {};
+    const hs: { companyId: string; place: string }[] = [];
+    for (let n = 1; n <= 40; n++) {
+      // novi hotel ima id koji se razvrstava bilo gdje (i prije postojećih): najgori slučaj
+      hs.push({ companyId: n % 2 ? `a-${n}` : `z-${n}`, place: PLACES[n % PLACES.length] });
+      const next = allocateLots(hs, pinned);
+      for (const [id, lot] of Object.entries(prev)) expect(next[id].index).toBe(lot.index);
+      expect(Object.keys(next).length).toBe(n);
+      pinned = Object.fromEntries(Object.entries(next).map(([id, l]) => [id, l.index]));
+      prev = next;
+    }
+  });
+  it("bez spremišta isti skup hotela daje isti raspored, neispravni pinovi se ignoriraju", () => {
+    const hs = fakeHotels(10);
+    expect(allocateLots(hs, { "c-00": 999, "c-01": -1, "c-02": 0.5 })).toEqual(allocateLots(hs));
+    const dup = allocateLots(hs, { "c-00": 3, "c-01": 3 });
+    expect(new Set(Object.values(dup).map((l) => l.index)).size).toBe(10);
+    expect(dup["c-00"].index).toBe(3);
+  });
+  it("veličina grada i broj prikazanih tvrtki", () => {
+    expect([cityTier(2), cityTier(8), cityTier(9), cityTier(24), cityTier(25)]).toEqual(["small", "small", "medium", "medium", "large"]);
+    const bs = [{ id: "b-adria", name: "Agencija Adria" }, { id: "b-ucka", name: "Učka" }, { id: "b-praonica", name: "Praonica" }, { id: "b-pekara", name: "Pekara" }, { id: "b-zastita", name: "Zaštita" }, { id: "b-vinarija", name: "Vinarija" }];
+    expect(visibleBusinesses(bs, new Set(), 2).length).toBe(3);
+    expect(visibleBusinesses(bs, new Set(["b-vinarija"]), 2).map((b) => b.id)).toContain("b-vinarija");
+    expect(visibleBusinesses(bs, new Set(), 9)).toEqual(bs);
+    expect(visibleBusinesses(bs, new Set(), 2).map((b) => b.id)).toEqual(["b-adria", "b-ucka", "b-praonica"]);
   });
   it("raspored ne ovisi o redoslijedu ljestvice", () => {
     const hs = fakeHotels(12);
