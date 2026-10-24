@@ -89,7 +89,7 @@ na koga čeka i što smo dogovorili.
 - **Obilazak 1 (~15:45):** prošli. Pokazali **samo slajdove, bez živog demoa**: demo čuvamo za obilazak 2 (19:00). Komentari u `PROMISE.md`.
 - **E2E 15:45** (lokalno, prava baza, main + L6 samo lokalno): smoke 1–10 ✅, 11 ✗ (nema `finances`); chat 2 s ✅, presuda 2,5–3 s ✅ (5/5 i 1/5 točno)
 - **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72, #86), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
-- **Zadnje ažurirano:** sub 16:50
+- **Zadnje ažurirano:** sub 16:00
 
 ## Rino · sučelje (R0–R10)
 
