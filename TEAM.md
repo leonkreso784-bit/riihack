@@ -72,13 +72,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
 
-- **Sad radim:** predaja na novu sesiju graditelja; sva gradnja za M2 i M3 (backend) je gotova i čeka spajanje
-- **Sljedeće:** nakon vala proba M2 na pravim podacima, `NEXT_PUBLIC_USE_MOCK=0` na produkciji; zatim popravci, poliranje, proba demoa
-- **Čekam od drugih:** Leonovo izravno „da" integratoru za val #88 → #89 → #75 → #95 → #96; zatim #100, #103, #104
-- **Drugi čekaju od mene:** Simon S8 i `mentor-input.ts` → `getTemplate` (nakon #95); Rino R6, R4, poveznica „Situacije", R5 bez opcija
-- **Otvoreno:** #88 L11 B, #89 ugovor (profesorove situacije, Playbook), #75 L6, #95 L12, #96 odjava, #100 playbook, #103 demo igra (`npm run seed:demo`, kod igre `KVRNDM`), #104 promjena ocjene
-- **Spojeno:** L0–L5, L7, L8 smoke, L9, L10, L11 faza A; Neon `simpolis-db`. **Pravila:** nitko ne pokreće `npm run db:push` (shema samo ručnim aditivnim SQL-om); ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** sub 16:55
+- **Sad radim:** predaja na novu sesiju graditelja; zatim proba M2 na pravim podacima
+- **Sljedeće:** proba M2 (cijeli tok u pregledniku, `npm run seed:demo`), popis grešaka; produkcija na pravi API kad Leon kaže; M3 samo popravci i ruta za AI prijedlog (S9)
+- **Čekam od drugih:** Simon: `ai/mentor-input.ts` → `getTemplate`; S9 `proposeSituation`
+- **Drugi čekaju od mene:** —
+- **Otvoreno:** —
+- **Spojeno:** L0–L12 (krugovi, obračun mjeseca, ugovori, vijesti, profesorove situacije, playbook, promjena ocjene), L8 smoke 14/14 i demo igra (`npm run seed:demo`), odjava; `main` zelen, 272 testa. **Pravila:** nitko ne pokreće `npm run db:push`; ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** sub 17:20
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
