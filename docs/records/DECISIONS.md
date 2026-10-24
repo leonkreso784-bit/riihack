@@ -25,8 +25,9 @@ planu zajedno; Simon zatvara #42 kao duplikat. #63 spojen u 14:58.
 (#36 i #37, #49 i #50), a jednom je `main` ostao crven (BUG-001).
 **Odluka.** Leonov rad ide kroz tri sesije: **graditelj** (L-zadaci s agentima), **integrator** (pregledava i spaja
 PR-ove cijelog tima, čuva `main`) i **dokumentarist** (samo `docs/`). Svaka u svom radnom stablu.
-**Posljedice.** Spaja samo integrator; autor PR-a javlja da je spreman (integrator, [ODLUKA] 24.10.). 🟨 Vrijedi li to
-i za Simonove i Rinove PR-ove ([TEAM.md](../../TEAM.md) pravilo 3 kaže da spaja vlasnik)? **Dokumentacija se ne
+**Posljedice.** Spaja samo integrator; autor PR-a javlja da je spreman (integrator, [ODLUKA] 24.10.). Vrijedi za
+PR-ove cijelog tima ([TEAM.md](../../TEAM.md) pravilo 3), i to **automatski** za sve što prođe provjeru na svježem
+`main`-u (Leon, ~15:00). **Dokumentacija se ne
 spaja:** na `main` ide samo `TEAM.md`, a `docs/` ostaje na grani `leon/docs-struktura` (Leon, 24.10.; #58 spojen
 pa vraćen s #60).
 

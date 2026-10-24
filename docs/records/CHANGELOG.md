@@ -7,6 +7,13 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#63](https://github.com/leonkreso784-bit/riihack/pull/63) | 14:58 | Leon | ugovor: `CharacterInput.messageNo?` i `maxMessages?` (ADR-016) |
+| [#66](https://github.com/leonkreso784-bit/riihack/pull/66) | 14:48 | Simon | pitch: jednostavan jezik i tko plaća |
+| [#59](https://github.com/leonkreso784-bit/riihack/pull/59) | 14:45 | Leon | L2: motor A, kodovi, dodjela hotela, provjere unosa |
+| [#64](https://github.com/leonkreso784-bit/riihack/pull/64) | 14:45 | Leon | L3: banka od 6 hotela |
+| [#65](https://github.com/leonkreso784-bit/riihack/pull/65) | 14:45 | Rino | novi logo Simpolisa |
+| [#57](https://github.com/leonkreso784-bit/riihack/pull/57) | 14:44 | Rino | R3: sobe po katovima i detalj sobe |
+| [#56](https://github.com/leonkreso784-bit/riihack/pull/56) | 14:44 | Rino | R2: profesor, nova igra, kod, čekaonica za projektor |
 | [#62](https://github.com/leonkreso784-bit/riihack/pull/62) | 14:44 | Leon | L1: shema baze i zajednički upiti |
 | [#61](https://github.com/leonkreso784-bit/riihack/pull/61) | 14:44 | Simon | obilazak: Rinov tok demoa nakon R1 |
 | [#60](https://github.com/leonkreso784-bit/riihack/pull/60) | 14:40 | Leon | revert #58: dokumentacija ostaje na grani |

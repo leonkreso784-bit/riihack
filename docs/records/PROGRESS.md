@@ -6,7 +6,7 @@ Vremena su lokalna (CEST).
 
 ---
 
-## Sub 24.10. 14:35–14:45 · baza živa, L1, R1
+## Sub 24.10. 14:35–15:00 · baza živa, L1–L3, R1–R3
 
 - **Leon:** Neon baza `simpolis-db` (Frankfurt, besplatni plan) preko Vercel Marketplacea, `DATABASE_URL` na Vercelu
   za sva tri okruženja; L1 shema i zajednički upiti (#62, 14:44), 11 tablica u bazi. Odluka o #42
@@ -15,7 +15,9 @@ Vremena su lokalna (CEST).
 - **Simon:** slajdovi obilaska žirija (#55) i Rinov tok demoa nakon R1 (#61).
 - **Dokumentacija:** #58 spojen pa vraćen s #60: na `main` ide samo `TEAM.md` ([ADR-015](DECISIONS.md#adr-015)).
 - **Vercel:** Rino prihvatio pozivnicu u Vercel tim (Leon, ~15:00), pa mu rade `vercel link` i `vercel env pull`.
-- **Otvoreno:** #59 L2 motor, #63 ugovor lika, #64 L3 banka hotela, #65 novi logo.
+- **Spojeno do 15:00:** L2 motor A (#59), L3 banka od 6 hotela (#64), R2 profesor (#56), R3 sobe (#57), logo (#65),
+  pitch (#66), ugovor lika (#63). Integrator od sada spaja automatski sve što prođe provjeru ([ADR-015](DECISIONS.md#adr-015)).
+- **Slijedi:** L4 (#7), API ulaza i profesora, da M1 radi na pravim podacima.
 
 ## Sub 24.10. ~14:30 · tri sesije, dokumentacija
 
