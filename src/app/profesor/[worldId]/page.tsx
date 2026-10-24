@@ -22,39 +22,7 @@ export default function ProfWorld() {
   return data.world.status === "lobby" ? (
     <Lobby state={data} onStarted={refresh} />
   ) : (
-    <div className="space-y-6">
-      {data.world.status === "running" && <JoinStrip joinCode={data.world.joinCode} />}
-      <ProfBoard state={data} syncedAt={syncedAt} onChange={refresh} />
-    </div>
-  );
-}
-
-// BUG-021: after the start the code stays on the projector, small, so a student who lost the session can get back in.
-// New players cannot join a running game (join.ts answers 409), so the text speaks about returning.
-function JoinStrip({ joinCode }: { joinCode: string }) {
-  const host = useHost();
-  return (
-    <section className="surface flex items-center gap-4 rounded-[var(--radius)] px-4 py-3">
-      {host && (
-        <QrCode
-          text={`${location.protocol}//${host}/ulaz?kod=${joinCode}`}
-          label={`QR kod za ulaz u igru ${joinCode}`}
-          className="size-16 shrink-0 rounded-lg p-1 md:size-20"
-        />
-      )}
-      <div className="min-w-0">
-        <p className="text-sm text-muted-foreground">
-          Kod igre{" "}
-          <strong aria-label={joinCode.split("").join(" ")} className="font-mono text-2xl font-extrabold tracking-[0.12em] text-foreground">
-            {joinCode}
-          </strong>
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Izgubljena veza? Uđi na <strong className="font-semibold">{host || "riihack.vercel.app"}/ulaz</strong> s istim imenom i
-          hotelom.
-        </p>
-      </div>
-    </section>
+    <ProfBoard state={data} syncedAt={syncedAt} onChange={refresh} />
   );
 }
 
