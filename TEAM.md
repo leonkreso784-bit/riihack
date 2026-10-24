@@ -46,7 +46,7 @@ na koga čeka i što smo dogovorili.
    prije spajanja provjeri PR na svježem `main`-u (typecheck, lint, test, build). Ne spajaš sam.
 4. **Nakon spajanja pogledaj CI na `main`-u.** Kad je `main` crven, nitko ne spaja dok ga ne popravi onaj čiji je
    zadnji merge. Javi na Discordu.
-5. **Zajednička Neon baza:** `npm run db:push` radi samo onaj tko mijenja shemu (Leon).
+5. **Zajednička Neon baza:** ⚠️ **nitko ne pokreće `npm run db:push`** (24.10. predložio je pražnjenje tablica `situations` i `contracts`). Shemu mijenja samo Leon, ručnim aditivnim SQL-om u jednoj transakciji.
 6. **Ne diraj tuđe datoteke** (vlasništvo je u planu pod „Struktura datoteka"). Ako ti nešto treba, upiši to pod
    „Tko na koga čeka" i javi.
 
@@ -66,9 +66,9 @@ na koga čeka i što smo dogovorili.
 ## Stanje main-a (vodi integrator)
 
 - **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200; `/api/me` 401 bez kolačića (L4 živ)
-- **Zadnja spajanja (sub 15:30–16:00):** #81 L8 smoke, #82 L11 faza A, #83 L7 (188 testova zeleno)
-- **Red čekanja:** #75 L6 situacije: **blokira tok igre** (bez njega `situations.json` je prazan, smoke pada na koraku 5; s njim lokalno prolaze koraci 1–10). Čeka Leonov pregled struke i „spoji". #42 duplikat #63 (Simon zatvara)
-- **Zadnje ažurirano:** sub 16:00
+- **Zadnja spajanja (sub 16:00–16:50):** #84, #85, #87, #90 dokumentacija, #86 žiri 1, #91 logo
+- **Red čekanja (čeka Leonovo „spoji"):** #75 L6 situacije (blokira tok igre), #88 L11 B (mijenja plan), #89 ugovor L12 (types.ts + plan); zatim L12 faza B. #42 duplikat #63 (Simon zatvara)
+- **Zadnje ažurirano:** sub 16:50
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
@@ -89,7 +89,7 @@ na koga čeka i što smo dogovorili.
 - **Obilazak 1 (~15:45):** prošli. Pokazali **samo slajdove, bez živog demoa**: demo čuvamo za obilazak 2 (19:00). Komentari u `PROMISE.md`.
 - **E2E 15:45** (lokalno, prava baza, main + L6 samo lokalno): smoke 1–10 ✅, 11 ✗ (nema `finances`); chat 2 s ✅, presuda 2,5–3 s ✅ (5/5 i 1/5 točno)
 - **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72, #86), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
-- **Zadnje ažurirano:** sub 16:00
+- **Zadnje ažurirano:** sub 16:50
 
 ## Rino · sučelje (R0–R10)
 
