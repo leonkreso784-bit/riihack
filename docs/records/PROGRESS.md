@@ -13,7 +13,8 @@ Vremena su lokalna (CEST).
   `main`-u, Vercel i produkcija zeleni; smoke 14/14 (`SMOKE_CITY=1`) nakon #75
   ([BUG-004](BUGS.md#bug-004--smoke-korak-5-na-main-u-pada-ana-ima-0-situacija) riješen).
 - **Usporedno spojeno:** R6 profesorova ploča uživo (#108), S8 sučelje za profesorove situacije (#109).
-- **M3 čeka iza vala:** playbook (#100), demo igra (#103), promjena ocjene mentora (#104).
+- **M3 spojen iza vala (17:09–17:12):** playbook (#100), demo igra (#103), promjena ocjene mentora (#104). Testovi
+  196 → 272, smoke 14/14 i nakon #104, produkcija bez ijednog 5xx.
 - **Slijedi:** proba M2 na pravim podacima, pa prave podatke i na produkciji ([ADR-029](DECISIONS.md#adr-029)).
 
 ## Sub 24.10. 16:15–16:50 · M2 val spreman, M3 gotov iza njega
