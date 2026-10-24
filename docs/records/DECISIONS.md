@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-026"></a>
+## ADR-026 · Nitko ne pokreće `db:push`; shema se mijenja ručnim aditivnim SQL-om
+**Datum:** 24.10. ~16:25 · **Status:** ✅ (Leon) · **Vezano:** [BUG-006](BUGS.md#bug-006--dbpush-predlaže-pražnjenje-tablica-situations-i-contracts), [ADR-025](#adr-025), [ADR-005](#adr-005)
+
+**Kontekst.** `drizzle-kit push` na zajedničkoj Neon bazi predložio je pražnjenje tablica `situations` i `contracts`
+jer krivo čita postojeća unique ograničenja (BUG-006).
+**Odluka.** Nitko ne pokreće `npm run db:push`. Promjene sheme idu ručnim **aditivnim** SQL-om (`CREATE TABLE`,
+`ADD COLUMN IF NOT EXISTS`), koji pregleda Leonov graditelj. Shema L12 (`custom_situations`, `dispatches`,
+`worlds.auto_draw`) primjenjuje se tako.
+**Posljedice.** Mijenja korak „`db:push` samo aditivno" iz ADR-025. 🟨 [TEAM.md](../../TEAM.md) pravilo 5 još kaže
+da `db:push` radi Leon.
+
 <a id="adr-025"></a>
 ## ADR-025 · Ugovor za profesorove situacije i redoslijed spajanja
 **Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom, redoslijed dogovoren s integratorom) · **Vezano:** [ADR-024](#adr-024), [ADR-011](#adr-011), [ADR-017](#adr-017), [#75](https://github.com/leonkreso784-bit/riihack/pull/75)
@@ -19,8 +31,8 @@ Novi tipovi: `SituationSource`, `SituationDraft`, `SituationSummary`, `DispatchV
 `ProfStateResponse.bank`, `.dispatches`, `.autoDraw`, `SituationView.source`, `AnswerView.overridden`,
 `MentorInput.finance`. Nove rute: `POST /api/prof/[worldId]/situations`, `/dispatch`, `/settings` (M2);
 `/answers/[situationId]/quality` i `/situations/generate` (M3).
-**Redoslijed spajanja:** ugovor (Leonovo „spoji") → L11 faza B → L12 (`db:push` samo aditivno, neposredno prije
-spajanja). S8 ide neovisno. L6 (#75) mora biti spojen prije demoa L12 i S8, inače je banka situacija prazna.
+**Redoslijed spajanja:** ugovor (Leonovo „spoji") → L11 faza B → L12 (shema ručnim aditivnim SQL-om neposredno prije
+spajanja, [ADR-026](#adr-026)). S8 ide neovisno. L6 (#75) mora biti spojen prije demoa L12 i S8, inače je banka situacija prazna.
 **Posljedice.** S8 dira Rinove `client.ts` i `mock.ts` samo za nove pozive i lažno stanje profesorovih situacija;
 Rino je dao „ok" (~16:35, [TEAM.md](../../TEAM.md) pravilo 6). Ugovor je PR [#89](https://github.com/leonkreso784-bit/riihack/pull/89), čeka Leonovo „spoji".
 

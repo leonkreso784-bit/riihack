@@ -13,6 +13,9 @@ Vremena su lokalna (CEST).
 - **Odluke (Leon s timom, ~16:15):** jezgra odvojena od AI-ja, profesor je glavni ([ADR-023](DECISIONS.md#adr-023));
   novi zadaci L12, S8 i S9 za profesorove situacije ([ADR-024](DECISIONS.md#adr-024)); ugovor i redoslijed spajanja
   ([ADR-025](DECISIONS.md#adr-025)). PRD dopunjen kriterijima za M2 i M3.
+- **~16:25:** `db:push` predložio pražnjenje tablica, uhvaćeno prije upisa
+  ([BUG-006](BUGS.md#bug-006--dbpush-predlaže-pražnjenje-tablica-situations-i-contracts)); od sada samo ručni aditivni
+  SQL ([ADR-026](DECISIONS.md#adr-026)).
 - **~16:35:** Rino dao „ok" za S8 u `client.ts` i `mock.ts`; ugovor za profesorove situacije je #89 (čeka Leona);
   Rinov prijedlog „playbooka" čeka odluku ([BACKLOG.md](BACKLOG.md)); `docs/ROADMAP.md` ažurira Simon.
 - **Stanje gradnje:** na `main`-u L0–L5, L7, L8 smoke 1–10, L9, L10, L11 faza A, S3, S4. U izradi L11 faza B. Čeka
