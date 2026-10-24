@@ -81,7 +81,7 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
           Čekamo prve studente…
         </p>
       ) : (
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid grid-cols-[minmax(0,1fr)] gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {players.map((p) => (
             <PlayerCard key={p.companyId} p={p} />
           ))}

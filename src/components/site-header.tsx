@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { LogoMark } from "./logo";
+import { LogoutButton } from "./logout-button";
 
 // Simpolis wordmark: isometric-city mark + name with the accent on "polis"; same in every header.
 export function Wordmark({ size = "md" }: { size?: "md" | "lg" | "xl" }) {
@@ -27,13 +28,14 @@ export function Wordmark({ size = "md" }: { size?: "md" | "lg" | "xl" }) {
   );
 }
 
-export function SiteHeader() {
+export function SiteHeader({ logout = false }: { logout?: boolean }) {
   return (
     <header className="glass sticky top-0 z-30 border-b border-white/60">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center px-4">
         <Link href="/" className="flex min-h-11 items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
           <Wordmark />
         </Link>
+        {logout && <LogoutButton className="ml-auto w-auto" />}
       </div>
     </header>
   );

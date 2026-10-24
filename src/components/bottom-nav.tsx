@@ -8,6 +8,7 @@ import { t } from "@/lib/strings";
 import { Wordmark } from "./site-header";
 import { Pill } from "./pill";
 import { USE_MOCK as MOCK } from "@/lib/client";
+import { LogoutButton } from "./logout-button";
 
 // Plan, Financije and Grad are Simon's pages (S5, S6); until they land the links 404.
 const ITEMS = [
@@ -34,7 +35,10 @@ export function GameNav() {
         <Link href="/igra" className={cn("flex min-h-11 items-center rounded-xl", focus)}>
           <Wordmark />
         </Link>
-        {MOCK && <Pill tone="warn">primjer</Pill>}
+        <span className="flex items-center gap-1">
+          {MOCK && <Pill tone="warn">primjer</Pill>}
+          <LogoutButton variant="icon" />
+        </span>
       </header>
 
       <aside className="glass fixed inset-y-0 left-0 z-20 hidden w-60 flex-col border-r border-white/70 px-3 py-5 shadow-[1px_0_0_rgb(226_232_243)] md:flex">
@@ -44,11 +48,14 @@ export function GameNav() {
         <nav aria-label={t.nav.label}>
           <NavList pathname={pathname} variant="side" />
         </nav>
-        {MOCK && (
-          <p className="mt-auto rounded-xl bg-sand px-3 py-2 text-xs leading-snug">
-            <strong className="font-bold">Primjer.</strong> Prikazani su lažni podaci dok backend ne proradi.
-          </p>
-        )}
+        <div className="mt-auto space-y-2">
+          <LogoutButton />
+          {MOCK && (
+            <p className="rounded-xl bg-sand px-3 py-2 text-xs leading-snug">
+              <strong className="font-bold">Primjer.</strong> Prikazani su lažni podaci dok backend ne proradi.
+            </p>
+          )}
+        </div>
       </aside>
 
       <nav

@@ -45,7 +45,7 @@ export default function GamePage() {
         <RoundBanner world={world} syncedAt={syncedAt} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
         <Panel className="anim-rise [--i:2]" title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0–100 · od početka</span>}>
           {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k, i) => (
             <MetricBar key={k} order={i} icon={METRIC_ICONS[k]} label={METRIC_LABELS[k]} start={company.startMetrics[k]} now={company.metrics[k]} />
@@ -70,7 +70,7 @@ export default function GamePage() {
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
         <Panel className="anim-rise [--i:5]" title="Ljestvica razreda" action={<span className="text-xs text-muted-foreground">po napretku</span>}>
           <Leaderboard rows={data.leaderboard} youId={company.id} />
         </Panel>
