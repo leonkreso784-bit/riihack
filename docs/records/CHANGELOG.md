@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#180](https://github.com/leonkreso784-bit/riihack/pull/180) | 21:22 | Rino | dokumenti: nema zamrzavanja koda (`CLAUDE.md`, `PLAN-24H.md`, glavni plan; ADR-031) |
+| [#182](https://github.com/leonkreso784-bit/riihack/pull/182) | 21:20 | Leon | dokumentacija: odluke ADR-037 do 041, BUG-013 |
 | [#181](https://github.com/leonkreso784-bit/riihack/pull/181) | 21:15 | Leon | dokumentacija: L16 ekrani, S12, L18 |
 | [#177](https://github.com/leonkreso784-bit/riihack/pull/177) | 21:11 | Leon | L18: poruke među hotelima (`POST /api/me/mail`, `GET /api/prof/[worldId]/mail`, ugovor `SendMailRequest`) |
 | [#169](https://github.com/leonkreso784-bit/riihack/pull/169) | 21:10 | Leon | L16 ekrani: registracija, prijava i „Moje igre" profesora (Rinov ok) |

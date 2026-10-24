@@ -6,6 +6,13 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 21:20–21:30 · bez zamrzavanja i u dokumentima, „Tokovi" ostaju na granama
+
+- **Spojeno:** dokumentacija #182 (21:20); Rinov #180 (21:22): `CLAUDE.md`,
+  `PLAN-24H.md` i glavni plan pišu da zamrzavanja nema ([ADR-031](DECISIONS.md#adr-031) zatvoren).
+- **Odluka (Leon, ~21:30, Simonu):** Simonovi #174 i #179 (skice „Tokovi") ne idu u `main`, grane ostaju za slajdove;
+  #176 (popravci iz revizije) ide normalno ([ADR-038](DECISIONS.md#adr-038)).
+
 ## Sub 24.10. ~21:15 · odluke za kraj: redoslijed, demo, javni podaci
 
 - **Odluke (Leon, preko graditelja):** integrator sam spaja aditivne dodatke ugovoru iz plana vala 3
