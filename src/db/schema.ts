@@ -254,6 +254,21 @@ export const mail = pgTable(
   (t) => [index("mail_to_company_created_idx").on(t.toCompanyId, t.createdAt)],
 );
 
+// L17: profesorova knjižnica situacija (na računu, ne u igri); kopira se u igru kao custom situacija.
+export const librarySituations = pgTable(
+  "library_situations",
+  {
+    id: text("id").primaryKey(), // "lib-…"
+    ownerId: text("owner_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    source: text("source").notNull(), // "custom" | "ai"
+    template: jsonb("template").$type<SituationTemplate>().notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index("library_situations_owner_created_idx").on(t.ownerId, t.createdAt)],
+);
+
 export type WorldRow = typeof worlds.$inferSelect;
 export type CompanyRow = typeof companies.$inferSelect;
 export type PlayerRow = typeof players.$inferSelect;
@@ -268,3 +283,4 @@ export type ContractRow = typeof contracts.$inferSelect;
 export type CustomSituationRow = typeof customSituations.$inferSelect;
 export type DispatchRow = typeof dispatches.$inferSelect;
 export type MailRow = typeof mail.$inferSelect;
+export type LibrarySituationRow = typeof librarySituations.$inferSelect;
