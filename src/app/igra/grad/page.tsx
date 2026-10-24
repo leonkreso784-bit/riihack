@@ -24,10 +24,14 @@ export default function CityPage() {
         <PageHeader title="Grad" subtitle="Svi hoteli i gradske tvrtke na jednoj karti. Turisti biraju između svih hotela." />
       </div>
       <Panel title="Grad" pad="sm">
-        <div className="relative">
-          <CityBoard city={data.city} youId={data.company.id} profiles={profiles} selectedId={selectedId} onSelect={setSelectedId} />
+        <div className="relative lg:flex lg:items-stretch lg:gap-4">
+          <div className="min-w-0 flex-1">
+            <CityBoard city={data.city} youId={data.company.id} profiles={profiles} selectedId={selectedId} onSelect={setSelectedId} />
+          </div>
           {selectedId && profiles[selectedId] && (
-            <CompanyCard profile={profiles[selectedId]} all={Object.values(profiles)} district={lots[selectedId] ? districtById(lots[selectedId].district).name : "Stara luka"} onClose={() => setSelectedId(undefined)} />
+            <div className="contents lg:relative lg:block lg:w-[380px] lg:shrink-0">
+              <CompanyCard profile={profiles[selectedId]} district={lots[selectedId] ? districtById(lots[selectedId].district).name : "Stara luka"} onClose={() => setSelectedId(undefined)} />
+            </div>
           )}
         </div>
       </Panel>

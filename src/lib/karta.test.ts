@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, allocateLots, bonitet, businessLots, districtOfPlace, fmtDec, growth, hotelHeight, rank, reviewsCount, score, simId, terrainCell, word } from "./karta";
+import type { MeResponse } from "./types";
+import type { CompanyPublicView } from "./karta";
+import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, allocateLots, bonitet, businessLots, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, rank, reviewsCount, score, simId, terrainCell, word } from "./karta";
 
 describe("ocjena gostiju", () => {
   it("score = 5 + reviews / 20", () => {
@@ -43,15 +45,74 @@ describe("rast i rang", () => {
     expect(growth([{ revenue: 1 }])).toBeNull();
     expect(growth([{ revenue: 0 }, { revenue: 5 }])).toBeNull();
   });
-  it("rang po prihodu zadnjeg mjeseca", () => {
-    const ps = [
-      { id: "a", months: [{ revenue: 100 }] },
-      { id: "b", months: [{ revenue: 300 }] },
-      { id: "c", months: [] },
+  it("rang po napretku, isti napredak razrješava novac", () => {
+    const rows = [
+      { id: "a", progress: 5, cash: 100 },
+      { id: "b", progress: 9, cash: 50 },
+      { id: "c", progress: 5, cash: 300 },
     ];
-    expect(rank("b", ps)).toBe(1);
-    expect(rank("a", ps)).toBe(2);
-    expect(rank("c", ps)).toBe(3);
+    expect(rank("b", rows)).toBe(1);
+    expect(rank("c", rows)).toBe(2);
+    expect(rank("a", rows)).toBe(3);
+  });
+});
+
+const row = (companyId: string, place: string, progress: number, cash: number) => ({ companyId, hotelName: `Hotel ${companyId}`, playerName: `Igrač ${companyId}`, place, progress, closedRound: 1, cash, roundGain: 2 });
+const me = {
+  company: { id: "me", hotelName: "Moj", playerName: "Ja", place: "Rijeka", stars: 4, roomsCount: 12, startCash: 20000, cash: 25000, metrics: { guests: 70, reviews: 80, staff: 60, operations: 65, finance: 50 }, templateId: "nepoznat" },
+  plan: { round: 2, price: 99, marketing: 0 },
+  finances: [{ round: 1, nights: 100, contractNights: 0, capacityNights: 300, occupancyPct: 60, marketSharePct: 12, revenue: 9000, costs: 7000, profit: 2000, cashAfter: 25000 }],
+  contracts: [],
+  leaderboard: [],
+  city: {
+    businesses: [{ id: "b-adria", name: "Agencija Adria", kind: "agency", description: "" }],
+    links: [{ companyId: "o1", businessId: "b-adria" }],
+    hotels: [row("me", "Rijeka", 4, 25000), row("o1", "Opatija", 8, 12000), row("o2", "Rab", 1, -300)],
+  },
+} as unknown as MeResponse;
+
+describe("profili: samo pravi podaci", () => {
+  const ps = profilesFromMe(me);
+  it("tuđi hotel nema cijenu, ocjene ni financije, ali ima stvarne podatke", () => {
+    const o = ps.o1;
+    expect(o.isYou).toBe(false);
+    expect(o.detail).toBeNull();
+    expect(o.cash).toBe(12000);
+    expect(o.progress).toBe(8);
+    expect(o.roundGain).toBe(2);
+    expect(o.stars).toBeGreaterThan(0);
+    expect(o.rooms).toBeGreaterThan(0);
+    expect(o.staff).toBeGreaterThan(0);
+    expect(o.startCash).toBeGreaterThan(0);
+    expect(o.partners).toEqual([{ name: "Agencija Adria", kind: "agency" }]);
+  });
+  it("rang po napretku s ljestvice", () => {
+    expect(ps.o1.rank).toBe(1);
+    expect(ps.me.rank).toBe(2);
+    expect(ps.o2.rank).toBe(3);
+  });
+  it("blokada = novac ispod nule", () => {
+    expect(ps.o2.cash).toBeLessThan(0);
+  });
+  it("tvoj hotel ima puni detalj iz plana i financija", () => {
+    const d = ps.me.detail!;
+    expect(ps.me.isYou).toBe(true);
+    expect(d.price).toBe(99);
+    expect(d.share).toBe(12);
+    expect(d.months).toHaveLength(1);
+    expect(d.metrics!.reviews).toBe(80);
+  });
+  it("javni profil (L14) popunjava detalj tuđeg hotela", () => {
+    const pub = { companyId: "o1", hotelName: "Hotel o1", playerName: "Igrač o1", place: "Opatija", stars: 4, roomsCount: 17, price: 120, reviews: 70, guests: 60, occupancyPct: 66, staffByDepartment: { management: 2, reception: 3, housekeeping: 0, maintenance: 1, kitchen: 2 }, contracts: [] } as unknown as CompanyPublicView;
+    const withPub = profilesFromMe(me, { o1: pub });
+    expect(withPub.o1.detail).toMatchObject({ price: 120, reviews: 70, guests: 60, occupancyPct: 66, months: null });
+    expect(withPub.o1.staff).toBe(8);
+    expect(withPub.o1.staffByDept.housekeeping).toBeUndefined();
+    expect(withPub.o2.detail).toBeNull();
+  });
+  it("determinističan SIM id po poretku na ljestvici", () => {
+    expect(ps.me.simId).toBe("SIM-0001");
+    expect(ps.o1.simId).toBe("SIM-0002");
   });
 });
 

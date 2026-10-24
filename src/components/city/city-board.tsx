@@ -20,22 +20,24 @@ const ROOF = 22;
 const S_H = HOTEL_HALF;
 const S_B = 0.44;
 const BIZ_H = 28;
-const ZOOM = { w: 620, h: 700 };
+const ZOOM = { w: 620, h: 700 }; // mobitel
+const ZOOM_WIDE = { w: 1000, h: 860 }; // stolno računalo: uži stupac uz karticu, a ploča ostaje čitljiva
 
 const poly = (a: number[][], fill: string, extra?: React.SVGProps<SVGPolygonElement>) => <polygon points={pt(a)} fill={fill} {...extra} />;
 
 // ---------- animacija visine ----------
-function useReducedMotion() {
+function useMedia(query: string) {
   return useSyncExternalStore(
     (cb) => {
-      const m = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const m = window.matchMedia(query);
       m.addEventListener("change", cb);
       return () => m.removeEventListener("change", cb);
     },
-    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => window.matchMedia(query).matches,
     () => false,
   );
 }
+const useReducedMotion = () => useMedia("(prefers-reduced-motion: reduce)");
 
 const easeOut = (t: number) => 1 - Math.pow(1 - t, 3) + Math.sin(t * Math.PI) * 0.04;
 
@@ -372,6 +374,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
     return () => ro.disconnect();
   }, []);
   const compact = width > 0 && width < 640;
+  const ZOOM_NOW = useMedia("(min-width: 1024px)") ? ZOOM_WIDE : ZOOM;
 
   // Raspored: parcele hotela i tvrtki iz javnih podataka.
   const lots = useMemo(() => allocateLots(city.hotels), [city.hotels]);
@@ -460,9 +463,10 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   const close = compact && zoomed;
   let vb = `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`;
   if (close) {
-    const x0 = Math.min(Math.max(fp[0] - ZOOM.w / 2 + pan.x, VIEW.x - 80), VIEW.x + VIEW.w - ZOOM.w + 80);
-    const y0 = Math.min(Math.max(fp[1] - ZOOM.h * (selectedId ? 0.3 : 0.5) + pan.y, VIEW.y - 60), VIEW.y + VIEW.h - ZOOM.h + 60);
-    vb = `${x0.toFixed(1)} ${y0.toFixed(1)} ${ZOOM.w} ${ZOOM.h}`;
+    const wide = ZOOM_NOW === ZOOM_WIDE;
+    const x0 = Math.min(Math.max((wide ? CX : fp[0]) - ZOOM_NOW.w / 2 + pan.x, VIEW.x - 80), VIEW.x + VIEW.w - ZOOM_NOW.w + 80);
+    const y0 = Math.min(Math.max((wide ? VIEW.y + VIEW.h / 2 : fp[1]) - ZOOM_NOW.h * (!wide && selectedId ? 0.3 : 0.5) + pan.y, VIEW.y - 60), VIEW.y + VIEW.h - ZOOM_NOW.h + 60);
+    vb = `${x0.toFixed(1)} ${y0.toFixed(1)} ${ZOOM_NOW.w} ${ZOOM_NOW.h}`;
   }
 
   const down = (e: React.PointerEvent) => {
@@ -473,7 +477,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   const move = (e: React.PointerEvent) => {
     const d = drag.current;
     if (!d || !box.current) return;
-    const k = ZOOM.w / box.current.clientWidth;
+    const k = ZOOM_NOW.w / box.current.clientWidth;
     const ddx = e.clientX - d.x, ddy = e.clientY - d.y;
     if (!d.moved && Math.hypot(ddx, ddy) < 6) return;
     d.moved = true;
@@ -502,7 +506,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
     <div className="space-y-2">
       <div
         ref={box}
-        className={cn("cb relative isolate aspect-[620/700] overflow-hidden rounded-[var(--radius)] border md:aspect-[1274/860] md:max-h-[82vh]", !on.h && "cb-hide-h", !on.b && "cb-hide-b", !on.c && "cb-hide-c")}
+        className={cn("cb relative isolate overflow-hidden rounded-[var(--radius)] border", compact ? "aspect-[620/700] lg:aspect-[1000/860]" : "aspect-[620/700] md:aspect-[1274/860] md:max-h-[82vh]", !on.h && "cb-hide-h", !on.b && "cb-hide-b", !on.c && "cb-hide-c")}
         style={{ background: "radial-gradient(ellipse at 55% 45%,#fff 0,#f5f8fd 55%,#e9f0fb 100%)", touchAction: close ? "none" : "auto" }}
         onPointerDown={down}
         onPointerMove={move}
@@ -510,7 +514,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
         onPointerCancel={up}
       >
         <style>{CSS}</style>
-        <div className={cn("absolute inset-0 transition-[padding] duration-300 md:pl-0", selectedId && "md:pl-[200px]")}>
+        <div className="absolute inset-0">
           <svg viewBox={vb} preserveAspectRatio="xMidYMid meet" role="group" aria-label="Karta grada Simpolis" onClick={() => !dragged.current && onSelect(undefined)}>
             <g dangerouslySetInnerHTML={{ __html: DEFS }} />
             <g className="cb-cloud" opacity=".9" filter="url(#cb-bl2)"><ellipse cx="170" cy="120" rx="80" ry="18" fill="#fff" /><ellipse cx="215" cy="104" rx="50" ry="16" fill="#fff" /></g>
@@ -529,7 +533,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
                 const h: LeaderboardRow = hotelById.get(it.id)!;
                 const [ax, ay] = lots[h.companyId].slot;
                 const prof = profiles[h.companyId];
-                const pct = prof?.months.at(-1)?.occupancyPct ?? h.progress;
+                const pct = prof?.detail?.occupancyPct ?? 55;
                 return <Hotel key={`h-${h.companyId}`} id={h.companyId} name={h.hotelName} ax={ax} ay={ay} ht={hOf(h.companyId)} rows={rowsOf(h.cash, maxCash)} tone={h.companyId === youId ? "me" : inBlockade(h.cash) ? "blk" : "h"} litPct={pct} selected={selectedId === h.companyId} onSelect={select} onHover={hover} />;
               })}
             </g>
@@ -547,7 +551,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
               {chipOrder.map((h) => {
                 const own = h.companyId === youId;
                 const [tx, ty] = topOf(h.companyId);
-                const g = profiles[h.companyId] ? growth(profiles[h.companyId].months) : null;
+                const g = growth(profiles[h.companyId]?.detail?.months ?? []);
                 return <Chip key={h.companyId} id={h.companyId} x={tx} y={ty - (own ? 72 : 36) - 17} name={h.hotelName} pct={g} own={own} hot={selectedId === h.companyId} shown={shownIds.has(h.companyId)} onSelect={select} />;
               })}
             </g>
@@ -570,7 +574,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
         </div>
 
         <div className={cn("pointer-events-none absolute left-3 right-3 top-3 z-10 flex flex-wrap items-center gap-1.5", selectedId && "max-md:hidden")}>
-          <div className={cn("pointer-events-auto hidden rounded-full bg-card px-3.5 py-1.5 text-[13px] shadow-card md:block", selectedId && "md:invisible")}>
+          <div className="pointer-events-auto hidden rounded-full bg-card px-3.5 py-1.5 text-[13px] shadow-card md:block">
             <b>Simpolis</b> <span className="text-muted-foreground">· {hotelsN} {hotelsN === 1 ? "hotel" : "hotela"}</span>
           </div>
           {LAYERS.map(([k, label]) => (
@@ -584,12 +588,12 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
             {zoomed ? "Cijeli grad" : "Približi"}
           </button>
         )}
-        <Legend className="absolute bottom-3 right-3 z-10 hidden rounded-xl bg-card px-3 py-2 shadow-card md:block" />
-        <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-night px-4 py-2 text-[13px] font-semibold text-white shadow-lift lg:block" style={{ left: "58%" }}>
+        <Legend className={cn("absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2 shadow-card", compact ? "hidden" : "hidden md:block")} />
+        <div className={cn("pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-night px-4 py-2 text-[13px] font-semibold text-white shadow-lift", !compact && "lg:block")}>
           Klikni hotel za karticu
         </div>
       </div>
-      <Legend className="flex flex-wrap gap-x-4 px-1 md:hidden [&>div]:my-0" />
+      <Legend className={cn("flex-wrap gap-x-4 px-1 [&>div]:my-0", compact ? "flex" : "flex md:hidden")} />
     </div>
   );
 }

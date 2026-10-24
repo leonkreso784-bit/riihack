@@ -1,30 +1,45 @@
-// Skica "Karta Kvarnera": čiste pomoćne funkcije i javni profil hotela.
-// PublicProfile je PRIJEDLOG za Leonov ugovor (nije u types.ts): kad ruta GET /api/world/companies/[id]
-// postoji, profilesFromMe se zamjenjuje pravim podacima. Do tada su podaci tuđih hotela UZORAK (polje `sample`).
+// Karta grada: čiste pomoćne funkcije i javni profil hotela.
+// Za tuđe hotele prikazujemo samo ono što API stvarno daje (ljestvica, grad, predložak hotela).
+// Cijena, ocjene, popunjenost i financije tuđih hotela dolaze tek kad stigne Leonov javni profil (L14): `detail`.
 import { HOTELS } from "@/content";
 import type { BusinessKind, HotelTemplate, StaffDepartment, CityBusiness, LeaderboardRow, MeResponse, Metrics } from "./types";
 
 export type ProfileMonth = { round: number; revenue: number; costs: number; nights: number; occupancyPct: number };
+
+// Lokalna kopija Leonova tipa iz grane leon/L14-javni-profil (ista imena polja), vraća ga
+// GET /api/world/[worldId]/companies. zamijeniti uvozom iz types.ts kad L14 stigne
+export type CompanyPublicView = { companyId: string; hotelName: string; playerName: string; place: string; stars: number; roomsCount: number; price: number; reviews: number; guests: number; occupancyPct?: number; staffByDepartment: Record<StaffDepartment, number>; contracts: { businessId: string; businessName: string; title: string }[] };
+
+// Detalji (cijena, ocjene, popunjenost): za tvoj hotel puni (s financijama), za tuđe samo iz javnog profila.
+export type ProfileDetail = {
+  price: number;
+  reviews: number;
+  guests: number;
+  occupancyPct: number | null; // zadnji obračunati mjesec
+  metrics: Metrics | null; // samo tvoj hotel
+  share: number | null; // samo tvoj hotel
+  months: ProfileMonth[] | null; // samo tvoj hotel (financije zatvorenih mjeseci)
+};
+
 export type PublicProfile = {
   id: string;
   name: string;
   student: string;
   place: string;
-  stars: number;
-  rooms: number;
-  staff: number; // pravi broj zaposlenih iz predloška hotela
+  stars: number | null; // null = nepoznat predložak
+  rooms: number | null;
+  staff: number | null;
   staffByDept: Partial<Record<StaffDepartment, number>>;
-  metrics: Metrics;
-  price: number; // cijena po noći iz plana tekućeg mjeseca
   cash: number;
-  startCash: number;
-  share: number; // tržišni udio %, zadnji zatvoreni mjesec
-  months: ProfileMonth[]; // samo zatvoreni mjeseci
+  startCash: number | null; // početni novac iz predloška
+  progress: number;
+  roundGain: number;
+  closedRound: number;
+  rank: number; // rang po napretku na ljestvici (1 = najbolji)
   partners: { name: string; kind: BusinessKind }[];
   simId: string;
   isYou: boolean;
-  // true = vrijednost nije stvarna nego uzorak (API još ne daje javni profil tuđih hotela)
-  sample: { profile: boolean; ratings: boolean; price: boolean; finance: boolean };
+  detail: ProfileDetail | null;
 };
 
 export const MONTHS = ["lipanj", "srpanj", "kolovoz", "rujan", "listopad", "studeni"];
@@ -163,62 +178,26 @@ export function bonitet(cash: number, startCash: number, lastProfit: number | nu
   return { grade: "C", text: "Niže: posluje s gubitkom", tone: "down" };
 }
 
-// Rang po prihodu zadnjeg zatvorenog mjeseca (1 = najbolji); tvrtke bez mjeseca računaju se s 0.
-export function rank(id: string, profiles: { id: string; months: { revenue: number }[] }[]): number {
-  const rev = (p: { months: { revenue: number }[] }) => p.months.at(-1)?.revenue ?? 0;
-  const sorted = [...profiles].sort((a, b) => rev(b) - rev(a));
+// Rang po napretku na ljestvici (1 = najbolji); isti napredak razrješava novac na računu.
+export function rank(id: string, rows: { id: string; progress: number; cash: number }[]): number {
+  const sorted = [...rows].sort((a, b) => b.progress - a.progress || b.cash - a.cash);
   return sorted.findIndex((p) => p.id === id) + 1;
 }
 
 export const simId = (index: number) => `SIM-${String(index + 1).padStart(4, "0")}`;
 
 // ---- profili ----
-const hash = (s: string, salt = 0) => [...s].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7 + salt * 131);
-const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
-
 // Predložak hotela: po templateId, inače po mjestu (jedan predložak po mjestu).
 function templateFor(templateId: string | undefined, place: string): HotelTemplate | undefined {
   return HOTELS.find((t) => t.id === templateId) ?? HOTELS.find((t) => t.place === place || t.place.startsWith(place) || place.startsWith(t.place));
 }
-const staffInfo = (t?: HotelTemplate, fallback = 0) => {
+const staffInfo = (t?: HotelTemplate) => {
   const by: Partial<Record<StaffDepartment, number>> = {};
   for (const m of t?.staff ?? []) by[m.department] = (by[m.department] ?? 0) + 1;
-  return { staff: t?.staff.length ?? fallback, staffByDept: by };
+  return { staff: t ? t.staff.length : null, staffByDept: by };
 };
 
-function sampleProfile(row: LeaderboardRow, index: number, startCash: number): PublicProfile {
-  const h = (salt: number, mod: number) => hash(row.companyId, salt) % mod;
-  const tpl = templateFor(undefined, row.place);
-  const stars = tpl?.stars ?? 2 + h(1, 3);
-  const rooms = tpl?.rooms.length ?? 10 + h(2, 9);
-  const metric = (salt: number) => clamp(48 + h(salt, 26) + Math.round(row.progress * 1.5), 25, 95);
-  const months: ProfileMonth[] = Array.from({ length: Math.max(row.closedRound, 0) }, (_, i) => {
-    const occupancyPct = clamp(42 + h(3, 24) + i * 5 + Math.round(row.progress), 30, 92);
-    const nights = Math.round((occupancyPct * rooms * 30) / 100);
-    return { round: i + 1, revenue: 8000 + h(4, 5000) + stars * 1500 + i * 1800 + row.progress * 300, costs: 10000 + h(5, 3500) + stars * 700, nights, occupancyPct };
-  });
-  return {
-    id: row.companyId,
-    name: row.hotelName,
-    student: row.playerName,
-    place: row.place,
-    stars,
-    rooms,
-    ...staffInfo(tpl, rooms),
-    metrics: { guests: metric(6), reviews: metric(7), staff: metric(8), operations: metric(9), finance: metric(10) },
-    price: 50 + stars * 14 + h(11, 20),
-    cash: row.cash,
-    startCash,
-    share: 10 + h(12, 16),
-    months,
-    partners: [],
-    simId: simId(index),
-    isYou: false,
-    sample: { profile: !tpl, ratings: true, price: true, finance: true },
-  };
-}
-
-export function profilesFromMe(me: MeResponse): Record<string, PublicProfile> {
+export function profilesFromMe(me: MeResponse, publicViews: Record<string, CompanyPublicView> = {}): Record<string, PublicProfile> {
   const out: Record<string, PublicProfile> = {};
   const bizById = new Map(me.city.businesses.map((b) => [b.id, b]));
   const partnersOf = (id: string) =>
@@ -228,19 +207,45 @@ export function profilesFromMe(me: MeResponse): Record<string, PublicProfile> {
         const b = bizById.get(l.businessId);
         return b ? [{ name: b.name, kind: b.kind }] : [];
       });
+  const rows = me.city.hotels.map((h) => ({ id: h.companyId, progress: h.progress, cash: h.cash }));
+  const rankOf = (id: string) => rank(id, rows);
 
   me.city.hotels.forEach((row, i) => {
-    out[row.companyId] = row.companyId === me.company.id ? ownProfile(me, i, partnersOf(row.companyId)) : { ...sampleProfile(row, i, me.company.startCash), partners: partnersOf(row.companyId) };
+    out[row.companyId] = row.companyId === me.company.id ? ownProfile(me, i, partnersOf(row.companyId), rankOf(row.companyId)) : otherProfile(row, i, partnersOf(row.companyId), rankOf(row.companyId), publicViews[row.companyId]);
   });
-  if (!out[me.company.id]) out[me.company.id] = ownProfile(me, me.city.hotels.length, partnersOf(me.company.id));
+  if (!out[me.company.id]) out[me.company.id] = ownProfile(me, me.city.hotels.length, partnersOf(me.company.id), 0);
   return out;
 }
 
-function ownProfile(me: MeResponse, index: number, linked: { name: string; kind: BusinessKind }[]): PublicProfile {
+function otherProfile(row: LeaderboardRow, index: number, partners: PublicProfile["partners"], rankNo: number, pub?: CompanyPublicView): PublicProfile {
+  const tpl = templateFor(undefined, row.place);
+  const staff = pub ? { staff: Object.values(pub.staffByDepartment).reduce((a, n) => a + n, 0), staffByDept: Object.fromEntries(Object.entries(pub.staffByDepartment).filter(([, n]) => n > 0)) as PublicProfile["staffByDept"] } : staffInfo(tpl);
+  return {
+    id: row.companyId,
+    name: row.hotelName,
+    student: row.playerName,
+    place: row.place,
+    stars: pub?.stars ?? tpl?.stars ?? null,
+    rooms: pub?.roomsCount ?? tpl?.rooms.length ?? null,
+    ...staff,
+    cash: row.cash,
+    startCash: tpl?.startCash ?? null,
+    progress: row.progress,
+    roundGain: row.roundGain,
+    closedRound: row.closedRound,
+    rank: rankNo,
+    partners,
+    simId: simId(index),
+    isYou: false,
+    detail: pub ? { price: pub.price, reviews: pub.reviews, guests: pub.guests, occupancyPct: pub.occupancyPct ?? null, metrics: null, share: null, months: null } : null,
+  };
+}
+
+function ownProfile(me: MeResponse, index: number, linked: PublicProfile["partners"], rankNo: number): PublicProfile {
   const c = me.company;
   const partners = [...linked];
   for (const k of me.contracts) if (k.status === "accepted" && !partners.some((p) => p.name === k.businessName)) partners.push({ name: k.businessName, kind: k.businessKind });
-  const share = me.finances.at(-1)?.marketSharePct ?? 0;
+  const mine = me.city.hotels.find((h) => h.companyId === c.id) ?? me.leaderboard.find((h) => h.companyId === c.id);
   return {
     id: c.id,
     name: c.hotelName,
@@ -248,16 +253,24 @@ function ownProfile(me: MeResponse, index: number, linked: { name: string; kind:
     place: c.place,
     stars: c.stars,
     rooms: c.roomsCount,
-    ...staffInfo(templateFor(c.templateId, c.place), c.roomsCount),
-    metrics: c.metrics,
-    price: me.plan.price,
+    ...staffInfo(templateFor(c.templateId, c.place)),
     cash: c.cash,
     startCash: c.startCash,
-    share,
-    months: me.finances.map((f) => ({ round: f.round, revenue: f.revenue, costs: f.costs, nights: f.nights, occupancyPct: f.occupancyPct })),
+    progress: mine?.progress ?? 0,
+    roundGain: mine?.roundGain ?? 0,
+    closedRound: mine?.closedRound ?? 0,
+    rank: rankNo,
     partners,
     simId: simId(index),
     isYou: true,
-    sample: { profile: false, ratings: false, price: false, finance: false },
+    detail: {
+      price: me.plan.price,
+      reviews: c.metrics.reviews,
+      guests: c.metrics.guests,
+      occupancyPct: me.finances.at(-1)?.occupancyPct ?? null,
+      metrics: c.metrics,
+      share: me.finances.at(-1)?.marketSharePct ?? 0,
+      months: me.finances.map((f) => ({ round: f.round, revenue: f.revenue, costs: f.costs, nights: f.nights, occupancyPct: f.occupancyPct })),
+    },
   };
 }
