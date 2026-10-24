@@ -7,12 +7,16 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#104](https://github.com/leonkreso784-bit/riihack/pull/104) | 17:12 | Leon | L12: profesor mijenja ocjenu mentora |
+| [#103](https://github.com/leonkreso784-bit/riihack/pull/103) | 17:10 | Leon | L8: demo igra (`npm run seed:demo`) |
+| [#100](https://github.com/leonkreso784-bit/riihack/pull/100) | 17:09 | Leon | L12: playbook, izvoz i uvoz profesorovih situacija |
 | [#79](https://github.com/leonkreso784-bit/riihack/pull/79) | 15:20 | Simon | S4: sokratski mentor (pitanje i osvrt) |
 
 ## M2 · Obilazak 2 (u tijeku, rok sub 18:45)
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#112](https://github.com/leonkreso784-bit/riihack/pull/112) | 17:14 | Leon | dokumentacija: val M2, uvod za novu sesiju |
 | [#95](https://github.com/leonkreso784-bit/riihack/pull/95) | 17:06 | Leon | L12: profesorove situacije, slanje odabranima, izbor iz banke |
 | [#109](https://github.com/leonkreso784-bit/riihack/pull/109) | 17:04 | Simon | S8: sučelje za profesorove situacije i slanje |
 | [#108](https://github.com/leonkreso784-bit/riihack/pull/108) | 17:02 | Rino | R6: profesorova ploča uživo |
