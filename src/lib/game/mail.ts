@@ -1,16 +1,16 @@
-// Pošta (L15): e-mail ponude agencije, protuponuda hotela i odgovor agencije. Poruke među hotelima (L18) dodaju
-// `sendMail` ovdje i pišu kroz isti `mailValues` / `insertMail`.
+// Pošta (L15): e-mail ponude agencije, protuponuda hotela i odgovor agencije. Poruke među hotelima (L18):
+// `sendMail` (hotel → hotel iste igre) i `loadWorldMail` (profesor vidi sve poruke među hotelima).
 import { and, count, desc, eq, isNull, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { isUuid, listCompanies } from "@/db/queries";
-import { contracts, mail } from "@/db/schema";
+import { contracts, events, mail } from "@/db/schema";
 import type { MailRow } from "@/db/schema";
 import { CITY } from "@/content";
 import { agencyReply } from "@/lib/ai";
 import { eur } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import { MAIL_BODY_MAX, MAIL_SUBJECT_MAX } from "@/lib/rules";
-import type { CityBusiness, ContractTemplate, MailKind, MailMessage, NegotiationOutcome } from "@/lib/types";
+import type { CityBusiness, ContractTemplate, MailKind, MailMessage, NegotiationOutcome, SendMailRequest } from "@/lib/types";
 
 export const MAIL_LIMIT = 30;
 type Terms = Pick<ContractTemplate, "nights" | "pricePerNight" | "monthlyCost">;
@@ -108,6 +108,19 @@ export function toMailMessage(row: MailRow, me: string, names: Record<string, st
   };
 }
 
+/** Provjera poruke drugom hotelu (L18): oblik, naslov 1–80, tekst 1–1000 znakova, ne samom sebi. `null` = ispravno. */
+export function sendMailError(r: SendMailRequest, me: string): string | null {
+  if (typeof r.toCompanyId !== "string" || r.toCompanyId === "") return "Odaberi hotel kojem pišeš";
+  if (r.toCompanyId === me) return "Ne možeš pisati sam sebi";
+  if (typeof r.subject !== "string" || r.subject.trim() === "" || r.subject.trim().length > MAIL_SUBJECT_MAX) {
+    return `Naslov mora imati od 1 do ${MAIL_SUBJECT_MAX} znakova`;
+  }
+  if (typeof r.body !== "string" || r.body.trim() === "" || r.body.trim().length > MAIL_BODY_MAX) {
+    return `Tekst mora imati od 1 do ${MAIL_BODY_MAX} znakova`;
+  }
+  return null;
+}
+
 // ---------- Baza ----------
 
 export type NewMail = typeof mail.$inferInsert;
@@ -202,4 +215,57 @@ export async function markMailRead(companyId: string, mailId: string): Promise<{
     .limit(1);
   if (!own) throw new HttpError(404, "Poruka nije pronađena");
   return { ok: true };
+}
+
+type MailCtx = { world: { id: string; status: string; round: number }; company: { id: string } };
+
+/**
+ * POST /api/me/mail (L18): poruka hotelu iste igre, nova nit. Događaj `mail.sent` bez teksta (vijesti ga ne
+ * prikazuju). 400 oblik ili duljina, 404 hotel nije u ovoj igri, 409 igra nije u tijeku.
+ */
+export async function sendMail(ctx: MailCtx, r: SendMailRequest): Promise<MailMessage> {
+  const error = sendMailError(r, ctx.company.id);
+  if (error) throw new HttpError(400, error);
+  if (ctx.world.status !== "running") throw new HttpError(409, "Igra nije u tijeku");
+  const all = await listCompanies(ctx.world.id);
+  if (!all.some(({ company }) => company.id === r.toCompanyId)) throw new HttpError(404, "Hotel nije pronađen");
+  const id = crypto.randomUUID();
+  const [[row]] = await db.batch([
+    db
+      .insert(mail)
+      .values({
+        id,
+        worldId: ctx.world.id,
+        threadId: crypto.randomUUID(),
+        kind: "hotel",
+        fromCompanyId: ctx.company.id,
+        toCompanyId: r.toCompanyId,
+        subject: r.subject.trim(),
+        body: r.body.trim(),
+      })
+      .returning(),
+    db.insert(events).values({
+      worldId: ctx.world.id,
+      companyId: ctx.company.id,
+      round: ctx.world.round,
+      type: "mail.sent",
+      payload: { mailId: id, toCompanyId: r.toCompanyId },
+    }),
+  ]);
+  const names = Object.fromEntries(all.map(({ company }) => [company.id, company.name]));
+  return toMailMessage(row, ctx.company.id, names);
+}
+
+/** GET /api/prof/[worldId]/mail (L18): sve poruke među hotelima igre, najnovije prvo (`mine` je uvijek false). */
+export async function loadWorldMail(worldId: string): Promise<MailMessage[]> {
+  const [rows, all] = await Promise.all([
+    db
+      .select()
+      .from(mail)
+      .where(and(eq(mail.worldId, worldId), eq(mail.kind, "hotel")))
+      .orderBy(desc(mail.createdAt), desc(mail.id)),
+    listCompanies(worldId),
+  ]);
+  const names = Object.fromEntries(all.map(({ company }) => [company.id, company.name]));
+  return rows.map((r) => toMailMessage(r, "", names));
 }
