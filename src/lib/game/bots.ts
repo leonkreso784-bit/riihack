@@ -267,22 +267,52 @@ async function playOneBot(world: WorldRow, round: number, entry: Entry, botIndex
   }
 }
 
+/** Koliko botova igra istodobno: dovoljno za brzinu, a neon-http i ograničenja Neona ostaju na miru. */
+export const BOT_CONCURRENCY = 5;
+
+/**
+ * Pokreće `task` nad stavkama s najviše `limit` istodobnih poziva. Neuspjeh jedne stavke ne zaustavlja ostale
+ * (kao Promise.allSettled); rezultati su u redoslijedu ulaza, neovisno o tome koja je završila prva.
+ */
+export async function settlePool<T, R>(
+  items: readonly T[],
+  limit: number,
+  task: (item: T, index: number) => Promise<R>,
+): Promise<PromiseSettledResult<R>[]> {
+  const results: PromiseSettledResult<R>[] = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const i = next++;
+      try {
+        results[i] = { status: "fulfilled", value: await task(items[i], i) };
+      } catch (reason) {
+        results[i] = { status: "rejected", reason };
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: Math.max(1, Math.min(limit, items.length)) }, worker));
+  return results;
+}
+
 /**
  * Prije zatvaranja mjeseca `round`: svaki bot postavi plan (ako ga nema), odgovori na otvorene situacije i odluči o
- * ponudama ugovora. Svaki bot i svaki korak su u try/catch: jedan pokvaren bot nikad ne smije zaustaviti zatvaranje mjeseca.
+ * ponudama ugovora. Botovi igraju paralelno (najviše BOT_CONCURRENCY odjednom): svaki bot čita i piše samo retke
+ * svoje tvrtke (plan, situacije, odgovori, sobe, ponude ugovora, događaji), a indeks bota i ponude se uzimaju iz
+ * snimke prije paralelne faze, pa ishod ne ovisi o redoslijedu završetka. Jedan pokvaren bot nikad ne smije
+ * zaustaviti zatvaranje mjeseca; obračun (pozivatelj) kreće tek kad svi završe.
  */
 export async function playBots(world: WorldRow, round: number): Promise<void> {
   try {
     const bots = (await listCompanies(world.id)).filter((c) => c.company.kind === BOT_KIND);
     if (bots.length === 0) return;
     const offered = (await listWorldContracts(world.id)).filter((c) => c.roundOffered === round && c.status === "offered");
-    for (const [i, entry] of bots.entries()) {
-      try {
-        await playOneBot(world, round, entry, i, offered.filter((c) => c.companyId === entry.company.id));
-      } catch (err) {
-        console.error(`bot ${entry.company.id}: mjesec ${round} nije odigran`, err);
-      }
-    }
+    const results = await settlePool(bots, BOT_CONCURRENCY, (entry, i) =>
+      playOneBot(world, round, entry, i, offered.filter((c) => c.companyId === entry.company.id)),
+    );
+    results.forEach((r, i) => {
+      if (r.status === "rejected") console.error(`bot ${bots[i].company.id}: mjesec ${round} nije odigran`, r.reason);
+    });
   } catch (err) {
     console.error(`botovi: mjesec ${round} nije odigran`, err);
   }
