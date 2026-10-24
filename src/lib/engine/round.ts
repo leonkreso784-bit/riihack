@@ -6,7 +6,15 @@ function clamp(n: number, min: number, max: number): number {
   return Math.min(Math.max(n, min), max);
 }
 
-// Za svaki rezultat (kvaliteta − 3) × učinak, cijeli brojevi, rezanje na 0–100.
+/**
+ * Množitelj učinka po kvaliteti (BUG-026, Leon sub ~22:55): odgovoriti se uvijek isplati, preskočiti boli.
+ * 1 (loše ili propušteno) → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3.
+ */
+export function qualityFactor(quality: number): number {
+  return quality <= 1 ? -2 : quality - 2;
+}
+
+// Za svaki rezultat qualityFactor(kvaliteta) × učinak, cijeli brojevi, rezanje na 0–100.
 export function applyRound(
   metrics: Metrics,
   results: { quality: Quality; effects: Partial<Record<MetricKey, number>> }[],
@@ -15,7 +23,7 @@ export function applyRound(
   for (const r of results) {
     for (const k of KEYS) {
       const e = r.effects[k];
-      if (e) out[k] += Math.round((r.quality - 3) * e);
+      if (e) out[k] += Math.round(qualityFactor(r.quality) * e);
     }
   }
   for (const k of KEYS) out[k] = clamp(Math.round(out[k]), 0, 100);

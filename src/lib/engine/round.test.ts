@@ -1,18 +1,30 @@
 import { describe, expect, it } from "vitest";
 import type { Metrics } from "@/lib/types";
-import { applyRound, progress, roomStatusAfter } from "./round";
+import { applyRound, progress, qualityFactor, roomStatusAfter } from "./round";
 
 const all50: Metrics = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
 
 describe("applyRound", () => {
-  it("računa (q-3)*effect po rezultatu", () => {
+  it("množitelj po kvaliteti: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3 (BUG-026)", () => {
+    expect([1, 2, 3, 4, 5].map(qualityFactor)).toEqual([-2, 0, 1, 2, 3]);
+  });
+  it("računa množitelj × učinak po rezultatu", () => {
     const out = applyRound(all50, [
       { quality: 5, effects: { guests: 4 } },
       { quality: 1, effects: { guests: 3, finance: 2 } },
     ]);
-    expect(out.guests).toBe(52);
+    expect(out.guests).toBe(56);
     expect(out.finance).toBe(46);
     expect(out.reviews).toBe(50);
+  });
+  it("odgovor 3/5 na sve podiže pokazatelje, a propuštene ih spuštaju (BUG-026)", () => {
+    const eff = { guests: 3, staff: 4 };
+    const fair = applyRound(all50, [{ quality: 3, effects: eff }, { quality: 3, effects: eff }]);
+    expect(fair.guests).toBeGreaterThan(50);
+    expect(fair.staff).toBeGreaterThan(50);
+    const missed = applyRound(all50, [{ quality: 1, effects: eff }]);
+    expect(missed.guests).toBeLessThan(50);
+    expect(applyRound(all50, [{ quality: 2, effects: eff }])).toEqual(all50);
   });
   it("reže na 100", () => {
     expect(applyRound({ ...all50, guests: 99 }, [{ quality: 5, effects: { guests: 4 } }]).guests).toBe(100);
