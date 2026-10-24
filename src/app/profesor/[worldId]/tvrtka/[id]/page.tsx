@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import { GraduationCap } from "lucide-react";
+import { CheckCircle2, GraduationCap } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, plural } from "@/lib/format";
 import { ROUND_LABELS } from "@/lib/rules";
@@ -13,7 +13,7 @@ import { Pill, type Tone } from "@/components/pill";
 import { FormError } from "@/components/form";
 import { Delta } from "@/components/metric-bar";
 import { BackLink } from "@/components/back-link";
-import { Loading } from "@/components/loading";
+import { Dots, Loading } from "@/components/loading";
 
 const QUALITIES: Quality[] = [1, 2, 3, 4, 5];
 function how(a: AnswerView | undefined, state: SituationView["state"]): { label: string; tone: Tone } {
@@ -142,17 +142,22 @@ function Situation({ s, worldId, onChange }: { s: SituationView; worldId: string
   );
 }
 
-// "Promijeni ocjenu": the professor overrides the engine's 1–5 after reading the answer.
+// "Promijeni ocjenu": the professor picks 1–5 after reading the answer, then saves it ("Spremi ocjenu").
 function ChangeGrade({ worldId, situationId, current, onChange }: { worldId: string; situationId: string; current: Quality; onChange: () => void }) {
+  const [picked, setPicked] = useState<Quality>(current);
   const [busy, setBusy] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const dirty = picked !== current;
 
-  async function set(q: Quality) {
-    if (busy || q === current) return;
+  async function save() {
+    if (busy || !dirty) return;
     setBusy(true);
     setError(null);
     try {
-      await api.overrideQuality(worldId, situationId, q);
+      await api.overrideQuality(worldId, situationId, picked);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2500);
       onChange();
     } catch (err) {
       setError((err as Error).message);
@@ -162,25 +167,61 @@ function ChangeGrade({ worldId, situationId, current, onChange }: { worldId: str
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <fieldset className="flex flex-wrap items-center gap-2" disabled={busy}>
         <legend className="sr-only">Promijeni ocjenu</legend>
-        <span className="text-sm font-semibold text-muted-foreground">Promijeni ocjenu:</span>
+        <span aria-hidden className="text-sm font-semibold text-muted-foreground">Promijeni ocjenu:</span>
         {QUALITIES.map((q) => (
           <button
             key={q}
             type="button"
-            aria-pressed={q === current}
-            onClick={() => set(q)}
+            aria-pressed={q === picked}
+            onClick={() => {
+              setPicked(q);
+              setSaved(false);
+            }}
             className={cn(
               "size-11 rounded-xl font-bold tabular-nums transition-colors focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-60",
-              q === current ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-secondary",
+              q === picked ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-secondary",
+              q === current && dirty && "ring-2 ring-primary/40",
             )}
           >
             {q}
           </button>
         ))}
       </fieldset>
+      {dirty && (
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={save}
+            disabled={busy}
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
+          >
+            {busy ? (
+              <>
+                <Dots /> Spremam
+              </>
+            ) : (
+              `Spremi ocjenu ${picked} / 5`
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={() => setPicked(current)}
+            disabled={busy}
+            className="min-h-11 rounded-xl bg-muted px-4 font-semibold transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            Odustani
+          </button>
+          <span className="text-sm text-muted-foreground">Sad je {current} / 5.</span>
+        </div>
+      )}
+      {saved && !dirty && (
+        <p role="status" className="flex items-center gap-1.5 text-sm font-semibold text-up">
+          <CheckCircle2 className="size-4" aria-hidden /> Ocjena spremljena
+        </p>
+      )}
       {error && <FormError key={error}>{error}</FormError>}
     </div>
   );

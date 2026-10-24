@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BedDouble, Building2, Mail, Map, SlidersHorizontal, Users, Wallet } from "lucide-react";
+import { BedDouble, Building2, GraduationCap, Mail, Map, SlidersHorizontal, Users, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/strings";
 import { Wordmark } from "./site-header";
@@ -23,13 +23,20 @@ const ITEMS = [
 // Mail sits in the sidebar; on phones it is the envelope in the top bar, so the bottom bar keeps 6 tabs.
 const MAIL = { href: "/igra/posta", label: t.nav.mail, icon: Mail };
 
-// Unread mail for the badge; slower than the pages' own 3 s poll of /api/me.
-function useUnread() {
-  return usePoll(api.me, 5_000).data?.unreadMail ?? 0;
+// Unread mail and the mentor for the nav; slower than the pages' own 3 s poll of /api/me.
+// The mentor appears after the first closed month and opens the latest month's conversation; the badge says a question waits.
+function useNavState() {
+  const me = usePoll(api.me, 5_000).data;
+  const reports = me?.reports ?? [];
+  const latest = reports.reduce((m, r) => Math.max(m, r.round), 0);
+  const mentor = latest ? { href: `/igra/izvjestaj/${latest}#mentor`, label: "Mentor", icon: GraduationCap } : null;
+  const mentorWaiting = reports.some((r) => r.mentorQuestion && !r.reflection);
+  return { unread: me?.unreadMail ?? 0, mentor, mentorWaiting };
 }
 
 
 function isActive(pathname: string, href: string) {
+  if (href.startsWith("/igra/izvjestaj/")) return pathname.startsWith("/igra/izvjestaj/");
   return href === "/igra" ? pathname === href : pathname.startsWith(href);
 }
 
@@ -38,7 +45,7 @@ const focus = "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-vis
 // Game navigation: fixed sidebar with wordmark from 768 px; top bar + bottom tabs on phones.
 export function GameNav() {
   const pathname = usePathname();
-  const unread = useUnread();
+  const { unread, mentor, mentorWaiting } = useNavState();
   return (
     <>
       <header className="glass sticky top-0 z-20 -mb-2 flex h-16 items-center justify-between border-b border-white/60 px-4 md:hidden">
@@ -55,6 +62,16 @@ export function GameNav() {
             <Mail className="size-5" aria-hidden />
             {unread > 0 && <Badge n={unread} className="absolute top-1 right-1" />}
           </Link>
+          {mentor && (
+            <Link
+              href={mentor.href}
+              aria-label={mentorWaiting ? "Mentor, čeka tvoj odgovor" : "Mentor"}
+              className={cn("relative grid size-11 place-items-center rounded-xl", isActive(pathname, mentor.href) ? "gloss" : "text-secondary-foreground hover:bg-muted", focus)}
+            >
+              <GraduationCap className="size-5" aria-hidden />
+              {mentorWaiting && <Badge n={1} className="absolute top-1 right-1" />}
+            </Link>
+          )}
           <LogoutButton variant="icon" />
         </span>
       </header>
@@ -64,7 +81,7 @@ export function GameNav() {
           <Wordmark />
         </Link>
         <nav aria-label={t.nav.label}>
-          <NavList pathname={pathname} variant="side" unread={unread} />
+          <NavList pathname={pathname} variant="side" unread={unread} mentor={mentor} mentorWaiting={mentorWaiting} />
         </nav>
         <div className="mt-auto space-y-2">
           <LogoutButton />
@@ -94,9 +111,10 @@ function Badge({ n, className }: { n: number; className?: string }) {
   );
 }
 
-function NavList({ pathname, variant, unread = 0 }: { pathname: string; variant: "side" | "bottom"; unread?: number }) {
+type Item = (typeof ITEMS)[number] | { href: string; label: string; icon: typeof GraduationCap };
+function NavList({ pathname, variant, unread = 0, mentor = null, mentorWaiting = false }: { pathname: string; variant: "side" | "bottom"; unread?: number; mentor?: Item | null; mentorWaiting?: boolean }) {
   const side = variant === "side";
-  const items = side ? [...ITEMS, MAIL] : ITEMS;
+  const items: Item[] = side ? [...ITEMS, MAIL, ...(mentor ? [mentor] : [])] : ITEMS;
   return (
     <ul className={side ? "space-y-1" : "mx-auto grid max-w-md grid-cols-6"}>
       {items.map(({ href, label, icon: Icon }) => {
@@ -126,6 +144,7 @@ function NavList({ pathname, variant, unread = 0 }: { pathname: string; variant:
               </span>
               {label}
               {side && href === MAIL.href && unread > 0 && <Badge n={unread} className="ml-auto" />}
+              {side && href === mentor?.href && mentorWaiting && <Badge n={1} className="ml-auto" />}
             </Link>
           </li>
         );

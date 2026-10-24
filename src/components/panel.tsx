@@ -10,6 +10,7 @@ const PADS = { md: "p-5 md:p-6", sm: "p-4", list: "px-5 py-2 md:px-6", none: "" 
 
 // The one card surface of the app: tone and padding by prop, className only for layout.
 export function Panel({
+  id,
   title,
   action,
   tone = "plain",
@@ -17,6 +18,7 @@ export function Panel({
   className,
   children,
 }: {
+  id?: string;
   title?: string;
   action?: React.ReactNode;
   tone?: keyof typeof TONES;
@@ -25,7 +27,7 @@ export function Panel({
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn("rounded-[var(--radius)]", TONES[tone], PADS[pad], className)}>
+    <section id={id} className={cn("rounded-[var(--radius)]", TONES[tone], PADS[pad], className)}>
       {title && (
         <div className={cn("mb-3 flex items-center justify-between gap-3", pad === "list" && "mt-3")}>
           <h2 className="text-[0.95rem] font-bold tracking-tight">{title}</h2>
