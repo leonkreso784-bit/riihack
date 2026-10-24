@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. 00:00 · prazan odgovor, poveznice
+
+- **Spojeno:** dokumentacija #223 (sub 23:35); Rinov #224 (00:00, dira i Simonove Financije, Leonovo „spoji"); bez
+  donje granice teksta #225 (00:01, Leonovo „spoji", [ADR-049](DECISIONS.md#adr-049)). Integrator: 498 testova,
+  build, smoke 1–18; CI zelen; produkcija READY 00:01.
+- **Čeka Leonovu odluku:** Rinov prijedlog sigurnosnih zaglavlja (CSP, zabrana iframea, `nosniff`); preporuka
+  dokumentarista: tri jednostavna zaglavlja da, stroga CSP poslije.
+- **Baza:** integratorov smoke u 23:56 ostavio je jednu igru „Smoke …" (javljeno graditelju).
+
 ## Sub 24.10. ~23:30 · demo spreman za obilazak 3
 
 - **Graditelj:** očišćeno 90 testnih igara i 6 računa, pa još 19 smoke igara; demo `KVRNDM` posijan s `main`-a (s #213,
