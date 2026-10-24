@@ -10,11 +10,31 @@ const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
 
 const MAX_REASONING_CHARS = 400;
 const LEAKED_ID = /\b(kriterij|k)\s*\d|odgovor\s*\d|\bk\d\b/i;
-const SLASH_GENDER = /\p{L}\/(la|a|ica)\b/u; // "ispričao/la": the prompt forbids it, so retry
+const SLASH_GENDER = /\p{L}\/(la|a|ica)\b/u; // "ispričao/la": the prompt forbids it, so retry, then replace the text
 
 function reasoningOk(reasoning: string): boolean {
   const text = reasoning.trim();
   return text.length > 0 && text.length <= MAX_REASONING_CHARS && !LEAKED_ID.test(text) && !SLASH_GENDER.test(text);
+}
+
+/** Rubric text without the examples in brackets, lower-cased first letter, for a sentence. */
+const short = (text: string) => {
+  const t = text.replace(/\s*[[(][^\])]*[\])]/g, "").trim();
+  return t.charAt(0).toLowerCase() + t.slice(1);
+};
+
+/**
+ * Deterministic reasoning from the rubric, used when the model's own text fails the style check twice (BUG-009).
+ * A style problem must never throw away the criteria the model ticked.
+ */
+export function rubricReasoning(template: JudgeInput["template"], met: string[]): string {
+  const done = template.rubric.filter((c) => met.includes(c.id)).map((c) => short(c.text));
+  const missing = template.rubric.filter((c) => !met.includes(c.id)).map((c) => short(c.text));
+  const parts: string[] = [];
+  if (done.length) parts.push(`Dobro: ${done.join("; ")}.`);
+  parts.push(missing.length ? `Nedostaje: ${missing.join("; ")}.` : "Ništa bitno nije nedostajalo.");
+  const text = parts.join(" ");
+  return text.length <= MAX_REASONING_CHARS ? text : text.slice(0, MAX_REASONING_CHARS - 1).trimEnd() + "…";
 }
 
 /** Stable part first (cacheable): rules, situation and rubric. */
@@ -32,8 +52,9 @@ function userPrompt({ transcript, text }: JudgeInput): string {
 }
 
 /**
- * Judges the answer. Returns null (engine then uses FALLBACK_QUALITY) when the AI fails, times out, or twice in a row
- * returns a reasoning that is empty, too long or names criterion numbers. Errors are handled by `withAi`.
+ * Judges the answer. Returns null (engine then uses FALLBACK_QUALITY) only when the AI fails or times out.
+ * If the reasoning fails the style check twice (empty, too long, criterion numbers, "ispričao/la"), the ticked criteria
+ * are kept and the reasoning is built from the rubric instead (BUG-009). Errors are handled by `withAi`.
  * No `temperature` is passed: claude-sonnet-5-5 ignores it (AI SDK warns), so the schema and the strict prompt keep it steady.
  */
 export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict | null> {
@@ -48,6 +69,7 @@ export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict
     const system = stablePrompt(input);
     const user = userPrompt(input);
 
+    let met: string[] = [];
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = await generateText({
         model: modelFor("judge", model),
@@ -57,13 +79,9 @@ export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict
         prompt: user,
       });
       const { criteriaMet, reasoning } = result.output;
-      if (reasoningOk(reasoning)) {
-        return {
-          criteriaMet: [...new Set(criteriaMet.filter((id) => ids.includes(id)))],
-          reasoning: reasoning.trim(),
-        };
-      }
+      met = [...new Set(criteriaMet.filter((id) => ids.includes(id)))];
+      if (reasoningOk(reasoning)) return { criteriaMet: met, reasoning: reasoning.trim() };
     }
-    return null;
+    return { criteriaMet: met, reasoning: rubricReasoning(input.template, met) };
   }, null);
 }
