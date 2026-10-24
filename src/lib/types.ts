@@ -29,17 +29,21 @@ export type SituationTemplate = {
   effects: Partial<Record<MetricKey, number>>;
   room?: { type: RoomType; problemStatus: RoomStatus };
 };
+// Profesorove situacije (obilazak 1, 24.10.: profesor je glavni; AI glumi likove, mentorira i po želji predlaže situacije)
+export type SituationSource = "bank" | "custom" | "ai"; // banka iz sadržaja, profesor napisao, AI predložio pa profesor spremio
+export type SituationDraft = Omit<SituationTemplate, "id">; // prije spremanja; rubric 3–5 kriterija, options smiju biti [] (tada samo vlastiti odgovor)
+export type SituationSummary = { id: string; title: string; area: string; difficulty: number; source: SituationSource };
 
 export type ChatTurn = { role: "student" | "character"; text: string };
 export type Verdict = { criteriaMet: string[]; reasoning: string };
 
 // Pogledi (odgovori API-ja)
 export type Room = RoomTemplate & { id: string };
-export type AnswerView = { mode: AnswerMode; optionId?: string; text?: string; quality: Quality; copied: boolean; verdict?: Verdict };
+export type AnswerView = { mode: AnswerMode; optionId?: string; text?: string; quality: Quality; copied: boolean; verdict?: Verdict; overridden?: boolean }; // overridden = profesor je promijenio kvalitetu
 export type SituationView = {
   id: string; templateId: string; round: number; title: string; text: string; area: string; difficulty: number;
   roomNumber?: string; character: { name: string; role: string }; options: { id: string; text: string }[];
-  state: SituationState; transcript: ChatTurn[]; answer?: AnswerView;
+  state: SituationState; transcript: ChatTurn[]; answer?: AnswerView; source?: SituationSource;
 };
 export type CompanyView = { id: string; hotelName: string; playerName: string; templateId: string; place: string; stars: number; roomsCount: number; startMetrics: Metrics; metrics: Metrics; progress: number; closedRound: number; cash: number; startCash: number };
 export type RoundReportView = { round: number; metricsBefore: Metrics; metricsAfter: Metrics; mentorQuestion?: string; reflection?: string; mentorText?: string }; // pitanje stiže iz GET /api/me/report/[round]
@@ -50,9 +54,10 @@ export type RoundFinance = { round: number; nights: number; contractNights: numb
 export type NewsItem = { at: string; text: string };
 export type CityView = { businesses: CityBusiness[]; hotels: LeaderboardRow[]; links: { companyId: string; businessId: string }[] }; // links = aktivni ugovori
 export type WorldView = { id: string; name: string; round: number; maxRounds: number; status: WorldStatus; roundDeadline: string | null; serverNow: string }; // odbrojavanje = roundDeadline − serverNow
+export type DispatchView = { id: string; templateId: string; title: string; round: number; companyIds: string[] | null; status: "scheduled" | "sent" }; // companyIds null = svi studenti
 
 export type MeResponse = { world: WorldView; company: CompanyView; situations: SituationView[]; leaderboard: LeaderboardRow[]; reports: RoundReportView[]; plan: RoundPlan; contracts: ContractView[]; finances: RoundFinance[]; city: CityView; news: NewsItem[] };
-export type ProfStateResponse = { world: WorldView & { joinCode: string; maxPlayers: number }; players: LeaderboardRow[]; city: CityView; news: NewsItem[] };
+export type ProfStateResponse = { world: WorldView & { joinCode: string; maxPlayers: number }; players: LeaderboardRow[]; city: CityView; news: NewsItem[]; bank?: SituationSummary[]; dispatches?: DispatchView[]; autoDraw?: boolean }; // bank = banka + profesorove situacije; autoDraw = slučajno izvlačenje po krugu
 export type CompanyDetailResponse = { company: CompanyView; situations: SituationView[]; reports: RoundReportView[] };
 
 // Zahtjevi
@@ -68,10 +73,16 @@ export type ChatRequest = { message: string; pastedChars: number };
 export type ReflectionRequest = { round: number; text: string };
 export type PlanRequest = { price: number; marketing: number };
 export type ContractDecisionRequest = { accept: boolean };
+export type CreateSituationRequest = SituationDraft;
+export type DispatchRequest = { templateId: string; companyIds?: string[]; round?: number; roomNumber?: string }; // bez companyIds = svi; bez round = odmah u tekući krug
+export type WorldSettingsRequest = { autoDraw: boolean };
+export type QualityOverrideRequest = { quality: Quality };
+export type GenerateSituationRequest = { companyId?: string; hint?: string }; // AI predloži SituationDraft iz stanja hotela, profesor ga uredi i spremi
 export type ApiError = { error: string }; // poruka na hrvatskom
 
 // AI ulazi (Simon implementira, Leon poziva)
 export type JudgeInput = { template: SituationTemplate; hotelName: string; text: string; transcript: ChatTurn[] };
 export type CharacterInput = { template: SituationTemplate; hotelName: string; roomNumber?: string; transcript: ChatTurn[]; message: string; pasted: boolean; messageNo?: number; maxMessages?: number }; // messageNo = koja je ovo studentova poruka (1..maxMessages), da lik zna kad zaključiti razgovor
 export type MentorItem = { title: string; mode: AnswerMode; quality: Quality; answerText?: string; criteriaMissed: string[] };
-export type MentorInput = { hotelName: string; round: number; items: MentorItem[]; metricsBefore: Metrics; metricsAfter: Metrics };
+export type MentorInput = { hotelName: string; round: number; items: MentorItem[]; metricsBefore: Metrics; metricsAfter: Metrics; finance?: RoundFinance }; // finance = obračun mjeseca iz jezgre, da mentor objasni što se dogodilo
+export type SituationIdeaInput = { hotelName: string; place: string; stars: number; metrics: Metrics; rooms: Room[]; finance?: RoundFinance; hint?: string };
