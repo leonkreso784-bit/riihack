@@ -118,6 +118,20 @@ export function parseDeadlineMinutes(value: unknown): number | undefined {
   return value;
 }
 
+/** Mjesec koji profesor zatvara (OpenRoundRequest.fromRound): bez polja undefined, inače cijeli broj od 1. */
+export function parseFromRound(value: unknown): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+    throw new HttpError(400, "Neispravan mjesec za zatvaranje");
+  }
+  return value;
+}
+
+/** Drugi klik (dvoklik, dvije funkcije na Vercelu) stigao je nakon prvog: igra je već prešla mjesec fromRound. */
+export function isStaleRoundRequest(world: Pick<WorldRow, "round">, fromRound: number | undefined): boolean {
+  return fromRound !== undefined && world.round !== fromRound;
+}
+
 /**
  * Profesor zatvara mjesec k i otvara k + 1: prvo zatvori krug k svima, zatim prijelaz kruga sa zaštitom
  * (UPDATE … WHERE round = k), pa openRound. Dva istodobna klika: oba zatvaraju (zaštita po tvrtki), krug poraste
@@ -125,7 +139,10 @@ export function parseDeadlineMinutes(value: unknown): number | undefined {
  */
 export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Promise<WorldRow> {
   const deadlineMinutes = parseDeadlineMinutes(req.deadlineMinutes);
+  const fromRound = parseFromRound(req.fromRound);
   if (world.status === "lobby") throw new HttpError(409, "Igra još nije krenula");
+  // Mjesec je već zatvorio drugi klik: vrati trenutno stanje, bez drugog prelaska i bez 409 „Sezona je gotova".
+  if (isStaleRoundRequest(world, fromRound)) return world;
   if (world.status === "finished" || world.round >= MAX_ROUNDS) throw new HttpError(409, "Sezona je gotova");
   const k = world.round;
 
