@@ -254,8 +254,9 @@ function Chip({ x, y, name, pct, own, hot, shown, onSelect, id }: { x: number; y
     <g transform={`translate(${x},${y})`} className="cb-chip" data-shown={shown ? 1 : 0} data-hot={hot ? 1 : 0} onClick={(e) => { e.stopPropagation(); onSelect(id); }} style={{ cursor: "pointer" }}>
       <g className="cb-chip-in"><g ref={inner} transform="translate(-60,0)">
         <rect ref={rect} className="cb-chip-bg" rx="17" ry="17" height="34" width="120" fill="#fff" filter="url(#cb-sh)" stroke={hot ? "#246bfd" : own ? "#ffd54a" : "none"} strokeWidth={hot ? 2.5 : 3} />
+        <title>{name}</title>
         <text key={pctStr} className="cb-chip-text" ref={measure} x="14" y="23" fontSize="17" fontWeight="800" fill="#151b2b">
-          {name}
+          {name.length > 22 ? `${name.slice(0, 21).trimEnd()}…` : name}
           {pctStr && <tspan fill={(pct ?? 0) >= 0 ? "#0f7a3c" : "#c42626"}> {pctStr}</tspan>}
         </text>
       </g></g>

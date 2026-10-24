@@ -57,8 +57,10 @@ function userPrompt({ transcript, text }: JudgeInput): string {
  * are kept and the reasoning is built from the rubric instead (BUG-009). Errors are handled by `withAi`.
  * No `temperature` is passed: claude-sonnet-5-5 ignores it (AI SDK warns), so the schema and the strict prompt keep it steady.
  */
-export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict | null> {
-  return withAi<Verdict | null>(async () => {
+export async function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict | null> {
+  // Criteria from a finished attempt survive a timeout or error in the retry (the retry only fixes the wording).
+  let met: string[] | null = null;
+  const verdict = await withAi<Verdict | null>(async () => {
     const ids = input.template.rubric.map((c) => c.id);
     if (ids.length === 0) return null;
     const schema = z.object({
@@ -69,7 +71,6 @@ export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict
     const system = stablePrompt(input);
     const user = userPrompt(input);
 
-    let met: string[] = [];
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = await generateText({
         model: modelFor("judge", model),
@@ -82,6 +83,8 @@ export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict
       met = [...new Set(criteriaMet.filter((id) => ids.includes(id)))];
       if (reasoningOk(reasoning)) return { criteriaMet: met, reasoning: reasoning.trim() };
     }
-    return { criteriaMet: met, reasoning: rubricReasoning(input.template, met) };
+    return { criteriaMet: met ?? [], reasoning: rubricReasoning(input.template, met ?? []) };
   }, null);
+  if (verdict || met === null) return verdict;
+  return { criteriaMet: met, reasoning: rubricReasoning(input.template, met) };
 }

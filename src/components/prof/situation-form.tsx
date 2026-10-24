@@ -177,6 +177,7 @@ export function SituationForm({ worldId, players = [], onCreated, onCancel }: { 
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (generating) return;
     setServerError(null);
     const found = validateForm(f);
     setErrors(found);
@@ -215,6 +216,8 @@ export function SituationForm({ worldId, players = [], onCreated, onCancel }: { 
         {aiError && <div className="mt-3"><FormError>{aiError}</FormError></div>}
       </Panel>
 
+      {/* While AI writes a draft the form is locked, so the draft cannot silently overwrite the professor's edits. */}
+      <fieldset disabled={generating} className="m-0 min-w-0 space-y-6 border-0 p-0">
       <Panel title="Situacija">
         <div className="space-y-4">
           <Field id={id("title")} label="Naslov (3 do 80 znakova)" value={f.title} onChange={(e) => set("title", e.target.value)} maxLength={80} />
@@ -375,6 +378,7 @@ export function SituationForm({ worldId, players = [], onCreated, onCancel }: { 
           </SubmitButton>
         </div>
       </div>
+      </fieldset>
     </form>
   );
 }
