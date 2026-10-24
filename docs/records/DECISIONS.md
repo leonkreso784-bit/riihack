@@ -8,6 +8,16 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-044"></a>
+## ADR-044 · Botovi: drugi hoteli i dobavljači u igri s malo studenata
+**Datum:** 24.10. ~22:15 · **Status:** ✅ (Leon) · **Vezano:** [ADR-008](#adr-008), [ADR-002](#adr-002)
+
+**Kontekst.** Hoteli dijele tržište turista (ADR-008). Kad profesor napravi igru s malo studenata, nema dovoljno
+konkurencije i tvrtki, pa ekonomija grada ne radi.
+**Odluka.** Simon dodaje botove: hotele i dobavljače koje vodi računalo, da i igra s malo ljudi ima ekonomiju.
+**Posljedice.** 🟨 Otvoreno: odlučuju li botovi po pravilima motora, a ne AI (ADR-002); dira li to motor, koji je
+Leonov; uključuje li ih profesor sam ili se dodaju automatski kad je studenata malo.
+
 <a id="adr-043"></a>
 ## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule
 **Datum:** 24.10. ~22:00 · **Status:** ✅ (Leon; dokumentarist prenio graditelju) · **Vezano:** [BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija), [ADR-002](#adr-002)
@@ -19,7 +29,11 @@ obilasku 3 sam igra i lako nađe taj trik.
 pada (npr. `(ref/cijena)²`), a iznad 2,5× je 0. `PRICE_MAX` (400 €) i stranica Plan ostaju. Test: dobit ima vrh blizu
 referentne cijene. Poslije popravka graditelj ponovno sije demo i pokreće smoke; spaja integrator na Leonovo „spoji"
 (mijenjaju se brojke, [ADR-037](#adr-037)).
-**Posljedice.** Igra uči da se cijena bira prema tržištu, a ne da je najviša uvijek najbolja. 🟨 PR još nije otvoren.
+**Posljedice.** Igra uči da se cijena bira prema tržištu, a ne da je najviša uvijek najbolja. Kod je
+[#194](https://github.com/leonkreso784-bit/riihack/pull/194) (graditelj): kvadrat počinje **već iznad referentne
+cijene**, ne tek iznad 2×. Razlog: troškovi su fiksni, pa bi uz promjenu samo iznad 2× vrh dobiti ostao na ~2× ref.
+U primjeru iz PR-a vrh prihoda je na referentnoj cijeni (100 € → 57.000 €, 400 € → 0). Dira i Simonov
+`src/lib/tokovi/month-flow.ts` (procjena „Što ako?" zove isti motor). Leon je izmjenu prijedloga odobrio (~22:15).
 
 <a id="adr-042"></a>
 ## ADR-042 · Skice „Tokovi" ipak idu u aplikaciju
@@ -76,7 +90,8 @@ privatno. Kod je [#184](https://github.com/leonkreso784-bit/riihack/pull/184) (2
 Lošinj, Crikvenica; smoke 19 koraka), stranica `/profesor/knjiznica`
 [#189](https://github.com/leonkreso784-bit/riihack/pull/189) i skripta za čišćenje
 [#188](https://github.com/leonkreso784-bit/riihack/pull/188) (zadano suhi prolaz; na produkciji je našla 166 testnih
-od 216 igara). 🟨 Brisanje (`--apply`) još nije pokrenuto.
+od 216 igara). Brisanje je graditeljev agent pokrenuo ~22:00: obrisano 208 igara i 28 računa, ostala je 51 igra, demo
+`KVRNDM` netaknut ([BUG-018](BUGS.md#bug-018--čišćenje-baze-obrisalo-testerovu-igru-usred-testa)).
 
 <a id="adr-038"></a>
 ## ADR-038 · Skice „Tokovi" samo za prezentaciju; „Što ako?" se ne radi

@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#193](https://github.com/leonkreso784-bit/riihack/pull/193) | 21:59 | Leon | dokumentacija: val 3 spojen, ADR-043 i BUG-014 |
 | [#184](https://github.com/leonkreso784-bit/riihack/pull/184) | 21:51 | Leon | L14: prihod i dobit zatvorenih mjeseci u javnom profilu tuđeg hotela (ADR-040, ugovor) |
 | [#190](https://github.com/leonkreso784-bit/riihack/pull/190) | 21:51 | Leon | `SituationView.rubric?` i `effects?` nakon odgovora (za Tokove skica 2, ugovor) |
 | [#189](https://github.com/leonkreso784-bit/riihack/pull/189) | 21:51 | Leon | knjižnica situacija: stranica `/profesor/knjiznica` |

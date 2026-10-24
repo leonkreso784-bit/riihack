@@ -6,6 +6,28 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~22:15 · botovi za male igre
+
+- **Odluke (Leon):** formula iz #194 (kvadrat već iznad referentne cijene) je u redu; integrator spaja na Leonovo
+  „spoji". Simon dodaje botove, hotele i dobavljače koje vodi računalo, za igre s malo studenata
+  ([ADR-044](DECISIONS.md#adr-044), 🟨 detalji).
+
+## Sub 24.10. 22:00–22:10 · tester na produkciji
+
+- **Nova sesija:** tester produkcije (samo testira, ne mijenja kod). Prvi nalazi: uvid u studenta piše „klik" za
+  propuštenu situaciju ([BUG-015](BUGS.md#bug-015--uvid-u-studenta-propuštena-situacija-piše-klik)), krivi hrvatski
+  uz brojeve ([BUG-016](BUGS.md#bug-016--krivi-hrvatski-u-brojevima-i-rodu)), sirovi ključ područja kod AI prijedloga
+  ([BUG-017](BUGS.md#bug-017--ai-prijedlog-situacije-područje-kao-sirovi-ključ)); balans cijene potvrđen na produkciji
+  ([BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija)).
+- **Spojeno:** dokumentacija #193 (21:59).
+- **Baza očišćena (graditeljev agent, ~22:00):** obrisano 208 testnih igara i 28 računa, ostala je 51 igra, demo
+  `KVRNDM` netaknut. Obrisane su i dvije testerove igre usred testa
+  ([BUG-018](BUGS.md#bug-018--čišćenje-baze-obrisalo-testerovu-igru-usred-testa)); od sad se prije brisanja javlja
+  testeru.
+- **Balans cijene:** PR #194 (graditelj; 416 testova, smoke 18/18 lokalno). Kvadrat počinje već iznad referentne cijene,
+  ne tek iznad 2× ([ADR-043](DECISIONS.md#adr-043)); dira i Simonov `month-flow.ts`. Čeka Leonovo „spoji", a poslije
+  ponovni seed demo igre i smoke.
+
 ## Sub 24.10. 21:45–22:00 · val 3 skoro gotov, balans cijene
 
 - **Spojeno:** Simonovi Tokovi skica 1 i 2 (#174, #179, 21:44, Leonovo „spoji"; Rinov pregled poveznica naknadno);

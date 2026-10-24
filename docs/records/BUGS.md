@@ -10,15 +10,48 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub ~22:05.
+
+### BUG-015 · Uvid u studenta: propuštena situacija piše „klik"
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (profesor misli da je student odabrao odgovor)
+- **Opis:** student ostavi situaciju bez odgovora i završi mjesec; u uvidu (`/profesor/[worldId]/tvrtka/[id]`) ta
+  situacija piše „klik · 1/5" umjesto „bez odgovora".
+- **Uzrok:** `src/app/profesor/[worldId]/tvrtka/[id]/page.tsx:21`: sve što nije `mode === "own"` prikazuje se kao
+  „klik".
+- **Rješenje:** 🟨 čeka Rina (R8).
+- **Lekcija:** kad stanje ima više od dvije vrijednosti, prikaži svaku izričito; „sve ostalo" pretvori rubni slučaj u
+  laž na ekranu.
+
+### BUG-016 · Krivi hrvatski u brojevima i rodu
+- **Status:** 🔴 otvoren (Rinove datoteke) · **Težina:** nizak (žiri čita sučelje)
+- **Opis:** (a) `/igra`, „Ponude grada": „1 nova ponuda i 0 aktivan ugovor", „0 nova ponuda i 1 aktivan ugovor"
+  (`src/app/igra/page.tsx:87-88`); (b) uvid u studenta: „Razgovor s likom (2 poruka)" umjesto „2 poruke"
+  (`tvrtka/[id]/page.tsx:129`); (c) „Završi mjesec" s jednom situacijom: „One vrijede 1 od 5" umjesto „Ona vrijedi"
+  (`src/components/close-round.tsx:78`).
+- **Uzrok:** broj se lijepi uz imenicu bez sklonidbe po broju (1, 2–4, 5+).
+- **Rješenje:** 🟨 čeka Rina.
+- **Lekcija:** tekst s brojem u hrvatskom treba oblike za 1, 2–4 i 5+ (0 ide kao 5+); provjeri ga s 0, 1, 2 i 5.
+
+### BUG-017 · AI prijedlog situacije: područje kao sirovi ključ
+- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Opis:** nakon spremanja AI prijedloga (`/profesor/[id]/situacije` → Nova situacija → Predloži AI-jem → Spremi) popis
+  piše „recepcija · težina 3 od 5", a situacije iz banke „Recepcija i smještaj".
+- **Uzrok:** 🟨 potvrditi: prikazuje se ključ područja umjesto naziva (stranica situacija je Simonova, AI nacrt
+  graditeljev).
+- **Rješenje:** 🟨 čeka vlasnika.
+- **Lekcija:** ključ u podacima nije tekst za korisnika; naziv uvijek ide kroz isti popis oznaka.
+
 ### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
-- **Status:** 🟡 u radu (graditelj, od ~22:00) · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
+- **Status:** 🟡 PR [#194](https://github.com/leonkreso784-bit/riihack/pull/194) čeka Leonovo „spoji" · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
 - **Opis:** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162), provjeren pravim
   `settleMarket` i `roundFinance`: uz 400 € hotel ima 48 % popunjenosti i 69.700 € dobiti u kolovozu, a uz
-  referentnu cijenu (~90 €) 91 % i ~23.000 €.
+  referentnu cijenu (~90 €) 91 % i ~23.000 €. Tester potvrdio na produkciji (22:00): hotel 4★ sa 17 soba uz 400 € i
+  5.000 € marketinga u lipnju ide s 20.000 € na 81.850 €, a susjed uz 70 € na 28.860 €.
 - **Uzrok:** u `attractiveness` (`src/lib/engine/economy.ts`) faktor cijene je ograničen na 0,5 do 1,5. Iznad 2×
   referentne cijene više ne pada, pa hotel zadrži goste, a svaka noć donosi sve više.
-- **Rješenje:** [ADR-043](DECISIONS.md#adr-043): faktor iznad 2× referentne cijene pada dalje, iznad 2,5× je 0;
-  test da je vrh dobiti blizu referentne cijene. 🟨 PR još nije otvoren.
+- **Rješenje:** [ADR-043](DECISIONS.md#adr-043), [#194](https://github.com/leonkreso784-bit/riihack/pull/194): iznad
+  referentne cijene faktor pada s kvadratom, iznad 2,5× je 0; test da je vrh prihoda između 80 i 150 € u sva 4
+  mjeseca (416 testova). Poslije spajanja ponovni seed demo igre i smoke.
 - **Lekcija:** granica koja štiti od ekstremnih vrijednosti može ukloniti kaznu baš ondje gdje treba. Uz motor drži
   test koji traži najbolju odluku i provjerava da ona ima smisla u stvarnom svijetu.
 
@@ -34,6 +67,14 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-018 · Čišćenje baze obrisalo testerovu igru usred testa
+- **Status:** ✅ riješen pravilom ~22:05 (graditelj) · **Težina:** nizak (izgubljen testni napredak, ne demo)
+- **Opis:** skripta za čišćenje (`--apply`, ~22:00) obrisala je testerove igre „QA 2150 glavni" i „QA proba tim" dok
+  je tester testirao produkciju.
+- **Uzrok:** graditelj nije javio testeru prije brisanja.
+- **Rješenje:** prije svakog `--apply` graditelj javlja testeru.
+- **Lekcija:** brisanje na zajedničkoj bazi najavi svima koji je koriste, i onima koji samo testiraju.
 
 ### BUG-013 · Provjera pada u mapi bez `npm ci` nakon promjene `package-lock.json`
 - **Status:** ✅ riješen pravilom 24.10. ~21:15 (Leon) · **Težina:** nizak (lokalno, ne na `main`-u)
