@@ -6,6 +6,12 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~15:20 · smoke 1–10
+
+- **Smoke:** na `main`-u pada korak 5 jer nema situacija do L6; s #75 lokalno prolaze koraci 1–10
+  ([BUG-004](BUGS.md#bug-004--smoke-korak-5-na-main-u-pada-ana-ima-0-situacija)).
+- **Dokumentacija:** ADR-018 do 020 na `main`-u ([#80](https://github.com/leonkreso784-bit/riihack/pull/80)), dopuna koja nije stigla u #77.
+
 ## Sub 24.10. 15:00–15:10 · L4 živ, motor B i C
 
 - **Leon:** L4 API ulaza, profesora i soba (#74, 15:09): `/api/me` bez kolačića vraća 401, dakle ruta postoji. Motor
