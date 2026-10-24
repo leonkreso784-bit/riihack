@@ -20,4 +20,12 @@
 ## Obilazak žirija 1 (sub ~14:45)
 
 - Pitanje za žiri: „Što vam je najvažnije da vidite u nedjelju?"
-- Odgovor žirija: _upisati nakon obilaska_
+- Odgovor žirija (sub ~15:45, prošli smo obilazak):
+  - **Borna Sila:** ne oslanjati se na AI i ne raditi sve kao AI agente; temelj neka bude stabilna, pouzdana
+    softverska mehanika.
+  - **Pohvala partnerstvu tvrtki i fakulteta:** pomaže tvrtkama zapošljavati, a studentima doći do posla.
+  - Ostali komentari malobrojni, ali ideja im se sviđa.
+- **Što mijenjamo (za obilazak 2 i nedjelju):**
+  - Jasno pokazujemo da je igra **obična, testirana pravila**, a AI samo jedan sloj: oko 1.700 redaka pravila igre
+    naspram oko 450 redaka AI-ja, oko 150 automatskih testova, svaki AI poziv ima rok i rezervu, igra radi i bez AI-ja.
+  - Partnerstvo tvrtki i fakulteta ide iz pitanja u glavni dio pitcha (tko plaća, što tko dobiva).
