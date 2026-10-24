@@ -9,7 +9,7 @@ ljudi ne dira iste datoteke.
 | --- | --- | --- |
 | **Rino** | sve ekrane: ulaz, čekaonica, profesor, moja tvrtka, sobe, situacija, izvještaj, uvid (R0–R9) | `src/app/**` osim `api/`, `igra/plan`, `igra/financije`; `src/components/` osim `wow/`; `src/lib/client.ts`, `mock.ts` |
 | **Leon** | kostur, baza, motor, sadržaj, API igre, smoke, demo igra, deploy (L0–L8) | `src/db/`, `src/lib/engine/`, `src/lib/game/`, `src/lib/session.ts`, `http.ts`, `types.ts`, `rules.ts`, `src/content/`, `src/app/api/**` osim dvije AI rute, `scripts/`, `.github/` |
-| **Simon** | obećanja, AI sloj, lik, presuda, sokratski mentor, karta i radar, plan i financije (sučelje), prezentacija (S0–S7) | `src/lib/ai/`, `api/situations/[id]/chat`, `api/me/reflection`, `src/components/wow/`, `src/app/igra/plan`, `igra/financije`, `src/lib/mock-wow.ts`, `prezentacija/`, `PROMISE.md` |
+| **Simon** | obećanja, AI sloj, lik, presuda, sokratski mentor, karta i radar, plan i financije (sučelje), prezentacija (S0–S7) | `src/lib/ai/`, `api/situations/[id]/chat`, `api/me/reflection`, `api/me/report/[round]`, `src/components/wow/`, `src/app/igra/plan`, `igra/financije`, `src/lib/mock-wow.ts`, `prezentacija/`, `PROMISE.md` |
 
 🟨 Podjelu backenda Leon i Simon još potvrđuju. Rino radi frontend (dogovoreno).
 
