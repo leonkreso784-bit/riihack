@@ -4,8 +4,8 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Download, Plus, Send, Upload } from "lucide-react";
-import { api, usePoll } from "@/lib/client";
+import { ArrowLeft, BookmarkPlus, Download, Library, Plus, Send, Upload } from "lucide-react";
+import { api, isUnauthorized, usePoll } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { DispatchView, Playbook, ProfStateResponse, SituationSource, SituationSummary } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
@@ -14,6 +14,7 @@ import { Pill, type Tone } from "@/components/pill";
 import { FormError } from "@/components/form";
 import { SituationForm } from "@/components/prof/situation-form";
 import { DispatchDialog } from "@/components/prof/dispatch-dialog";
+import { LIBRARY_HINT, LibraryDialog } from "@/components/prof/library-dialog";
 
 const SOURCE: Record<SituationSource, { label: string; tone: Tone }> = {
   bank: { label: "Banka", tone: "neutral" },
@@ -34,6 +35,10 @@ export default function ProfSituations() {
   const [switchError, setSwitchError] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
   const [playbookError, setPlaybookError] = useState<string | null>(null);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const [savedIds, setSavedIds] = useState<string[]>([]);
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [libraryHint, setLibraryHint] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   if (error && !data) return <FormError>{error.message}</FormError>;
@@ -54,6 +59,19 @@ export default function ProfSituations() {
       setSwitchError((err as Error).message);
     }
     setSwitching(false);
+  }
+
+  async function saveToLibrary(s: SituationSummary) {
+    setLibraryHint(null);
+    setSavingId(s.id);
+    try {
+      await api.librarySave(worldId, s.id);
+      setSavedIds((ids) => [...ids, s.id]);
+      toast.success(`Spremljeno u knjižnicu: ${s.title}`);
+    } catch (err) {
+      setLibraryHint(isUnauthorized(err) ? LIBRARY_HINT : (err as Error).message);
+    }
+    setSavingId(null);
   }
 
   async function exportPlaybook() {
@@ -177,7 +195,15 @@ export default function ProfSituations() {
         {switchError && <div className="mt-3"><FormError>{switchError}</FormError></div>}
       </Panel>
 
-      <Panel title="Popis situacija" action={<span className="text-sm text-muted-foreground">{bank.length} ukupno</span>} pad="list">
+      <Panel title="Popis situacija" action={
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={() => setLibraryOpen(true)} className={`${BUTTON} bg-secondary text-secondary-foreground hover:bg-[#dbe7ff]`}>
+            <Library className="size-4" aria-hidden /> Dodaj iz knjižnice
+          </button>
+          <span className="text-sm text-muted-foreground">{bank.length} ukupno</span>
+        </div>
+      } pad="list">
+        {libraryHint && <p role="status" className="mt-3 rounded-xl bg-secondary px-4 py-3 text-sm text-secondary-foreground">{libraryHint}</p>}
         {bank.length === 0 ? (
           <p className="py-8 text-center text-muted-foreground">Još nema situacija. Napiši prvu gumbom „Nova situacija“.</p>
         ) : (
@@ -191,9 +217,21 @@ export default function ProfSituations() {
                     {s.area} · težina {s.difficulty} od 5
                   </p>
                 </div>
-                <button type="button" onClick={() => setSending(s)} className={`${BUTTON} bg-secondary text-secondary-foreground hover:bg-[#dbe7ff]`}>
-                  <Send className="size-4" aria-hidden /> Pošalji
-                </button>
+                <div className="flex flex-wrap gap-2">
+                  {s.source !== "bank" && (
+                    <button
+                      type="button"
+                      disabled={savingId !== null || savedIds.includes(s.id)}
+                      onClick={() => saveToLibrary(s)}
+                      className={`${BUTTON} border bg-card hover:bg-muted`}
+                    >
+                      <BookmarkPlus className="size-4" aria-hidden /> {savedIds.includes(s.id) ? "Spremljeno" : savingId === s.id ? "Spremam…" : "Spremi u knjižnicu"}
+                    </button>
+                  )}
+                  <button type="button" onClick={() => setSending(s)} className={`${BUTTON} bg-secondary text-secondary-foreground hover:bg-[#dbe7ff]`}>
+                    <Send className="size-4" aria-hidden /> Pošalji
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -212,6 +250,7 @@ export default function ProfSituations() {
         )}
       </Panel>
 
+      <LibraryDialog worldId={worldId} open={libraryOpen} onClose={() => setLibraryOpen(false)} onAdded={refresh} />
       <DispatchDialog worldId={worldId} situation={sending} world={state.world} players={state.players} onClose={() => setSending(null)} onSent={refresh} />
     </div>
   );
