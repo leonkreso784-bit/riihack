@@ -69,6 +69,7 @@ na koga čeka i što smo dogovorili.
 | 24.10. ~21:15 | Nakon svakog povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci` ([BUG-013](docs/records/BUGS.md#bug-013--provjera-pada-u-mapi-bez-npm-ci-nakon-promjene-package-lockjson)) | Leon |
 | 24.10. ~22:00 | Balans cijene (#162): u motoru privlačnost iznad 2× referentne cijene pada dalje, iznad 2,5× je 0; `PRICE_MAX` i Plan ostaju; poslije ponovno demo i smoke ([ADR-043](docs/records/DECISIONS.md#adr-043)) | Leon |
 | 24.10. ~22:20 | Botovi (hoteli i dobavljači koje vodi računalo) za igre s malo studenata: po pravilima motora, ne AI; motor radi graditelj, sučelje Simon; profesor ih uključuje pri stvaranju igre ([ADR-044](docs/records/DECISIONS.md#adr-044)) | Leon |
+| 24.10. ~22:35 | Pokazatelji jače utječu na goste (BUG-024); graditelj preuzima sve otvorene bugove s agentima, za Rinove i Simonove datoteke prvo provjeri njihove grane ([ADR-045](docs/records/DECISIONS.md#adr-045)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
