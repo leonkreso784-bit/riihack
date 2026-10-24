@@ -8,6 +8,22 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-045"></a>
+## ADR-045 · Graditelj preuzima otvorene bugove; pokazatelji jače utječu na goste
+**Datum:** 24.10. ~22:35 · **Status:** ✅ (Leon) · **Vezano:** [BUG-024](BUGS.md#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone), [ADR-002](#adr-002)
+
+**Kontekst.** Tester je na produkciji našao desetak bugova (BUG-015 do 024), a do obilaska 3 (ned 07:45) ostaje
+noć. Vlasnici dijela datoteka (Rino, Simon) rade usporedno.
+**Odluka.**
+- BUG-024: pokazatelji jače utječu na goste (nizak pokazatelj brže gubi goste, uključuju se i ostali pokazatelji);
+  test da hotel bez odgovora ima manje gostiju i dobiti od onog koji je odgovarao.
+- Graditelj preuzima sve otvorene bugove i radi ih paralelno s agentima, redom: BUG-024, jedan ponovni seed demoa i
+  smoke, BUG-022, BUG-015 i 019, BUG-021, sitni tekstovi, pa botovi ([ADR-044](#adr-044)) ako ostane vremena.
+- Za Rinove i Simonove datoteke graditelj prvo provjeri njihove otvorene PR-ove i grane; Leon im javlja na Discordu.
+
+**Posljedice.** Promjena motora mijenja brojke, pa se spaja na Leonovo „spoji"; demo se sije jednom, nakon oba
+popravka balansa.
+
 <a id="adr-044"></a>
 ## ADR-044 · Botovi: drugi hoteli i dobavljači u igri s malo studenata
 **Datum:** 24.10. ~22:15 · **Status:** ✅ (Leon) · **Vezano:** [ADR-008](#adr-008), [ADR-002](#adr-002)
