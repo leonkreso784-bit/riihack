@@ -8,7 +8,7 @@ config({ path: ".env.local" });
 import { eq, inArray } from "drizzle-orm";
 import { db } from "../src/db";
 import {
-  answers, companies, contracts, customSituations, dispatches, events, finances, mail, plans, players, rooms,
+  answers, companies, contracts, customSituations, dispatches, events, finances, librarySituations, mail, plans, players, rooms,
   roundReports, situations, user, worlds,
 } from "../src/db/schema";
 import { getAuth } from "../src/lib/auth";
@@ -23,6 +23,7 @@ import { closeCompanyRound } from "../src/lib/game/round";
 import { counterOffer, decideContract, savePlan } from "../src/lib/game/city";
 import { sendMail } from "../src/lib/game/mail";
 import { submitAnswer } from "../src/lib/game/answer";
+import { saveToLibrary } from "../src/lib/game/library";
 import { createCustomSituation, dispatchSituation, getTemplate } from "../src/lib/game/situations";
 import { renderTemplate } from "../src/lib/game/views";
 import { createWorld, openNextRound, startWorld } from "../src/lib/game/world";
@@ -138,6 +139,81 @@ const PROF_DRAFT: SituationDraft = {
 const pad = (s: string, n: number) => s.padEnd(n);
 
 /** Briše samo igru s demo kodom i sve njezine retke, redom zbog stranih ključeva, u jednom batchu. */
+// Profesorova knjižnica (L17) na demo računu: situacije koje profesor nosi iz igre u igru.
+const LIBRARY_DRAFTS: SituationDraft[] = [
+  {
+    title: "Grupa stiže tri sata ranije",
+    text: "Autobus s 40 umirovljenika iz Graza stigao je u 11 sati, a prijava je od 14. Sobe još nisu spremljene, domaćice imaju posla do 15 sati, a voditeljica grupe traži da se svi odmah smjeste jer su putovali cijelu noć. U predvorju je gužva i drugi gosti čekaju na recepciji.",
+    area: "Recepcija i smještaj",
+    difficulty: 3,
+    character: {
+      name: "Gerda Huber",
+      role: "voditeljica grupe putničke agencije",
+      personality: "Odlučna i umorna; govori brzo, ali cijeni kad joj netko da jasan plan.",
+      goal: "Da se stariji gosti odmah negdje odmore i da zna točno kada dobivaju sobe.",
+    },
+    rubric: [
+      { id: "smjestaj", text: "Odmah nudi privremeno rješenje: prostor za odmor, piće, spremište za prtljagu.", skill: "problemSolving" },
+      { id: "plan", text: "Daje jasan redoslijed: koje sobe su spremne prve i u koliko sati.", skill: "communication" },
+      { id: "ostali", text: "Ne zanemaruje ostale goste na recepciji dok rješava grupu.", skill: "empathy" },
+      { id: "trosak", text: "Ne dijeli besplatne usluge bez mjere; gesta je razmjerna.", skill: "finance" },
+    ],
+    options: [
+      { id: "a", text: "Grupu smjestim na terasu uz kavu i spremim im prtljagu, s voditeljicom dogovorim redoslijed soba do 13 sati, a jednog kolegu ostavim na recepciji za ostale goste.", criteria: ["smjestaj", "plan", "ostali", "trosak"] },
+      { id: "b", text: "Kažem da je prijava u 14 sati i da moraju pričekati.", criteria: [] },
+      { id: "c", text: "Svima dam besplatan ručak da budu zadovoljni, a sobe će biti kad budu.", criteria: ["smjestaj"] },
+    ],
+    effects: { guests: 3, operations: 3, reviews: 2 },
+  },
+  {
+    title: "Kuhar želi otići usred sezone",
+    text: "Glavni kuhar dolazi u vaš ured i kaže da mu je konkurentski hotel u susjedstvu ponudio 300 € više mjesečno. Ako ode, restoran ostaje bez vođe usred kolovoza. Kaže da bi radije ostao, ali da ima obitelj i kredit.",
+    area: "Ljudski potencijali",
+    difficulty: 4,
+    character: {
+      name: "Tomislav Babić",
+      role: "glavni kuhar",
+      personality: "Lojalan i ponosan na svoj rad; ne voli pregovarati, ali zna koliko vrijedi.",
+      goal: "Osjećati se cijenjeno i dobiti pošten dogovor koji pokriva njegove troškove.",
+    },
+    rubric: [
+      { id: "slusanje", text: "Sasluša razloge i prizna njegovu vrijednost za hotel.", skill: "empathy" },
+      { id: "racun", text: "Procijeni koliko bi hotel stajao njegov odlazak u odnosu na povišicu.", skill: "finance" },
+      { id: "ponuda", text: "Ponudi konkretan, ostvariv dogovor (iznos, rok, uvjeti).", skill: "problemSolving" },
+    ],
+    options: [
+      { id: "a", text: "Zahvalim mu na iskrenosti, izračunam što bi nas stajao odlazak usred sezone i ponudim 200 € odmah plus bonus na kraju sezone ako ostane do rujna.", criteria: ["slusanje", "racun", "ponuda"] },
+      { id: "b", text: "Kažem mu da je svatko zamjenjiv i neka ide ako želi.", criteria: [] },
+      { id: "c", text: "Odmah mu dam 500 € više da sigurno ostane.", criteria: ["slusanje"] },
+    ],
+    effects: { staff: 4, finance: 3, operations: 2 },
+  },
+  {
+    title: "Influencerica traži besplatan boravak",
+    text: "Influencerica s 80.000 pratitelja javlja se e-mailom: nudi objavu o vašem hotelu u zamjenu za tri besplatna noćenja u kolovozu, kada ste ionako gotovo puni. Marketinški budžet ovaj mjesec je već potrošen, a direktor pita što mislite.",
+    area: "Ugled i recenzije",
+    difficulty: 2,
+    character: {
+      name: "Lana Perić",
+      role: "influencerica za putovanja",
+      personality: "Samouvjerena i ljubazna; očekuje brz odgovor i ne voli cjenkanje.",
+      goal: "Dobiti besplatan boravak u najljepšem dijelu sezone.",
+    },
+    rubric: [
+      { id: "provjera", text: "Provjeri vrijedi li ponuda: tko su pratitelji i dolaze li od njih gosti.", skill: "problemSolving" },
+      { id: "vrijeme", text: "Uzme u obzir da je kolovoz pun, pa besplatna soba ima stvarnu cijenu.", skill: "finance" },
+      { id: "odgovor", text: "Odgovori pristojno i jasno, s protuprijedlogom ili obrazloženim odbijanjem.", skill: "communication" },
+    ],
+    options: [
+      { id: "a", text: "Zahvalim joj, zatražim podatke o pratiteljima i ponudim boravak u rujnu kada imamo slobodnih soba, uz jasne uvjete objave.", criteria: ["provjera", "vrijeme", "odgovor"] },
+      { id: "b", text: "Odmah prihvatim, reklama je uvijek dobra.", criteria: [] },
+      { id: "c", text: "Ne odgovorim na e-mail.", criteria: [] },
+    ],
+    effects: { reviews: 3, finance: 2, guests: 2 },
+  },
+  PROF_DRAFT,
+];
+
 async function wipeDemo(): Promise<void> {
   const [old] = await db.select({ id: worlds.id }).from(worlds).where(eq(worlds.joinCode, DEMO_JOIN_CODE));
   if (!old) return;
@@ -182,6 +258,12 @@ async function main() {
   await wipeDemo();
 
   const ownerId = await demoOwner();
+  if (ownerId) {
+    // Knjižnica demo računa uvijek iste situacije: stare briše, nove sprema kroz validateDraft.
+    await db.delete(librarySituations).where(eq(librarySituations.ownerId, ownerId));
+    for (const draft of LIBRARY_DRAFTS) await saveToLibrary(ownerId, draft);
+    console.log(`Knjižnica:       ${LIBRARY_DRAFTS.length} situacije na demo računu`);
+  }
   const created = await createWorld({ name: "Demo Simpolis", maxPlayers: 6 }, ownerId);
   const worldId = created.worldId;
   await db
