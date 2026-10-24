@@ -1,17 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward } from "lucide-react";
+import { CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward, Trophy } from "lucide-react";
 import { api } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
-import type { ProfStateResponse } from "@/lib/types";
+import type { LeaderboardRow, ProfStateResponse } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Panel } from "./panel";
 import { Pill } from "./pill";
 import { FormError } from "./form";
 import { RoundBanner } from "./round-banner";
 import { Leaderboard } from "./leaderboard";
+import { RoundPodium } from "./round-podium";
 
 const DEADLINES = [
   { label: "Ručno", minutes: undefined },
@@ -28,6 +29,16 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
   const last = world.round >= world.maxRounds;
   const done = players.filter((p) => p.closedRound >= world.round);
   const playing = players.filter((p) => p.closedRound < world.round);
+  const [anonymous, setAnonymous] = useState(false);
+  // R10: the podium shows the month that was just closed (after "Zatvori … i otvori …", "Završi sezonu" or "Pokaži podij").
+  const [podium, setPodium] = useState<{ rows: LeaderboardRow[]; month: string } | null>(null);
+  const closePodium = useCallback(() => setPodium(null), []);
+  const closedMonth = (s: ProfStateResponse) => ROUND_LABELS[s.world.status === "finished" ? s.world.round - 1 : s.world.round - 2];
+  const showPodium = (s: ProfStateResponse) => {
+    const month = closedMonth(s);
+    if (month && s.players.length) setPodium({ rows: s.players, month });
+  };
+  const toggle = "flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-primary";
 
   return (
     <div className="space-y-6">
@@ -41,7 +52,7 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
       ) : (
         <>
           <RoundBanner world={world} syncedAt={syncedAt} size="xl" />
-          <RoundControls worldId={world.id} round={world.round} last={last} onChange={onChange} />
+          <RoundControls worldId={world.id} round={world.round} last={last} onChange={onChange} onClosed={showPodium} />
         </>
       )}
 
@@ -71,25 +82,41 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
             </ul>
           </Panel>
         )}
-        <Panel title="Ljestvica" action={<span className="text-sm text-muted-foreground">po napretku</span>}>
-          <Leaderboard rows={players} limit={players.length} />
+        <Panel
+          title="Ljestvica po napretku"
+          action={
+            <div className="flex flex-wrap items-center gap-1">
+              <button type="button" aria-pressed={anonymous} onClick={() => setAnonymous((a) => !a)} className={cn(toggle, anonymous ? "bg-secondary text-secondary-foreground" : "hover:bg-muted")}>
+                Anonimno
+              </button>
+              {closedMonth(state) && (
+                <button type="button" onClick={() => showPodium(state)} className={cn(toggle, "text-secondary-foreground hover:bg-muted")}>
+                  <Trophy className="size-4" aria-hidden /> Pokaži podij
+                </button>
+              )}
+            </div>
+          }
+        >
+          <Leaderboard rows={players} limit={players.length} anonymous={anonymous} />
         </Panel>
       </div>
+
+      {podium && <RoundPodium rows={podium.rows} month={podium.month} anonymous={anonymous} onClose={closePodium} />}
     </div>
   );
 }
 
-function RoundControls({ worldId, round, last, onChange }: { worldId: string; round: number; last: boolean; onChange: () => void }) {
+function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: string; round: number; last: boolean; onChange: () => void; onClosed: (s: ProfStateResponse) => void }) {
   const [minutes, setMinutes] = useState<number | undefined>(10);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function run(action: () => Promise<unknown>) {
+  async function run(action: () => Promise<ProfStateResponse>) {
     if (busy) return;
     setBusy(true);
     setError(null);
     try {
-      await action();
+      onClosed(await action());
       onChange();
     } catch (err) {
       setError((err as Error).message);
