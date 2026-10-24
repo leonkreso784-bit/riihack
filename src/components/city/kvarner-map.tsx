@@ -20,10 +20,14 @@ function loadLeaflet(): Promise<Leaflet> {
       l.id = "leaflet-css";
       l.rel = "stylesheet";
       l.href = `${LEAFLET}/leaflet.css`;
+      l.integrity = "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+      l.crossOrigin = "anonymous";
       document.head.appendChild(l);
     }
     const s = document.createElement("script");
     s.src = `${LEAFLET}/leaflet.js`;
+    s.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="; // SRI: leaflet@1.9.4
+    s.crossOrigin = "anonymous";
     s.onload = () => resolve((window as unknown as { L: Leaflet }).L);
     s.onerror = () => {
       loading = undefined;
