@@ -47,7 +47,7 @@ Provjereno kroz cijeli tok na produkciji (profesor stvori igru → kod → stude
 
 ## Otvoreno (sub 16:05)
 
-- **#91 logo točno kao V1** (izvorna slika iz `public/brand/`). Spremno za integratora. Dok se ne spoji, produkcija
+- **#91 logo i favicon točno kao V1** (izvorna slika iz `public/brand/`; `icon.png` 64 px, `apple-icon.png` 180 px). Spremno za integratora. Dok se ne spoji, produkcija
   prikazuje stari prepisani SVG S. (#78 je spojen prije nego je ovaj commit stigao, zato novi PR.)
 - **Ulazna stranica: ODLUKA (Rino, sub 16:10): vratiti predstavljanje na `/`.** Prvi zadatak sljedeće sesije:
   - `/` = predstavljačka stranica kakva je bila prije R1 (commit `cd6ee70`: veliki logo, „Simpolis", podnaslov,
