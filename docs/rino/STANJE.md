@@ -45,24 +45,31 @@
 Provjereno kroz cijeli tok na produkciji (profesor stvori igru → kod → student uđe → čekaonica → `/igra` → sobe),
 0 grešaka u konzoli, nijedan ekran nije širi od 375 px.
 
-## Otvoreno
+## Otvoreno (sub 16:05)
 
-- **#78** logo točno kao V1 (izvorna slika), logo u igri na pločici, mobitel bez prelijevanja. Spremno za integratora.
-- **Gumb Odjava** je maknut: treba Leonova ruta `POST /api/logout` (upisano u TEAM.md). Kod je u povijesti grane
-  `rino/logo-odjava` (commit `21bb687`), lako se vrati.
-- **Smjer dizajna (#39)**: Simon predlaže A (BitLife); odlučuješ s Leonom. Do tada vrijedi HotelixSim izgled.
+- **#91 logo točno kao V1** (izvorna slika iz `public/brand/`). Spremno za integratora. Dok se ne spoji, produkcija
+  prikazuje stari prepisani SVG S. (#78 je spojen prije nego je ovaj commit stigao, zato novi PR.)
+- **Ulazna stranica:** `/` je od R1 **ulaz kao Kahoot** („Uđi u igru", kod igre, „Ja sam profesor"). Stara
+  predstavljačka stranica (veliki logo, „Pogledaj igru", tri kartice) je zamijenjena. Rino odlučuje treba li je vratiti
+  (npr. `/` predstavljanje s gumbima „Uđi u igru" i „Ja sam profesor", a ulaz kodom na `/ulaz`).
+- **Gumb Odjava** maknut: treba Leonova ruta `POST /api/logout`. Kod je u commitu `21bb687`.
+- **Smjer dizajna (#39)**: odlučuješ s Leonom.
+- **Nakon žirija 1 (Leon):** profesor piše i šalje situacije (L12 backend, S8 Simon, `/profesor/[worldId]/situacije`).
+  Rino je rekao OK da Simon u `client.ts`/`mock.ts` **samo doda** `createSituation`, `dispatch`, `worldSettings` po
+  istom uzorku i javi prije PR-a.
+- **Preview grane sad idu na pravi API** (`NEXT_PUBLIC_USE_MOCK=0` samo za Preview). Za test `/igra` na previewu prvo
+  napravi igru kao profesor pa uđi kao student. Produkcija ostaje na lažnim podacima.
 
-## Sljedeće (redom, za M2 sub 18:45)
+## Sljedeće (redom, za M2 sub 18:45, Leonov redoslijed nakon žirija 1)
 
-| Red | Zadatak | Issue | Datoteke | Procjena |
-| --- | --- | --- | --- | --- |
-| 1 | **R5 situacija s likom**: razgovor (stream), vlastiti odgovor, klik, „Gost razmišlja…", presuda, „Zvučite kao brošura" | #25 | `igra/situacija/[id]/page.tsx`, `chat-panel`, `answer-form`, `verdict-card` | 45 min |
-| 2 | **R7 sokratski mentor**: prvo pitanje, pa osvrt | #27 | `igra/izvjestaj/[krug]/page.tsx`, `mentor-dialog` | 20 min |
-| 3 | **R6 profesorova ploča uživo**: krug, odbrojavanje, „Zatvori mjesec", studenti, mjesto za Simonovu kartu | #26 | `profesor/[worldId]/page.tsx` (`Running`), `prof-board` | 30 min |
-| 4 | **R4 dovršiti**: „Zatvori krug" (potvrda u stranici), prazna stanja, kraj sezone | #24 | `igra/page.tsx` | 20 min |
-| 5 | Osoblje uz sobe (`/igra/osoblje`, `GET /api/me/staff`) | — | `igra/osoblje/page.tsx` | 20 min |
-| 6 | R10 podij kruga i ljestvica za projektor | #46 | `round-podium`, `leaderboard-tabs` | 20 min |
-| 7 | R8 uvid u studenta, R9 poliranje | #28, #29 | | M3 |
+| Red | Zadatak | Issue | Što još (nakon žirija) |
+| --- | --- | --- | --- |
+| 1 | **R5 situacija s likom** (stream, vlastiti odgovor, klik, „Gost razmišlja…", presuda, „Zvučite kao brošura") | #25 | situacija **bez opcija** (`options: []`) = samo vlastiti odgovor; oznaka „od profesora" kad je `source === "custom"` |
+| 2 | **R6 profesorova ploča uživo** (krug, odbrojavanje, „Zatvori mjesec", studenti, mjesto za kartu) | #26 | poveznica „Situacije" → `/profesor/[worldId]/situacije` |
+| 3 | **R4 dovršiti** („Zatvori krug", prazna stanja, kraj sezone) | #24 | kartice na `/igra` imaju fiksno „lipanj": mjesec iz `ROUND_LABELS[finances.at(-1).round - 1]` |
+| 4 | Osoblje uz sobe (`/igra/osoblje`) | — | dodati `api.staff()` u `client.ts` (ruta `/api/me/staff` radi) |
+| 5 | R7 sokratski mentor, R10 podij | #27, #46 | poslije M2 |
+| 6 | R8 uvid u studenta | #28 | gumb „Promijeni ocjenu" (pitati Leona za rutu) |
 
 ## Više sesija usporedno
 
