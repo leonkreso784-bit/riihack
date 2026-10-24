@@ -72,13 +72,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
 
-- **Sad radim:** predaja na novu sesiju graditelja; zatim proba M2 na pravim podacima
-- **Sljedeće:** proba M2 (cijeli tok u pregledniku, `npm run seed:demo`), popis grešaka; produkcija na pravi API kad Leon kaže; M3 samo popravci i ruta za AI prijedlog (S9)
-- **Čekam od drugih:** Simon: `ai/mentor-input.ts` → `getTemplate`; S9 `proposeSituation`
+- **Sad radim:** popravci iz probe M2 (čekam Leonovu odluku koje)
+- **Sljedeće:** M3 samo popravci i poliranje; demo igra svježa prije svakog obilaska (`npm run seed:demo`)
+- **Čekam od drugih:** Simon: BUG-009 (presuda vlastitog odgovora pada na rezervu, `ai/judge.ts` i `prompts.ts`); Rino: zatvaranje kruga i izvještaj u sučelju (R4/R7), R8 uvid u studenta s „Promijeni ocjenu"
 - **Drugi čekaju od mene:** —
 - **Otvoreno:** —
-- **Spojeno:** L0–L12 (krugovi, obračun mjeseca, ugovori, vijesti, profesorove situacije, playbook, promjena ocjene), L8 smoke 14/14 i demo igra (`npm run seed:demo`), odjava; `main` zelen, 272 testa. **Pravila:** nitko ne pokreće `npm run db:push`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** sub 17:20
+- **Spojeno:** L0–L12, **L12 M3 ruta `situations/generate` (#118)**, L8 smoke 14/14 i demo igra, odjava. Proba M2 na pravim podacima (sub 18:05): ulaz, sobe, osoblje, plan, financije, grad, lik iz profesorove situacije, slanje odabranom studentu, promjena ocjene (API), zatvaranje kruga i pitanje mentora (API), obračun mjeseca rade; produkcija na pravom API-ju. **Pravila:** nitko ne pokreće `npm run db:push`; ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** sub 18:05
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
