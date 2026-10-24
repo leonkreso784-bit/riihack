@@ -13,8 +13,8 @@ opis · uzrok · rješenje · **lekcija**.
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
-- **Opis:** sub ~16:25 `npm run db:push` (drizzle-kit) na zajedničkoj Neon bazi predlaže pražnjenje tablica
-  `situations` i `contracts`.
+- **Opis:** sub ~16:25 `npm run db:push` (drizzle-kit) za L12 na zajedničkoj Neon bazi predlaže pražnjenje tablica
+  `situations` (120 redaka) i `contracts` (40 redaka). Agent je stao prije potvrde.
 - **Uzrok:** drizzle-kit krivo čita postojeća unique ograničenja i misli da tablice treba stvoriti iznova.
 - **Rješenje:** nitko ne pokreće `db:push`; shema se mijenja ručnim aditivnim SQL-om koji pregleda Leonov graditelj
   ([ADR-026](DECISIONS.md#adr-026)).

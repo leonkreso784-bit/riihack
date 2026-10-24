@@ -15,10 +15,10 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 **Kontekst.** `drizzle-kit push` na zajedničkoj Neon bazi predložio je pražnjenje tablica `situations` i `contracts`
 jer krivo čita postojeća unique ograničenja (BUG-006).
 **Odluka.** Nitko ne pokreće `npm run db:push`. Promjene sheme idu ručnim **aditivnim** SQL-om (`CREATE TABLE`,
-`ADD COLUMN IF NOT EXISTS`), koji pregleda Leonov graditelj. Shema L12 (`custom_situations`, `dispatches`,
-`worlds.auto_draw`) primjenjuje se tako.
-**Posljedice.** Mijenja korak „`db:push` samo aditivno" iz ADR-025. 🟨 [TEAM.md](../../TEAM.md) pravilo 5 još kaže
-da `db:push` radi Leon.
+`ADD COLUMN IF NOT EXISTS`), koji pregleda Leonov graditelj. Shema L12 primjenjuje se tako: tri aditivne naredbe u jednoj
+transakciji (`custom_situations`, `dispatches`, `worlds.auto_draw` sa zadanim `true`).
+**Posljedice.** Mijenja korak „`db:push` samo aditivno" iz ADR-025. [TEAM.md](../../TEAM.md) pravilo 5 usklađeno
+(`12a2f25`).
 
 <a id="adr-025"></a>
 ## ADR-025 · Ugovor za profesorove situacije i redoslijed spajanja
