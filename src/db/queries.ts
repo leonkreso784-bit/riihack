@@ -1,8 +1,8 @@
 // Zajednički upiti. Atomičnost: neon-http nema transakcija, pa jedna SQL naredba po operaciji.
-import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, getTableColumns, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "./index";
-import { companies, contracts, events, finances, players, plans, rooms, roundReports, situations, worlds } from "./schema";
-import type { CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
+import { answers, companies, contracts, events, finances, players, plans, rooms, roundReports, situations, worlds } from "./schema";
+import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
 import type { ContractRow, EventRow, FinanceRow, PlanRow } from "./schema";
 import { getSituation } from "@/content";
 import type { ChatTurn, SituationTemplate } from "@/lib/types";
@@ -115,6 +115,81 @@ export async function saveMentorQuestion(
         isNull(roundReports.mentorQuestion),
       ),
     );
+}
+
+// ---- L7: krugovi, odgovori, izvještaji ----
+
+export async function getWorld(worldId: string): Promise<WorldRow | null> {
+  if (!isUuid(worldId)) return null;
+  const rows = await db.select().from(worlds).where(eq(worlds.id, worldId)).limit(1);
+  return rows[0] ?? null;
+}
+
+/** Tvrtka s igračem samo ako je iz te igre (inače null, i za id koji nije uuid). */
+export async function getCompanyInWorld(
+  companyId: string,
+  worldId: string,
+): Promise<{ company: CompanyRow; player: PlayerRow } | null> {
+  if (!isUuid(companyId)) return null;
+  const rows = await db
+    .select({ company: companies, player: players })
+    .from(companies)
+    .innerJoin(players, eq(players.companyId, companies.id))
+    .where(and(eq(companies.id, companyId), eq(companies.worldId, worldId)))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/** Sobe svih tvrtki igre (za izbor sobe situacije pri otvaranju kruga). */
+export async function listWorldRooms(worldId: string): Promise<RoomRow[]> {
+  return db
+    .select(getTableColumns(rooms))
+    .from(rooms)
+    .innerJoin(companies, eq(rooms.companyId, companies.id))
+    .where(eq(companies.worldId, worldId));
+}
+
+/** Situacije tvrtke s odgovorom (ili null), po krugu; bez `round` sve situacije. */
+export async function listSituationsWithAnswers(
+  companyId: string,
+  round?: number,
+): Promise<{ situation: SituationRow; answer: AnswerRow | null }[]> {
+  const where =
+    round === undefined
+      ? eq(situations.companyId, companyId)
+      : and(eq(situations.companyId, companyId), eq(situations.round, round));
+  return db
+    .select({ situation: situations, answer: answers })
+    .from(situations)
+    .leftJoin(answers, eq(answers.situationId, situations.id))
+    .where(where)
+    .orderBy(asc(situations.round), asc(situations.templateId));
+}
+
+export async function countSituations(companyId: string, round: number): Promise<number> {
+  const [{ n }] = await db
+    .select({ n: count() })
+    .from(situations)
+    .where(and(eq(situations.companyId, companyId), eq(situations.round, round)));
+  return n;
+}
+
+/** Izvještaji svih tvrtki igre (za ljestvicu: skok u zadnjem zatvorenom krugu). */
+export async function listWorldReports(worldId: string): Promise<RoundReportRow[]> {
+  return db
+    .select(getTableColumns(roundReports))
+    .from(roundReports)
+    .innerJoin(companies, eq(roundReports.companyId, companies.id))
+    .where(eq(companies.worldId, worldId))
+    .orderBy(asc(roundReports.round));
+}
+
+export async function listCompanyReports(companyId: string): Promise<RoundReportRow[]> {
+  return db
+    .select()
+    .from(roundReports)
+    .where(eq(roundReports.companyId, companyId))
+    .orderBy(asc(roundReports.round));
 }
 
 export async function logEvent(e: {
