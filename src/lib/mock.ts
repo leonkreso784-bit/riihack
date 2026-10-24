@@ -10,6 +10,7 @@ import type {
   MeResponse,
   Metrics,
   NewsItem,
+  SituationDraft,
   ProfStateResponse,
   Room,
   RoomStatus,
@@ -273,3 +274,19 @@ export const MOCK_DETAIL: CompanyDetailResponse = { company: COMPANY, situations
 
 // Staff of the first content hotel (same data the API serves for a real game).
 export const MOCK_STAFF = HOTELS[0].staff;
+
+// S8: sample draft for the mock AI suggestion and the mock playbook export.
+export const MOCK_SAMPLE_DRAFT: SituationDraft = {
+  title: "Gost se žali na buku iz bazena",
+  text: "Gost iz sobe 312 zove recepciju u 23:30 jer se uz bazen još čuje glasna glazba i smijeh. Ima dijete koje ne može zaspati, a sutra rano putuje. Traži da se odmah nešto napravi.",
+  area: "Gosti",
+  difficulty: 3,
+  character: { name: "Marko Horvat", role: "gost u sobi 312", personality: "umoran i nestrpljiv, ali pošten", goal: "dobiti mir za spavanje i priznanje problema" },
+  rubric: [
+    { id: "c1", text: "Ispriča se i pokaže razumijevanje za gosta", skill: "empathy" },
+    { id: "c2", text: "Ponudi konkretno rješenje odmah (npr. opomena, druga soba)", skill: "problemSolving" },
+    { id: "c3", text: "Jasno kaže što će se i kada dogoditi", skill: "communication" },
+  ],
+  options: [],
+  effects: { guests: 3, reviews: 2 },
+};
