@@ -10,6 +10,8 @@ import { validateJoin } from "@/lib/engine/validate";
 import { HttpError } from "@/lib/http";
 import type { JoinRequest, JoinResponse, Room } from "@/lib/types";
 import type { requirePlayer } from "@/lib/session";
+import { createOffers } from "./city";
+import { openRoundForLateJoin } from "./round";
 import { toRoom } from "./views";
 
 type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
@@ -49,7 +51,8 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
     return { token, res: { companyId: back.company.id, hotelName: back.company.name, place: hotel.place, stars: hotel.stars } };
   }
 
-  if (world.status !== "lobby") throw new HttpError(409, "Igra je već počela");
+  // BUG-027 (Leon sub ~23:10): kasni ulaz dok igra traje; nakon kraja sezone više ne.
+  if (world.status === "finished") throw new HttpError(409, "Sezona je završena");
   if (all.length >= world.maxPlayers) throw new HttpError(409, "Igra je puna");
 
   const hotel = assignHotel(HOTELS, all.map((c) => c.company.templateId));
@@ -66,6 +69,8 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
       cash: hotel.startCash,
       startCash: hotel.startCash,
       joinIndex: all.length + 1,
+      // kasni ulaz: igra od tekućeg mjeseca, prijašnji se ne zatvaraju za nju
+      closedRound: world.status === "running" ? Math.max(0, world.round - 1) : 0,
     }),
     db.insert(rooms).values(
       hotel.rooms.map((r) => ({
@@ -89,6 +94,11 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
     type: "player.joined",
     payload: { name, hotelName, templateId: hotel.id, place: hotel.place },
   });
+  if (world.status === "running") {
+    // Kasni ulaz: situacije i ponuda tekućeg mjeseca kao i ostali (createOffers preskače tvrtke koje je već imaju).
+    await openRoundForLateJoin(world, companyId);
+    await createOffers(world, world.round);
+  }
   return { token, res: { companyId, hotelName, place: hotel.place, stars: hotel.stars } };
 }
 

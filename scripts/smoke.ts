@@ -383,6 +383,28 @@ async function main() {
     expectStatus(await new User("bez računa").call("GET", "/api/prof/games"), 401);
   });
 
+  await step(20, "kasni ulaz: student uđe nakon početka i igra od tekućeg mjeseca (BUG-027)", [], async () => {
+    const p = new User("profesor kasni"), a = new User("Rana"), late = new User("Kasni");
+    const w = await p.call("POST", "/api/worlds", { name: `${worldName} kasni`, maxPlayers: 2 });
+    expectStatus(w, 200);
+    expectStatus(await a.call("POST", "/api/join", joinBody(w.data.joinCode, "Rana", "Hotel Rani")), 200);
+    expectStatus(await p.call("POST", `/api/prof/${w.data.worldId}/start`), 200);
+    const j = await late.call("POST", "/api/join", joinBody(w.data.joinCode, "Kasni", "Hotel Kasni"));
+    expectStatus(j, 200);
+    const meA = (await a.call("GET", "/api/me")).data as MeResponse;
+    const meL = (await late.call("GET", "/api/me")).data as MeResponse;
+    expect(meL.situations.length === meA.situations.length && meL.situations.length > 0, `situacije: ${meL.situations.length} prema ${meA.situations.length}`);
+    expect(meL.contracts.some((c) => c.status === "offered"), "kasni nema ponudu mjeseca");
+    const late2 = new User("Kasni 2"); // ponovni ulaz izdaje novi token, pa dalje radi nova kutija kolačića
+    const again = await late2.call("POST", "/api/join", joinBody(w.data.joinCode, "Kasni", "Hotel Kasni"));
+    expect(again.data?.companyId === j.data.companyId, "ponovni ulaz dao drugi hotel");
+    expectStatus(await p.call("POST", `/api/prof/${w.data.worldId}/round`, { fromRound: 1 }), 200);
+    const after = (await late2.call("GET", "/api/me")).data as MeResponse;
+    expect(after.world.round === 2 && after.finances.length === 1, `nakon zatvaranja: krug ${after.world.round}, obračuna ${after.finances.length}`);
+    const full = await new User("Treći").call("POST", "/api/join", joinBody(w.data.joinCode, "Treći", "Hotel Treći kasni")); // igra za 2 je puna i kad traje
+    expectStatus(full, 409);
+  });
+
   console.log(failed ? `\n${failed} korak(a) palo` : "\nSve prošlo");
   process.exit(failed ? 1 : 0);
 }
