@@ -1,0 +1,41 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { api, usePoll } from "@/lib/client";
+import { PageHeader } from "@/components/page-header";
+import { FormError } from "@/components/form";
+import { DepartmentsFlow } from "@/components/tokovi/departments-flow";
+
+// Tokovi, skica 3: kako odjeli utječu na hotel (ljudi, upozorenja, ulaganje, pravilo, situacije, pokazatelj, trošak).
+// Samo postojeći API: /api/me, osoblje i sobe. Osoblje i sobe se rijetko mijenjaju, pa se čitaju sporo.
+export default function DepartmentsFlowPage() {
+  const { data, error } = usePoll(api.me);
+  const { data: staff } = usePoll(api.staff, 60_000);
+  const { data: rooms } = usePoll(api.rooms, 60_000);
+  const back = (
+    <Link href="/igra/osoblje" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
+      <ArrowLeft className="size-4" aria-hidden /> Odjeli
+    </Link>
+  );
+  if (error && !data)
+    return (
+      <div className="space-y-4 pt-4 md:pt-0">
+        {back}
+        <FormError>{error.message}</FormError>
+      </div>
+    );
+  return (
+    <div className="space-y-5 pt-4 md:pt-0">
+      {back}
+      <PageHeader title="Kako odjeli utječu na hotel" subtitle="Tko radi u odjelu, što ga muči, što u njega ulažeš i kako se to vidi u pokazatelju i troškovima." />
+      {!data ? (
+        <div className="h-80 animate-pulse rounded-[var(--radius)] bg-muted" aria-busy="true" aria-label="Učitavam" />
+      ) : (
+        <DepartmentsFlow
+          input={{ metrics: data.company.metrics, plan: data.plan.investments ?? {}, staff: staff ?? null, rooms: rooms ?? null, situations: data.situations, round: data.world.round }}
+        />
+      )}
+    </div>
+  );
+}

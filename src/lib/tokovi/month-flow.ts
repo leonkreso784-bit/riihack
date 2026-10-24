@@ -143,7 +143,7 @@ export function buildMonthFlow(
   const steps: FlowStep[] = [
     {
       id: "start",
-      title: `Početak: ${month}`,
+      title: "Profesor zatvara mjesec",
       big: month,
       small: "Mjesec se zatvara",
       tone: "dark",
@@ -160,7 +160,7 @@ export function buildMonthFlow(
     {
       id: "ugled",
       title: "Ugled",
-      small: "Nije spremljeno uz obračun",
+      small: "Svih pet pokazatelja, gradi se mjesecima",
       inputs: [{ label: "Svih pet pokazatelja", value: "nije spremljeno uz obračun" }],
       rule: [
         `Kvaliteta = ponderirani prosjek svih pet pokazatelja (${qualityWeights}), u trenutku zatvaranja mjeseca.`,

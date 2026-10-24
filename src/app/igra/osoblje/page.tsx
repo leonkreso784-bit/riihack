@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { AlertTriangle, Moon, Sun, Sunset, Users } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur } from "@/lib/format";
@@ -62,6 +63,9 @@ export default function DepartmentsPage() {
   return (
     <form onSubmit={save} className="space-y-6 pt-4 md:pt-0">
       <PageHeader title="Odjeli" subtitle={`${staff.length} ljudi u ${DEPARTMENTS.length} odjela · ulaganja za ${month}`} />
+      <Link href="/igra/osoblje/tok" className="inline-flex min-h-11 items-center font-semibold text-secondary-foreground hover:underline">
+        Kako odjeli utječu na hotel →
+      </Link>
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 md:grid-cols-2">
         {DEPARTMENTS.map((d) => (

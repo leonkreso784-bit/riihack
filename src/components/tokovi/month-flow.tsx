@@ -8,6 +8,7 @@ import type { RoundFinance } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Panel } from "@/components/panel";
 import { Delta } from "@/components/metric-bar";
+import { Slider } from "@/components/tokovi/flow-ui";
 import { buildMonthFlow, ESTIMATE_LABEL, eur, estimateWhatIf, type FlowStep, type StepId } from "@/lib/tokovi/month-flow";
 
 const ICONS: Record<StepId, LucideIcon> = {
@@ -131,32 +132,6 @@ function StepDetail({ step, wide }: { step: FlowStep; wide?: boolean }) {
         </dl>
       </section>
       {step.note && <p className={cn(wide && "col-span-3", "rounded-2xl border border-sand bg-sand px-4 py-3 text-sm leading-relaxed font-medium")}>{step.note}</p>}
-    </div>
-  );
-}
-
-function Slider({ id, label, value, min, max, step, onChange, disabled, format }: { id: string; label: string; value: number; min: number; max: number; step: number; onChange: (n: number) => void; disabled: boolean; format: (n: number) => string }) {
-  return (
-    <div>
-      <label htmlFor={id} className="flex items-baseline justify-between gap-3 text-sm font-bold">
-        {label}
-        <span className="text-lg font-extrabold text-secondary-foreground tabular-nums">{format(value)}</span>
-      </label>
-      <input
-        id={id}
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(Number(e.target.value))}
-        className="my-2 h-2.5 w-full cursor-pointer accent-primary disabled:cursor-not-allowed disabled:opacity-50"
-      />
-      <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
-        <span>{format(min)}</span>
-        <span>{format(max)}</span>
-      </div>
     </div>
   );
 }
