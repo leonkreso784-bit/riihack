@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 17:50–17:52 · produkcija na pravim podacima
+
+- **Spojeno:** #115 profesorski kod demo igre samo iz `.env.local` (17:50; typecheck, lint, 284 testa, build i CI
+  zeleni), #116 dokumentacija (17:51).
+- **Produkcija na pravim podacima od ~17:52** ([ADR-030](DECISIONS.md#adr-030)): `/`, `/ulaz`, `/igra`,
+  `/profesor` vraćaju 200; `/api/me` bez kolačića 401; `/api/join` s krivim kodom 404.
+- **Slijedi:** proba M2 na pravim podacima (graditelj), obilazak 2 u 18:45.
+
 ## Sub 24.10. 17:12–17:40 · S9, osoblje, produkcija na pravim podacima
 
 - **Spojeno:** S9 AI prijedlog situacije i mentor s obračunom mjeseca (#111, 17:15), osoblje po odjelima i poveznica
