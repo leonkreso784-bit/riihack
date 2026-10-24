@@ -20,7 +20,7 @@ export default function WaitingRoom() {
     return (
       <div className="mx-auto max-w-md space-y-4 pt-12 text-center">
         <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>
-        <Link href="/" className="font-semibold text-secondary-foreground hover:underline">Natrag na ulaz</Link>
+        <Link href="/ulaz" className="font-semibold text-secondary-foreground hover:underline">Natrag na ulaz</Link>
       </div>
     );
   if (!data) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
