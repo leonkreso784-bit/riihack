@@ -1,4 +1,5 @@
-// Javni profil hotela (L14): ono što drugi igrači i profesor vide na karti. Bez novca, odgovora i ocjena.
+// Javni profil hotela (L14): ono što drugi igrači i profesor vide na karti. Bez stanja novca, troškova, odgovora i ocjena;
+// prihod i dobit zatvorenih mjeseci su javni (kao javni registar FINA-e).
 import type { CompanyRow, ContractRow, FinanceRow, PlanRow, WorldRow } from "@/db/schema";
 import { listCompanies, listPlans, listRoomPrices, listWorldContracts, listWorldFinances } from "@/db/queries";
 import { getBusiness, getHotel } from "@/content";
@@ -15,19 +16,22 @@ export function staffByDepartment(template: HotelTemplate): Record<StaffDepartme
 
 /**
  * Javni pogled na hotel. Cijena iz plana tekućeg kruga (bez plana referentna cijena soba), popunjenost samo iz
- * zadnjeg obračunatog mjeseca, ugovori koji vrijede u tom krugu.
+ * zadnjeg obračunatog mjeseca, ugovori koji vrijede u tom krugu. Iz obračuna jezgre samo prihod i dobit zatvorenih
+ * mjeseci (`round ≤ settledRound`), najstariji prvi; `cashAfter`, troškovi, raspodjela i ulaganja nikad.
  */
 export function toPublicView(p: {
   company: CompanyRow;
   playerName: string;
   template: HotelTemplate;
   round: number;
+  settledRound: number;
   plan: PlanRow | null;
   rooms: { basePrice: number }[];
   finances: FinanceRow[];
   contracts: ContractRow[];
 }): CompanyPublicView {
-  const last = p.finances.reduce<FinanceRow | undefined>((best, f) => (!best || f.round > best.round ? f : best), undefined);
+  const closed = p.finances.filter((f) => f.round <= p.settledRound).sort((a, b) => a.round - b.round);
+  const last = closed.reduce<FinanceRow | undefined>((best, f) => (!best || f.round > best.round ? f : best), undefined);
   return {
     companyId: p.company.id,
     hotelName: p.company.name,
@@ -45,12 +49,14 @@ export function toPublicView(p: {
       businessName: getBusiness(t.businessId).name,
       title: t.title,
     })),
+    finances: closed.map((f) => ({ round: f.round, revenue: f.revenue, profit: f.profit })),
   };
 }
 
 /** Javni pogledi za sve tvrtke igre iz skupnih upita (retci cijele igre, filtrirani po tvrtki). */
 export function toPublicViews(d: {
   round: number;
+  settledRound: number;
   companies: { company: CompanyRow; playerName: string }[];
   plans: PlanRow[];
   rooms: { companyId: string; basePrice: number }[];
@@ -63,6 +69,7 @@ export function toPublicViews(d: {
       playerName,
       template: getHotel(company.templateId),
       round: d.round,
+      settledRound: d.settledRound,
       plan: d.plans.find((x) => x.companyId === company.id) ?? null,
       rooms: d.rooms.filter((r) => r.companyId === company.id),
       finances: d.finances.filter((f) => f.companyId === company.id),
@@ -82,6 +89,7 @@ export async function loadPublicViews(world: WorldRow): Promise<CompanyPublicVie
   ]);
   return toPublicViews({
     round: world.round,
+    settledRound: world.settledRound,
     companies: all.map(({ company, player }) => ({ company, playerName: player.displayName })),
     plans,
     rooms,
