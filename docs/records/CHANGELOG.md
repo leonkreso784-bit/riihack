@@ -7,6 +7,10 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#164](https://github.com/leonkreso784-bit/riihack/pull/164) | 20:40 | Rino | R13: pošta na `/igra/posta`, ponude s protuponudom, broj nepročitanih u navigaciji |
+| [#163](https://github.com/leonkreso784-bit/riihack/pull/163) | 20:35 | Leon | dokumentacija: obilazak 2 po Leonovom opisu |
+| [#160](https://github.com/leonkreso784-bit/riihack/pull/160) | 20:35 | Rino | R7: izvještaj mjeseca (`/igra/izvjestaj/[krug]`) i sokratski mentor |
+| [#161](https://github.com/leonkreso784-bit/riihack/pull/161) | 20:30 | Leon | dokumentacija: profesorski računi na produkciji, BUG-012 |
 | [#159](https://github.com/leonkreso784-bit/riihack/pull/159) | 20:17 | Leon | dokumentacija: BUG-008 riješen |
 | [#157](https://github.com/leonkreso784-bit/riihack/pull/157) | 20:13 | Rino | plan bez imena prijašnjeg projekta (BUG-008 riješen) |
 | [#150](https://github.com/leonkreso784-bit/riihack/pull/150) | 20:11 | Simon | `PROMISE.md`: obilazak žirija 2, opseg dopunjen s L16 i S9 |
