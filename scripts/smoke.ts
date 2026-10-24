@@ -266,7 +266,7 @@ async function main() {
     const b = f.breakdown;
     expect(b, "nema raspodjele troškova (breakdown)");
     expect(b.costInvestments === sum, `breakdown.costInvestments ${b.costInvestments}, očekivano ${sum}`);
-    const costs = b.costStaff + b.costRooms + b.costMarketing + b.costContracts + b.costInvestments;
+    const costs = b.costStaff + b.costRooms + b.costMarketing + b.costContracts + b.costInvestments + (b.costVat ?? 0) + (b.costCommission ?? 0) + (b.costMaterials ?? 0);
     expect(f.costs === costs, `costs ${f.costs} ≠ zbroj stavki ${costs}`);
   });
 

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Megaphone, Tag } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, num } from "@/lib/format";
-import { activeIn, breakdown, staffCostOf } from "@/lib/finance-view";
+import { activeIn, breakdown, contractMargin, nightMargin, staffCostOf } from "@/lib/finance-view";
 import { FIXED_COST_PER_ROOM, MARKETING_MAX, PRICE_MAX, PRICE_MIN, ROUND_LABELS } from "@/lib/rules";
 import type { MeResponse } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -129,7 +129,8 @@ function Cost({ data, price, marketing }: { data: MeResponse; price: number; mar
   const total = staff + rooms + marketing + contractCosts + investments;
   const last = data.finances.at(-1);
   const capacity = last?.capacityNights ?? company.roomsCount * 30; // ponytail: 30 nights per room until the first settlement
-  const breakEven = Math.max(0, Math.ceil((total - contractRevenue) / price));
+  // Kalibracija: noć ostavlja cijenu bez PDV-a, provizije portala i materijala (nightMargin), isto kao obračun.
+  const breakEven = Math.max(0, Math.ceil((total - contractMargin(contractRevenue)) / Math.max(1, nightMargin(price))));
   const lastItems = last && breakdown(last, company, contracts);
 
   return (
@@ -144,7 +145,7 @@ function Cost({ data, price, marketing }: { data: MeResponse; price: number; mar
       </dl>
       <p className={cn("mt-3 rounded-xl px-4 py-3 text-sm", breakEven > capacity ? "bg-down-soft text-down" : "bg-muted")}>
         {contractRevenue > 0 && <>Ugovori donose {eur(contractRevenue)}. </>}
-        Da pokriješ rashode po cijeni od {eur(price)} trebaš <strong>{num(breakEven)} noćenja</strong> (
+        Da pokriješ rashode po cijeni od {eur(price)} (nakon PDV-a, provizije portala i materijala) trebaš <strong>{num(breakEven)} noćenja</strong> (
         {Math.round((breakEven / capacity) * 100)} % popunjenosti od {num(capacity)} mogućih).
         {breakEven > capacity && " To je više nego što hotel može primiti: ovaj mjesec ide u gubitak."}
       </p>

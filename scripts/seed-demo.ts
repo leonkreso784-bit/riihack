@@ -50,10 +50,10 @@ const DEMO_PROF_CODE = code("DEMO_PROF_CODE", null, PROF_CODE_LENGTH);
 // pa ime hotela prati to mjesto. invest = ulaganje u odjele u planu mjeseca (val 3, trošak ide u obračun).
 const STUDENTS: { name: string; hotel: string; price: number; marketing: number; invest?: DepartmentInvestments }[] = [
   { name: "Ana Horvat", hotel: "Hotel Rijeka Centar", price: 1.05, marketing: 1500 },
-  { name: "Marko Kovačević", hotel: "Villa Lungomare Opatija", price: 1.25, marketing: 3000, invest: { housekeeping: 2000, reception: 1500 } },
+  { name: "Marko Kovačević", hotel: "Villa Lungomare Opatija", price: 1.25, marketing: 2000, invest: { housekeeping: 2000, reception: 1500 } },
   { name: "Ivana Babić", hotel: "Pansion Bura Omišalj", price: 0.9, marketing: 0 },
   { name: "Petar Jurić", hotel: "Vila Čikat Lošinj", price: 1.1, marketing: 800 },
-  { name: "Maja Novak", hotel: "Hotel Plaža Crikvenica", price: 1.4, marketing: 2200, invest: { kitchen: 3000, maintenance: 1000 } },
+  { name: "Maja Novak", hotel: "Hotel Plaža Crikvenica", price: 1.4, marketing: 2000, invest: { kitchen: 3000, maintenance: 1000 } },
 ];
 
 // Dvije poruke među hotelima (val 3, L18): od koga, kome, naslov, tekst.
@@ -294,7 +294,7 @@ async function main() {
     }
   }
 
-  // Planovi: cijena prema hotelu (55–140 €), marketing 0–3000 €, ulaganje u odjele kod dva hotela.
+  // Planovi: cijena prema hotelu (55–140 €), marketing 0–2000 € (MARKETING_MAX), ulaganje u odjele kod dva hotela.
   const planOf = async (s: (typeof STUDENTS)[number]) => {
     const ctx = await playerCtx(companyOf[s.name]);
     const ref = refPrice(await listRooms(ctx.company.id));

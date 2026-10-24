@@ -5,7 +5,7 @@ import { ChartColumn, Percent, Trophy, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, num, plural } from "@/lib/format";
 import { breakdown, growthPct, type Breakdown } from "@/lib/finance-view";
-import { ROUND_LABELS } from "@/lib/rules";
+import { ROUND_LABELS, VAT_PCT } from "@/lib/rules";
 import type { RoundFinance } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
@@ -31,6 +31,9 @@ const LINES: (Line | string)[] = [
   { label: "Marketing", hint: HINTS.costMarketing, value: (m) => eur(m.b.costs.marketing), indent: true },
   { label: "Ugovori s tvrtkama", hint: HINTS.costContracts, value: (m) => eur(m.b.costs.contracts), indent: true },
   { label: "Ulaganja u odjele", hint: HINTS.costInvestments, value: (m) => eur(m.b.costs.investments), indent: true },
+  { label: `PDV (${VAT_PCT} %)`, hint: HINTS.costVat, value: (m) => eur(m.b.costs.vat), indent: true },
+  { label: "Provizija portala", hint: HINTS.costCommission, value: (m) => eur(m.b.costs.commission), indent: true },
+  { label: "Materijal i potrošni", hint: HINTS.costMaterials, value: (m) => eur(m.b.costs.materials), indent: true },
   { label: "Ukupni rashodi", hint: HINTS.costs, value: (m) => eur(m.f.costs), strong: true },
   "Rezultat",
   { label: "Dobit / gubitak", hint: HINTS.result, value: (m) => signed(m.f.profit), strong: true, tone: (m) => (m.f.profit < 0 ? "text-down" : "text-up") },

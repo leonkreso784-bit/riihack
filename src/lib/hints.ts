@@ -1,3 +1,4 @@
+import { COMMISSION_PCT, MATERIALS_PCT, VAT_PCT } from "./rules";
 import type { MetricKey } from "./types";
 
 // BUG-072: one place for the "?" explanations, so the same word means the same thing on every page.
@@ -26,6 +27,9 @@ export const HINTS = {
   costMarketing: "Iznos koji si u planu odredio za oglašavanje.",
   costContracts: "Mjesečni trošak ugovora s dobavljačima i tvrtkama u gradu.",
   costInvestments: "Dodatna ulaganja u odjele koja si odredio u planu.",
+  costVat: `PDV od ${VAT_PCT} % sadržan u onome što gosti plate. Novac koji pripada državi, ne hotelu.`,
+  costCommission: `Provizija portala za rezervacije gostiju (${COMMISSION_PCT} % prihoda bez PDV-a). Ugovori s agencijama idu bez portala.`,
+  costMaterials: `Hrana, piće, tekstil, sredstva za čišćenje i drugi potrošni materijal: ${MATERIALS_PCT} % prihoda bez PDV-a.`,
   costs: "Svi troškovi hotela u mjesecu.",
   result: "Prihodi minus rashodi. Zeleno je dobit, crveno gubitak.",
   growth: "Koliko su se prihodi promijenili u odnosu na prethodni mjesec.",
