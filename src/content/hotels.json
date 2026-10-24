@@ -631,5 +631,591 @@
         "note": "Ove godine prvi put radi u ugostiteljstvu."
       }
     ]
+  },
+  {
+    "id": "losinj-boutique",
+    "place": "Mali Lošinj",
+    "stars": 4,
+    "description": "Mali boutique hotel u staroj kapetanskoj kući iznad luke. Gosti traže osobnu pažnju i originalnost, recenzije su odlične, a novca je malo jer su sobe skupe za održavanje.",
+    "startMetrics": {
+      "guests": 60,
+      "reviews": 72,
+      "staff": 50,
+      "operations": 44,
+      "finance": 24
+    },
+    "staffCost": 5400,
+    "startCash": 20000,
+    "rooms": [
+      {
+        "number": "1",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 158,
+        "status": "free"
+      },
+      {
+        "number": "2",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 158,
+        "status": "occupied"
+      },
+      {
+        "number": "3",
+        "floor": 1,
+        "type": "single",
+        "beds": 1,
+        "view": "ulica",
+        "basePrice": 104,
+        "status": "free"
+      },
+      {
+        "number": "4",
+        "floor": 1,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 240,
+        "status": "free"
+      },
+      {
+        "number": "5",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "park",
+        "basePrice": 142,
+        "status": "free"
+      },
+      {
+        "number": "6",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 166,
+        "status": "free"
+      },
+      {
+        "number": "7",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 166,
+        "status": "cleaning",
+        "note": "Dogovoreno dodatno pospremanje za gosta s alergijom."
+      },
+      {
+        "number": "8",
+        "floor": 2,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 258,
+        "status": "occupied"
+      },
+      {
+        "number": "9",
+        "floor": 2,
+        "type": "family",
+        "beds": 4,
+        "view": "park",
+        "basePrice": 214,
+        "status": "free"
+      },
+      {
+        "number": "10",
+        "floor": 2,
+        "type": "single",
+        "beds": 1,
+        "view": "park",
+        "basePrice": 108,
+        "status": "free"
+      },
+      {
+        "number": "11",
+        "floor": 3,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 276,
+        "status": "free"
+      },
+      {
+        "number": "12",
+        "floor": 3,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 176,
+        "status": "broken",
+        "note": "Pukla je cijev u zidu, na stropu je mrlja od vlage."
+      }
+    ],
+    "staff": [
+      {
+        "name": "Helena Frlan",
+        "department": "management",
+        "role": "Vlasnica i direktorica",
+        "shift": "morning",
+        "note": "Osobno dočekuje goste, često radi i do ponoći."
+      },
+      {
+        "name": "Andrej Zorović",
+        "department": "reception",
+        "role": "Recepcionar i concierge",
+        "shift": "morning"
+      },
+      {
+        "name": "Sara Mohorović",
+        "department": "reception",
+        "role": "Recepcionarka",
+        "shift": "afternoon"
+      },
+      {
+        "name": "Mirjana Vidulin",
+        "department": "housekeeping",
+        "role": "Voditeljica domaćinstva",
+        "shift": "morning"
+      },
+      {
+        "name": "Elena Pavlinić",
+        "department": "housekeeping",
+        "role": "Sobarica",
+        "shift": "afternoon",
+        "note": "Najbolja u hotelu, lovi je konkurencija."
+      },
+      {
+        "name": "Dario Kvarantan",
+        "department": "maintenance",
+        "role": "Majstor za sve",
+        "shift": "afternoon",
+        "note": "Radi na pola radnog vremena."
+      },
+      {
+        "name": "Renata Ćurković",
+        "department": "kitchen",
+        "role": "Šefica kuhinje",
+        "shift": "morning"
+      }
+    ]
+  },
+  {
+    "id": "crikvenica-plaza",
+    "place": "Crikvenica",
+    "stars": 3,
+    "description": "Veliki hotel uz samu plažu, pun grupa i paket aranžmana. Gotovo je stalno popunjen i financijski stabilan, ali recenzije su mlake jer se osoblje ne stigne posvetiti svakom gostu.",
+    "startMetrics": {
+      "guests": 44,
+      "reviews": 38,
+      "staff": 40,
+      "operations": 56,
+      "finance": 72
+    },
+    "staffCost": 8100,
+    "startCash": 20000,
+    "rooms": [
+      {
+        "number": "101",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 92,
+        "status": "free"
+      },
+      {
+        "number": "102",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 92,
+        "status": "occupied"
+      },
+      {
+        "number": "103",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 92,
+        "status": "free"
+      },
+      {
+        "number": "104",
+        "floor": 1,
+        "type": "single",
+        "beds": 1,
+        "view": "ulica",
+        "basePrice": 56,
+        "status": "free"
+      },
+      {
+        "number": "105",
+        "floor": 1,
+        "type": "family",
+        "beds": 4,
+        "view": "more",
+        "basePrice": 132,
+        "status": "occupied"
+      },
+      {
+        "number": "201",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 96,
+        "status": "free"
+      },
+      {
+        "number": "202",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 96,
+        "status": "cleaning",
+        "note": "Grupa je otišla ranije, soba čeka pospremanje."
+      },
+      {
+        "number": "203",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 96,
+        "status": "free"
+      },
+      {
+        "number": "204",
+        "floor": 2,
+        "type": "single",
+        "beds": 1,
+        "view": "ulica",
+        "basePrice": 58,
+        "status": "free"
+      },
+      {
+        "number": "205",
+        "floor": 2,
+        "type": "family",
+        "beds": 4,
+        "view": "more",
+        "basePrice": 136,
+        "status": "free"
+      },
+      {
+        "number": "206",
+        "floor": 2,
+        "type": "family",
+        "beds": 4,
+        "view": "park",
+        "basePrice": 122,
+        "status": "broken",
+        "note": "Pokvario se hladnjak, gosti iz sobe su preseljeni."
+      },
+      {
+        "number": "301",
+        "floor": 3,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 158,
+        "status": "free"
+      },
+      {
+        "number": "302",
+        "floor": 3,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 162,
+        "status": "occupied"
+      },
+      {
+        "number": "303",
+        "floor": 3,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 104,
+        "status": "free"
+      },
+      {
+        "number": "304",
+        "floor": 3,
+        "type": "double",
+        "beds": 2,
+        "view": "ulica",
+        "basePrice": 88,
+        "status": "free"
+      },
+      {
+        "number": "305",
+        "floor": 3,
+        "type": "single",
+        "beds": 1,
+        "view": "park",
+        "basePrice": 60,
+        "status": "free"
+      },
+      {
+        "number": "401",
+        "floor": 4,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 176,
+        "status": "free"
+      },
+      {
+        "number": "402",
+        "floor": 4,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 112,
+        "status": "free"
+      }
+    ],
+    "staff": [
+      {
+        "name": "Ante Mrakovčić",
+        "department": "management",
+        "role": "Direktor hotela",
+        "shift": "morning"
+      },
+      {
+        "name": "Tea Šarić",
+        "department": "management",
+        "role": "Voditeljica prodaje",
+        "shift": "morning",
+        "note": "Dovodi grupe i agencije."
+      },
+      {
+        "name": "Vedran Kosanović",
+        "department": "reception",
+        "role": "Voditelj recepcije",
+        "shift": "morning"
+      },
+      {
+        "name": "Iva Jakovac",
+        "department": "reception",
+        "role": "Recepcionarka",
+        "shift": "afternoon"
+      },
+      {
+        "name": "Hrvoje Starc",
+        "department": "reception",
+        "role": "Noćni recepcionar",
+        "shift": "night"
+      },
+      {
+        "name": "Biserka Ružić",
+        "department": "housekeeping",
+        "role": "Voditeljica domaćinstva",
+        "shift": "morning"
+      },
+      {
+        "name": "Danijela Smojver",
+        "department": "housekeeping",
+        "role": "Sobarica",
+        "shift": "morning",
+        "note": "Trudna, uskoro odlazi na dopust."
+      },
+      {
+        "name": "Mario Kinkela",
+        "department": "maintenance",
+        "role": "Domar",
+        "shift": "afternoon"
+      },
+      {
+        "name": "Slavko Perhat",
+        "department": "kitchen",
+        "role": "Šef kuhinje",
+        "shift": "morning"
+      }
+    ]
+  },
+  {
+    "id": "rab-mali",
+    "place": "Rab",
+    "stars": 2,
+    "description": "Mali obiteljski hotel s dvanaest soba u starom dijelu grada Raba, s pogledom na zvonike. Nema bazena ni spa, ali ima vjerne goste i vrlo odano osoblje, a novca za ulaganja gotovo nema.",
+    "startMetrics": {
+      "guests": 55,
+      "reviews": 50,
+      "staff": 70,
+      "operations": 35,
+      "finance": 40
+    },
+    "staffCost": 5400,
+    "startCash": 20000,
+    "rooms": [
+      {
+        "number": "1",
+        "floor": 1,
+        "type": "single",
+        "beds": 1,
+        "view": "ulica",
+        "basePrice": 44,
+        "status": "free"
+      },
+      {
+        "number": "2",
+        "floor": 1,
+        "type": "single",
+        "beds": 1,
+        "view": "ulica",
+        "basePrice": 44,
+        "status": "free"
+      },
+      {
+        "number": "3",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "ulica",
+        "basePrice": 62,
+        "status": "occupied"
+      },
+      {
+        "number": "4",
+        "floor": 1,
+        "type": "double",
+        "beds": 2,
+        "view": "park",
+        "basePrice": 66,
+        "status": "free"
+      },
+      {
+        "number": "5",
+        "floor": 1,
+        "type": "family",
+        "beds": 4,
+        "view": "park",
+        "basePrice": 94,
+        "status": "free"
+      },
+      {
+        "number": "6",
+        "floor": 2,
+        "type": "single",
+        "beds": 1,
+        "view": "park",
+        "basePrice": 46,
+        "status": "free"
+      },
+      {
+        "number": "7",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 74,
+        "status": "free"
+      },
+      {
+        "number": "8",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 74,
+        "status": "cleaning",
+        "note": "Gost je ostavio previše stvari, sobarica čeka da ih pokupi."
+      },
+      {
+        "number": "9",
+        "floor": 2,
+        "type": "double",
+        "beds": 2,
+        "view": "ulica",
+        "basePrice": 64,
+        "status": "free"
+      },
+      {
+        "number": "10",
+        "floor": 2,
+        "type": "family",
+        "beds": 4,
+        "view": "more",
+        "basePrice": 104,
+        "status": "free"
+      },
+      {
+        "number": "11",
+        "floor": 2,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 118,
+        "status": "broken",
+        "note": "Vrata balkona se ne zatvaraju do kraja."
+      },
+      {
+        "number": "12",
+        "floor": 2,
+        "type": "suite",
+        "beds": 2,
+        "view": "more",
+        "basePrice": 122,
+        "status": "free"
+      }
+    ],
+    "staff": [
+      {
+        "name": "Slavica Kučić",
+        "department": "management",
+        "role": "Vlasnica i direktorica",
+        "shift": "morning"
+      },
+      {
+        "name": "Ivan Dorčić",
+        "department": "reception",
+        "role": "Recepcionar",
+        "shift": "morning",
+        "note": "Radi u hotelu već 22 godine."
+      },
+      {
+        "name": "Mia Palčić",
+        "department": "reception",
+        "role": "Recepcionarka",
+        "shift": "afternoon"
+      },
+      {
+        "name": "Ankica Vlahović",
+        "department": "housekeeping",
+        "role": "Voditeljica domaćinstva",
+        "shift": "morning"
+      },
+      {
+        "name": "Ljubica Matulić",
+        "department": "housekeeping",
+        "role": "Sobarica",
+        "shift": "afternoon"
+      },
+      {
+        "name": "Zvonko Franov",
+        "department": "maintenance",
+        "role": "Domar",
+        "shift": "morning",
+        "note": "Sve popravlja sam, bez ikakvih računa."
+      },
+      {
+        "name": "Dubravka Tićac",
+        "department": "kitchen",
+        "role": "Kuharica doručka",
+        "shift": "morning"
+      }
+    ]
   }
 ]

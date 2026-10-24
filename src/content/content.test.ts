@@ -9,8 +9,8 @@ const VIEWS = ["more", "park", "ulica"];
 const STATUSES = ["free", "occupied", "cleaning", "broken"];
 
 describe("banka hotela", () => {
-  it("ima 3 hotela s jedinstvenim id-jevima", () => {
-    expect(HOTELS).toHaveLength(3);
+  it("ima 6 hotela s jedinstvenim id-jevima", () => {
+    expect(HOTELS).toHaveLength(6);
     expect(new Set(HOTELS.map((h) => h.id)).size).toBe(HOTELS.length);
   });
 
