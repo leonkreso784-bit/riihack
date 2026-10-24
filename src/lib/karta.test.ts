@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { MeResponse } from "./types";
-import type { CompanyPublicView } from "./karta";
+import type { CompanyPublicView, MeResponse } from "./types";
 import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, allocateLots, bonitet, businessLots, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, rank, reviewsCount, score, simId, terrainCell, word } from "./karta";
 
 describe("ocjena gostiju", () => {

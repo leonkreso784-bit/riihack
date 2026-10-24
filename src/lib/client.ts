@@ -3,6 +3,7 @@ import { useEffect, useEffectEvent, useState } from "react";
 import { PASTE_SHARE, POLL_MS } from "./rules";
 import { MOCK_DETAIL, MOCK_SAMPLE_DRAFT, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
 import type {
+  CompanyPublicView,
   AnswerRequest,
   AnswerView,
   ApiError,
@@ -58,6 +59,8 @@ const realApi = {
   finish: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/finish`),
   companyDetail: (worldId: string, companyId: string) =>
     get<CompanyDetailResponse>(`/api/prof/${worldId}/companies/${companyId}`),
+  // L14 javni profili hotela za kartu grada (S10, uz Rinov pregled u #128): igrač ili profesor te igre.
+  worldCompanies: (worldId: string) => get<CompanyPublicView[]>(`/api/world/${worldId}/companies`),
   // S8: professor's own situations, sending, settings
   createSituation: (worldId: string, req: SituationDraft, source?: "ai") =>
     post<SituationSummary>(`/api/prof/${worldId}/situations`, source ? { ...req, source } : req),
@@ -146,6 +149,7 @@ const mockApi: Api = {
   },
   profLogin: () => wait({ worldId: MOCK_PROF.world.id }),
   profState: () => wait(mockProfState()),
+  worldCompanies: () => wait<CompanyPublicView[]>([]),
   start: () => {
     mockProfStarted = true;
     mockProf = { round: 1, deadline: MOCK_DEADLINE, finished: false };

@@ -2,13 +2,12 @@
 // Za tuđe hotele prikazujemo samo ono što API stvarno daje (ljestvica, grad, predložak hotela).
 // Cijena, ocjene, popunjenost i financije tuđih hotela dolaze tek kad stigne Leonov javni profil (L14): `detail`.
 import { HOTELS } from "@/content";
-import type { BusinessKind, HotelTemplate, StaffDepartment, CityBusiness, LeaderboardRow, MeResponse, Metrics } from "./types";
+import type {
+  CompanyPublicView, BusinessKind, HotelTemplate, StaffDepartment, CityBusiness, LeaderboardRow, MeResponse, Metrics } from "./types";
 
 export type ProfileMonth = { round: number; revenue: number; costs: number; nights: number; occupancyPct: number };
 
-// Lokalna kopija Leonova tipa iz grane leon/L14-javni-profil (ista imena polja), vraća ga
-// GET /api/world/[worldId]/companies. zamijeniti uvozom iz types.ts kad L14 stigne
-export type CompanyPublicView = { companyId: string; hotelName: string; playerName: string; place: string; stars: number; roomsCount: number; price: number; reviews: number; guests: number; occupancyPct?: number; staffByDepartment: Record<StaffDepartment, number>; contracts: { businessId: string; businessName: string; title: string }[] };
+// Javni profil tuđeg hotela (L14, CompanyPublicView iz types.ts): GET /api/world/[worldId]/companies.
 
 // Detalji (cijena, ocjene, popunjenost): za tvoj hotel puni (s financijama), za tuđe samo iz javnog profila.
 export type ProfileDetail = {

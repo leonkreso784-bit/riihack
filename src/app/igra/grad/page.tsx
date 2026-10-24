@@ -13,7 +13,10 @@ import { NewsFeed } from "@/components/city/news-feed";
 export default function CityPage() {
   const { data, error } = usePoll(api.me);
   const [selectedId, setSelectedId] = useState<string>();
-  const profiles = useMemo(() => (data ? profilesFromMe(data) : {}), [data]);
+  // L14: javni profili tuđih hotela (cijena, ocjene, popunjenost). Ako ruta zakaže, kartica pokaže samo podatke iz ljestvice.
+  const { data: publicList } = usePoll(() => (data ? api.worldCompanies(data.world.id) : Promise.resolve([])));
+  const publicViews = useMemo(() => Object.fromEntries((publicList ?? []).map((p) => [p.companyId, p])), [publicList]);
+  const profiles = useMemo(() => (data ? profilesFromMe(data, publicViews) : {}), [data, publicViews]);
   const lots = useMemo(() => (data ? allocateLots(data.city.hotels) : {}), [data]);
   if (error) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
   if (!data) return <Skeleton />;
