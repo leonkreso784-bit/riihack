@@ -21,8 +21,8 @@ Novi tipovi: `SituationSource`, `SituationDraft`, `SituationSummary`, `DispatchV
 `/answers/[situationId]/quality` i `/situations/generate` (M3).
 **Redoslijed spajanja:** ugovor (Leonovo „spoji") → L11 faza B → L12 (`db:push` samo aditivno, neposredno prije
 spajanja). S8 ide neovisno. L6 (#75) mora biti spojen prije demoa L12 i S8, inače je banka situacija prazna.
-**Posljedice.** S8 dira Rinove `client.ts` i `mock.ts` samo za nove pozive i uz Rinovo „ok"
-([TEAM.md](../../TEAM.md) pravilo 6).
+**Posljedice.** S8 dira Rinove `client.ts` i `mock.ts` samo za nove pozive i lažno stanje profesorovih situacija;
+Rino je dao „ok" (~16:35, [TEAM.md](../../TEAM.md) pravilo 6). Ugovor je PR [#89](https://github.com/leonkreso784-bit/riihack/pull/89), čeka Leonovo „spoji".
 
 <a id="adr-024"></a>
 ## ADR-024 · Profesorove situacije: L12, S8, S9
