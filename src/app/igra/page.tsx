@@ -13,6 +13,7 @@ import { RoundBanner } from "@/components/round-banner";
 import { Leaderboard } from "@/components/leaderboard";
 import { CountUp } from "@/components/count-up";
 import { CloseRound } from "@/components/close-round";
+import { plural, starsLabel } from "@/lib/format";
 
 // Hotel dashboard (R0, R4): metrics, money, this month's situations, ranking, and "Završi mjesec".
 export default function GamePage() {
@@ -21,6 +22,8 @@ export default function GamePage() {
   if (!data) return <Skeleton />;
 
   const { company, world } = data;
+  const offered = data.contracts.filter((c) => c.status === "offered").length;
+  const accepted = data.contracts.filter((c) => c.status === "accepted").length;
   const june = data.finances.at(-1); // last settled month
   const settled = june ? (ROUND_LABELS[june.round - 1] ?? `krug ${june.round}`).toLowerCase() : undefined;
   const initials = company.hotelName.split(" ").map((w) => w[0]).join("").slice(0, 2);
@@ -33,8 +36,8 @@ export default function GamePage() {
         <div className="min-w-0 flex-1">
           <h1 className="truncate text-3xl font-extrabold tracking-tight">{company.hotelName}</h1>
           <p className="text-sm text-muted-foreground">
-            {company.place} · <span aria-label={`${company.stars} zvjezdice`}>{"★".repeat(company.stars)}</span> ·{" "}
-            {company.roomsCount} soba · vodi {company.playerName}
+            {company.place} · <span aria-label={starsLabel(company.stars)}>{"★".repeat(company.stars)}</span> ·{" "}
+            {company.roomsCount} {plural(company.roomsCount, "soba", "sobe", "soba")} · vodi {company.playerName}
           </p>
         </div>
         <div className="hidden text-right sm:block">
@@ -84,8 +87,8 @@ export default function GamePage() {
           <div className="flex items-start gap-3 text-sm">
             <Store className="mt-0.5 size-5 shrink-0" aria-hidden />
             <p>
-              {data.contracts.filter((c) => c.status === "offered").length} nova ponuda i{" "}
-              {data.contracts.filter((c) => c.status === "accepted").length} aktivan ugovor.
+              {offered} {plural(offered, "nova ponuda", "nove ponude", "novih ponuda")} i {accepted}{" "}
+              {plural(accepted, "aktivan ugovor", "aktivna ugovora", "aktivnih ugovora")}.
             </p>
           </div>
         </Panel>

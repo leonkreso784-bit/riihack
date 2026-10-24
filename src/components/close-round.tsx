@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CheckCircle2, ChevronRight, Flag, GraduationCap, Hourglass } from "lucide-react";
 import { api } from "@/lib/client";
+import { plural } from "@/lib/format";
 import { MISSED_QUALITY, ROUND_LABELS } from "@/lib/rules";
 import type { CompanyView, RoundReportView, SituationView, WorldView } from "@/lib/types";
 import { FormError } from "./form";
@@ -75,7 +76,7 @@ function Status({ world, company, situations }: { world: WorldView; company: Com
 
   async function close() {
     if (sending.current) return;
-    if (open > 0 && !confirm(`Imaš ${open} neodgovoren${open === 1 ? "u situaciju" : "e situacije"}. One vrijede ${MISSED_QUALITY} od 5. Svejedno završiti ${month(world.round)}?`)) return;
+    if (open > 0 && !confirm(`Imaš ${open} ${plural(open, "neodgovorenu situaciju", "neodgovorene situacije", "neodgovorenih situacija")}. ${open === 1 ? "Ona vrijedi" : "One vrijede"} ${MISSED_QUALITY} od 5. Svejedno završiti ${month(world.round)}?`)) return;
     sending.current = true;
     setBusy(true);
     setError(null);

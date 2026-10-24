@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BedDouble, MapPin } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
+import { plural, starsLabel } from "@/lib/format";
 
 // R1: after joining, wait here until the professor starts the game, then go to /igra.
 export default function WaitingRoom() {
@@ -36,12 +37,12 @@ export default function WaitingRoom() {
         <div className="px-4">
           <MapPin className="mx-auto size-5 text-secondary-foreground" aria-hidden />
           <p className="mt-2 font-bold">{c.place}</p>
-          <p className="text-sm text-muted-foreground" aria-label={`${c.stars} zvjezdice`}>{"★".repeat(c.stars)}</p>
+          <p className="text-sm text-muted-foreground" aria-label={starsLabel(c.stars)}>{"★".repeat(c.stars)}</p>
         </div>
         <div className="px-4">
           <BedDouble className="mx-auto size-5 text-secondary-foreground" aria-hidden />
-          <p className="mt-2 font-bold">{c.roomsCount} soba</p>
-          <p className="text-sm text-muted-foreground">spremne za goste</p>
+          <p className="mt-2 font-bold">{c.roomsCount} {plural(c.roomsCount, "soba", "sobe", "soba")}</p>
+          <p className="text-sm text-muted-foreground">{plural(c.roomsCount, "spremna", "spremne", "spremnih")} za goste</p>
         </div>
       </div>
 

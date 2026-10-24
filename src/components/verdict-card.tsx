@@ -54,7 +54,7 @@ export function VerdictCard({
           <Initials name={character.name} className="size-8 text-xs" />
           <p>
             <span className="block text-xs font-bold text-muted-foreground">{character.name}</span>
-            „Zvučite kao brošura.” <span className="text-muted-foreground">Ovo vrijedi kao ponuđeni odgovor.</span>
+            „Zvučite kao brošura.“ <span className="text-muted-foreground">Ovo vrijedi kao ponuđeni odgovor.</span>
           </p>
         </div>
       )}
