@@ -21,21 +21,23 @@ const company: CompanyRow = {
   joinIndex: 0,
   createdAt: new Date(),
 };
-const plan: PlanRow = { id: "p", companyId: "ana", round: 2, price: 94, marketing: 500 };
-const finance = (round: number, occupancyPct: number): FinanceRow => ({
-  id: `f${round}`,
-  companyId: "ana",
-  round,
-  nights: 300,
-  contractNights: 0,
-  capacityNights: 600,
-  occupancyPct,
-  marketSharePct: 50,
-  revenue: 28000,
-  costs: 20000,
-  profit: 8000,
-  cashAfter: 48000,
-});
+const plan = { id: "p", companyId: "ana", round: 2, price: 94, marketing: 500, investments: {} } as PlanRow;
+const finance = (round: number, occupancyPct: number) =>
+  ({
+    id: `f${round}`,
+    companyId: "ana",
+    round,
+    nights: 300,
+    contractNights: 0,
+    capacityNights: 600,
+    occupancyPct,
+    marketSharePct: 50,
+    revenue: 28000,
+    costs: 20000,
+    profit: 8000,
+    cashAfter: 48000,
+    investments: 0,
+  }) as FinanceRow;
 const contract: ContractRow = {
   id: "k",
   worldId: "w",
