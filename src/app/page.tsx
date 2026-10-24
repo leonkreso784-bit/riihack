@@ -17,7 +17,9 @@ export default function Home() {
     <div className="space-y-14 pb-10">
       <section className="mx-auto flex max-w-3xl flex-col items-center gap-7 pt-8 text-center md:pt-16">
         <LogoMark title="Simpolis" className="size-24 md:size-28" />
-        <h1 className="text-5xl font-extrabold tracking-tight text-balance md:text-7xl">Simpolis</h1>
+        <h1 className="text-5xl font-extrabold tracking-tight text-balance md:text-7xl">
+          Sim<span className="bg-gradient-to-br from-[#2a6ffd] to-[#173fb0] bg-clip-text text-transparent">polis</span>
+        </h1>
         <p className="max-w-xl text-lg text-balance text-muted-foreground md:text-xl">{t.tagline}</p>
         <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
           <Link href="/ulaz" className={`gloss lift inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl px-7 text-base font-bold ${focus}`}>
