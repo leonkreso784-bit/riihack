@@ -84,13 +84,14 @@ na koga čeka i što smo dogovorili.
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S12)
 
-- **Sad radim:** „Tokovi" (procesi kao n8n): skice https://simpolis-tokovi-directions.vercel.app (obračun mjeseca kao tok, situacija kroz odjele, profesorova pravila), istraživanje i editor; grana `simon/tokovi`
-- **Sljedeće:** tok obračuna u aplikaciji; S12 knjižnica na S8 (kad se spoji L17); revizija i test svega; priprema za nedjelju
-- **Čekam od drugih:** Leon: #162 (balans cijene: 400 € je oko 4× isplativije), L17 na main-u
+- **Sad radim:** „Tokovi": (1) stranica „Kako je izračunat mjesec" u aplikaciji (`/igra/izvjestaj/[krug]/tok`, grana `simon/tokovi`, samo stvarni podaci obračuna, „Što ako?" kao procjena po formulama motora); (2) S12 knjižnica na stranici situacija (grana `simon/S12-knjiznica`); (3) skica 3 kao pravi editor pravila; istraživanje n8n, GHL, Zapier, Make
+- **Sljedeće:** revizija i test svega (svježi pregled koda, stvarni AI pozivi, E2E na probnoj igri, ne KVRNDM); priprema za nedjelju
+- **Čekam od drugih:** Leon: #162 (balans cijene: 400 € je oko 4× isplativije)
 - **Drugi čekaju od mene:** —
+- **Trebat će:** @rtomic20 ok za jednu poveznicu „Kako je izračunat mjesec →" na izvještaju i Financijama; ok za nove metode knjižnice u `client.ts`
 - **Obilasci:** 1 prošao (slajdovi), 2 prošao (aplikacija uživo, žiri oduševljen)
 - **Spojeno:** S0–S6, S8 (#109), S9 (#111), playbook i AI prijedlog (#129), BUG-009 (#120), karta D (#128), S11 agent agencije (#154), dokumenti (#99, #131, #150)
-- **Zadnje ažurirano:** sub 20:45 (popunio Claude, ispravi)
+- **Zadnje ažurirano:** sub 20:55 (popunio Claude, ispravi)
 
 ## Rino · sučelje (R0–R15)
 
