@@ -96,15 +96,15 @@ na koga čeka i što smo dogovorili.
 ## Rino · sučelje (R0–R15)
 
 - **Sad radim:** pauza; nastavak iz `docs/rino/STANJE.md` (grana `rino/dokumentacija`)
-- **Sljedeće:** provjera #164 (pošta) i #168 (R8) na produkciji kad se spoje; R14 stil profesorskih računa (Leone, javi PR s ekranima); R10 podij (#46) ako stignemo; R15 kad bude L18
-- **Čekam od drugih:** Leon: spajanje #168; ekrani profesorskih računa (L16) za R14
-- **Drugi čekaju od mene:** #166 (Leonov jedan redak u `prof-board.tsx`, `fromRound`): Rinov ok
-- **Odluke:** pošta na računalu u bočnoj navigaciji s brojem nepročitanih, na mobitelu omotnica u gornjoj traci. Studenti idu u sljedeći mjesec zajedno (student „Završi mjesec", profesor otvara svima). Radar vještina na R8 izostavljen dok ima samo pokazne podatke
-- **Otvoreno:** #168 R8 uvid u studenta i „Promijeni ocjenu" (spremno za integratora, bez konflikata)
-- **Spojeno (od 16:45):** #127, #135 odjeli, #138 `/ulaz?kod=`, #142 Financije/Plan/Odjeli, #151 QR, #152 R4 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta; pregled #128 i #107
-- **Provjereno na produkciji (20:00):** QR → student → Završi mjesec → profesor otvara srpanj → Financije, Plan, Odjeli, Grad; 0 grešaka
+- **Sljedeće:** provjera #168 (R8) i #173 na produkciji; R10 podij (#46) ako nema ništa važnije; R15 kad bude L18
+- **Čekam od drugih:** Leon: spajanje #169, #170, #174 (moj ok je na svima; #174 nakon što Simon doda poveznice); javi prioritet prije M3
+- **Drugi čekaju od mene:** —
+- **Odluke:** R14 = moj pregled #169 (izgled ok). Radar vještina na R8 izostavljen dok ima samo pokazne podatke. Studenti idu u sljedeći mjesec zajedno
+- **Otvoreno:** —
+- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice; ok za #128, #107, #166, #169, #170, #174
+- **Provjereno na produkciji:** 20:00 cijela igra (QR → Završi mjesec → sljedeći mjesec); 20:52 pošta s AI odgovorom agencije (1.500 → 1.125 → 1.313 €)
 - **Bilješke za nastavak:** `docs/rino/STANJE.md` na grani `rino/dokumentacija`
-- **Zadnje ažurirano:** sub 21:00 (popunio Claude, ispravi)
+- **Zadnje ažurirano:** sub 21:05 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
