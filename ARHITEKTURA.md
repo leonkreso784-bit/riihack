@@ -5,8 +5,9 @@
 
 ## 1 · Što gradimo (za demo)
 
-**Simpolis** je svijet simulacija za učenje. Profesor stvori **svijet**, studenti uđu kodom i svaki dobije
-**tvrtku** u tom svijetu. Igra ide u **krugovima**: u svakom krugu tvrtka dobije **situacije**, student ih rješava
+**Simpolis** je **grad u simulaciji** s pravom ekonomijom (Leon, 24.10.: najvažnija poruka). Različiti objekti
+žive u istom gradu, spajaju se ugovorima i zarađuju novac, a svatko utječe na druge (§5c). Profesor stvori
+**grad** (igru), studenti uđu kodom i svaki dobije **tvrtku** u tom gradu. Igra ide u **krugovima**: u svakom krugu tvrtka dobije **situacije**, student ih rješava
 (klik, vlastiti odgovor ili razgovor s likom kojeg glumi AI), a na kraju kruga **mentor** objasni što je bilo dobro.
 Ocjena je **napredak** u odnosu na početak vlastite tvrtke.
 
@@ -35,9 +36,9 @@ sučelje na lažnim podacima ili samo plan za pitch.
 
 | Razina | Što | Kako |
 | --- | --- | --- |
-| **Radi** (baza + backend) | profesor stvara igru s brojem studenata, kod igre, ulaz s imenom i imenom hotela, dodjela hotela iz banke, sobe hotela, krugovi, situacije, klik i vlastiti odgovor s AI presudom, razgovor s likom, zatvaranje kruga i pokazatelji, profesorova ploča uživo | prave tablice, API rute i AI pozivi |
-| **Samo sučelje** (lažni podaci iz `lib/mock.ts`) | plan kruga (cijena, zaposlenici, marketing), financije, simulator unaprijed, radar vještina, stanje soba kroz sezonu, agencija i ugovor | ekrani izgledaju gotovo, ali čitaju pripremljene podatke; spajaju se na backend samo ako ostane vremena |
-| **Planirano** (dokumentacija i pitch) | više vrsta tvrtki u istom svijetu (agencija, dobavljač, zaštitarska firma), ugovori među tvrtkama, zajedničko tržište gostiju, šok gumb, novine, glas, replay sezone, profesor sam dodaje situacije | opisano u ovom dokumentu i na slajdu „Što dalje" |
+| **Radi** (baza + backend) | profesor stvara igru s brojem studenata, kod igre, ulaz s imenom i imenom hotela, dodjela hotela iz banke, sobe hotela, krugovi, situacije, klik i vlastiti odgovor s AI presudom, razgovor s likom, zatvaranje kruga i pokazatelji, profesorova ploča uživo; **ekonomija grada**: zajedničko tržište turista, plan kruga (cijena noćenja, marketing), novac (prihod, troškovi, dobit, račun), ugovori s gradskim tvrtkama, karta grada i vijesti (§5c) | prave tablice, API rute i AI pozivi |
+| **Samo sučelje** (lažni podaci) | radar vještina, simulator unaprijed | ekrani čitaju pripremljene podatke s oznakom „primjer" |
+| **Planirano** (dokumentacija i pitch) | studenti vode i druge vrste tvrtki (agencija, dobavljač, zaštitarska firma), ugovori između studenata, banka i krediti, više gradova i država, šok gumb, novine, glas, replay sezone, profesor sam dodaje situacije | opisano u ovom dokumentu i na slajdu „Što dalje" |
 
 **Oblik:** web platforma, **responsive za sve uređaje** (mobitel, tablet, računalo, projektor). Izgled i osjećaj
 kao današnji HotelixSim, opsegom malo veći (svijet, više vrsta tvrtki, profesor), ali **pojednostavljen** (vidi §5a).
@@ -113,6 +114,27 @@ istom krugu** (moja odluka; usporedivo za profesora).
 ponavlja dok se banka ne potroši; ako je studenata više nego hotela, kreće ispočetka. Student mu upiše svoje ime,
 a sobe se pri ulasku kopiraju u `rooms`. „Isti početak" znači isti zbroj pokazatelja, ne isti hotel. **Vrsta tvrtke**: profesor pri stvaranju bira vrste; ako ih je
 više, dodjeljuju se naizmjence redom ulaska. Kod i ekrani od početka nose `kind`, i kad postoji samo hotel.
+
+## 5c · Ekonomija grada (svi utječu na sve)
+
+Grad ima **zajedničko tržište turista**. Svaki krug je jedan mjesec sezone, a potražnja grada je udio ukupnog
+kapaciteta svih hotela: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %. Turisti se dijele po **privlačnosti**
+hotela (recenzije i zadovoljstvo gostiju, cijena prema vlastitoj osnovnoj cijeni, marketing), pa **jeftiniji ili
+bolje ocijenjen hotel uzme goste drugima**. Hotel ne može primiti više od svog kapaciteta (sobe × 30 noći).
+
+- **Plan kruga** (student, dok je krug otvoren): cijena noćenja (30–400 €) i marketing (0–5.000 €).
+- **Gradske tvrtke** (sadržaj, ne studenti): agencije (zajamčena noćenja po nižoj cijeni), praonica, pekara,
+  zaštitarska firma (mjesečni trošak, a zauzvrat bolja operativa, recenzije ili zadovoljstvo). Svaki krug hotel
+  dobije **jednu ponudu ugovora**; prihvaćen ugovor traje 1–3 kruga.
+- **Obračun mjeseca:** kad profesor zatvori mjesec (otvori sljedeći krug, ili istekne rok, ili završi igru), motor
+  izračuna tržište **za sve hotele odjednom**: noćenja, prihod (noćenja × cijena + noćenja iz ugovora), troškovi
+  (plaće hotela, 300 € po sobi, marketing, ugovori), dobit i stanje računa. Dobit pomiče pokazatelj financija
+  (najviše ±5), a ugovori svoje pokazatelje.
+- **Ocjena ostaje napredak** pokazatelja; novac se prikazuje uz nju (ljestvica pokazuje oba).
+- **Karta grada** (prava, ne lažna): hoteli i gradske tvrtke kao zgrade, ugovori kao linije. **Vijesti grada** iz
+  dnevnika događaja: „Hotel Vila Ana potpisala ugovor s Agencijom Adria", „Kolovoz: Hotel Lungomare najpopunjeniji (94 %)".
+
+Formule i vrijednosti su u planu izvedbe (L9).
 
 ## 5a · Pojednostavljeni HotelixSim (što ostaje, što otpada)
 

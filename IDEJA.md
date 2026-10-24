@@ -50,9 +50,12 @@ ispoliranost). Rješenje mora biti pristupačno, održivo i primjenjivo u stvarn
 **Simpolis.** Radimo na foru Leonovog **HotelixSima** (simulacija vođenja hotela za studente). Prenosimo **ideju i obrasce, ne
 kod**: kod se piše tijekom hackathona. Ime **ne smije biti HotelixSim** ni sličan.
 
-- **U jednoj rečenici:** simulacija u kojoj student dobije ulogu i rješava stvarne situacije, AI glumi likove i
-  procjenjuje njegovo razmišljanje, a profesor vodi igru za cijeli razred.
-- **Pitch:** AI ne daje odgovore. AI glumi svijet u kojem moraš sam odlučiti, a onda ti objasni zašto.
+- **U jednoj rečenici:** **grad u simulaciji** u kojem svaki student vodi svoju tvrtku (prvo hotel); sve tvrtke
+  dijele iste goste, sklapaju ugovore s drugim tvrtkama grada i zarađuju novac, pa odluka jednoga mijenja
+  poslovanje drugih. AI glumi ljude u gradu i procjenjuje razmišljanje, a profesor vodi grad uživo.
+- **Najvažnija poruka (Leon, 24.10.):** gradimo **pravi grad, pravu ekonomiju**: različiti objekti koji se spajaju,
+  imaju ugovore i zarađuju novac, i svi utječu jedni na druge. Hotel je prvi objekt; vizija je cijela država.
+- **Pitch:** AI ne daje odgovore. AI glumi grad u kojem moraš sam odlučiti, a tržište ti pokaže posljedice.
 - **Za koga:** studenti i profesori (prvi kupac: fakultet / kolegij).
 - **Koji problem rješava:** AI danas daje gotove odgovore pa se ne uči; ovdje gotov odgovor vrijedi manje od
   vlastitog razmišljanja.
@@ -92,12 +95,20 @@ sučelje na lažnim podacima ili samo plan ([ARHITEKTURA.md](ARHITEKTURA.md) §1
 - 🟨 **Područje demoa:** hotel je glavni tok, agencija s ugovorom tek kad hotel radi ([ARHITEKTURA.md](ARHITEKTURA.md) §1).
   Generiranje situacija iz profesorova gradiva je za poslije hackathona.
 
-## Vizija: jedan svijet, mnogo simulacija
+## Vizija: pravi grad, prava ekonomija
 
-Hotel je **samo prvi primjer**. Plan je cijeli svijet tvrtki: hotel, turistička agencija, dobavljač, zaštitarska
-firma i druge. Svaka je svoja simulacija, ali sve žive u **istom svijetu** i rade jedna s drugom: sklapaju ugovore,
-pregovaraju, ovise jedna o drugoj. Student iz hotelijerstva vodi hotel, student iz ekonomije agenciju, i dogovaraju se
-međusobno. Ime zato mora pokriti **svijet**, ne jednu djelatnost.
+Simpolis je **grad u simulaciji**, a kasnije **država**: različiti objekti (hoteli, turističke agencije, praonice,
+pekare, zaštitarske firme, dobavljači, banka) žive u istom gradu, spajaju se ugovorima i zarađuju novac. **Svi
+utječu jedni na druge:** hotel koji spusti cijenu uzme goste drugima, agencija koja potpiše ugovor puni nečije
+sobe, a dobavljač koji kasni ruši recenzije hotelima koje opskrbljuje. Svaki razred je jedan grad; više gradova
+čini državu.
+
+**Što je u demou (24 h):** studenti vode hotele u istom gradu. Grad ima **zajedničko tržište turista** (sezona
+lipanj–rujan), **novac** (prihod, troškovi, dobit, stanje računa) i **gradske tvrtke** (agencije, praonica, pekara,
+zaštitarska firma) koje hotelima nude **ugovore**. Karta grada i vijesti pokazuju kako se sve spaja.
+
+**Što je plan (pitch, „Što dalje"):** studenti vode i druge vrste tvrtki (agenciju, dobavljača), ugovori između
+studenata, banka i krediti, više gradova i država, porezi i općina.
 
 ## Ime: kandidati
 
