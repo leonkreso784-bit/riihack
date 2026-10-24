@@ -20,6 +20,9 @@ situacije prenosi samo datotekom (playbook, ADR-027).
 **Odluka.** Profesor se prijavljuje e-mailom i lozinkom (Better Auth, računi u našoj Neon bazi) i vidi **moje igre**
 i **knjižnicu situacija**. Prijava profesorskim kodom ostaje za postojeće igre i demo; studenti i dalje ulaze kodom.
 **Posljedice.** Djelomično mijenja ADR-004. Tablice Better Autha dodaju se pregledanim aditivnim SQL-om (ADR-026).
+Kod je [#147](https://github.com/leonkreso784-bit/riihack/pull/147) (20:06). **Na produkciji od ~20:25** (Leonovo izravno „da"
+integratoru): `BETTER_AUTH_SECRET` (Production i Preview, samo na Vercelu) i `BETTER_AUTH_URL`; registracija, prijava,
+odjava i „moje igre" rade, ulaz kodom nepromijenjen.
 
 <a id="adr-035"></a>
 ## ADR-035 · Tuđi hotel: samo javni podaci

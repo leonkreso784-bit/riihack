@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#159](https://github.com/leonkreso784-bit/riihack/pull/159) | 20:17 | Leon | dokumentacija: BUG-008 riješen |
 | [#157](https://github.com/leonkreso784-bit/riihack/pull/157) | 20:13 | Rino | plan bez imena prijašnjeg projekta (BUG-008 riješen) |
 | [#150](https://github.com/leonkreso784-bit/riihack/pull/150) | 20:11 | Simon | `PROMISE.md`: obilazak žirija 2, opseg dopunjen s L16 i S9 |
 | [#158](https://github.com/leonkreso784-bit/riihack/pull/158) | 20:10 | Leon | dokumentacija: L16 i S11, BUG-011 |

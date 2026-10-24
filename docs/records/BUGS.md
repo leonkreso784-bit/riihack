@@ -10,6 +10,14 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-012 · Dva istodobna `POST /round`: drugi vraća 409 „Sezona je gotova"
+- **Status:** 🔴 otvoren (integrator, smoke na produkciji ~20:25; javljeno graditelju) · **Težina:** nizak (jednom
+  pao smoke korak 14, ponovljeno 14/14)
+- **Opis:** kad dva zahtjeva za zatvaranje kruga stignu istodobno, drugi dobije 409 „Sezona je gotova" umjesto 200.
+- **Uzrok:** 🟨 utrka dvaju zatvaranja istog kruga; potvrđuje graditelj.
+- **Rješenje:** 🟨 čeka graditelja.
+- **Lekcija:** 🟨 upisati kad je uzrok potvrđen.
+
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
