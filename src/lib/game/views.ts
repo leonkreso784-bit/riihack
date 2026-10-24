@@ -147,6 +147,7 @@ export function toAnswerView(a: AnswerRow): AnswerView {
     quality: a.quality as Quality,
     copied: a.copied,
     ...(a.verdict !== null && { verdict: a.verdict }),
+    ...(a.overridden && { overridden: true }),
   };
 }
 

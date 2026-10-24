@@ -313,6 +313,7 @@ function answerRow(situationId: string, extra: Partial<AnswerRow> = {}): AnswerR
     verdict: { criteriaMet: ["c1"], reasoning: "Ispričao se." },
     quality: 4,
     copied: false,
+    overridden: false,
     createdAt: NOW,
     ...extra,
   };
