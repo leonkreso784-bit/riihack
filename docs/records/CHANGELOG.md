@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#118](https://github.com/leonkreso784-bit/riihack/pull/118) | 18:02 | Leon | L12: AI prijedlog situacije za profesora (`POST …/situations/generate`) |
 | [#111](https://github.com/leonkreso784-bit/riihack/pull/111) | 17:15 | Simon | S9: AI prijedlog situacije iz stanja hotela, mentor s obračunom mjeseca |
 | [#104](https://github.com/leonkreso784-bit/riihack/pull/104) | 17:12 | Leon | L12: profesor mijenja ocjenu mentora |
 | [#103](https://github.com/leonkreso784-bit/riihack/pull/103) | 17:10 | Leon | L8: demo igra (`npm run seed:demo`) |
@@ -17,6 +18,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#119](https://github.com/leonkreso784-bit/riihack/pull/119) | 17:59 | Leon | dokumentacija: BUG-009 |
 | [#117](https://github.com/leonkreso784-bit/riihack/pull/117) | 17:55 | Leon | dokumentacija: produkcija na pravim podacima (ADR-030) |
 | [#116](https://github.com/leonkreso784-bit/riihack/pull/116) | 17:51 | Leon | dokumentacija: BUG-007, BUG-008, ADR-030 |
 | [#115](https://github.com/leonkreso784-bit/riihack/pull/115) | 17:50 | Leon | demo igra: profesorski kod samo iz `.env.local` (BUG-007) |
