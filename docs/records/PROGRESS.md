@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 15:10–16:00 · L7, L8, L11, S3, S4
+
+- **Leon:** L8 smoke koraci 1–10 (#81, 15:23), L11 faza A, logika grada i rute za plan, ugovore,
+  obračun i vijesti (#82, 15:28; spajanje u igru je faza B), L7 krugovi, odgovori s presudom, zatvaranje kruga i uvid (#83, 15:40). Odluke za L11 fazu B: vijesti
+  bez sklonidbe ([ADR-021](DECISIONS.md#adr-021)) i smoke korak 11 s 300 € ([ADR-022](DECISIONS.md#adr-022)).
+- **Simon:** S3 lik i ruta chat (#76, 15:12), S4 sokratski mentor (#79, 15:20).
+- **Rino:** uspravan logo, gumb Odjava, mobitel bez prelijevanja (#78).
+- **Agenti:** pokušaj gašenja svih `node.exe` odbijen; novo pravilo za dev server
+  ([BUG-005](BUGS.md#bug-005--agent-je-pri-gašenju-dev-servera-pokušao-ugasiti-sve-nodeexe-procese)).
+- **Otvoreno:** L6 situacije (#75, čeka Leonov pregled; o njemu ovisi BUG-004).
+
 ## Sub 24.10. ~15:20 · smoke 1–10
 
 - **Smoke:** na `main`-u pada korak 5 jer nema situacija do L6; s #75 lokalno prolaze koraci 1–10

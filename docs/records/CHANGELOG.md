@@ -3,10 +3,24 @@
 Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča po sesijama je u
 [PROGRESS.md](PROGRESS.md).
 
+## M3 · Obilazak 3 (rok ned 07:45)
+
+| PR | Spojeno | Autor | Što |
+| --- | --- | --- | --- |
+| [#79](https://github.com/leonkreso784-bit/riihack/pull/79) | 15:20 | Simon | S4: sokratski mentor (pitanje i osvrt) |
+
 ## M2 · Obilazak 2 (u tijeku, rok sub 18:45)
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#84](https://github.com/leonkreso784-bit/riihack/pull/84) | 15:42 | Leon | dokumentacija: BUG-004 |
+| [#83](https://github.com/leonkreso784-bit/riihack/pull/83) | 15:40 | Leon | L7: krugovi, odgovori s presudom, zatvaranje kruga, uvid |
+| [#82](https://github.com/leonkreso784-bit/riihack/pull/82) | 15:28 | Leon | L11 faza A: logika grada i rute (plan, ugovori, obračun, vijesti); spajanje u igru u fazi B |
+| [#81](https://github.com/leonkreso784-bit/riihack/pull/81) | 15:23 | Leon | L8: smoke provjera toka, koraci 1–10 |
+| [#80](https://github.com/leonkreso784-bit/riihack/pull/80) | 15:21 | Leon | dokumentacija: ADR-018 do 020 |
+| [#78](https://github.com/leonkreso784-bit/riihack/pull/78) | 15:19 | Rino | uspravan logo, gumb Odjava, mobitel bez prelijevanja |
+| [#77](https://github.com/leonkreso784-bit/riihack/pull/77) | 15:13 | Leon | dokumentacija: ADR-017, changelog i dnevnik |
+| [#76](https://github.com/leonkreso784-bit/riihack/pull/76) | 15:12 | Simon | S3: lik u ulozi i ruta chat |
 | [#73](https://github.com/leonkreso784-bit/riihack/pull/73) | 15:08 | Rino | animacije sučelja |
 | [#70](https://github.com/leonkreso784-bit/riihack/pull/70) | 15:07 | Leon | L5: motor B, krugovi, kvaliteta, prepisivanje, napredak |
 | [#69](https://github.com/leonkreso784-bit/riihack/pull/69) | 15:07 | Leon | L10: gradske tvrtke i ugovori (sadržaj) |

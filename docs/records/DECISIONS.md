@@ -8,6 +8,25 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-022"></a>
+## ADR-022 · Smoke korak 11: Ivan postavlja 300 €, ne 150 €
+**Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ADR-019](#adr-019), [plan › L8](../superpowers/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)
+
+**Kontekst.** Korak 11 provjerava da jeftiniji hotel dobije više noćenja (Ana 60 €, Ivan 150 €). Ivanovu hotelu s
+4★ 150 € je ispod vlastite referentne cijene, pa je test bio na rubu (239 : 238 noćenja).
+**Odluka.** Ivan u koraku 11 postavlja 300 €.
+**Posljedice.** Ulazi u L11 fazu B i u plan.
+
+<a id="adr-021"></a>
+## ADR-021 · Vijesti grada bez sklonidbe
+**Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §5c](../../ARHITEKTURA.md#5c--ekonomija-grada-svi-utječu-na-sve), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)
+
+**Kontekst.** Predlošci vijesti iz plana („Hotel … potpisala ugovor s Agencijom …") uvrštavaju imena u rečenicu, pa
+daju krive padeže.
+**Odluka.** Vijesti su oblika u kojem se ime ne sklanja: „Novi hotel u gradu: {hotel} ({mjesto})", „Novi ugovor:
+{hotel} i {tvrtka}", „Počinje {mjesec}", „{Mjesec}: najpopunjeniji je {hotel} ({x} %)".
+**Posljedice.** Ulazi u L11 fazu B i u plan. Mehanike se i dalje naslanjaju na HotelixSim (ideje, ne kod).
+
 <a id="adr-020"></a>
 ## ADR-020 · Razgovor s likom (S3): transkript, situacije, rubni slučaj
 **Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon, na Simonova pitanja) · **Vezano:** [#76](https://github.com/leonkreso784-bit/riihack/pull/76), [#75](https://github.com/leonkreso784-bit/riihack/pull/75), [ADR-016](#adr-016)
