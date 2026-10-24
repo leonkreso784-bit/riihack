@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 14:35–14:45 · baza živa, L1, R1
+
+- **Leon:** Neon baza `simpolis-db` (Frankfurt, besplatni plan) preko Vercel Marketplacea, `DATABASE_URL` na Vercelu
+  za sva tri okruženja; L1 shema i zajednički upiti (#62, 14:44), 11 tablica u bazi. Odluka o #42
+  ([ADR-016](DECISIONS.md#adr-016)), PR #63 otvoren.
+- **Rino:** R1 ulaz kao Kahoot i čekaonica (#54, 14:38).
+- **Simon:** slajdovi obilaska žirija (#55) i Rinov tok demoa nakon R1 (#61).
+- **Dokumentacija:** #58 spojen pa vraćen s #60: na `main` ide samo `TEAM.md` ([ADR-015](DECISIONS.md#adr-015)).
+- **Otvoreno:** #59 L2 motor, #63 ugovor lika, #64 L3 banka hotela, #65 novi logo.
+
 ## Sub 24.10. ~14:30 · tri sesije, dokumentacija
 
 Leon pokreće tri Claude sesije: graditelj, integrator, dokumentarist ([ADR-015](DECISIONS.md#adr-015),

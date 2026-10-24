@@ -8,6 +8,15 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-016"></a>
+## ADR-016 · `CharacterInput` dobiva `messageNo?` i `maxMessages?` kao neobavezna polja
+**Datum:** 24.10. ~14:40 · **Status:** ✅ (Leon) · **Vezano:** [#42](https://github.com/leonkreso784-bit/riihack/pull/42), [#63](https://github.com/leonkreso784-bit/riihack/pull/63), [ADR-011](#adr-011)
+
+**Kontekst.** Simonov S3 (lik i razgovor) treba znati koja je ovo poruka studenta i koliko ih smije biti (#42).
+**Odluka.** Polja ulaze u ugovor kao **neobavezna** (pravilo iz ADR-011); #63 mijenja `types.ts` i blok „Ugovor" u
+planu zajedno; Simon zatvara #42.
+**Posljedice.** Postojeći kod koji ne puni polja i dalje prolazi build.
+
 <a id="adr-015"></a>
 ## ADR-015 · Tri Claude sesije, a spaja samo integrator
 **Datum:** 24.10. 🟨 vrijeme · **Status:** ✅ (Leon) · **Vezano:** [SESIJE.md](../workflow/SESIJE.md), ADR-014, BUG-001
@@ -115,7 +124,8 @@ ostavio bi zatvoren krug bez izvještaja.
 **Kontekst.** Zadani stack ([CLAUDE.md](../../CLAUDE.md)) bio je Supabase; Simonov starter s Neonom i Drizzleom već je
 bio isproban na Vercelu.
 **Odluka.** Neon Postgres + Drizzle ORM, samo s poslužitelja; Better Auth izbačen jer nema računa. Neon (Frankfurt,
-besplatni plan) preko Vercel Marketplacea.
+besplatni plan) preko Vercel Marketplacea: baza `simpolis-db` napravljena sub ~14:35, `DATABASE_URL` na Vercelu
+(production, preview, development), tablice iz L1 ([#62](https://github.com/leonkreso784-bit/riihack/pull/62)) u bazi.
 **Posljedice.** Nema Supabase Realtimea (vidi ADR-003) ni transakcija na `neon-http` (ADR-007). 🟨 `CLAUDE.md` pod
 „Stack" još navodi Supabase.
 

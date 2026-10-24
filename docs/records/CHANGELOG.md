@@ -7,6 +7,12 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#62](https://github.com/leonkreso784-bit/riihack/pull/62) | 14:44 | Leon | L1: shema baze i zajednički upiti |
+| [#61](https://github.com/leonkreso784-bit/riihack/pull/61) | 14:44 | Simon | obilazak: Rinov tok demoa nakon R1 |
+| [#60](https://github.com/leonkreso784-bit/riihack/pull/60) | 14:40 | Leon | revert #58: dokumentacija ostaje na grani |
+| [#54](https://github.com/leonkreso784-bit/riihack/pull/54) | 14:38 | Rino | R1: ulaz kao Kahoot i čekaonica |
+| [#55](https://github.com/leonkreso784-bit/riihack/pull/55) | 14:38 | Simon | obilazak žirija: slajdovi |
+| [#58](https://github.com/leonkreso784-bit/riihack/pull/58) | 14:38 | Leon | dokumentacija (vraćeno s #60) |
 | [#52](https://github.com/leonkreso784-bit/riihack/pull/52) | 14:14 | Rino | fix: lažni podaci zadani, `/igra` više ne pada s 404 (BUG-003) |
 | [#48](https://github.com/leonkreso784-bit/riihack/pull/48) | 14:14 | Simon | S5: karta grada, vijesti, radar |
 | [#47](https://github.com/leonkreso784-bit/riihack/pull/47) | 14:14 | Simon | S6: plan kruga, financije, ponude ugovora |
