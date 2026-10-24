@@ -109,6 +109,20 @@ const SITUATIONS: SituationView[] = [
     ],
   },
   {
+    // No offered answers (the professor's kind): only talking and answering in your own words.
+    id: "s-recenzija",
+    templateId: "losa-recenzija",
+    round: 2,
+    title: "Loša recenzija na Bookingu",
+    text: "Gošća je jutros napisala da je doručak bio hladan i da je osoblje bilo neljubazno. Recenzija je prva koju novi gosti vide.",
+    area: "Ugled",
+    difficulty: 2,
+    character: { name: "Sanja Horvat", role: "Gošća, obiteljski odmor" },
+    options: [],
+    state: "open",
+    transcript: [{ role: "character", text: "Došli smo na odmor, a ne da čekamo hladna jaja i namrgođeno lice." }],
+  },
+  {
     id: "s-povisica",
     templateId: "povisica",
     round: 2,

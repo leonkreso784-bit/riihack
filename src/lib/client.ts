@@ -1,6 +1,6 @@
 // Browser-side API calls. Until the backend is live every call answers from mock.ts; NEXT_PUBLIC_USE_MOCK=0 switches to the server.
 import { useEffect, useEffectEvent, useState } from "react";
-import { POLL_MS } from "./rules";
+import { PASTE_SHARE, POLL_MS } from "./rules";
 import { MOCK_DETAIL, MOCK_ME, MOCK_PROF, MOCK_ROOMS } from "./mock";
 import type {
   AnswerRequest,
@@ -148,10 +148,11 @@ const mockApi: Api = {
       "optionId" in req
         ? { mode: "click", optionId: req.optionId, quality: 3, copied: false }
         : {
+            // Same paste rule as the server: more than half pasted → copied, capped at 4.
             mode: "own",
             text: req.text,
             quality: 4,
-            copied: false,
+            copied: req.pastedChars / req.text.length > PASTE_SHARE,
             verdict: { criteriaMet: ["c1", "c2", "c3", "c4"], reasoning: "Ponudio si rješenje odmah i pokazao razumijevanje. Nisi pitao gosta što mu najviše treba." },
           },
       1500,
