@@ -17,6 +17,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#116](https://github.com/leonkreso784-bit/riihack/pull/116) | 17:51 | Leon | dokumentacija: BUG-007, BUG-008, ADR-030 |
+| [#115](https://github.com/leonkreso784-bit/riihack/pull/115) | 17:50 | Leon | demo igra: profesorski kod samo iz `.env.local` (BUG-007) |
 | [#113](https://github.com/leonkreso784-bit/riihack/pull/113) | 17:18 | Rino | osoblje hotela po odjelima, poveznica „Situacije" na ploči |
 | [#114](https://github.com/leonkreso784-bit/riihack/pull/114) | 17:17 | Leon | dokumentacija: M3 spojen iza vala |
 | [#112](https://github.com/leonkreso784-bit/riihack/pull/112) | 17:14 | Leon | dokumentacija: val M2, uvod za novu sesiju |

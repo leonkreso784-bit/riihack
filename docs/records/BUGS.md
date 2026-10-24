@@ -36,7 +36,7 @@ opis · uzrok · rješenje · **lekcija**.
 ## Riješeni
 
 ### BUG-007 · Profesorski kod demo igre bio je zadana vrijednost u javnom kodu
-- **Status:** ✅ rizik uklonjen 24.10. ~17:25 (kod zamijenjen); popravak skripte u [#115](https://github.com/leonkreso784-bit/riihack/pull/115) · **Težina:**
+- **Status:** ✅ rizik uklonjen 24.10. ~17:25 (kod zamijenjen); popravak skripte spojen 17:50 ([#115](https://github.com/leonkreso784-bit/riihack/pull/115)) · **Težina:**
   visok (tko pročita javni repo mogao je upravljati demo igrom pred žirijem)
 - **Opis:** `scripts/seed-demo.ts` je za `DEMO_PROF_CODE` imao zadanu vrijednost u čistom tekstu, koja se koristi
   kad varijabla nije postavljena. Našao dokumentarist pri provjeri `TESTING.md`.

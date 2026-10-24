@@ -17,7 +17,7 @@ je dotad samo spajao PR-ove.
 **Odluka.** Integrator smije `gh pr merge/diff/view/checks` i `vercel env add/ls`; **bez ručnog deploya i bez
 pristupa Neonu**. Sam postavlja `NEXT_PUBLIC_USE_MOCK=0` za Production (učinjeno ~17:40); novi build nastaje
 spajanjem [#115](https://github.com/leonkreso784-bit/riihack/pull/115).
-**Posljedice.** Produkcija na pravim podacima čim je build s #115 gotov (🟨 vrijeme javlja integrator). Shema i
+**Posljedice.** Produkcija na pravim podacima od 17:52 (build s #115; `/`, `/ulaz`, `/igra`, `/profesor` 200). Shema i
 baza ostaju kod Leonovog graditelja ([ADR-026](#adr-026)).
 
 <a id="adr-029"></a>
