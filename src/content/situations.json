@@ -1,1 +1,653 @@
-[]
+[
+  {
+    "id": "prituzba-sobe",
+    "title": "Gost nezadovoljan sobom",
+    "text": "Poslovni gost se prije sat vremena prijavio u hotel {hotel} i sada stoji na recepciji s koferom. U sobi {soba} su na podu tragovi prethodnog gosta, u kupaonici je vlažan ručnik, a krevet je tek napola namješten. Tvrdi da je rezervirao baš ovaj hotel zbog čistoće i da za sat vremena ima važan sastanak. Mjesto na recepciji je prazno i sada je red na vama.",
+    "area": "Recepcija i smještaj",
+    "difficulty": 1,
+    "character": {
+      "name": "Marko Vidaković",
+      "role": "Poslovni gost, voditelj prodaje iz Zagreba",
+      "personality": "Uljudan, ali nestrpljiv i iscrpljen od puta; brzo zaoštri ton kad osjeti da ga se odbija.",
+      "goal": "Želi ispravljenu sobu ili drugu sobu odmah, bez priče o tome čija je krivnja, i neku vrstu priznanja da je propust stvaran."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Iskreno se ispričava i priznaje neugodu, bez opravdavanja",
+        "skill": "empathy"
+      },
+      {
+        "id": "c2",
+        "text": "Nudi konkretno rješenje odmah (druga soba ili hitno spremanje s rokom)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c3",
+        "text": "Jasno kaže što će se dogoditi i do kada, tako da gost zna što može očekivati",
+        "skill": "communication"
+      },
+      {
+        "id": "c4",
+        "text": "Ne prebacuje krivnju na domaćice niti umanjuje gostovu primjedbu",
+        "skill": "ethics"
+      },
+      {
+        "id": "c5",
+        "text": "Daje razmjernu gestu (piće, kasniji odlazak) unutar ovlasti, bez rasipanja",
+        "skill": "finance"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Soba je spremana prema standardu, vjerojatno je riječ o nesporazumu. Naša domaćica je nova pa još uči, ali možemo ponovno pogledati ako želite.",
+        "criteria": [
+          "c2"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Žao mi je zbog ovoga, to se ne smije dogoditi. Pogledat ću što se može napraviti i javiti vam se čim saznam više.",
+        "criteria": [
+          "c1",
+          "c4"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Ispričavam se, razumijem koliko je to neugodno nakon puta. Odmah vas selim u slobodnu sobu istog standarda, a prtljagu će vam prenijeti nosač. Za nepriliku večeras vam je doručak na račun kuće, a s domaćicom ću popričati o tome što se dogodilo.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c4"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Iskreno se ispričavam, to nije standard koji očekujete od nas. Za deset minuta vam dajem ključ druge sobe i nosač prenosi prtljagu, a ako vam to ne odgovara, domaćica će sobu {soba} dovesti u red u 20 minuta. Dotle vas molim na piće u baru na račun kuće.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3",
+          "c5"
+        ]
+      }
+    ],
+    "effects": {
+      "guests": 3,
+      "reviews": 4,
+      "operations": 2
+    },
+    "room": {
+      "type": "double",
+      "problemStatus": "occupied"
+    }
+  },
+  {
+    "id": "kvar-klime",
+    "title": "Klima ne radi usred sezone",
+    "text": "Voditelj održavanja javlja da je u sobi {soba} u hotelu {hotel} otkazao kompresor klima-uređaja, a vani je preko trideset stupnjeva. Gosti, obitelj s malim djetetom, već su dvaput zvali na recepciju. Servis može doći tek za tri dana, a hitni izlazak preko vikenda košta dvostruko više. Hotel je ovog tjedna gotovo pun, pa slobodnih soba istog tipa gotovo da nema.",
+    "area": "Održavanje i tehnika",
+    "difficulty": 3,
+    "character": {
+      "name": "Ivica Perić",
+      "role": "Voditelj tehničke službe",
+      "personality": "Iskusan i praktičan, govori kratko i otvoreno; ne voli kad se kvar odgađa, ali zna da je budžet tanak.",
+      "goal": "Želi da uprava odluči danas: hitni servis ili čekanje, i što će se u međuvremenu učiniti s gostima."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Odmah rješava gostovu situaciju (zamjenska soba ili privremeno rashlađivanje) i blokira sobu za prodaju",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c2",
+        "text": "Usporedi trošak hitnog servisa s gubitkom prihoda i pritužbama prije odluke",
+        "skill": "finance"
+      },
+      {
+        "id": "c3",
+        "text": "Jasno obavijesti recepciju i goste o kvaru, mjeri i roku popravka",
+        "skill": "communication"
+      },
+      {
+        "id": "c4",
+        "text": "Ne ostavlja goste u sobi s kvarom i ne prodaje je dalje dok se ne popravi",
+        "skill": "ethics"
+      },
+      {
+        "id": "c5",
+        "text": "Pokaže razumijevanje za obitelj s malim djetetom, ne samo za tehnički problem",
+        "skill": "empathy"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Pustimo servis u srijedu, ušteda je ušteda. Gostima ćemo dati ventilator i besplatnu vodu, mislim da će podnijeti.",
+        "criteria": [
+          "c5"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Naručite hitni servis za vikend i neka gosti ostanu u sobi dok ne dođu. Platit ćemo dvostruko, ali barem je riješeno prije nego što netko napiše lošu recenziju.",
+        "criteria": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Obitelj danas preseljavamo u najbližu slobodnu sobu, čak i ako je manja, uz popust ili besplatan doručak. {soba} blokiram u sustavu i naručujem redovni servis, a recepciji šaljem poruku s rokom popravka.",
+        "criteria": [
+          "c1",
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Prvo da vidimo brojke: koliko košta hitni servis, a koliko nam pada u prihodu ako sobu držimo praznu tri dana. Obitelj odmah selimo u drugu sobu, a recepciji šaljem rok popravka.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "effects": {
+      "operations": 4,
+      "guests": 3,
+      "finance": 2
+    },
+    "room": {
+      "type": "family",
+      "problemStatus": "broken"
+    }
+  },
+  {
+    "id": "povisica",
+    "title": "Recepcionarka traži povišicu",
+    "text": "Ana radi na recepciji hotela {hotel} već četiri godine, zna većinu stalnih gostiju po imenu i često preuzima smjene kad netko otkaže. Dolazi u vaš ured i kaže da je u susjednom hotelu dobila ponudu s plaćom većom za petnaest posto. Vaša marža je tanka, a ostali zaposlenici s istim stažom primaju manje od nje. Odgovor očekuje do kraja tjedna.",
+    "area": "Ljudski potencijali",
+    "difficulty": 3,
+    "character": {
+      "name": "Ana Jurić",
+      "role": "Recepcionarka, četiri godine staža",
+      "personality": "Smirena i profesionalna, ali odlučna; ne prijeti otkazom otvoreno, ali jasno da je razmišljala o odlasku.",
+      "goal": "Želi da joj se priznaju godine rada kroz plaću ili jasan put napredovanja, i ne želi da je se zavlači praznim obećanjima."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Priznaje Aninu vrijednost i sluša je prije nego što odgovori",
+        "skill": "empathy"
+      },
+      {
+        "id": "c2",
+        "text": "Iskreno iznese financijske granice i ne obećava iznos bez pokrića",
+        "skill": "finance"
+      },
+      {
+        "id": "c3",
+        "text": "Predlaže realnu alternativu (postupno povećanje, dodatak za smjene, plan napredovanja)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c4",
+        "text": "Vodi računa o pravednosti prema ostalim zaposlenicima s istim stažom",
+        "skill": "ethics"
+      },
+      {
+        "id": "c5",
+        "text": "Dogovara rok i sljedeći korak, tako da razgovor ne ostane u zraku",
+        "skill": "communication"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Hvala ti, tvoj rad nam puno znači. Dat ću ti petnaest posto od sljedećeg mjeseca, samo o tome nemoj govoriti kolegama da ne bude problema.",
+        "criteria": [
+          "c1"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Razumijem te i cijenim što si došla otvoreno. Petnaest posto trenutno ne možemo, ali mogu predložiti povećanje u dvije etape i dodatak za smjene preko vikenda. Do petka ću pripremiti brojke i tada sjedamo ponovno, a kad se odlučimo za povećanje, ono mora vrijediti po jasnom kriteriju za sve s tvojim stažom.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3",
+          "c4"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Ako ti drugi hotel nudi više, razumijem da razmišljaš o odlasku. Mi tu ne možemo ništa, marže su male, javi mi što odlučiš.",
+        "criteria": [
+          "c2"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Cijenim tvoj rad i znam koliko preuzimaš. Ne mogu danas obećati petnaest posto jer ne bih htio dati riječ koju ne mogu ispuniti. Pogledat ću brojke i javiti ti u petak što je moguće.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c5"
+        ]
+      }
+    ],
+    "effects": {
+      "staff": 5,
+      "finance": 3
+    }
+  },
+  {
+    "id": "popust-grupa",
+    "title": "Agencija traži veliki popust za grupu",
+    "text": "Agent putničke agencije javlja se u hotel {hotel} s upitom za grupu od trideset soba na četiri noći u lipnju. Traži dvadeset pet posto popusta na cjenik i kaže da mu konkurencija iz susjedne ulice nudi povoljnije. Lipanj u vašem hotelu nije pun, ali nije ni prazan, a troškovi po sobi su poznati. Ponudu želi potvrditi do kraja dana.",
+    "area": "Prodaja i ugovori",
+    "difficulty": 4,
+    "character": {
+      "name": "Davor Bilić",
+      "role": "Agent putničke agencije Kvarner Tours",
+      "personality": "Šarmantan pregovarač koji zna da gura gornju granicu; ne vrijeđa se na protuprijedlog ako je obrazložen.",
+      "goal": "Želi dobiti što veći popust za grupu, a ako ne ide, onda barem jasne uvjete i fiksnu cijenu da svom klijentu pokaže dobar posao."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Izračuna donju granicu cijene (trošak po sobi) prije nego što se obveže",
+        "skill": "finance"
+      },
+      {
+        "id": "c2",
+        "text": "Iznosi protuprijedlog s obrazloženjem, a ne golo odbijanje ili pristanak",
+        "skill": "communication"
+      },
+      {
+        "id": "c3",
+        "text": "Veže popust za uvjete (depozit, rok rooming liste, raniji rok uplate)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c4",
+        "text": "Ne laže o popunjenosti niti stvara lažni pritisak",
+        "skill": "ethics"
+      },
+      {
+        "id": "c5",
+        "text": "Razumije agentov pritisak prema klijentu i gradi dugoročan odnos",
+        "skill": "empathy"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Dajem dvadeset pet posto, grupa je grupa, a ovako smo sigurni da ne ode konkurenciji. Pošaljite ugovor.",
+        "criteria": [
+          "c5"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Ne možemo ići na dvadeset pet posto, mogu najviše deset. Uostalom, lipanj nam je skoro pun, ako ne odlučite danas, soba neće biti.",
+        "criteria": [
+          "c2"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Hvala vam na upitu, znam da ste pod pritiskom klijenta. Prvo provjeravam troškove po sobi da vidim donju granicu, pa predlažem popust od dvanaest posto uz depozit od trideset posto i rooming listu do petnaest dana prije dolaska. Ako vam odgovara, potvrđujem danas.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3",
+          "c5"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Mogu sniziti cijenu, ali za dvanaest posto popusta tražim depozit od trideset posto i rooming listu na vrijeme. Ne tvrdim da je lipanj pun, jer nije, ali ni cijena ispod troška nije moguća.",
+        "criteria": [
+          "c2",
+          "c3",
+          "c4"
+        ]
+      }
+    ],
+    "effects": {
+      "finance": 4,
+      "guests": 4,
+      "operations": 2
+    }
+  },
+  {
+    "id": "losa-recenzija",
+    "title": "Loša recenzija na internetu",
+    "text": "Na portalu za rezervacije pojavila se recenzija hotela {hotel} s dvije zvjezdice. Gost piše da je zbog buke s terase bio budan do ponoći, da je doručak bio hladan, a recepcija ravnodušna. Dio je istinit, dio pretjeran. Prosjek ocjena hotela pao je za nekoliko desetinki, a u petak ima mnogo novih rezervacija. Gost se uz to javio i osobno, očekujući reakciju.",
+    "area": "Ugled i recenzije",
+    "difficulty": 2,
+    "character": {
+      "name": "Tomislav Kovač",
+      "role": "Gost koji je ostavio recenziju",
+      "personality": "Razočaran, ali racionalan; reagira na iskrenost, a ljuti se na kopirane fraze i obrane.",
+      "goal": "Želi da ga se shvati ozbiljno i da se nešto promijeni, a nagradu u novcu ne traži otvoreno."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Odgovara javno i pristojno, bez svađe i bez iznošenja gostovih privatnih podataka",
+        "skill": "communication"
+      },
+      {
+        "id": "c2",
+        "text": "Priznaje dio koji je istinit i ne poriče sve",
+        "skill": "ethics"
+      },
+      {
+        "id": "c3",
+        "text": "Pokazuje stvarno razumijevanje za iskustvo gosta",
+        "skill": "empathy"
+      },
+      {
+        "id": "c4",
+        "text": "Iznosi konkretnu internu mjeru (buka s terase, vrućina doručka)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c5",
+        "text": "Ponudi razmjernu gestu za povratak bez kupnje recenzije ili njezina brisanja",
+        "skill": "finance"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Poštovani, ispričavamo se zbog nepovoljnog iskustva. Zbog buke i doručka uskoro uvodimo promjene. Za svaki slučaj, ako biste izbrisali recenziju, ponudit ćemo vam besplatan boravak.",
+        "criteria": [
+          "c1",
+          "c3"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Poštovani, žao nam je zbog buke i doručka, to nije standard kojem težimo. Terasu ćemo od ove sezone zatvarati u 23 sata, a doručak će se posluživati u manjim serijama. Kontaktirat ću vas privatno i rado vas ugostiti uz popust na idući boravak.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3",
+          "c4"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Poštovani, naše sobe su očišćene i doručak se poslužuje prema standardu. Vaša recenzija ne odražava stvarnost, a prema evidenciji recepcije niste se žalili za boravka.",
+        "criteria": [
+          "c1"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Poštovani, zahvaljujemo na povratnoj informaciji. Hladan doručak nam je jasan propust i ispričavamo se; buku s terase istražujemo i javit ćemo vam što smo promijenili. Pišem vam i privatno da čujem više.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "effects": {
+      "reviews": 5,
+      "guests": 3
+    }
+  },
+  {
+    "id": "prebukiranje",
+    "title": "Prebukirana soba na dolasku",
+    "text": "Na recepciju hotela {hotel} stiže gošća s potvrdom rezervacije za sobu {soba} za tri noći, no u sustavu je ista soba dvaput prodana, a prvi gost još nije otišao. Iza nje je red, a slobodnih soba tog tipa nema. Do pogreške je došlo između dva rezervacijska kanala. Gošća je putovala cijeli dan i očito je umorna.",
+    "area": "Recepcija i rezervacije",
+    "difficulty": 3,
+    "character": {
+      "name": "Sanja Radić",
+      "role": "Gošća koja je stigla s važećom rezervacijom",
+      "personality": "Smirena, ali čvrsta; ne podnosi izgovore i traži da se prizna greška hotela.",
+      "goal": "Želi sigurnu sobu istog ili boljeg standarda još večeras i da je se ne tretira kao problem."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Odmah i bez izvlačenja priznaje da je greška na strani hotela",
+        "skill": "ethics"
+      },
+      {
+        "id": "c2",
+        "text": "Osigura smještaj istog ili višeg standarda (druga soba, partnerski hotel uz prijevoz)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c3",
+        "text": "Preuzme trošak razlike i ponudi razmjernu naknadu",
+        "skill": "finance"
+      },
+      {
+        "id": "c4",
+        "text": "Jasno objasni što se dogodilo i što slijedi, bez zastoja i nagađanja",
+        "skill": "communication"
+      },
+      {
+        "id": "c5",
+        "text": "Pokaže razumijevanje za umor i nelagodu gošće, ne samo za proceduru",
+        "skill": "empathy"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Dogodila se pogreška u sustavu, no ne možemo ništa dok prvi gost ne ode. Pričekajte u baru, pa ćemo vidjeti.",
+        "criteria": [
+          "c4"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Iskreno se ispričavam, greška je naša i žao mi je što vas to dočekuje nakon puta. Smještam vas večeras u susjedni hotel iste ili više kategorije, hotel pokriva sve troškove i prijevoz, a sutra imate prednost za sobu {soba}. Večeras vam dajemo i večeru na račun kuće.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3",
+          "c4"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Ispričavam se, grešku je napravio naš sustav. Odmah vam dajem sobu veće kategorije koja je slobodna, razliku u cijeni snosimo mi, a večeras imate piće u baru. Zahvaljujem na strpljenju.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Kanal za rezervacije nam je dojavio pogrešan status, pa nije sasvim do nas. Ali vidjet ćemo što možemo, ako imate vremena pričekati.",
+        "criteria": [
+          "c4"
+        ]
+      }
+    ],
+    "effects": {
+      "guests": 4,
+      "reviews": 4,
+      "finance": 2
+    },
+    "room": {
+      "type": "suite",
+      "problemStatus": "occupied"
+    }
+  },
+  {
+    "id": "alergija-restoran",
+    "title": "Alergijska reakcija u restoranu",
+    "text": "Za večerom u restoranu hotela {hotel} gost je rekao konobaru da je alergičan na orašaste plodove, a ipak je dobio desert s mljevenim bademima. Nakon nekoliko zalogaja ima crvenilo oko usta i teško diše. Konobar je u panici, a kuhar tvrdi da je alergen bio naveden u jelovniku sitnim slovima. Hitna pomoć je udaljena petnaestak minuta vožnje.",
+    "area": "Restoran i sigurnost hrane",
+    "difficulty": 5,
+    "character": {
+      "name": "Helena Bogdan",
+      "role": "Gošća, suputnica alergičnog gosta",
+      "personality": "Uznemirena, no jasna i pribrana kad vidi da netko preuzima kontrolu; traži da se odmah pomogne mužu.",
+      "goal": "Želi da se mužu odmah pruži pomoć, da netko preuzme odgovornost i da se isto ne dogodi nikome drugom."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Sigurnost gosta je na prvom mjestu: odmah zove hitnu pomoć (194 ili 112) i ne umanjuje simptome",
+        "skill": "ethics"
+      },
+      {
+        "id": "c2",
+        "text": "Smiruje goste i pokazuje empatiju, ne obrambeni stav",
+        "skill": "empathy"
+      },
+      {
+        "id": "c3",
+        "text": "Jasno daje upute osoblju (tko zove, tko ostaje s gostom, tko pregledava sastav jela)",
+        "skill": "communication"
+      },
+      {
+        "id": "c4",
+        "text": "Zadrži uzorak jela, evidentira događaj i uvede internu mjeru (alergeni na jelovniku, obuka)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c5",
+        "text": "Obavijesti osiguratelja i vodi računa o odgovornosti, bez nagađanja o krivnji",
+        "skill": "finance"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Smirite se, vjerojatno je blaga reakcija. Dat ćemo vam čašu vode, kuhar će provjeriti sastav, a ako se ne popravi za pola sata, zovemo hitnu.",
+        "criteria": [
+          "c2"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Odmah zovem 194, a konobar ostaje uz gosta i ne daje mu ništa za jelo ni piće. Kuhar zadržava tanjur i bilježi sastav, a ja ostajem uz vas dok hitna ne stigne. Nakon toga ćemo evidentirati događaj i javiti osiguratelju.",
+        "criteria": [
+          "c1",
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "Odmah zovem hitnu pomoć i ostajem uz vas. Žao mi je što ste kroz ovo morali proći, sve će se sada fokusirati na vašeg muža. Konobar neka ne ide od stola.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Prema jelovniku alergen je bio naveden, pa to nije naš propust. Ipak, ponudit ćemo vam večeru na račun kuće i vidjeti hoće li se stanje popraviti.",
+        "criteria": [
+          "c5"
+        ]
+      }
+    ],
+    "effects": {
+      "reviews": 4,
+      "guests": 3,
+      "operations": 3
+    }
+  },
+  {
+    "id": "radnik-ne-dolazi",
+    "title": "Sezonski radnik se ne pojavljuje",
+    "text": "Sezonski konobar hotela {hotel} nije došao na smjenu dva dana zaredom i ne javlja se na poruke. U restoranu ste ionako kratki s ljudima, a večeras je rezervirano trideset pet večera. Kad ga napokon dobijete na telefon, kaže da se vratio kući u Slavoniju zbog obitelji, a spominje i da mu je drugi hotel ponudio veću plaću. Za sebe traži isplatu zarađenog.",
+    "area": "Osoblje i smjene",
+    "difficulty": 4,
+    "character": {
+      "name": "Karlo Bašić",
+      "role": "Sezonski konobar",
+      "personality": "Neugodno mu je, brani se kratkim rečenicama; spreman je razgovarati ako ga se ne napada.",
+      "goal": "Želi bez problema završiti angažman i dobiti plaću za odrađene dane."
+    },
+    "rubric": [
+      {
+        "id": "c1",
+        "text": "Odmah pokriva večerašnju smjenu (preraspodjela, agencija, pomoć iz sale)",
+        "skill": "problemSolving"
+      },
+      {
+        "id": "c2",
+        "text": "Mirno otkriva razlog i formalno zatvara radni odnos (pisani sporazum ili otkaz)",
+        "skill": "communication"
+      },
+      {
+        "id": "c3",
+        "text": "Isplaćuje odrađeno u skladu sa zakonom, bez zadržavanja plaće kao kazne",
+        "skill": "ethics"
+      },
+      {
+        "id": "c4",
+        "text": "Pokazuje razumijevanje za obiteljske razloge bez osobnog napada",
+        "skill": "empathy"
+      },
+      {
+        "id": "c5",
+        "text": "Procijeni trošak zamjene (prekovremeni, agencija) i planira ga",
+        "skill": "finance"
+      }
+    ],
+    "options": [
+      {
+        "id": "o1",
+        "text": "Pošalji pisani otkaz e-mailom da stvar bude uredna. Plaću zadržavam dok ne vidim koliko nas je tvoj odlazak koštao, ugovor je ugovor.",
+        "criteria": [
+          "c2"
+        ]
+      },
+      {
+        "id": "o2",
+        "text": "Razumijem da je obitelj na prvom mjestu, hvala što si mi se javio. Dogovorimo se da u pisanom obliku završimo angažman, a zarađeno ti isplaćujem u redovnom roku. Za večeras već prozivam kolege iz sale i zovem agenciju, trošak prekovremenih ulazi u moj plan.",
+        "criteria": [
+          "c1",
+          "c2",
+          "c3",
+          "c4"
+        ]
+      },
+      {
+        "id": "o3",
+        "text": "U redu, hvala što si se javio. Plaću ćeš dobiti, a ja ću se snaći za večeras kako znam.",
+        "criteria": [
+          "c3"
+        ]
+      },
+      {
+        "id": "o4",
+        "text": "Ne mogu vjerovati da tako ostavljaš tim usred sezone. Ako se vratiš do večeras, zaboravit ćemo sve, a ako ne, izgubit ćeš zarađeno.",
+        "criteria": [
+          "c1"
+        ]
+      }
+    ],
+    "effects": {
+      "staff": 4,
+      "operations": 4,
+      "finance": 2
+    }
+  }
+]
