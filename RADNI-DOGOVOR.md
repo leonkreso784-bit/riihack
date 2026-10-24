@@ -8,7 +8,7 @@ ljudi ne dira iste datoteke.
 | Tko | Što | Mape |
 | --- | --- | --- |
 | **Rino** | sve ekrane: ulaz, profesorova ploča, uvid u studenta, igra, situacija s razgovorom, izvještaj | `app/` (osim `app/api/`), `components/`, `lib/mock.ts` |
-| **Leon** 🟨 | motor, sadržaj hotela, baza, API igre (svijet, ulaz, stanje, klik, zatvaranje kruga, profesorove rute), deploy | `lib/engine/`, `content/hotel/`, `supabase/`, `lib/db/`, `app/api/` (osim AI ruta) |
+| **Leon** 🟨 | motor, sadržaj hotela, baza, API igre (svijet, ulaz, stanje, klik, zatvaranje kruga, profesorove rute), deploy | `lib/engine/`, `content/hotel/`, `drizzle/`, `lib/db/`, `scripts/`, `app/api/` (osim AI ruta) |
 | **Simon** 🟨 | AI sloj: lik, presuda, mentor, promptovi, rezerve kad AI padne; zatim agencija i ugovori | `lib/ai/`, `prompts/`, `app/api/situations/[id]/chat`, `content/agency/` |
 | **Zajedno** | `lib/types.ts` (oblik odgovora API-ja) pišu Leon i Rino **prvi**, prije ičeg drugog; mijenja se samo uz dogovor | `lib/types.ts` |
 
@@ -21,7 +21,7 @@ funkcije s dogovorenim potpisom, a Leon ih zove.
 ## Stack (potvrđuje se)
 
 - **Aplikacija:** Next.js (App Router) + TypeScript + Tailwind, API u `app/api/*`
-- **Baza:** Supabase Postgres, samo s poslužitelja
+- **Baza:** Neon Postgres + Drizzle, samo s poslužitelja (Simonov starter bez Better Autha)
 - **AI:** Claude preko AI SDK-a (Haiku za likove, Sonnet za presudu i mentora)
 - **Deploy:** Vercel
 
@@ -32,7 +32,7 @@ Detalji i razlozi: [ARHITEKTURA.md](ARHITEKTURA.md) §3. Cilj je demo koji radi 
 - [ ] Pristup ovom repou i `git clone` radi
 - [ ] Na Discordu si i imaš ulogu
 - [ ] Node 24 i pnpm
-- [ ] Računi na Vercelu i Supabaseu (jedan zajednički Supabase projekt)
+- [ ] Računi na Vercelu i Neonu (jedna zajednička Neon baza, spojena preko Vercela)
 - [ ] AI ključ: jedan zajednički, samo u `.env.local`, nikad u gitu
 
 ## Git pravila

@@ -53,7 +53,7 @@ generiranje situacija AI-jem, mobilnu aplikaciju.
    odgovor **5**. Tekst koji se s ponuđenim odgovorom poklapa u ≥ 70 % riječi računa se kao klik tog odgovora.
 3. **Ulogu dobiješ, ne biraš.** Svaka tvrtka kreće s istim zbrojem pokazatelja, drukčije raspoređenim.
 4. **Ocjena je napredak**, ne apsolutni rezultat.
-5. **AI ključ samo na poslužitelju.** Preglednik nikad ne zove Claude ni Supabase s tajnim ključem.
+5. **AI ključ samo na poslužitelju.** Preglednik nikad ne zove Claude ni bazu.
 
 ## 3 · Stack
 
@@ -61,8 +61,8 @@ generiranje situacija AI-jem, mobilnu aplikaciju.
 | --- | --- | --- |
 | Aplikacija | **Next.js** (App Router) + TypeScript + Tailwind | jedan projekt za sučelje i API, zadano u RADNI-DOGOVOR |
 | API | Next.js route handleri pod `app/api/*` | nema zasebnog servera ni CORS-a |
-| Baza | **Supabase Postgres**, samo s poslužitelja (service key) | brzo, besplatno, bez RLS-a jer sve ide kroz naš API |
-| Osvježavanje | **polling svake 3 s** | najjednostavnije i pouzdano; Supabase Realtime samo ako ostane vremena |
+| Baza | **Neon Postgres + Drizzle ORM**, samo s poslužitelja | iz Simonovog startera koji je već isproban na Vercelu ([reference/starter](https://github.com/leonkreso784-bit/ri-hack-4/tree/main/reference/starter)); **Better Auth izbacujemo** jer nema računa |
+| Osvježavanje | **polling svake 3 s** | najjednostavnije i pouzdano na Vercelu |
 | AI | **Claude preko AI SDK-a** (`@ai-sdk/anthropic`) | lik: `claude-haiku-5-5` (brz, stream); presuda i mentor: `claude-sonnet-5-5` (strukturirani izlaz) |
 | Deploy | **Vercel**, `main` se deploya sam | javni link od prvog sata |
 
@@ -70,7 +70,7 @@ generiranje situacija AI-jem, mobilnu aplikaciju.
 
 ## 4 · Model podataka
 
-Sve tablice u jednoj Supabase shemi. Identifikatori su `uuid`, vremena `timestamptz`.
+Shema je u `lib/db/schema.ts` (Drizzle), migracije u `drizzle/`. Identifikatori su `uuid`, vremena `timestamptz`.
 
 | Tablica | Polja (bitna) | Napomena |
 | --- | --- | --- |
@@ -177,18 +177,24 @@ objasniti razloge. Kriterij smije biti ispunjen i u razgovoru s likom.
 
 ## 8 · API
 
-Svi odgovori su JSON. Student se prepoznaje po kolačiću, profesor po kodu u putanji.
+Svi odgovori su JSON. Student se prepoznaje po kolačiću igrača, a profesor po **profesorovu kolačiću**.
+
+**Profesorski kod nikad nije u adresi.** Profesor ploču pokazuje na projektoru, pa bi svatko u dvorani vidio kod
+u adresi i mogao upravljati igrom. U adresi je samo `worldId`; kod se upiše jednom (ili se kolačić postavi pri
+stvaranju igre), a svaka `/api/prof/*` ruta provjerava kolačić prema `prof_code_hash`. Kod igre za studente se
+smije vidjeti, njime se samo ulazi.
 
 **Profesor**
 
 | Metoda i putanja | Što radi |
 | --- | --- |
-| `POST /api/worlds` `{name, maxPlayers}` | stvori igru → `{joinCode, profCode}` |
-| `GET /api/prof/[profCode]` | stanje: čekaonica (tko je ušao, „7 / 24"), krug, rok, tvrtke s napretkom i tko je zatvorio krug |
-| `POST /api/prof/[profCode]/start` | pokreni igru i otvori prvi krug |
-| `POST /api/prof/[profCode]/round` `{deadlineMinutes?}` | otvori sljedeći krug (ručno ili s odbrojavanjem) |
-| `GET /api/prof/[profCode]/companies/[id]` | uvid u razmišljanje: odgovori, razgovori, presude, mentor |
-| `POST /api/prof/[profCode]/finish` | završi igru, konačna ljestvica |
+| `POST /api/worlds` `{name, maxPlayers}` | stvori igru → `{worldId, joinCode, profCode}` i postavi profesorov kolačić |
+| `POST /api/prof/login` `{profCode}` | profesor na drugom uređaju upiše svoj kod → kolačić |
+| `GET /api/prof/[worldId]` | stanje: čekaonica (tko je ušao, „7 / 24"), krug, rok, tvrtke s napretkom i tko je zatvorio krug |
+| `POST /api/prof/[worldId]/start` | pokreni igru i otvori prvi krug |
+| `POST /api/prof/[worldId]/round` `{deadlineMinutes?}` | otvori sljedeći krug (ručno ili s odbrojavanjem) |
+| `GET /api/prof/[worldId]/companies/[id]` | uvid u razmišljanje: odgovori, razgovori, presude, mentor |
+| `POST /api/prof/[worldId]/finish` | završi igru, konačna ljestvica |
 
 **Student**
 
@@ -206,6 +212,14 @@ Svi odgovori su JSON. Student se prepoznaje po kolačiću, profesor po kodu u pu
 spreman; njegova tvrtka se tada obračuna i on odmah vidi rezultat i mentora. Kad istekne rok, poslužitelj pri
 sljedećem čitanju zatvori sve otvorene krugove (neodgovoreno = kvaliteta 1). Nitko ne ide ispred otvorenog kruga.
 
+## 8a · Demo igra
+
+`scripts/seed-demo.ts` (pokreće se `pnpm seed:demo`) napravi igru „Demo Simpolis" s poznatim kodom igre i
+profesorskim kodom, 5 hotela iz banke sa studentima, jednim odigranim krugom (odgovori, presude, mentor, promjene
+soba) i otvorenim drugim krugom. Koristi se za obilaske žirija, snimku i pitch, da se nikad ne kreće od prazne
+igre. Za pitch se uz nju uživo napravi i nova igra, da žiri vidi ulaz kodom. Skripta smije ponovno pokrenuti i
+obrisati samo svoju demo igru.
+
 ## 9 · Ekrani
 
 | Putanja | Tko | Što |
@@ -213,8 +227,8 @@ sljedećem čitanju zatvori sve otvorene krugove (neodgovoreno = kvaliteta 1). N
 | `/` | student | veliko polje za kod igre, zatim ime i ime hotela (kao Kahoot); poveznica „Ja sam profesor" |
 | `/cekaonica` | student | „Tvoj hotel je … u …", čeka da profesor pokrene igru |
 | `/profesor/novi` | profesor | naziv igre, broj studenata → kod igre |
-| `/profesor/[profCode]` | profesor | prije početka: **kod golemim slovima** za projektor i mjesta koja se pune („7 / 24", imena i hoteli); gumb „Pokreni". Za vrijeme igre: ploča uživo, krug, odbrojavanje, „Otvori krug", popis tvrtki, ljestvica |
-| `/profesor/[profCode]/tvrtka/[id]` | profesor | uvid u razmišljanje jednog studenta |
+| `/profesor/[worldId]` | profesor | prije početka: **kod golemim slovima** za projektor i mjesta koja se pune („7 / 24", imena i hoteli); gumb „Pokreni". Za vrijeme igre: ploča uživo, krug, odbrojavanje, „Otvori krug", popis tvrtki, ljestvica |
+| `/profesor/[worldId]/tvrtka/[id]` | profesor | uvid u razmišljanje jednog studenta |
 | `/igra` | student | moja tvrtka: pokazatelji (početak prema sada), popunjenost/ADR/RevPAR, situacije kruga, „Zatvori krug", ljestvica |
 | `/igra/sobe` | student | sobe po katovima, stanje bojom (§5b) |
 | `/igra/sobe/[broj]` | student | detalj sobe |
@@ -235,7 +249,12 @@ Svaki broj ima ime i jedinicu (€, %, /100).
 ## 9a · Wow sloj
 
 Ono što žiri pamti. Svaka stavka gradi se na podacima koje glavni tok već ima, pa ne traži novu arhitekturu.
-Oznaka **W1** znači da ide u pitch (radi se odmah nakon glavnog toka), a **W2** da je dodatak ako ostane vremena.
+**Rez opsega (24.10.):** do predaje je ~22 h, pa glavni tok mora raditi do 2. obilaska žirija (sub 19:00).
+- **Radi stvarno:** W1-b sokratski mentor i W1-c lik zna kad prepisuješ (uz sobe iz §5b, koje su glavni tok).
+- **Samo sučelje** (lažni podaci, spaja se na prave ako ostane vremena): W1-a živa karta i W1-e radar vještina.
+- **Plan** (pitch, „Što dalje"): W1-d simulator unaprijed, W2-a šok gumb, W2-b novine, W2-c glas.
+
+Izvorna podjela W1 i W2 ostaje u tablici radi opisa.
 
 | # | Što | Kako radi | Zašto wow | Tko | h |
 | --- | --- | --- | --- | --- | --- |
@@ -261,11 +280,12 @@ Oznaka **W1** znači da ide u pitch (radi se odmah nakon glavnog toka), a **W2**
 app/            ekrani i app/api/* (Rino ekrani, backend rute)
 lib/engine/     motor, čiste funkcije + testovi
 lib/ai/         lik, presuda, mentor
-lib/db/         Supabase klijent i upiti
+lib/db/         Drizzle shema, klijent i upiti
 content/hotel/  paket hotela (JSON)
 content/agency/ paket agencije (JSON) 🟨
 prompts/        promptovi
-supabase/       migracije (SQL)
+drizzle/        migracije (SQL)
+scripts/        seed-demo.ts (demo igra, §8a)
 ```
 
 Granice datoteka po ljudima su u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md), da se troje ljudi ne sudara.
@@ -281,6 +301,10 @@ Rino ne čeka backend: tipovi odgovora API-ja su u `lib/types.ts` (pišu se **pr
 | --- | --- |
 | AI spor ili padne na demou | rezerve u §7; snimka demoa čim glavni tok radi |
 | Presuda nepredvidiva | rubrika s 5 jasnih kriterija, strukturirani izlaz, temperatura 0 |
-| Preveliki opseg (agencija, ugovori) | agencija i ugovori kreću tek kad hotel radi od početka do kraja |
+| Preveliki opseg | rez u §9a; agencija i ugovori su plan; glavni tok do sub 19:00 |
+| Dva zahtjeva istovremeno zatvaraju isti krug (rok istekao) | zatvaranje je jedan `UPDATE … WHERE closed_round < k RETURNING`: samo prvi zahtjev obračuna, drugi ne radi ništa |
+| Presuda na Sonnetu traje nekoliko sekundi | sučelje odmah pokaže „Gost razmišlja o tvom odgovoru…", gumb se zaključa dok čeka |
+| Profesorski kod procuri na projektoru | kod nije u adresi, samo u kolačiću (§8) |
+| Demo kreće od prazne igre | demo igra iz §8a |
 | Sukobi u gitu | podjela po mapama, merge svaka 2–3 sata |
 | Trošak AI-ja | najviše 6 poruka po razgovoru, Haiku za lik |

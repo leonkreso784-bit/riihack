@@ -41,4 +41,4 @@ Radni repo tima Leon, Simon i Rino za **Ri-Hack 4.0**, hackathon RITEH Web Teama
 
 ## Stack
 
-Next.js + TypeScript + Tailwind, Supabase Postgres, Claude preko AI SDK-a, Vercel ([ARHITEKTURA.md](ARHITEKTURA.md) §3). Podjela po mapama je u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md). Kad se kod doda, ovdje upisati kako se projekt pokreće (instalacija, dev server, env varijable).
+Next.js + TypeScript + Tailwind, Neon Postgres + Drizzle, Claude preko AI SDK-a, Vercel ([ARHITEKTURA.md](ARHITEKTURA.md) §3). Podjela po mapama je u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md). Kad se kod doda, ovdje upisati kako se projekt pokreće (instalacija, dev server, env varijable).

@@ -12,7 +12,7 @@ Provjeriti s pravilima na Discordu koji se format traži. Nacrt sadržaja (dopun
    rješava situacije: klikom, vlastitim riječima ili razgovorom s likom. Vlastito razmišljanje vrijedi više od
    klika; prepisan gotov odgovor ne donosi bodove. Na kraju kruga mentor objasni zašto. Ocjena je napredak u
    odnosu na vlastiti početak. Tvrtke žive u istom svijetu i sklapaju ugovore.
-4. **Tehnologija:** Next.js, TypeScript, Tailwind, Supabase Postgres, Claude (AI SDK), Vercel. Vidi
+4. **Tehnologija:** Next.js, TypeScript, Tailwind, Neon Postgres, Drizzle, Claude (AI SDK), Vercel. Vidi
    [ARHITEKTURA.md](ARHITEKTURA.md).
 5. **Uloga AI-ja:** AI glumi likove, provjerava koje kriterije rubrike odgovor ispunjava i piše mentorov osvrt.
    **Bodove računaju pravila igre**, uvijek jednako, pa je ocjena fer i provjerljiva.
