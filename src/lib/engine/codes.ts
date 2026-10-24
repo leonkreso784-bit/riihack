@@ -1,6 +1,9 @@
 import { CODE_ALPHABET } from "@/lib/rules";
 
-export function generateCode(length: number, rand: () => number = Math.random): string {
+// Kodovi su tajne (profesorski kod je lozinka), pa zadani izvor slučajnosti mora biti kriptografski.
+const secureRandom = () => crypto.getRandomValues(new Uint32Array(1))[0] / 2 ** 32;
+
+export function generateCode(length: number, rand: () => number = secureRandom): string {
   let out = "";
   for (let i = 0; i < length; i++) {
     out += CODE_ALPHABET[Math.floor(rand() * CODE_ALPHABET.length)];

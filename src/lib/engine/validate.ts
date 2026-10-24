@@ -1,7 +1,7 @@
 import { MAX_OWN_ANSWER_CHARS, MIN_OWN_ANSWER_CHARS } from "@/lib/rules";
 import type { JoinRequest } from "@/lib/types";
 
-const validName = (s: string) => s.trim().length >= 2 && s.trim().length <= 40;
+const validName = (s: unknown) => typeof s === "string" && s.trim().length >= 2 && s.trim().length <= 40;
 
 export function validateJoin(input: JoinRequest): string | null {
   if (!validName(input.name)) return "Ime mora imati od 2 do 40 znakova";

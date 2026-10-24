@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { JoinRequest } from "@/lib/types";
 import { validateJoin, validateOwnAnswer } from "./validate";
 
 describe("validateJoin", () => {
@@ -10,6 +11,7 @@ describe("validateJoin", () => {
   });
   it("prihvaća ispravan unos", () => {
     expect(validateJoin({ joinCode: "KVRN26", name: "Ana", hotelName: "Vila" })).toBeNull();
+    expect(validateJoin({ joinCode: "KVRN26", name: null, hotelName: "Vila" } as unknown as JoinRequest)).toBe("Ime mora imati od 2 do 40 znakova");
   });
 });
 
