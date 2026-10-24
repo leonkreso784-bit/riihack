@@ -1,6 +1,9 @@
 // Fake data for the UI while API routes are not ready (default; NEXT_PUBLIC_USE_MOCK=0 turns it off). Shapes follow src/lib/types.ts.
 import { HOTELS } from "@/content";
+import { DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "./rules";
 import type {
+  DepartmentView,
+  StaffDepartment,
   CityView,
   CompanyDetailResponse,
   CompanyView,
@@ -237,17 +240,34 @@ const NEWS: NewsItem[] = [
   { at: "2026-10-24T14:01:00.000Z", text: "Vila Ana otvara vrata u Rijeci" },
 ];
 
+// Departments: metric from the department's key metric, people from the content hotel, a few warnings to show.
+const ALERTS: Partial<Record<StaffDepartment, string[]>> = {
+  housekeeping: ["Sobarica Ana je na bolovanju do kraja tjedna.", "Tri sobe čekaju čišćenje duže od dva sata."],
+  maintenance: ["Klima u sobi 204 ne radi od jutros."],
+  management: ["Zaposlenici su pali u lipnju: tim je umoran."],
+};
+const DEPARTMENTS: DepartmentView[] = (Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[]).map((d) => ({
+  department: d,
+  label: STAFF_DEPARTMENT_LABELS[d],
+  metric: DEPARTMENT_METRIC[d],
+  metricValue: AFTER_JUNE[DEPARTMENT_METRIC[d]],
+  staffCount: HOTELS[0].staff.filter((s) => s.department === d).length,
+  alerts: ALERTS[d] ?? [],
+  investment: d === "maintenance" ? 1000 : 0,
+}));
+
 export const MOCK_ME: MeResponse = {
   world: WORLD,
   company: COMPANY,
   situations: SITUATIONS,
   leaderboard: LEADERBOARD,
   reports: REPORTS,
-  plan: { round: 2, price: 85, marketing: 1000 },
+  plan: { round: 2, price: 85, marketing: 1000, investments: { maintenance: 1000 } },
   contracts: CONTRACTS,
   finances: FINANCES,
   city: CITY,
   news: NEWS,
+  departments: DEPARTMENTS,
 };
 
 // S8: professor's situation bank (mutable in memory so the mock createSituation / dispatch calls change the list).
