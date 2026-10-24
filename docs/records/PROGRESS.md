@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 19:05–19:20 · plan vala 3 na `main`-u, stranica odjela
+
+- **Spojeno:** plan vala 3 (#134, 19:16, Leonovo „spoji"), paket `uqr` za QR ulaza (#139, 19:16; `npm ci` prolazi),
+  Rinova stranica odjela R11 (#135, 19:12; 301 test), dokumentacija #140.
+- **Shema (graditelj, ~19:17):** `finances.breakdown` (jsonb, NULL) aditivnim SQL-om ([ADR-026](DECISIONS.md#adr-026)).
+- **Odluka (Leon, ~19:20):** skicu karte #128 prvo pregledava i prilagođava Rino; problemi se rješavaju nakon toga.
+- **Otvoreno:** #143 L14 javni profil (CI crven: testni podaci bez `investments`, javljeno graditelju); #142 Rinove
+  detaljnije Financije i Plan (čeka Simonov ok, mijenja Simonove stranice); #107 (čeka Rinov ok); #128 (Rino).
+
 ## Sub 24.10. 18:50–19:05 · odjeli na `main`-u, ulaz poveznicom
 
 - **Spojeno:** ugovor odjela (#132, 18:54, Leonovo „spoji") i motor odjela L13 (#137, 18:59; 301 test, smoke 14/14),
