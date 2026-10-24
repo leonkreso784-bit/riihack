@@ -103,16 +103,16 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R15)
 
-- **Sad radim:** čekam spajanje #196 i #200; zatim provjera na produkciji
-- **Sljedeće:** nakon spajanja: podij i „bez odgovora“ na produkciji jednom pravom igrom; R15 (poruke među hotelima) ako ima smisla prije M3
-- **Čekam od drugih:** Leon: spajanje #169, #170, #174 (moj ok je na svima; #174 nakon što Simon doda poveznice); javi prioritet prije M3
+- **Sad radim:** čekam spajanje #211 (sve tri Leonove stavke: BUG-025 rok „Ručno“, BUG-023, BUG-022 bez crvenog ▼); u 23:30 proba na mobitelima
+- **Sljedeće:** 23:30–00:00 proba igre za žiri; od 00:00 samo popravci bugova
+- **Čekam od drugih:** Leon: spoji #211. Simon: #205 je u sukobu u `prof-board.tsx` (s mojim #196, a bit će i s #211); pri rebaseu zadrži oboje: tvoj filtar `humans` i moj podij, „Anonimno“, „Moje igre“
 - **Drugi čekaju od mene:** —
 - **Odluke:** R14 = moj pregled #169 (izgled ok). Radar vještina na R8 izostavljen dok ima samo pokazne podatke. Studenti idu u sljedeći mjesec zajedno
-- **Otvoreno:** #196 R10 podij kruga i „Anonimno“ (Closes #46); #200 BUG-015 „bez odgovora“ i BUG-016 množina uz brojeve (+ pregled teksta; nalazi u Leonovim i Simonovim datotekama su u opisu PR-a)
-- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice, #180 bez zamrzavanja, #186 profesor preko računa; ok za #128, #107, #166, #169, #170, #174
+- **Otvoreno:** #211 popravci sučelja (BUG-022, BUG-023, BUG-025, protuponuda u Pošti, „Pošalji mentoru“, nova igra bez profesorskog koda)
+- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice, #180 bez zamrzavanja, #186 profesor preko računa, #196 R10 podij, #200 BUG-015 i 016; ok za #128, #107, #166, #169, #170, #174
 - **Provjereno na produkciji:** 20:00 cijela igra (QR → Završi mjesec → sljedeći mjesec); 20:52 pošta s AI odgovorom agencije (1.500 → 1.125 → 1.313 €); **21:15 #168 i #173**: ploča → hotel → stranica studenta → ocjena 1 → 5 („5 / 5 · profesor", ostaje nakon osvježavanja); profesorova vlastita situacija ima oznaku „od profesora" (iz banke nema, tako je zamišljeno); bez bljeska čekaonice; nakon zatvaranja lipnja kartice na `/igra` pišu „lipanj"; 0 grešaka; **21:40 #186**: naslovna → „Ja sam profesor" (samo Prijavi se / Napravi račun) → registracija → Moje igre → nova igra → QR → student uđe (1/2), igra na popisu Moje igre; `/ulaz` bez poveznice na profesora; 0 grešaka
 - **Bilješke za nastavak:** `docs/rino/STANJE.md` na grani `rino/dokumentacija`
-- **Zadnje ažurirano:** sub 22:10 (popunio Claude, ispravi)
+- **Zadnje ažurirano:** sub 22:47 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
