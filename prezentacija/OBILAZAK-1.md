@@ -61,12 +61,14 @@ Iskreno reći: **sučelje radi na primjer-podacima** (piše „primjer" na ekran
 > 3. **Razred kao Kahoot:** profesor napravi grad, razred uđe kodom, svatko dobije svoj hotel sa sobama.
 
 **Rino (2:00), aplikacija** (riihack.vercel.app, laptop, svijetla tema, zoom 125 %)
-1. Početna: tri obećanja kao tri kartice. (15 s)
-2. „Pogledaj igru (primjer)" → **Moj hotel**: pokazatelji 0–100 s promjenom, novac i popunjenost, krug „Srpanj,
-   2 od 4", situacije ovog kruga (gost, kuharica), ljestvica **po napretku, ne po novcu**. (45 s)
+1. **Ulaz kao Kahoot** (obećanje 3): početna „Uđi u igru", upiši kod (npr. ABC234), pokaži da traži ime i ime
+   hotela. **Ne klikaj „Ja sam profesor"** dok R2 nije spojen (sada daje 404). (20 s)
+2. Otvori izravno **riihack.vercel.app/igra** → **Moj hotel**: pokazatelji 0–100 s promjenom, novac i popunjenost,
+   krug „Srpanj, 2 od 4", situacije ovog kruga (gost, kuharica), ljestvica **po napretku, ne po novcu**. (45 s)
 3. **Plan**: klizači cijene i marketinga, podsjetnik iz prošlog mjeseca, ponuda ugovora s „Prihvati/Odbij". (30 s)
-4. **Grad**: karta s hotelima (visina = napredak), gradskim tvrtkama i linijama ugovora, vijesti grada. (30 s)
-   Reći: „Sve ovo je na primjer-podacima, piše na ekranu; baza i obračun stižu večeras."
+4. **Grad**: karta s hotelima (visina = napredak), gradskim tvrtkama i linijama ugovora, vijesti grada. (25 s)
+   Reći: „Sve ovo je na primjer-podacima, piše na ekranu; baza stiže večeras."
+   **Ne reći** da se karta mijenja uživo: to čuvamo za nedjelju.
 
 **Simon (0:45), AI sudac uživo**
 > Gost Marko je ljut jer klima ne radi. Tri odgovora, isti sudac:
