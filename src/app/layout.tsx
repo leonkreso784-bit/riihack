@@ -1,25 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { SiteHeader } from "@/components/site-header";
 import { t } from "@/lib/strings";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin", "latin-ext"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({ variable: "--font-sans", subsets: ["latin", "latin-ext"] });
 
 export const metadata: Metadata = {
   title: { default: t.appName, template: `%s | ${t.appName}` },
   description: t.tagline,
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#f5f8fd" };
 
-// Minimal shell; R0 replaces it with the Simpolis theme (Plus Jakarta Sans, tokens).
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="hr" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+    <html lang="hr" className={`${jakarta.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-6">{children}</main>
+        <SiteHeader />
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">{children}</main>
         <Toaster position="top-center" />
       </body>
     </html>
