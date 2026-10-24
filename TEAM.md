@@ -82,15 +82,15 @@ na koga čeka i što smo dogovorili.
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch (S0–S7)
 
-- **Sad radim:** pitch i obilazak žirija (slajdovi https://simpolis-ziri-share.vercel.app); S4 sokratski mentor sljedeće
-- **Sljedeće:** S3 PR čim L4 bude na `main`-u; S4 (#16) za M3; karta, plan i financije na prave podatke kad stigne L11
-- **Čekam od drugih:** Leon: L4 (`requirePlayer`, `getSituationForCompany`) za S3. Pitanja za S3: (1) vraća li
-  `getSituationForCompany` `situation.transcript` kao `ChatTurn[]`? (2) `src/content/situations.json` je zasad `[]`
-  (L6?) (3) dva istodobna chat zahtjeva mogu oba proći limit od 6 poruka: ostavljam kao rubni slučaj, OK?
-- **Drugi čekaju od mene:** —
-- **Otvoreno:** #72 tema (kako potiče učenje); grana `simon/S3-lik` (lik + ruta chat, testovi zeleni, čeka L4)
-- **Spojeno:** S0 (#35), pitch (#38, #66, #67), S1 (#41), S2 (#44), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
-- **Zadnje ažurirano:** sub 15:05
+- **Sad radim:** pitch i slajdovi (https://simpolis-ziri-share.vercel.app); provjera rubrika L6 za suca
+- **Sljedeće:** prava igra od početka do kraja čim L7 bude na `main`-u (sudac, lik, mentor na pravoj bazi); video demoa (S7)
+- **Čekam od drugih:** Leon: `views.ts` još vraća `finances: []`, `contracts: []`, `news: []` (`// L11`). Moje stranice
+  (plan, financije, grad) čitaju `api.me`, pa čim to bude puno i `NEXT_PUBLIC_USE_MOCK=0`, prikazuju prave podatke bez
+  promjene koda. Leon: `saveReflection` bez uvjeta „samo ako je prazno" (vidi #79).
+- **Drugi čekaju od mene:** — (`judge`, `streamCharacterReply`, `mentorQuestion`, `mentorDebrief` su na `main`-u)
+- **Otvoreno:** —
+- **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
+- **Zadnje ažurirano:** sub 15:30
 
 ## Rino · sučelje (R0–R10)
 
