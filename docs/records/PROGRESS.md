@@ -6,10 +6,11 @@ Vremena su lokalna (CEST).
 
 ---
 
-## Sub 24.10. 17:55–18:05 · proba M2, AI prijedlog za profesora
+## Sub 24.10. 17:55–18:10 · proba M2, AI prijedlog za profesora
 
 - **Proba M2 (graditelj):** sudac odbija obrazloženja s „/la", vlastiti odgovor pada na kvalitetu 3
-  ([BUG-009](BUGS.md#bug-009--presuda-vlastitog-odgovora-pada-na-rezervu-kvaliteta-3-bez-obrazloženja), Simon).
+  ([BUG-009](BUGS.md#bug-009--presuda-vlastitog-odgovora-pada-na-rezervu-kvaliteta-3-bez-obrazloženja)); Simon
+  popravio u #120 (18:07; 292 testa, smoke 14/14, produkcija READY).
 - **Spojeno:** L12 AI prijedlog situacije za profesora (#118, 18:02; 290 testova, smoke 14/14, produkcija READY,
   ruta bez kolačića 403), dokumentacija #117 i #119.
 - **Incident:** integratorov smoke otišao na tuđi dev server koji je zatim ugašen

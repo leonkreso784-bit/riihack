@@ -18,6 +18,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#122](https://github.com/leonkreso784-bit/riihack/pull/122) | 18:07 | Leon | dokumentacija: BUG-010 dopunjen |
+| [#120](https://github.com/leonkreso784-bit/riihack/pull/120) | 18:07 | Simon | BUG-009: presuda ne pada na rezervu zbog stila obrazloženja |
 | [#121](https://github.com/leonkreso784-bit/riihack/pull/121) | 18:06 | Leon | dokumentacija: #118, BUG-010 |
 | [#119](https://github.com/leonkreso784-bit/riihack/pull/119) | 17:59 | Leon | dokumentacija: BUG-009 |
 | [#117](https://github.com/leonkreso784-bit/riihack/pull/117) | 17:55 | Leon | dokumentacija: produkcija na pravim podacima (ADR-030) |
