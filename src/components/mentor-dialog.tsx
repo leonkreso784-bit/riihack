@@ -8,6 +8,7 @@ import type { RoundReportView } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { charsLeft } from "@/lib/format";
 import { FormError, SubmitButton } from "./form";
+import { Thinking } from "./loading";
 
 function Bubble({ who, children, mine }: { who: string; children: React.ReactNode; mine?: boolean }) {
   return (
@@ -49,12 +50,17 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
       <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
         <GraduationCap className="size-5 text-secondary-foreground" aria-hidden /> Mentor ne daje odgovore. Pita, a ti razmisliš.
       </p>
-      {report.mentorQuestion ? <Bubble who="Mentor">{report.mentorQuestion}</Bubble> : <p className="text-muted-foreground">Mentor razmišlja…</p>}
+      {report.mentorQuestion ? <Bubble who="Mentor">{report.mentorQuestion}</Bubble> : <Thinking who="Mentor" text="smišlja pitanje" />}
 
       {report.reflection ? (
         <>
           <Bubble who="Ti" mine>{report.reflection}</Bubble>
           {report.mentorText && <Bubble who="Mentor">{report.mentorText}</Bubble>}
+        </>
+      ) : busy ? (
+        <>
+          <Bubble who="Ti" mine>{text.trim() || "Bez teksta"}</Bubble>
+          <Thinking who="Mentor" text="čita tvoj odgovor" />
         </>
       ) : (
         report.mentorQuestion && (

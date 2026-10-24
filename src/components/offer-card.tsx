@@ -9,6 +9,7 @@ import { MAIL_BODY_MAX, NEGOTIATE_COUNTER_PCT, NEGOTIATE_OK_PCT } from "@/lib/ru
 import type { ContractView } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { FormError } from "./form";
+import { Dots } from "./loading";
 
 const button = "min-h-11 rounded-xl px-5 font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60";
 
@@ -154,7 +155,7 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
           {error && <FormError key={error}>{error}</FormError>}
           <div className="flex flex-wrap gap-2">
             <button type="submit" disabled={busy || !!invalid} className={cn(button, "bg-primary text-primary-foreground hover:bg-[#1f5fe0]")}>
-              {busy ? "Šaljem…" : "Pošalji protuponudu"}
+              {busy ? <span className="inline-flex items-center gap-2"><Dots /> Šaljem</span> : "Pošalji protuponudu"}
             </button>
             <button type="button" onClick={() => setCounter(false)} className={cn(button, "bg-muted font-semibold")}>Odustani</button>
           </div>

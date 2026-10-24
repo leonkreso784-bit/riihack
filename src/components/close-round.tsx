@@ -9,6 +9,7 @@ import { plural } from "@/lib/format";
 import { MISSED_QUALITY, ROUND_LABELS } from "@/lib/rules";
 import type { CompanyView, RoundReportView, SituationView, WorldView } from "@/lib/types";
 import { FormError } from "./form";
+import { Dots } from "./loading";
 
 const month = (round: number) => (ROUND_LABELS[round - 1] ?? `krug ${round}`).toLowerCase();
 // "od N situacije/situacija": genitive after "od", 1–4 → situacije, 5+ (and 11–14) → situacija.
@@ -109,7 +110,7 @@ function Status({ world, company, situations }: { world: WorldView; company: Com
           disabled={busy}
           className="min-h-11 shrink-0 rounded-xl bg-primary px-5 font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
         >
-          {busy ? "Zatvaram…" : `Završi ${month(world.round)}`}
+          {busy ? <span className="inline-flex items-center gap-2"><Dots /> Zatvaram</span> : `Završi ${month(world.round)}`}
         </button>
       </div>
       {error && <FormError key={error}>{error}</FormError>}

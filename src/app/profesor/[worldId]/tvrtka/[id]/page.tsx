@@ -13,6 +13,7 @@ import { Pill, type Tone } from "@/components/pill";
 import { FormError } from "@/components/form";
 import { Delta } from "@/components/metric-bar";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 const QUALITIES: Quality[] = [1, 2, 3, 4, 5];
 function how(a: AnswerView | undefined, state: SituationView["state"]): { label: string; tone: Tone } {
@@ -37,7 +38,7 @@ export default function StudentPage() {
         <FormError>{error.message}</FormError>
       </div>
     );
-  if (!data) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
 
   const { company, situations, reports } = data;
   const rounds = [...new Set([...situations.map((s) => s.round), ...reports.map((r) => r.round)])].sort((a, b) => a - b);

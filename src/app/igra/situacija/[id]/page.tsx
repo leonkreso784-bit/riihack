@@ -16,6 +16,7 @@ import { OptionsForm, OwnAnswerForm } from "@/components/answer-form";
 import { VerdictCard } from "@/components/verdict-card";
 import { FlowLink } from "@/components/flow-link";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 const back = (
   <BackLink href="/igra" label="Moja tvrtka" />
@@ -26,7 +27,7 @@ export default function SituationPage() {
   const { id } = useParams<{ id: string }>();
   const { data, error } = usePoll(api.me);
   if (error && !data) return <FormError>{error.message}</FormError>;
-  if (!data) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
 
   const s = data.situations.find((x) => x.id === id);
   if (!s)

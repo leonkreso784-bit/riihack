@@ -6,6 +6,7 @@ import { BedDouble, MapPin } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { plural, starsLabel } from "@/lib/format";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 // R1: after joining, wait here until the professor starts the game, then go to /igra.
 export default function WaitingRoom() {
@@ -25,7 +26,7 @@ export default function WaitingRoom() {
       </div>
     );
   // Game already running (late join, reload): go straight on without showing the waiting room for a moment.
-  if (!data || started) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
+  if (!data || started) return <Loading />;
 
   const c = data.company;
   return (

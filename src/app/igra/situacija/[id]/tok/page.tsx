@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/page-header";
 import { FormError } from "@/components/form";
 import { AnswerFlow } from "@/components/tokovi/answer-flow";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 // Tokovi, skica 2: kako je odgovor na situaciju prošao kroz hotel (odgovor, sudac, kvaliteta, učinak, odjeli).
 export default function AnswerFlowPage() {
@@ -16,7 +17,7 @@ export default function AnswerFlowPage() {
     <BackLink href={`/igra/situacija/${id}`} label="Natrag na situaciju" />
   );
   if (error && !data) return <FormError>{error.message}</FormError>;
-  if (!data) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
 
   const s = data.situations.find((x) => x.id === id);
   if (!s)

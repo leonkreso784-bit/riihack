@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/page-header";
 import { FormError } from "@/components/form";
 import { OfferCard } from "@/components/offer-card";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 const FILTERS: { key: MailKind | "all"; label: string }[] = [
   { key: "all", label: "Sve" },
@@ -32,7 +33,7 @@ export default function MailPage() {
   const [openId, setOpenId] = useState<string | null>(null);
 
   if (error && !data) return <FormError>{error.message}</FormError>;
-  if (!data) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
 
   const mail = data.mail ?? [];
   const threads = [...Map.groupBy(mail, (m) => m.threadId).values()]

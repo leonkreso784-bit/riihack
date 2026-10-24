@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import { Dots } from "./loading";
 
 // Labelled text field used on every form (join, professor login, new game).
 export function Field({ id, label, className, ...props }: React.ComponentProps<"input"> & { id: string; label: string }) {
@@ -21,7 +22,14 @@ export function SubmitButton({ busy, busyText, disabled = false, children }: { b
       disabled={busy || disabled}
       className="min-h-12 w-full rounded-xl bg-primary px-4 text-base font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
     >
-      {busy ? busyText : children}
+      {busy ? (
+        <span className="inline-flex items-center justify-center gap-2">
+          <Dots />
+          {busyText.replace(/…$/, "")}
+        </span>
+      ) : (
+        children
+      )}
     </button>
   );
 }
