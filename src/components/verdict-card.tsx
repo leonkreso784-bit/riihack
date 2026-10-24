@@ -29,7 +29,7 @@ export function VerdictCard({
           {answer.mode === "own" ? <PenLine className="size-4" aria-hidden /> : answer.mode === "none" ? <CircleSlash className="size-4" aria-hidden /> : <MousePointerClick className="size-4" aria-hidden />}
           {answer.mode === "none" // BUG-019: missed situation, not an offered answer
             ? expired ? "Bez odgovora, rok je istekao" : "Bez odgovora"
-            : answer.mode === "own" ? "Tvoj odgovor" : answer.copied ? "Prepisani ponuđeni odgovor" : "Ponuđeni odgovor"}
+            : answer.mode === "own" ? (answer.copied ? "Zalijepljen odgovor" : "Tvoj odgovor") : answer.copied ? "Prepisani ponuđeni odgovor" : "Ponuđeni odgovor"}
         </p>
         <Pill tone={tone} className="px-3 py-1 text-base">
           {answer.quality} / 5
