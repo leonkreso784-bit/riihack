@@ -80,17 +80,15 @@ na koga čeka i što smo dogovorili.
 - **Spojeno:** L0 (#37), #45, L1 (#62), L2 (#59), L3 (#64), ugovor #63, L4 API (#74), L5 (#70), L9 (#68), L10 (#69); Neon `simpolis-db`
 - **Zadnje ažurirano:** sub 15:20
 
-## Simon · AI sloj, karta grada, plan i financije, pitch (S0–S7)
+## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
-- **Sad radim:** pitch i slajdovi (https://simpolis-ziri-share.vercel.app); provjera rubrika L6 za suca
-- **Sljedeće:** prava igra od početka do kraja čim L7 bude na `main`-u (sudac, lik, mentor na pravoj bazi); video demoa (S7)
-- **Čekam od drugih:** Leon: `views.ts` još vraća `finances: []`, `contracts: []`, `news: []` (`// L11`). Moje stranice
-  (plan, financije, grad) čitaju `api.me`, pa čim to bude puno i `NEXT_PUBLIC_USE_MOCK=0`, prikazuju prave podatke bez
-  promjene koda. Leon: `saveReflection` bez uvjeta „samo ako je prazno" (vidi #79).
-- **Drugi čekaju od mene:** — (`judge`, `streamCharacterReply`, `mentorQuestion`, `mentorDebrief` su na `main`-u)
-- **Otvoreno:** —
-- **E2E 15:45 (lokalno, prava Neon baza, main + L6 spojen samo lokalno):** smoke koraci 1–10 ✅ (uklj. pitanje mentora nakon zatvaranja kruga); korak 11 ✗ „nema finances za krug 2" (`views.ts` još `finances: []`). Ručno: chat s likom 2 s ✅, presuda 2,5–3 s ✅ (dobar odgovor na „Gost nezadovoljan sobom" 5/5, odgovor na krivu situaciju 1/5). Testna igra „E2E test Simon" ostala u bazi.
-- **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
+- **Sad radim:** S8 sučelje profesorovih situacija (grana `simon/S8-profesor-situacije`, na lažnim podacima i ugovoru #89; Rinov ok za `client.ts`/`mock.ts`, samo dodaje); pojednostavljenje pitcha i slajdova (manje teksta)
+- **Sljedeće:** S8 PR nakon #89; nakon L12 u `mentor-input.ts` zamijeniti `getSituation` s `getTemplate`; S4 `MentorInput.finance` (S9, M3); S9 AI prijedlog situacije (M3); video demoa do ned 09:00
+- **Čekam od drugih:** Leon: #89 (ugovor), L11 faza B (`views.ts` puni `finances`, `contracts`, `news`), L12; L6 na `main` (inače nema situacija)
+- **Drugi čekaju od mene:** —
+- **Obilazak 1 (~15:45):** prošli. Pokazali **samo slajdove, bez živog demoa**: demo čuvamo za obilazak 2 (19:00). Komentari u `PROMISE.md`.
+- **E2E 15:45** (lokalno, prava baza, main + L6 samo lokalno): smoke 1–10 ✅, 11 ✗ (nema `finances`); chat 2 s ✅, presuda 2,5–3 s ✅ (5/5 i 1/5 točno)
+- **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72, #86), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
 - **Zadnje ažurirano:** sub 16:00
 
 ## Rino · sučelje (R0–R10)
