@@ -22,10 +22,10 @@ export function modelFor(job: AiJob, override?: LanguageModel): LanguageModel {
 }
 
 /** Runs an AI call with a 20 s deadline. Any error or timeout returns `fallback`, so the game never stops. */
-export async function withAi<T>(fn: () => Promise<T>, fallback: T): Promise<T> {
+export async function withAi<T>(fn: () => Promise<T>, fallback: T, timeoutMs: number = AI_TIMEOUT_MS): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | undefined;
   const deadline = new Promise<never>((_, reject) => {
-    timer = setTimeout(() => reject(new Error(`AI timeout after ${AI_TIMEOUT_MS} ms`)), AI_TIMEOUT_MS);
+    timer = setTimeout(() => reject(new Error(`AI timeout after ${timeoutMs} ms`)), timeoutMs);
   });
   try {
     return await Promise.race([fn(), deadline]);

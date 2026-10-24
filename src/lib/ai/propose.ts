@@ -12,6 +12,8 @@ import { PROPOSE_SYSTEM } from "./prompts";
 /** Neutralise angle brackets so the professor's hint cannot close or open our prompt tags. */
 const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
 
+// The professor waits for a draft, not a live student: one Sonnet draft takes ~15 s, so allow a retry.
+const PROPOSE_TIMEOUT_MS = 45_000;
 const SLASH_GENDER = /\p{L}\/(la|a|ica)\b/u; // "uvažio/la": the prompt forbids it, so retry
 const METRICS = ["guests", "reviews", "staff", "operations", "finance"] as const;
 const SKILLS = ["empathy", "communication", "finance", "problemSolving", "ethics"] as const;
@@ -116,5 +118,5 @@ export function proposeSituation(input: SituationIdeaInput, model?: LanguageMode
       error = found;
     }
     return fallbackProposal(input);
-  }, fallbackProposal(input));
+  }, fallbackProposal(input), PROPOSE_TIMEOUT_MS);
 }
