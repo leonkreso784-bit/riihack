@@ -10,6 +10,26 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
+- **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku (brojke) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
+  za općenite odgovore)
+- **Opis:** tester (ned ~00:50, sezona na produkciji): napisan odgovor koji promaši temu dobije kvalitetu 1, isto −2×
+  kao propuštena situacija. Student s 8 općenitih odgovora završi na −60,9, gore od studenta koji nije odgovorio
+  ništa (−54,6) i od botova (+27, +30).
+- **Uzrok:** učinak po kvaliteti iz [ADR-046](DECISIONS.md#adr-046): 1 (loš ili propušten) −2×. 🟨 Zašto je općeniti
+  student gori od onoga bez odgovora, nije utvrđeno.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-029 · Plan se ne prenosi u sljedeći mjesec
+- **Status:** 🟡 u radu (graditelj, [#227](https://github.com/leonkreso784-bit/riihack/issues/227) točka 1) ·
+  **Težina:** srednji
+- **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
+  plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
+- **Uzrok:** `toPlan` bez retka plana za novi mjesec vraća zadani plan (`src/lib/game/city.ts:229-238`).
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-028 · Mentor je spor ili ne odgovori
 - **Status:** 🟡 na API-ju brzo ([#231](https://github.com/leonkreso784-bit/riihack/pull/231), 00:28); tester još
   provjerava sučelje u pregledniku · **Težina:** visok (žiri u izvještaju mjeseca čeka mentora)

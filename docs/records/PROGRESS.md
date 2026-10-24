@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~00:50 · test sezone, provjera otvorenih PR-ova
+
+- **Tester, cijela sezona na produkciji ✅:** dobar student +90 (popunjenost do 100 %), loš −54,6 (do 5 %);
+  zatvaranje mjeseca 4,4–6,1 s. 🟨 Podij na 1280×720 nije javljen.
+- **Bugovi (tester):** [BUG-029](BUGS.md#bug-029--plan-se-ne-prenosi-u-sljedeći-mjesec) plan se ne prenosi (radi
+  graditelj, #227.1); [BUG-030](BUGS.md#bug-030--odgovor-koji-promaši-temu-kažnjava-se-kao-propušten-pa-je-gori-od-šutnje)
+  općeniti odgovori gori od šutnje (čeka Leonovu odluku).
+- **Integrator:** #233, #235 i #237 zajedno zeleni (typecheck, lint, 519 testova, build, smoke 1–18 i 20); ništa nije
+  spojeno, čeka Leonovo odobrenje.
+
 ## Ned 25.10. ~00:45 · nove sesije
 
 - **Spojeno:** dokumentacija #236 (00:32). Od tada na `main` nije spojeno ništa osim ploče integratora.
