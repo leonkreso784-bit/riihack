@@ -1,6 +1,6 @@
 # Rino · sučelje: gdje smo stali
 
-> Zapisano **sub 24.10.2026. oko 21:00**. Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
+> Zapisano **sub 24.10.2026. oko 21:00**, dopunjeno u 21:00 (#166, #173, pošta na produkciji). Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
 > grani `rino/dokumentacija`; na `main` ide samo Rinovo polje u `TEAM.md`.
 
 ## Prvo pročitaj
@@ -62,14 +62,17 @@ Grad; 0 grešaka.
 - **#168 R8 uvid u studenta** (`/profesor/[worldId]/tvrtka/[id]`): po mjesecu situacije, odgovori, presude, razgovor,
   mentor; **„Promijeni ocjenu" 1–5**; imena na ploči vode na stranicu. Spojen s `main`-om, bez konflikata, spremno za
   integratora. Radar vještina namjerno izostavljen (pokazni podaci).
-- **Leonov #166 treba Rinov ok:** jedan redak u `prof-board.tsx` (`fromRound: round` u `api.openRound`), popravak
-  dvoklika koji je preskakao mjesec. Ispravno, bez konflikta s #168. Rino napiše „ok" na PR.
-- **Nakon spajanja #164 i #168:** jedna prava igra na produkciji: pošta s pravom ponudom agencije (protuponuda),
-  zatim ploča → student → promijeni ocjenu.
+- **#173 sitnice:** oznaka „od profesora" (R5), mjesec zadnjeg obračuna na `/igra` umjesto fiksnog „lipanj", bez bljeska
+  `/cekaonica` kad igra već traje, zastarjeli komentar u `logout-button.tsx`. Spremno za integratora.
+- #166 (Leonov `fromRound` u `prof-board.tsx`): Rinov ok dan, spojeno.
+- **Pošta (#164) provjerena na produkciji (20:52):** ponuda Praonice 1.500 € → protuponuda 1.125 € → AI odgovor agencije
+  „na pola puta 1.313 €" → Prihvati → ugovor 1.313 € na serveru, 0 nepročitanih.
+- **Nakon spajanja #168 i #173:** na produkciji ploča → klik na hotel → stranica studenta → promijeni ocjenu; oznaka
+  „od profesora" s profesorovom situacijom.
 
 ## Sljedeće (redom)
 
-1. Provjera #164 (pošta) i #168 (R8) na produkciji čim se spoje.
+1. Provjera #168 (R8) i #173 na produkciji čim se spoje.
 2. **R14** stil i pregled profesorskih ekrana (prijava, registracija, moje igre) kad ih Leon napravi (L16 backend je
    spojen, ekrani još nisu). Pitati Leona u kojem su PR-u.
 3. **R10** podij kruga i ljestvica za projektor (#46), ako ima vremena.
