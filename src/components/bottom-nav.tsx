@@ -26,7 +26,7 @@ function isActive(pathname: string, href: string) {
 
 const focus = "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary";
 
-// Game navigation (HotelixSim layout): fixed sidebar with wordmark from 768 px; top bar + bottom tabs on phones.
+// Game navigation: fixed sidebar with wordmark from 768 px; top bar + bottom tabs on phones.
 export function GameNav() {
   const pathname = usePathname();
   return (

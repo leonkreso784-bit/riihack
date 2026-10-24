@@ -8,7 +8,7 @@ const TONES = {
 } as const;
 const PADS = { md: "p-5 md:p-6", sm: "p-4", list: "px-5 py-2 md:px-6", none: "" } as const;
 
-// The one card surface of the app (HotelixSim Card): tone and padding by prop, className only for layout.
+// The one card surface of the app: tone and padding by prop, className only for layout.
 export function Panel({
   title,
   action,
