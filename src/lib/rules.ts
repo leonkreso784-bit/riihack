@@ -55,6 +55,8 @@ export const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // bez 0, O, 1, 
 // Ekonomija grada (sve u eurima)
 export const NIGHTS_PER_ROUND = 30;
 export const SEASON_DEMAND_BP = [6000, 8500, 9500, 5500]; // lipanj–rujan, udio kapaciteta grada u baznim bodovima
+// Kvaliteta hotela za tržište (BUG-024, ADR-045): ponderi pokazatelja u postocima, zbroj 100.
+export const MARKET_QUALITY_WEIGHTS: Record<MetricKey, number> = { guests: 30, reviews: 30, staff: 15, operations: 15, finance: 10 };
 export const FIXED_COST_PER_ROOM = 300;
 export const STAFF_COST_PER_ROOM = 450;
 export const PRICE_MIN = 30;

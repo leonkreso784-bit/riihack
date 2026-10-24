@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ContractTemplate } from "@/lib/types";
 import { SEASON_DEMAND_BP } from "@/lib/rules";
-import { attractiveness, capacityNights, financeEffect, priceBp, refPrice, roundFinance, settleMarket } from "./economy";
+import { attractiveness, capacityNights, financeEffect, priceBp, qualityBp, refPrice, roundFinance, settleMarket } from "./economy";
 import type { MarketInput } from "./economy";
 
 const hotel = (companyId: string, price: number, extra: Partial<MarketInput> = {}): MarketInput => ({
@@ -9,6 +9,9 @@ const hotel = (companyId: string, price: number, extra: Partial<MarketInput> = {
   roomsCount: 20,
   reviews: 50,
   guests: 50,
+  staff: 50,
+  operations: 50,
+  finance: 50,
   price,
   refPrice: 100,
   marketing: 0,
@@ -23,7 +26,7 @@ describe("economy", () => {
   });
 
   it("attractiveness", () => {
-    const base = { reviews: 50, guests: 50, price: 80, refPrice: 100, marketing: 0 };
+    const base = { reviews: 50, guests: 50, staff: 50, operations: 50, finance: 50, price: 80, refPrice: 100, marketing: 0 };
     expect(attractiveness(base)).toBe(125);
     expect(attractiveness({ ...base, price: 100 })).toBe(100);
     expect(attractiveness({ ...base, price: 200 })).toBe(25);
@@ -77,9 +80,56 @@ describe("economy", () => {
 
   it("rubovi", () => {
     expect(settleMarket(1, [])).toEqual([]);
-    const [z] = settleMarket(1, [hotel("Z", 100, { reviews: 0, guests: 0 })]);
+    const [z] = settleMarket(1, [hotel("Z", 100, { reviews: 0, guests: 0, staff: 0, operations: 0, finance: 0 })]);
     expect(z.nights).toBe(0);
     expect(settleMarket(1, [hotel("P", 0)])[0].nights).toBeGreaterThanOrEqual(0);
+  });
+
+  // BUG-024 (ADR-045): hotel koji ne rješava situacije mora gubiti goste, i u kolovozu.
+  const POOR = { guests: 34, reviews: 40, staff: 26, operations: 40, finance: 40 };
+  const GOOD = { guests: 70, reviews: 70, staff: 70, operations: 70, finance: 70 };
+
+  it("qualityBp: ponderirani prosjek svih pet pokazatelja, strmo ispod 50 (BUG-024)", () => {
+    const all = (n: number) => ({ guests: n, reviews: n, staff: n, operations: n, finance: n });
+    expect(qualityBp(all(50))).toBe(10000);
+    expect(qualityBp(all(70))).toBe(14000);
+    expect(qualityBp(all(100))).toBe(20000);
+    expect(qualityBp(all(25))).toBe(2500);
+    expect(qualityBp(all(0))).toBe(0);
+    expect(qualityBp(POOR)).toBe(5212);
+    // osoblje, rad i financije se računaju, ne samo gosti i recenzije
+    expect(qualityBp({ ...all(50), staff: 20 })).toBeLessThan(qualityBp(all(50)));
+    expect(qualityBp({ ...all(50), operations: 20 })).toBeLessThan(qualityBp(all(50)));
+    expect(qualityBp({ ...all(50), finance: 20 })).toBeLessThan(qualityBp(all(50)));
+    expect(attractiveness({ ...POOR, price: 100, refPrice: 100, marketing: 0 })).toBe(52);
+    expect(attractiveness({ ...GOOD, price: 100, refPrice: 100, marketing: 0 })).toBe(140);
+  });
+
+  it("slabi pokazatelji: manje noćenja i prihoda u svim mjesecima, isti grad i odvojeni gradovi (BUG-024)", () => {
+    for (let round = 1; round <= SEASON_DEMAND_BP.length; round++) {
+      // isti grad: slab i dobar hotel uz tri prosječna, ista cijena
+      const [poor, good] = settleMarket(round, [hotel("P", 100, POOR), hotel("G", 100, GOOD), ...["B", "C", "D"].map((id) => hotel(id, 100))]);
+      expect(poor.nights, `mjesec ${round}`).toBeLessThan(good.nights);
+      expect(poor.nights * 100, `mjesec ${round}`).toBeLessThan(good.nights * 100);
+      // odvojeni gradovi: pet slabih protiv pet dobrih hotela
+      const [p] = settleMarket(round, ["A", "B", "C", "D", "E"].map((id) => hotel(id, 100, POOR)));
+      const [g] = settleMarket(round, ["A", "B", "C", "D", "E"].map((id) => hotel(id, 100, GOOD)));
+      expect(p.nights, `mjesec ${round}`).toBeLessThan(g.nights);
+      expect(p.nights * 100, `mjesec ${round}`).toBeLessThan(g.nights * 100);
+    }
+  });
+
+  it("kolovoz: slab hotel nije pun ni kad je grad pun, dobar grad ostaje pun (BUG-024)", () => {
+    const [poor, ...good] = settleMarket(3, [hotel("P", 100, POOR), ...["B", "C", "D", "E"].map((id) => hotel(id, 100, GOOD))]);
+    expect(poor.occupancyPct).toBeLessThanOrEqual(40);
+    for (const g of good) expect(g.occupancyPct).toBeGreaterThanOrEqual(90);
+    const [alonePoor] = settleMarket(3, ["A", "B", "C", "D", "E"].map((id) => hotel(id, 100, POOR)));
+    expect(alonePoor.occupancyPct).toBeLessThanOrEqual(55);
+    for (const g of settleMarket(3, ["A", "B", "C", "D", "E"].map((id) => hotel(id, 100, GOOD)))) {
+      expect(g.occupancyPct).toBeGreaterThanOrEqual(90);
+    }
+    // prosječan grad (svi pokazatelji 50) puni se kao i prije: potražnja kolovoza
+    for (const a of settleMarket(3, ["A", "B", "C", "D", "E"].map((id) => hotel(id, 100)))) expect(a.occupancyPct).toBe(95);
   });
 
   it("roundFinance", () => {
