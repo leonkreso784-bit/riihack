@@ -95,13 +95,14 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R10)
 
-- **Sad radim:** animacije sučelja (ulaz stranica, trake pokazatelja, brojke, kartice, čekaonica, kod), grana `rino/animacije`, ~45 min
-- **Sljedeće:** za M2 (18:45): R5 (#25) situacija s likom, R7 (#27) sokratski mentor, R6 (#26) ploča profesora, R4 (#24) dovršiti (zatvaranje kruga); zatim Osoblje uz sobe, R10 (#46) podij
-- **Čekam od drugih:** Leon: L4 za prave podatke (do tada lažni podaci); odluka o smjeru dizajna (#39) s Leonom
+- **Sad radim:** pauza; sljedeća sesija kreće s R5 (#25) situacija s likom
+- **Sljedeće:** za M2 (18:45): R5 (#25), R7 (#27), R6 (#26), R4 (#24) dovršiti; zatim Osoblje uz sobe, R10 (#46)
+- **Čekam od drugih:** Leon: `POST /api/logout` (gumb Odjava), `NEXT_PUBLIC_USE_MOCK=0` kad API radi; odluka o dizajnu (#39)
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** —
-- **Spojeno:** R0 (#40), `roundGain` (#49), lažni podaci zadano (#52), R1 ulaz (#54), R2 profesor (#56), R3 sobe (#57), logo V1 (#65)
-- **Zadnje ažurirano:** sub 15:02 (popunio Claude, ispravi)
+- **Otvoreno:** #78 uspravan logo, logo u igri, mobitel bez prelijevanja (spremno za integratora)
+- **Spojeno:** R0 (#40), `roundGain` (#49), lažni podaci zadano (#52), R1 (#54), R2 (#56), R3 (#57), logo (#65), animacije (#73)
+- **Bilješke za nastavak:** grana `rino/dokumentacija`, `docs/rino/STANJE.md` (stanje, sljedeći koraci, više sesija)
+- **Zadnje ažurirano:** sub 15:42 (popunio Claude, ispravi)
 
 ---
 
