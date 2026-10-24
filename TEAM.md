@@ -91,13 +91,13 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R10)
 
-- **Sad radim:** čekam pregled i spajanje R1–R3; zatim R5 (#25) situacija s likom
-- **Sljedeće:** stranica Osoblje u R3 (do M2); R4 (#24), R5 (#25), R6 (#26), R7 (#27), R10 (#46) za M2
-- **Čekam od drugih:** Leon: L4 za prave podatke; odluka o smjeru dizajna (#39) s Leonom
+- **Sad radim:** animacije sučelja (ulaz stranica, trake pokazatelja, brojke, kartice, čekaonica, kod), grana `rino/animacije`, ~45 min
+- **Sljedeće:** za M2 (18:45): R5 (#25) situacija s likom, R7 (#27) sokratski mentor, R6 (#26) ploča profesora, R4 (#24) dovršiti (zatvaranje kruga); zatim Osoblje uz sobe, R10 (#46) podij
+- **Čekam od drugih:** Leon: L4 za prave podatke (do tada lažni podaci); odluka o smjeru dizajna (#39) s Leonom
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** R1 ulaz i čekaonica (#54), R2 profesor (#56, nosi i R1), R3 sobe (#57, nosi R1 i R2). Spojiti redom ili samo #57.
-- **Spojeno:** R0 (#40), popravak `roundGain` (#49), lažni podaci zadano na Vercelu (#52)
-- **Zadnje ažurirano:** sub 14:33 (popunio Claude, ispravi)
+- **Otvoreno:** —
+- **Spojeno:** R0 (#40), `roundGain` (#49), lažni podaci zadano (#52), R1 ulaz (#54), R2 profesor (#56), R3 sobe (#57), logo V1 (#65)
+- **Zadnje ažurirano:** sub 15:02 (popunio Claude, ispravi)
 
 ---
 
