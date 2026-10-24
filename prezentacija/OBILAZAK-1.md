@@ -11,15 +11,18 @@ izvan 3 obećanja.
 
 | Slajd | Što | Tko |
 | --- | --- | --- |
-| 1 | Simpolis, jedna rečenica, tim | Simon |
-| 2 | Problem: −17 %, 40–50 %, 420 sati | Simon |
-| 3 | Cesim (tablice brojeva) uz naš ekran | Simon |
-| 4 | Usporedba: Cesim, CompanyGame AI, ChatGPT, Virtualni hotel, Simpolis + rečenica za prepričati | Simon |
-| 5 | Tri obećanja sa stanjem (radi / stiže do 18:45) | Simon |
-| 6 | „Pogledajmo aplikaciju" + QR → prebaci na riihack.vercel.app | Rino |
+| 1 | Simpolis: „kao igra vođenja tvrtke, ali za pravi posao" | Simon |
+| 2 | Problem: 17 % lošiji rezultat, 40–50 %, 420 sati | Simon |
+| 3 | Usporedba: Cesim, CompanyGame AI, ChatGPT, Virtualni hotel, Simpolis + rečenica za prepričati | Simon |
+| 4 | Četiri stvari koje drugi nemaju zajedno (USP) | Simon |
+| 5 | Tri obećanja (samo „AI sudac radi" je označeno) | Simon |
+| 6 | „Pogledajmo aplikaciju" + mobiteli + QR → prebaci na riihack.vercel.app | Rino |
 | 7 | AI sudac: isti gost, tri odgovora | Simon |
-| 8 | Kako radi: AI ne daje bodove, protiv prepisivanja, ako AI ne radi, trošak | Leon |
+| 8 | Kako radi: AI ne daje bodove, prepisivanje, ako AI ne radi, trošak | Leon |
 | 9 | „U nedjelju sva tri obećanja, uživo" + pitanje žiriju | svi |
+| 10–11 | **Dodatak za pitanja:** Cesim uz naš ekran; usporedba korištenja (tablice ili razgovor). Ne prikazujemo ih, osim ako žiri pita. | Simon |
+
+Simon na slajdovima 1–5 ima oko 1:30 (5 brzih slajdova, po 15–20 s), Rino 1:45, Simon 0:30, Leon 0:30, pitanje 0:15.
 
 ## Gdje smo (stanje 14:05)
 
@@ -49,9 +52,9 @@ Iskreno reći: **sučelje radi na primjer-podacima** (piše „primjer" na ekran
 > Zašto to treba? AI studentu napiše savršen esej o vođenju hotela, ali ga ne nauči što
 > reći ljutom gostu u sobi 204. Studenti hotelijerstva prvu pravu odluku s gostom donose tek na praksi, u zadnjem
 > semestru: 420 sati, ocjena prošao ili pao. Do tada uče uz AI, kao 40 do 50 % srednjoškolaca u Hrvatskoj. A tko
-> vježba s AI-jem koji mu daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat** (Bastani i sur.,
-> PNAS 2025.). Fakulteti već imaju simulacije, ali Cesim traži samo brojke, a ChatGPT glumi gosta pa sutra sve
-> zaboravi.
+> vježba s AI-jem koji mu daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat** (srednjoškolci,
+> Bastani i sur., PNAS 2025.); AI koji daje samo naputke nije štetio, a tako radi Simpolis. Fakulteti već imaju simulacije, ali Cesim traži samo brojke, a ChatGPT glumi gosta, ali nema
+> zajednički grad ni razred.
 >
 > Simpolis je grad u simulaciji: profesor ga napravi kao Kahoot, svaki student vodi svoj hotel, a svi hoteli dijele
 > iste turiste i isti novac. Do nedjelje obećavamo tri stvari:
@@ -98,16 +101,17 @@ prvo promijenili?". Odmah nakon: odgovor u `PROMISE.md`, izmjene u roadmap.
 
 ## Pitanja koja žiri uvijek pita (kratki odgovori)
 
-- **Zašto ne ChatGPT ili Cesim?** „Cesim te uči brojke hotela. ChatGPT ti glumi gosta, ali sutra sve zaboravi. Kod
+- **Zašto ne ChatGPT ili Cesim?** „Cesim te uči brojke hotela. ChatGPT ti glumi gosta, ali nema zajednički grad ni razred. Kod
   nas ono što kažeš gostu u lipnju vidiš u recenzijama u srpnju i u blagajni u kolovozu."
 - **Kako spriječiti prepisivanje?** Vlastite riječi vrijede više od klika (klik najviše 4/5), prepisan ponuđeni
   odgovor broji se kao klik, a bodove ne daje AI nego pravila.
 - **Tko plaća?** Fakultet licencom po kolegiju (prvi korisnik: kolegij na FMTU u Opatiji, gdje je Leonov HotelixSim
-  pred pilotom). Kasnije **tvrtke**: hotelske kuće već plaćaju vlastite akademije za nove ljude, pa im je jeftinije
-  da studenti vježbaju na njihovim situacijama prije prvog dana. AI trošak je ispod eura za razred od 30 studenata.
+  pred pilotom). Model: **hotelska kuća plaća scenarij, fakultet i studenti koriste besplatno**, prvi pilot na jednom
+  kolegiju FMTU-a. To je naša pretpostavka, tvrtke još nismo pitali. AI trošak je procjena od oko 2 eura po razredu.
 - **Je li ovo demo ili mock-up?** Sučelje je na primjer-podacima i to piše na ekranu; AI sudac radi na pravom modelu;
   baza i grad stižu do 18:45. Reći što je pripremljeno prije (istraživanje, starter) i što je AI.
 - **Privatnost?** U demou samo nadimci, AI ključ samo na poslužitelju, na ekranu piše što radi AI.
+- **Student zalijepi odgovor iz ChatGPT-a?** Ako je više od pola zalijepljeno, vrijedi najviše kao klik (4/5).
 - **Zašto Rijeka / tema?** Tema je učenje u doba AI-ja: Simpolis tjera studenta da razmišlja sam, a AI mu glumi
   ljude umjesto da mu piše odgovore.
 
