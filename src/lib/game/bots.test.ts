@@ -12,7 +12,6 @@ import {
   botPlayerName,
   botPlan,
   fillBots,
-  hash32,
   isBotName,
   pickBotName,
   removeBot,
