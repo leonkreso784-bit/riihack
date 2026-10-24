@@ -1,4 +1,4 @@
-import { CheckCircle2, MousePointerClick, PenLine } from "lucide-react";
+import { CheckCircle2, CircleSlash, MousePointerClick, PenLine } from "lucide-react";
 import { CLICK_QUALITY_CAP } from "@/lib/rules";
 import type { AnswerView } from "@/lib/types";
 import { Panel } from "./panel";
@@ -11,10 +11,12 @@ export function VerdictCard({
   answer,
   options,
   character,
+  expired,
 }: {
   answer: AnswerView;
   options: { id: string; text: string }[];
   character: { name: string; role: string };
+  expired?: boolean; // situation state "expired": the deadline passed without an answer
 }) {
   const option = options.find((o) => o.id === answer.optionId);
   const met = answer.verdict?.criteriaMet.length;
@@ -24,8 +26,10 @@ export function VerdictCard({
     <Panel className="anim-pop space-y-4">
       <div className="flex items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-          {answer.mode === "own" ? <PenLine className="size-4" aria-hidden /> : <MousePointerClick className="size-4" aria-hidden />}
-          {answer.mode === "own" ? "Tvoj odgovor" : answer.mode === "none" ? "Bez odgovora" : answer.copied ? "Prepisani ponuđeni odgovor" : "Ponuđeni odgovor"}
+          {answer.mode === "own" ? <PenLine className="size-4" aria-hidden /> : answer.mode === "none" ? <CircleSlash className="size-4" aria-hidden /> : <MousePointerClick className="size-4" aria-hidden />}
+          {answer.mode === "none" // BUG-019: missed situation, not an offered answer
+            ? expired ? "Bez odgovora, rok je istekao" : "Bez odgovora"
+            : answer.mode === "own" ? "Tvoj odgovor" : answer.copied ? "Prepisani ponuđeni odgovor" : "Ponuđeni odgovor"}
         </p>
         <Pill tone={tone} className="px-3 py-1 text-base">
           {answer.quality} / 5

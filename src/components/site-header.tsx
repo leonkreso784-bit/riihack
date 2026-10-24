@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Gamepad2, Library } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LogoMark } from "./logo";
 import { LogoutButton } from "./logout-button";
@@ -28,14 +29,28 @@ export function Wordmark({ size = "md" }: { size?: "md" | "lg" | "xl" }) {
   );
 }
 
-export function SiteHeader({ logout = false }: { logout?: boolean }) {
+// Same look as the "Odjava" row button; on a phone only the icon shows.
+const NAV_LINK =
+  "flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary";
+
+export function SiteHeader({ logout = false, profNav = false }: { logout?: boolean; profNav?: boolean }) {
   return (
     <header className="glass sticky top-0 z-30 border-b border-white/60">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center px-4">
-        <Link href="/" className="flex min-h-11 items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-1 px-4">
+        <Link href="/" className="mr-auto flex min-h-11 items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
           <Wordmark />
         </Link>
-        {logout && <LogoutButton className="ml-auto w-auto" />}
+        {profNav && (
+          <nav aria-label="Profesor" className="flex items-center gap-1">
+            <Link href="/profesor/igre" className={NAV_LINK} aria-label="Moje igre">
+              <Gamepad2 className="size-5" aria-hidden /> <span className="hidden sm:inline">Moje igre</span>
+            </Link>
+            <Link href="/profesor/knjiznica" className={NAV_LINK} aria-label="Knjižnica">
+              <Library className="size-5" aria-hidden /> <span className="hidden sm:inline">Knjižnica</span>
+            </Link>
+          </nav>
+        )}
+        {logout && <LogoutButton className="w-auto" />}
       </div>
     </header>
   );
