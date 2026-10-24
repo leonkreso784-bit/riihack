@@ -2,12 +2,15 @@ import type { ContractTemplate, FinanceBreakdown, Metrics, RoundFinance } from "
 import {
   FINANCE_EFFECT_CAP,
   FINANCE_EFFECT_DIVISOR,
+  COMMISSION_PCT,
   FIXED_COST_PER_ROOM,
   MARKET_QUALITY_WEIGHTS,
   MARKETING_MAX,
+  MATERIALS_PCT,
   NIGHTS_PER_ROUND,
   PRICE_MIN,
   SEASON_DEMAND_BP,
+  VAT_PCT,
 } from "@/lib/rules";
 
 export type MarketInput = {
@@ -107,6 +110,9 @@ export function settleMarket(round: number, hotels: MarketInput[]): MarketResult
   }));
 }
 
+// PDV sadržan u iznosu koji gost plati (cijena uključuje PDV): iznos × 13 / 113.
+export const vatIn = (gross: number) => Math.round((gross * VAT_PCT) / (100 + VAT_PCT));
+
 export function roundFinance(
   m: MarketResult,
   i: {
@@ -121,18 +127,36 @@ export function roundFinance(
   },
 ): RoundFinance {
   const investments = i.investments ?? 0;
+  const revenueOwn = m.nights * i.price;
+  const revenueContracts = i.contracts.reduce((s, c) => s + c.nights * c.pricePerNight, 0);
+  // Prihod ostaje ono što gost plati; PDV se vidi kao trošak (hotel zadržava bruto / 1,13). Provizija portala samo na
+  // slobodno tržište (agencijski ugovori idu bez portala), materijal na sav neto prihod.
+  const vatOwn = vatIn(revenueOwn);
+  const costVat = vatOwn + vatIn(revenueContracts);
+  const costCommission = Math.round(((revenueOwn - vatOwn) * COMMISSION_PCT) / 100);
+  const costMaterials = Math.round(((revenueOwn + revenueContracts - costVat) * MATERIALS_PCT) / 100);
   const breakdown: FinanceBreakdown = {
-    revenueOwn: m.nights * i.price,
-    revenueContracts: i.contracts.reduce((s, c) => s + c.nights * c.pricePerNight, 0),
+    revenueOwn,
+    revenueContracts,
     costStaff: i.staffCost,
     costRooms: i.roomsCount * FIXED_COST_PER_ROOM,
     costMarketing: i.marketing,
     costContracts: i.contracts.reduce((s, c) => s + c.monthlyCost, 0),
     costInvestments: investments,
+    costVat,
+    costCommission,
+    costMaterials,
   };
   const revenue = breakdown.revenueOwn + breakdown.revenueContracts;
   const costs =
-    breakdown.costStaff + breakdown.costRooms + breakdown.costMarketing + breakdown.costContracts + breakdown.costInvestments;
+    breakdown.costStaff +
+    breakdown.costRooms +
+    breakdown.costMarketing +
+    breakdown.costContracts +
+    breakdown.costInvestments +
+    costVat +
+    costCommission +
+    costMaterials;
   const profit = revenue - costs;
   return {
     round: i.round,

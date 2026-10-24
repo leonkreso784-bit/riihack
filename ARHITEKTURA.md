@@ -121,13 +121,13 @@ kapaciteta svih hotela: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %. Turi
 hotela (recenzije i zadovoljstvo gostiju, cijena prema vlastitoj osnovnoj cijeni, marketing), pa **jeftiniji ili
 bolje ocijenjen hotel uzme goste drugima**. Hotel ne može primiti više od svog kapaciteta (sobe × 30 noći).
 
-- **Plan kruga** (student, dok je krug otvoren): cijena noćenja (30–400 €) i marketing (0–5.000 €).
+- **Plan kruga** (student, dok je krug otvoren): cijena noćenja (30–400 €) i marketing (0–2.000 €).
 - **Gradske tvrtke** (sadržaj, ne studenti): agencije (zajamčena noćenja po nižoj cijeni), praonica, pekara,
   zaštitarska firma (mjesečni trošak, a zauzvrat bolja operativa, recenzije ili zadovoljstvo). Svaki krug hotel
   dobije **jednu ponudu ugovora**; prihvaćen ugovor traje 1–3 kruga.
 - **Obračun mjeseca:** kad profesor zatvori mjesec (otvori sljedeći krug, ili istekne rok, ili završi igru), motor
   izračuna tržište **za sve hotele odjednom**: noćenja, prihod (noćenja × cijena + noćenja iz ugovora), troškovi
-  (plaće hotela, 300 € po sobi, marketing, ugovori), dobit i stanje računa. Dobit pomiče pokazatelj financija
+  (plaće hotela, 450 € po sobi, marketing, ugovori, PDV 13 %, provizija portala 8 %, materijal 17 %), dobit i stanje računa. Dobit pomiče pokazatelj financija
   (najviše ±5), a ugovori svoje pokazatelje.
 - **Ocjena ostaje napredak** pokazatelja; novac se prikazuje uz nju (ljestvica pokazuje oba).
 - **Karta grada** (prava, ne lažna): hoteli i gradske tvrtke kao zgrade, ugovori kao linije. **Vijesti grada** iz

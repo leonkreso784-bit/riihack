@@ -51,9 +51,12 @@ describe("estimateWhatIf", () => {
       // The share is a whole percent, so allow about 8 % on nights and the profit that follows from them.
       expect(Math.abs(est.finance.nights - truth.nights)).toBeLessThanOrEqual(Math.ceil(truth.nights * 0.08));
       expect(Math.abs(est.finance.profit - truth.profit)).toBeLessThanOrEqual(Math.ceil(Math.abs(truth.revenue) * 0.1));
-      // Costs are exact, not estimated.
+      // Fixed costs are exact, not estimated.
       expect(est.finance.breakdown!.costMarketing).toBe(marketing);
-      expect(est.finance.costs).toBe(truth.costs);
+      const fixed = (x: RoundFinance) => x.costs - (x.breakdown!.costVat ?? 0) - (x.breakdown!.costCommission ?? 0) - (x.breakdown!.costMaterials ?? 0);
+      expect(fixed(est.finance)).toBe(fixed(truth));
+      // PDV, provizija and materijal follow revenue, so they move with the estimated nights (about 8 % allowed, as for nights).
+      expect(Math.abs(est.finance.costs - truth.costs)).toBeLessThanOrEqual(Math.ceil(truth.revenue * 0.1));
     }
   });
 

@@ -68,7 +68,7 @@ describe("parsePlan", () => {
     for (const marketing of [-1, MARKETING_MAX + 1, 1.5, "100", undefined]) {
       const err = planError({ price: 80, marketing });
       expect(err?.status).toBe(400);
-      expect(err?.message).toBe("Marketing mora biti cijeli broj od 0 € do 5.000 €");
+      expect(err?.message).toBe("Marketing mora biti cijeli broj od 0 € do 2.000 €");
     }
   });
 

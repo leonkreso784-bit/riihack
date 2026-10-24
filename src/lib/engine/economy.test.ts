@@ -144,10 +144,11 @@ describe("economy", () => {
       cashBefore: 20000,
       contracts: [agency],
     });
+    // PDV 13/113: 32.000 -> 3.681, 2.800 -> 322; provizija 8 % od (32.000 - 3.681) = 2.266; materijal 17 % od (34.800 - 4.003) = 5.235
     expect(f.revenue).toBe(34800);
-    expect(f.costs).toBe(16000);
-    expect(f.profit).toBe(18800);
-    expect(f.cashAfter).toBe(38800);
+    expect(f.costs).toBe(9000 + 9000 + 1000 + 4003 + 2266 + 5235);
+    expect(f.profit).toBe(34800 - f.costs);
+    expect(f.cashAfter).toBe(20000 + f.profit);
     expect(f.round).toBe(2);
     expect(f.contractNights).toBe(40);
   });
@@ -170,13 +171,16 @@ describe("economy", () => {
       revenueOwn: 32000,
       revenueContracts: 2800,
       costStaff: 9000,
-      costRooms: 6000,
+      costRooms: 9000,
       costMarketing: 1000,
       costContracts: 1500,
       costInvestments: 2000,
+      costVat: 4003,
+      costCommission: 2266,
+      costMaterials: 5235,
     });
     expect(f.revenue).toBe(34800);
-    expect(f.costs).toBe(19500);
+    expect(f.costs).toBe(9000 + 9000 + 1000 + 1500 + 2000 + 4003 + 2266 + 5235);
   });
 
   it("roundFinance s ulaganjem u odjele", () => {
@@ -192,10 +196,19 @@ describe("economy", () => {
       contracts: [agency],
       investments: 2000,
     });
-    expect(f.costs).toBe(18000);
-    expect(f.profit).toBe(16800);
-    expect(f.cashAfter).toBe(36800);
+    expect(f.costs).toBe(9000 + 9000 + 1000 + 2000 + 4003 + 2266 + 5235);
+    expect(f.profit).toBe(34800 - f.costs);
+    expect(f.cashAfter).toBe(20000 + f.profit);
     expect(f.investments).toBe(2000);
+  });
+
+  it("roundFinance: bez prihoda nema PDV-a, provizije ni materijala; provizija samo na slobodno tržište", () => {
+    const m = { companyId: "A", nights: 0, contractNights: 0, capacityNights: 600, occupancyPct: 0, marketSharePct: 0 };
+    const f = roundFinance(m, { round: 1, price: 80, marketing: 0, staffCost: 1000, roomsCount: 2, cashBefore: 0, contracts: [] });
+    expect([f.breakdown!.costVat, f.breakdown!.costCommission, f.breakdown!.costMaterials]).toEqual([0, 0, 0]);
+    const agency = { nights: 10, pricePerNight: 113, monthlyCost: 0 } as ContractTemplate;
+    const g = roundFinance(m, { round: 1, price: 80, marketing: 0, staffCost: 0, roomsCount: 0, cashBefore: 0, contracts: [agency] });
+    expect([g.breakdown!.costVat, g.breakdown!.costCommission, g.breakdown!.costMaterials]).toEqual([130, 0, 170]); // 1.130 € s PDV-om: PDV 130, neto 1.000, materijal 17 %
   });
 
   it("financeEffect", () => {
