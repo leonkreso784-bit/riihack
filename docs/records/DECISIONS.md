@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-027"></a>
+## ADR-027 · Playbook kao izvoz i uvoz, bez mijenjanja mehanike
+**Datum:** 24.10. ~16:35 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** [ADR-024](#adr-024), [ADR-004](#adr-004), [#89](https://github.com/leonkreso784-bit/riihack/pull/89)
+
+**Kontekst.** Rino je predložio da profesor ima „playbook": sam određuje mehaniku igre i svoje situacije ponovno
+koristi u novim igrama. Profesorove situacije pripadaju jednoj igri, profesor nema račun (ADR-004), a mehanika su
+konstante u `rules.ts` koje motor čita izravno.
+**Odluka.** Lagana verzija za **M3**: tip `Playbook { version: 1; name; settings: { autoDraw }; situations:
+SituationDraft[] }` u ugovoru (#89) i rute `GET` (izvoz) i `POST` (uvoz) `/api/prof/[worldId]/playbook`. Simon u S8
+dodaje gumbe „Izvezi" i „Uvezi". **Profesor ne mijenja mehaniku motora**; to je vizija.
+**Posljedice.** Ponovna upotreba radi bez računa, preko datoteke. Mehanika po igri ide u [VISION.md](../product/VISION.md).
+
 <a id="adr-026"></a>
 ## ADR-026 · Nitko ne pokreće `db:push`; shema se mijenja ručnim aditivnim SQL-om
 **Datum:** 24.10. ~16:25 · **Status:** ✅ (Leon) · **Vezano:** [BUG-006](BUGS.md#bug-006--dbpush-predlaže-pražnjenje-tablica-situations-i-contracts), [ADR-025](#adr-025), [ADR-005](#adr-005)

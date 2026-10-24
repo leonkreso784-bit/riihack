@@ -16,6 +16,8 @@ kasni ruši recenzije hotelima koje opskrbljuje.
 2. **Ugovori između studenata**, ne samo s gradskim tvrtkama.
 3. **Banka i krediti**, porezi i općina.
 4. **Više gradova i država.**
+5. **Profesor podešava mehaniku igre** za svoj kolegij (sezona, potražnja, cijene, broj krugova), uz playbook koji već
+   prenosi njegove situacije iz igre u igru.
 
 ## Kome se prodaje 🟨
 
