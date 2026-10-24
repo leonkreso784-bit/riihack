@@ -2,6 +2,7 @@
 import { HOTELS } from "@/content";
 import { DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "./rules";
 import type {
+  MailMessage,
   DepartmentView,
   StaffDepartment,
   CityView,
@@ -258,6 +259,29 @@ const DEPARTMENTS: DepartmentView[] = (Object.keys(STAFF_DEPARTMENT_LABELS) as S
   investment: d === "maintenance" ? 1000 : 0,
 }));
 
+// Mail (R13): the agency's offer for k-adria, a message from another hotel, a city notice. Newest first.
+const ago = (min: number) => new Date(Date.now() - min * 60_000).toISOString();
+const MAIL: MailMessage[] = [
+  {
+    id: "m-adria", kind: "agency", threadId: "t-adria", fromName: "Agencija Adria", toName: "Vila Ana",
+    subject: "Grupa iz Njemačke: 40 noćenja u srpnju",
+    body: "Poštovani,\n\nimamo grupu od 20 gostiju iz Münchena koja u srpnju dolazi na dva tjedna. Tražimo hotel u Rijeci koji može primiti cijelu grupu.\n\nNudimo 40 noćenja po 70 € po noćenju. Sobe su vaše tek kad grupa dođe, a plaćamo po dolasku.\n\nLijep pozdrav,\nMarko Horvat, Agencija Adria",
+    at: ago(25), read: false, mine: false, contractId: "k-adria",
+  },
+  {
+    id: "m-lungomare", kind: "hotel", threadId: "t-lungomare", fromName: "Hotel Lungomare", toName: "Vila Ana",
+    subject: "Prijedlog suradnje",
+    body: "Bok! Za vikend smo puni. Ako vam odgovara, goste koji ne stanu kod nas šaljemo vama. Javite se.\n\nMarko, Hotel Lungomare",
+    at: ago(70), read: false, mine: false,
+  },
+  {
+    id: "m-grad", kind: "system", threadId: "t-grad", fromName: "Grad Simpolis", toName: "Vila Ana",
+    subject: "Obračun lipnja je objavljen",
+    body: "Obračun lipnja je gotov. Pogledaj Financije: prihodi, rashodi po stavkama i stanje računa.",
+    at: ago(600), read: true, mine: false,
+  },
+];
+
 export const MOCK_ME: MeResponse = {
   world: WORLD,
   company: COMPANY,
@@ -270,6 +294,8 @@ export const MOCK_ME: MeResponse = {
   city: CITY,
   news: NEWS,
   departments: DEPARTMENTS,
+  mail: MAIL,
+  unreadMail: MAIL.filter((m) => !m.read).length,
 };
 
 // S8: professor's situation bank (mutable in memory so the mock createSituation / dispatch calls change the list).

@@ -1,6 +1,7 @@
 // Browser-side API calls. Until the backend is live every call answers from mock.ts; NEXT_PUBLIC_USE_MOCK=0 switches to the server.
 import { useEffect, useEffectEvent, useState } from "react";
 import { PASTE_SHARE, POLL_MS } from "./rules";
+import { negotiate } from "./engine/negotiate";
 import { MOCK_DETAIL, MOCK_SAMPLE_DRAFT, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
 import type {
   CompanyPublicView,
@@ -11,6 +12,9 @@ import type {
   CompanyDetailResponse,
   ContractDecisionRequest,
   ContractView,
+  CounterOfferRequest,
+  MailMessage,
+  NegotiationResult,
   CreateWorldRequest,
   CreateWorldResponse,
   DispatchRequest,
@@ -83,6 +87,9 @@ const realApi = {
   report: (round: number) => get<RoundReportView>(`/api/me/report/${round}`),
   reflection: (req: ReflectionRequest) => post<RoundReportView>("/api/me/reflection", req),
   plan: (req: PlanRequest) => post<RoundPlan>("/api/me/plan", req),
+  // R13 mail: mark a message read; counter-offer on a contract offer (the engine decides, the agency replies by mail).
+  markRead: (mailId: string) => post<{ ok: true }>(`/api/me/mail/${mailId}/read`),
+  counter: (contractId: string, req: CounterOfferRequest) => post<NegotiationResult>(`/api/contracts/${contractId}/counter`, req),
   decideContract: (contractId: string, req: ContractDecisionRequest) =>
     post<ContractView>(`/api/contracts/${contractId}/decide`, req),
   // Clears the sp_player / sp_prof cookies (route is Leon's, see TEAM.md "Tko na koga čeka").
@@ -123,6 +130,14 @@ const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
 // After a mock join the "professor" starts the game 8 s later, so the waiting room can be seen in the demo.
 let mockLobbyUntil = 0;
 let mockClosedRound = 0; // "Završi mjesec" in the mock
+// Mail and contract offers in the mock change when the student reads, accepts, declines or counters (R13).
+let mockMail: MailMessage[] = structuredClone(MOCK_ME.mail ?? []);
+let mockContracts: ContractView[] = structuredClone(MOCK_ME.contracts);
+const AGENCY_REPLY = {
+  accepted: "Dogovoreno. Potvrđujem vašu cijenu, grupa stiže početkom mjeseca. Šaljem popis gostiju tjedan dana prije dolaska.",
+  countered: "To je iznad našeg budžeta. Možemo se naći na sredini, i to je naša zadnja ponuda.",
+  rejected: "Nažalost, uz te uvjete grupu šaljemo u drugi hotel. Hvala na odgovoru.",
+};
 
 // Mock professor game: lobby until "Pokreni", students drop in one every 2.5 s so the projector view comes alive.
 // After the start the board moves too: "Zatvori mjesec" opens the next month with its deadline, "Završi" ends it.
@@ -225,6 +240,9 @@ const mockApi: Api = {
     return wait({
       ...MOCK_ME,
       company: { ...MOCK_ME.company, closedRound: Math.max(MOCK_ME.company.closedRound, mockClosedRound) },
+      contracts: mockContracts,
+      mail: [...mockMail].sort((a, b) => b.at.localeCompare(a.at)),
+      unreadMail: mockMail.filter((m) => !m.read && !m.mine).length,
       world: lobby ? { ...world, status: "lobby", round: 0, roundDeadline: null } : { ...world, roundDeadline: MOCK_DEADLINE },
     });
   },
@@ -263,8 +281,34 @@ const mockApi: Api = {
     ),
   plan: (req) => wait({ round: MOCK_ME.world.round, ...req }),
   decideContract: (id, req) => {
-    const c = MOCK_ME.contracts.find((k) => k.id === id) ?? MOCK_ME.contracts[0];
-    return wait({ ...c, status: req.accept ? "accepted" : "rejected" });
+    const c = mockContracts.find((k) => k.id === id) ?? mockContracts[0];
+    // Accepting after the agency's counter takes the agency's numbers, like the server.
+    const next: ContractView = req.accept
+      ? { ...c, status: "accepted", pricePerNight: c.counterPricePerNight ?? c.pricePerNight, monthlyCost: c.counterMonthlyCost ?? c.monthlyCost }
+      : { ...c, status: "rejected" };
+    mockContracts = mockContracts.map((k) => (k.id === id ? next : k));
+    return wait(next);
+  },
+  markRead: (id) => {
+    mockMail = mockMail.map((m) => (m.id === id ? { ...m, read: true } : m));
+    return wait({ ok: true as const }, 150);
+  },
+  counter: (id, req) => {
+    const c = mockContracts.find((k) => k.id === id) ?? mockContracts[0];
+    const deal = negotiate(c, req);
+    const next: ContractView =
+      deal.outcome === "accepted"
+        ? { ...c, status: "accepted", negotiated: true, pricePerNight: deal.pricePerNight, monthlyCost: deal.monthlyCost }
+        : deal.outcome === "countered"
+          ? { ...c, negotiated: true, counterPricePerNight: deal.pricePerNight, counterMonthlyCost: deal.monthlyCost }
+          : { ...c, status: "expired", negotiated: true };
+    mockContracts = mockContracts.map((k) => (k.id === id ? next : k));
+    const offerMail = mockMail.find((m) => m.contractId === id);
+    const thread = { kind: "agency" as const, threadId: offerMail?.threadId ?? id, subject: `Re: ${offerMail?.subject ?? c.title}`, contractId: id };
+    const sent: MailMessage = { ...thread, id: `m-${Date.now()}`, fromName: "Vila Ana", toName: c.businessName, body: req.message || "Predlažemo drugu cijenu.", at: new Date().toISOString(), read: true, mine: true };
+    const reply: MailMessage = { ...thread, id: `m-${Date.now()}-r`, fromName: c.businessName, toName: "Vila Ana", body: AGENCY_REPLY[deal.outcome], at: new Date(Date.now() + 1000).toISOString(), read: false, mine: false };
+    mockMail = [...mockMail, sent, reply];
+    return wait({ outcome: deal.outcome, contract: next, reply }, 1500);
   },
   logout: () => wait(undefined, 200),
 };
