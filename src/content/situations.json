@@ -65,7 +65,7 @@
       },
       {
         "id": "o4",
-        "text": "Iskreno se ispričavam, to nije standard koji očekujete od nas. Za deset minuta vam dajem ključ druge sobe i nosač prenosi prtljagu, a ako vam to ne odgovara, domaćica će {soba} dovesti u red u 20 minuta. Dotle vas molim na piće u baru na račun kuće.",
+        "text": "Iskreno se ispričavam, to nije standard koji očekujete od nas. Za deset minuta vam dajem ključ druge sobe i nosač prenosi prtljagu, a ako vam to ne odgovara, domaćica će sobu {soba} dovesti u red u 20 minuta. Dotle vas molim na piće u baru na račun kuće.",
         "criteria": [
           "c1",
           "c2",
@@ -457,7 +457,7 @@
       },
       {
         "id": "o2",
-        "text": "Iskreno se ispričavam, greška je naša i žao mi je što vas to dočekuje nakon puta. Smještam vas večeras u susjedni hotel iste ili više kategorije, hotel pokriva sve troškove i prijevoz, a sutra imate prednost za {soba}. Večeras vam dajemo i večeru na račun kuće.",
+        "text": "Iskreno se ispričavam, greška je naša i žao mi je što vas to dočekuje nakon puta. Smještam vas večeras u susjedni hotel iste ili više kategorije, hotel pokriva sve troškove i prijevoz, a sutra imate prednost za sobu {soba}. Večeras vam dajemo i večeru na račun kuće.",
         "criteria": [
           "c1",
           "c2",
@@ -575,7 +575,7 @@
   {
     "id": "radnik-ne-dolazi",
     "title": "Sezonski radnik se ne pojavljuje",
-    "text": "Sezonski konobar hotela {hotel} nije došao na smjenu dva dana zaredom i ne javlja se na poruke. U restoranu ste ionako kratki s ljudima, a večeras je rezervirano trideset pet večera. Kad ga napokon dobijete na telefon, kaže da se vratio kući u Slavoniju zbog obitelji, a spominje i da je u drugom hotelu ponuđena veća plata. Za sebe traži isplatu zarađenog.",
+    "text": "Sezonski konobar hotela {hotel} nije došao na smjenu dva dana zaredom i ne javlja se na poruke. U restoranu ste ionako kratki s ljudima, a večeras je rezervirano trideset pet večera. Kad ga napokon dobijete na telefon, kaže da se vratio kući u Slavoniju zbog obitelji, a spominje i da mu je drugi hotel ponudio veću plaću. Za sebe traži isplatu zarađenog.",
     "area": "Osoblje i smjene",
     "difficulty": 4,
     "character": {
