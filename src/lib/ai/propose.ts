@@ -57,6 +57,9 @@ function ideaPrompt(input: SituationIdeaInput, error?: string): string {
   return lines.join("\n\n");
 }
 
+// BUG-017: area as a label like the bank ("Recepcija i smještaj"), never a lowercase key.
+const capitalize = (t: string) => (t ? t[0].toLocaleUpperCase("hr") + t.slice(1) : t);
+
 /** Renumber ids (c1.., o1..), remap option criteria, clamp the small numbers. validateDraft then judges the result. */
 export function normalizeDraft(raw: Raw): SituationDraft {
   const idMap = new Map<string, string>();
@@ -76,7 +79,7 @@ export function normalizeDraft(raw: Raw): SituationDraft {
   return {
     title: raw.title.trim(),
     text: raw.text.trim(),
-    area: raw.area.trim(),
+    area: capitalize(raw.area.trim()),
     difficulty: Math.min(5, Math.max(1, raw.difficulty)) as SituationDraft["difficulty"],
     character: {
       name: raw.character.name.trim(),

@@ -55,6 +55,7 @@ describe("proposeSituation", () => {
     expect(draft.options.map((o) => o.id)).toEqual(["o1", "o2", "o3"]);
     expect(draft.options[0].criteria).toEqual(["c1", "c2"]);
     expect(draft.effects).toEqual({ reviews: 5 });
+    expect(draft.area).toBe("Recepcija"); // BUG-017: label with a capital letter, like the bank
     expect(model.doGenerateCalls).toHaveLength(1);
   });
 
