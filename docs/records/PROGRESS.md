@@ -6,6 +6,12 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~22:15 · botovi za male igre
+
+- **Odluke (Leon):** formula iz #194 (kvadrat već iznad referentne cijene) je u redu; integrator spaja na Leonovo
+  „spoji". Simon dodaje botove, hotele i dobavljače koje vodi računalo, za igre s malo studenata
+  ([ADR-044](DECISIONS.md#adr-044), 🟨 detalji).
+
 ## Sub 24.10. 22:00–22:10 · tester na produkciji
 
 - **Nova sesija:** tester produkcije (samo testira, ne mijenja kod). Prvi nalazi: uvid u studenta piše „klik" za
