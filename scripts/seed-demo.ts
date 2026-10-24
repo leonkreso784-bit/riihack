@@ -1,28 +1,32 @@
 // Demo igra za obilazak žirija. Pokretanje: npm run seed:demo (traži DATABASE_URL u .env.local).
 // Briše SAMO prijašnju demo igru (po kodu igre) i složi novu: 5 hotela, odigran mjesec, otvoren krug 2.
 // Koristi funkcije igre izravno (bez HTTP-a). Ponovno pokretanje je bezopasno.
+// Val 3: ulaganja u odjele (dva hotela), pregovor s agencijom (ishod računa motor), dvije poruke među hotelima.
+// Demo profesorski račun: DEMO_PROF_EMAIL i DEMO_PROF_PASSWORD u .env.local (bez njih igra radi samo s kodom).
 import { config } from "dotenv";
 config({ path: ".env.local" });
 import { eq, inArray } from "drizzle-orm";
 import { db } from "../src/db";
 import {
   answers, companies, contracts, customSituations, dispatches, events, finances, mail, plans, players, rooms,
-  roundReports, situations, worlds,
+  roundReports, situations, user, worlds,
 } from "../src/db/schema";
+import { getAuth } from "../src/lib/auth";
 import { getWorld, listCompanies, listFinanceRows, listRooms, listSituationsWithAnswers, saveMentorQuestion } from "../src/db/queries";
 import { MENTOR_FALLBACK_QUESTION } from "../src/lib/ai/fallbacks";
 import { hashCode, normalizeCode } from "../src/lib/engine/codes";
 import { refPrice } from "../src/lib/engine/economy";
-import { CODE_ALPHABET, JOIN_CODE_LENGTH, PROF_CODE_LENGTH } from "../src/lib/rules";
+import { CODE_ALPHABET, JOIN_CODE_LENGTH, NEGOTIATE_OK_PCT, PROF_CODE_LENGTH } from "../src/lib/rules";
 import { getBusiness, getContract } from "../src/content";
 import { joinWorld } from "../src/lib/game/join";
 import { closeCompanyRound } from "../src/lib/game/round";
-import { decideContract, savePlan } from "../src/lib/game/city";
+import { counterOffer, decideContract, savePlan } from "../src/lib/game/city";
+import { sendMail } from "../src/lib/game/mail";
 import { submitAnswer } from "../src/lib/game/answer";
 import { createCustomSituation, dispatchSituation, getTemplate } from "../src/lib/game/situations";
 import { renderTemplate } from "../src/lib/game/views";
 import { createWorld, openNextRound, startWorld } from "../src/lib/game/world";
-import type { SituationDraft } from "../src/lib/types";
+import type { DepartmentInvestments, SituationDraft } from "../src/lib/types";
 
 type Ctx = Parameters<typeof savePlan>[0];
 
@@ -41,13 +45,65 @@ const DEMO_JOIN_CODE = code("DEMO_JOIN_CODE", "KVRNDM", JOIN_CODE_LENGTH);
 const DEMO_PROF_CODE = code("DEMO_PROF_CODE", null, PROF_CODE_LENGTH);
 
 // price = množitelj referentne cijene hotela (rezultat se drži u rasponu 55–140 €).
-const STUDENTS = [
-  { name: "Ana Horvat", hotel: "Vila Ana", price: 1.05, marketing: 1500 },
-  { name: "Marko Kovačević", hotel: "Hotel Kvarner Plaza", price: 1.25, marketing: 3000 },
-  { name: "Ivana Babić", hotel: "Pansion Bura", price: 0.9, marketing: 0 },
-  { name: "Petar Jurić", hotel: "Hotel Rijeka Centar", price: 1.1, marketing: 800 },
-  { name: "Maja Novak", hotel: "Villa Lungomare", price: 1.4, marketing: 2200 },
+// Hotel iz banke dobiva se redom ulaska (assignHotel): Rijeka, Opatija, Omišalj (Krk), Mali Lošinj, Crikvenica,
+// pa ime hotela prati to mjesto. invest = ulaganje u odjele u planu mjeseca (val 3, trošak ide u obračun).
+const STUDENTS: { name: string; hotel: string; price: number; marketing: number; invest?: DepartmentInvestments }[] = [
+  { name: "Ana Horvat", hotel: "Hotel Rijeka Centar", price: 1.05, marketing: 1500 },
+  { name: "Marko Kovačević", hotel: "Villa Lungomare Opatija", price: 1.25, marketing: 3000, invest: { housekeeping: 2000, reception: 1500 } },
+  { name: "Ivana Babić", hotel: "Pansion Bura Omišalj", price: 0.9, marketing: 0 },
+  { name: "Petar Jurić", hotel: "Vila Čikat Lošinj", price: 1.1, marketing: 800 },
+  { name: "Maja Novak", hotel: "Hotel Plaža Crikvenica", price: 1.4, marketing: 2200, invest: { kitchen: 3000, maintenance: 1000 } },
 ];
+
+// Dvije poruke među hotelima (val 3, L18): od koga, kome, naslov, tekst.
+const HOTEL_MAIL = [
+  {
+    from: "Ana Horvat",
+    to: "Marko Kovačević",
+    subject: "Kongres u Rijeci: gosti viška",
+    body: "Pozdrav iz Rijeke! Sljedeći mjesec imamo kongres i bit ćemo puni. Biste li u Opatiji primili goste koje ne stignemo smjestiti? Javite koliko soba otprilike imate slobodno.",
+  },
+  {
+    from: "Marko Kovačević",
+    to: "Ana Horvat",
+    subject: "Slobodne sobe u Opatiji",
+    body: "Pozdrav iz Opatije! Imamo nekoliko slobodnih soba sredinom mjeseca. Pošaljite nam datume pa se dogovorimo, rado pomažemo susjedima.",
+  },
+];
+
+/**
+ * Demo profesorski račun (Leonova odluka: žiri gleda igru s računa, e-mail i lozinka, bez potvrde e-maila).
+ * Postoji → njegov id; ne postoji → registracija preko Better Auth API-ja. Bez env varijabli ili uz grešku
+ * (npr. kratka lozinka) samo upozori: igra i dalje radi s profesorskim kodom.
+ */
+async function demoOwner(): Promise<string | null> {
+  const email = process.env.DEMO_PROF_EMAIL?.trim().toLowerCase();
+  const password = process.env.DEMO_PROF_PASSWORD;
+  if (!email || !password) {
+    console.warn("⚠ DEMO_PROF_EMAIL ili DEMO_PROF_PASSWORD nije u .env.local: demo igra nema profesorski račun (radi s kodom).");
+    return null;
+  }
+  try {
+    const [found] = await db.select({ id: user.id }).from(user).where(eq(user.email, email));
+    if (found) {
+      console.log(`Profesorski račun: ${email} (postoji, lozinka se ne mijenja)`);
+      return found.id;
+    }
+    // Izravan poziv izvan zahtjeva: Better Auth traži host (BETTER_AUTH_URL ili lokalni); lozinka se hashira
+    // bez tajne, pa račun napravljen lokalno radi i na produkciji.
+    const appUrl = process.env.BETTER_AUTH_URL;
+    const host = appUrl ? new URL(appUrl).host : "localhost:3000";
+    const res = await getAuth().api.signUpEmail({
+      body: { email, password, name: "Demo profesor" },
+      headers: new Headers({ host }),
+    });
+    console.log(`Profesorski račun: ${email} (napravljen)`);
+    return res.user.id;
+  } catch (e) {
+    console.warn(`⚠ Profesorski račun nije napravljen (${e instanceof Error ? e.message : String(e)}): igra radi s kodom.`);
+    return null;
+  }
+}
 
 const OWN_ANSWERS = [
   "Ispričavam se gostu i odmah preuzimam problem na sebe. Objasnit ću mu što radimo i do kada će biti riješeno, te ponuditi primjerenu nadoknadu. Nakon toga ću nazvati gosta i provjeriti je li zadovoljan.",
@@ -125,7 +181,8 @@ const KINDS: Kind[][] = [["good", "good"], ["good", "own"], ["weak", "own"], ["c
 async function main() {
   await wipeDemo();
 
-  const created = await createWorld({ name: "Demo Simpolis", maxPlayers: 6 });
+  const ownerId = await demoOwner();
+  const created = await createWorld({ name: "Demo Simpolis", maxPlayers: 6 }, ownerId);
   const worldId = created.worldId;
   await db
     .update(worlds)
@@ -155,19 +212,36 @@ async function main() {
     }
   }
 
-  // Planovi: cijena prema hotelu (55–140 €), marketing 0–3000 €.
-  for (const s of STUDENTS) {
+  // Planovi: cijena prema hotelu (55–140 €), marketing 0–3000 €, ulaganje u odjele kod dva hotela.
+  const planOf = async (s: (typeof STUDENTS)[number]) => {
     const ctx = await playerCtx(companyOf[s.name]);
     const ref = refPrice(await listRooms(ctx.company.id));
-    await savePlan(ctx, { price: Math.min(140, Math.max(55, Math.round(ref * s.price))), marketing: s.marketing });
-  }
+    const price = Math.min(140, Math.max(55, Math.round(ref * s.price)));
+    await savePlan(ctx, { price, marketing: s.marketing, ...(s.invest && { investments: s.invest }) });
+  };
+  for (const s of STUDENTS) await planOf(s);
 
-  // Dva prihvaćena ugovora: najprije agencijske ponude, a ako ih nema dovoljno, bilo koje.
+  // Pregovor (val 3): prva agencijska ponuda s noćenjima dobije protuponudu ~10 % višu cijenu noćenja (unutar
+  // NEGOTIATE_OK_PCT); ishod i dogovorene brojke računa motor (counterOffer → negotiate), odgovor piše agencija.
   const offers = (await db.select().from(contracts).where(eq(contracts.worldId, worldId))).map((c) => ({
     ...c,
+    terms: getContract(c.templateId),
     agency: getBusiness(getContract(c.templateId).businessId).kind === "agency",
   }));
-  const picked = [...offers.filter((o) => o.agency), ...offers.filter((o) => !o.agency)].slice(0, 2);
+  const haggle = offers.find((o) => o.agency && o.terms.nights > 0);
+  let negotiation = "nema agencijske ponude s noćenjima u ovoj igri";
+  if (haggle) {
+    const p = haggle.terms.pricePerNight;
+    const res = await counterOffer(await playerCtx(haggle.companyId), haggle.id, {
+      pricePerNight: p + Math.floor((p * (NEGOTIATE_OK_PCT - 5)) / 100),
+      message: "Poštovani, zahvaljujemo na ponudi. Naše sobe su obnovljene i tražene, pa predlažemo nešto višu cijenu noćenja.",
+    });
+    negotiation = `${res.contract.businessName}: ${res.outcome}, ${res.contract.pricePerNight} €/noćenje (ponuda ${p} €)`;
+  }
+
+  // Dva prihvaćena ugovora (bez pregovaranog): najprije agencijske ponude, a ako ih nema dovoljno, bilo koje.
+  const rest = offers.filter((o) => o.id !== haggle?.id);
+  const picked = [...rest.filter((o) => o.agency), ...rest.filter((o) => !o.agency)].slice(0, 2);
   for (const o of picked) await decideContract(await playerCtx(o.companyId), o.id, true);
 
   // Zatvaranje krugova + rezervno pitanje mentora (bez AI-ja).
@@ -183,11 +257,20 @@ async function main() {
   // Obračun mjeseca i otvaranje kruga 2.
   const world = await openNextRound((await getWorld(worldId))!, {});
 
+  // Krug 2: hoteli s ulaganjem zadrže ga i u planu novog mjeseca (stranica odjela), pa dvije poruke među hotelima.
+  for (const s of STUDENTS.filter((x) => x.invest)) await planOf(s);
+  for (const m of HOTEL_MAIL) {
+    await sendMail(await playerCtx(companyOf[m.from]), { toCompanyId: companyOf[m.to], subject: m.subject, body: m.body });
+  }
+
   console.log("\nDemo igra je spremna.");
   console.log(`Kod igre:        ${DEMO_JOIN_CODE}`);
-  console.log(`Profesorski kod: ${DEMO_PROF_CODE}`);
+  console.log("Profesorski kod: iz .env.local (DEMO_PROF_CODE)");
+  console.log(`Račun profesora: ${ownerId ? "vlasnik igre (DEMO_PROF_EMAIL)" : "nema (samo kod)"}`);
   console.log(`worldId:         ${worldId}`);
-  console.log(`Krug:            ${world.round} (${world.status}), ugovora prihvaćeno: ${picked.length}\n`);
+  console.log(`Krug:            ${world.round} (${world.status}), ugovora prihvaćeno: ${picked.length}`);
+  console.log(`Pregovor:        ${negotiation}`);
+  console.log(`Poruke hotela:   ${HOTEL_MAIL.length}\n`);
   console.log(`${pad("Hotel", 22)}${pad("Student", 18)}${pad("Noćenja", 9)}${pad("Dobit", 10)}Novac`);
   for (const s of STUDENTS) {
     const f = (await listFinanceRows(companyOf[s.name])).find((x) => x.round === 1);

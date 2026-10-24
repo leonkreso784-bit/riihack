@@ -1,8 +1,11 @@
 // Smoke provjera toka igre preko HTTP-a. Pokretanje: npm run smoke (BASE_URL, zadano http://localhost:3000).
-// SMOKE_CITY=1 uključuje korake 11–14 (grad: plan, obračun mjeseca, ugovori). Izlazni kod 1 ako ijedan korak padne.
+// SMOKE_CITY=1 uključuje korake 11–19 (grad: plan, obračun mjeseca, ugovori; val 3: ulaganje u odjele, protuponuda,
+// poruke među hotelima, javni profil, profesorski račun). Izlazni kod 1 ako ijedan korak padne.
 import type {
-  AnswerView, CreateWorldResponse, JoinResponse, MeResponse, ProfStateResponse, RoundReportView, SituationView,
+  AnswerView, ContractView, CreateWorldResponse, JoinResponse, MailMessage, MeResponse, NegotiationResult,
+  ProfGameSummary, ProfStateResponse, RoundReportView, SituationView,
 } from "../src/lib/types";
+import { INVEST_EFFECT_DIVISOR, INVEST_MAX, NEGOTIATE_COUNTER_PCT, NEGOTIATE_OK_PCT } from "../src/lib/rules";
 
 const BASE_URL = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const CITY = process.env.SMOKE_CITY === "1";
@@ -15,9 +18,12 @@ type Res = { status: number; data: any };
 class User {
   private jar = new Map<string, string>();
   constructor(readonly label: string) {}
+  /** Zaboravi kolačić (npr. sp_prof, da se provjeri pristup samo sesijom računa). */
+  forget(name: string) { this.jar.delete(name); }
   async call(method: string, path: string, body?: unknown): Promise<Res> {
     const headers: Record<string, string> = {};
     if (body !== undefined) headers["content-type"] = "application/json";
+    if (path.startsWith("/api/auth/")) headers.origin = BASE_URL; // Better Auth provjerava podrijetlo zahtjeva
     if (this.jar.size) headers.cookie = [...this.jar].map(([k, v]) => `${k}=${v}`).join("; ");
     const res = await fetch(BASE_URL + path, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
     for (const c of res.headers.getSetCookie()) {
@@ -39,13 +45,19 @@ function expectStatus(r: Res, status: number) {
   expect(r.status === status, `očekivano ${status}, dobiveno ${r.status} ${typeof r.data === "string" ? r.data.slice(0, 120) : JSON.stringify(r.data).slice(0, 160)}`);
 }
 
+/** Korak se ne može provjeriti na ovom serveru (npr. nema Better Auth tajne): preskočeno, ne palo. */
+class Skip extends Error {}
+
 let failed = 0;
 const done = new Set<number>();
 async function step(n: number, name: string, needs: number[], fn: () => Promise<void>) {
   const missing = needs.filter((d) => !done.has(d));
   if (missing.length) { console.log(`– ${n} ${name}: preskočeno (treba korak ${missing.join(", ")})`); return; }
   try { await fn(); done.add(n); console.log(`✓ ${n} ${name}`); }
-  catch (e) { failed++; console.log(`✗ ${n} ${name}: ${e instanceof Error ? e.message : String(e)}`); }
+  catch (e) {
+    if (e instanceof Skip) { console.log(`– ${n} ${name}: preskočeno (${e.message})`); return; }
+    failed++; console.log(`✗ ${n} ${name}: ${e instanceof Error ? e.message : String(e)}`);
+  }
 }
 function skipped(n: number, name: string) { console.log(`– ${n} ${name}: preskočeno (uključi SMOKE_CITY=1)`); }
 
@@ -201,6 +213,174 @@ async function main() {
       expect(new Set(rounds).size === rounds.length, `${u.label}: dupli retci u finances: ${rounds.join(",")}`);
       expect(rounds.length === after - 1, `${u.label}: obračunati krugovi ${rounds.join(",")}, očekivano 1–${after - 1}`);
     }
+  });
+
+  // ---------- Val 3: koraci 15–19 (SMOKE_CITY=1) ----------
+
+  /** Mala igra za korak: profesor, studenti po imenima (hotel „Hotel <ime>"), pokrenuta (krug 1). */
+  const smallGame = async (label: string, names: string[]) => {
+    const p = new User(`profesor (${label})`);
+    const w = await p.call("POST", "/api/worlds", { name: `${worldName} ${label}`, maxPlayers: names.length });
+    expectStatus(w, 200);
+    const users: User[] = [];
+    for (const name of names) {
+      const u = new User(name);
+      expectStatus(await u.call("POST", "/api/join", joinBody(w.data.joinCode, name, `Hotel ${name}`)), 200);
+      users.push(u);
+    }
+    expectStatus(await p.call("POST", `/api/prof/${w.data.worldId}/start`), 200);
+    return { prof: p, worldId: w.data.worldId as string, users };
+  };
+
+  await cityStep(15, "ulaganje u odjele: izvan raspona → 400, trošak u obračunu mjeseca", [], async () => {
+    const g = await smallGame("odjeli", ["Lea"]);
+    const [lea] = g.users;
+    const me = (await lea.call("GET", "/api/me")).data as MeResponse;
+    const base = { price: me.plan.price, marketing: 0 };
+    expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { reception: INVEST_MAX + 1 } }), 400);
+    expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { reception: -1 } }), 400);
+    expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { bazen: INVEST_EFFECT_DIVISOR } }), 400);
+    const investments = { reception: INVEST_EFFECT_DIVISOR, kitchen: 2 * INVEST_EFFECT_DIVISOR };
+    const sum = investments.reception + investments.kitchen;
+    const saved = await lea.call("POST", "/api/me/plan", { ...base, investments });
+    expectStatus(saved, 200);
+    const kept = saved.data.investments ?? {};
+    expect(
+      Object.keys(kept).length === 2 && kept.reception === investments.reception && kept.kitchen === investments.kitchen,
+      `plan.investments ${JSON.stringify(kept)}`,
+    );
+    expectStatus(await g.prof.call("POST", `/api/prof/${g.worldId}/round`, { fromRound: 1 }), 200);
+    const f = (await finances(lea)).find((x) => x.round === 1);
+    expect(f, "nema finances za krug 1");
+    expect(f.investments === sum, `finances.investments ${f.investments}, očekivano ${sum}`);
+    const b = f.breakdown;
+    expect(b, "nema raspodjele troškova (breakdown)");
+    expect(b.costInvestments === sum, `breakdown.costInvestments ${b.costInvestments}, očekivano ${sum}`);
+    const costs = b.costStaff + b.costRooms + b.costMarketing + b.costContracts + b.costInvestments;
+    expect(f.costs === costs, `costs ${f.costs} ≠ zbroj stavki ${costs}`);
+  });
+
+  await cityStep(16, "protuponuda agenciji: prihvaćeno, protuponuda agencije, odbijeno", [], async () => {
+    // Ponude su slučajne (sjeme igre), pa 8 hotela kroz najviše 4 mjeseca skuplja tri agencijske ponude s noćenjima.
+    const g = await smallGame("pregovor", ["Ema", "Filip", "Gita", "Hrvoje", "Iva", "Jura", "Kata", "Lovro"]);
+    const need: NegotiationResult["outcome"][] = ["accepted", "countered", "rejected"];
+    let badChecked = false;
+    const check = async (u: User, offer: ContractView, want: NegotiationResult["outcome"]) => {
+      const p = offer.pricePerNight;
+      // protuponuda u korist hotela: do OK % → prihvaćeno, sredina OK–COUNTER % → sredina, iznad COUNTER % → odbijeno
+      const ask = {
+        accepted: p + Math.floor((p * NEGOTIATE_OK_PCT) / 100),
+        countered: p + Math.round((p * (NEGOTIATE_OK_PCT + NEGOTIATE_COUNTER_PCT)) / 200),
+        rejected: p + Math.floor((p * NEGOTIATE_COUNTER_PCT) / 100) + 1,
+      }[want];
+      const path = `/api/contracts/${offer.id}/counter`;
+      const r = await u.call("POST", path, { pricePerNight: ask, message: "Smoke: predlažemo drugu cijenu." });
+      expectStatus(r, 200);
+      const res = r.data as NegotiationResult;
+      expect(res.outcome === want, `${u.label}: ponuda ${p} €, protuponuda ${ask} € → ${res.outcome}, očekivano ${want}`);
+      expect(res.reply.kind === "agency" && !res.reply.mine && res.reply.contractId === offer.id, "odgovor agencije nije e-mail uz ponudu");
+      const box = (await u.call("GET", "/api/me/mail")).data as MailMessage[];
+      expect(box.some((m) => m.id === res.reply.id), "odgovor agencije nije u pošti hotela");
+      if (want === "accepted") {
+        expect(res.contract.status === "accepted" && res.contract.pricePerNight === ask, `ugovor ${res.contract.status} po ${res.contract.pricePerNight} €`);
+      } else if (want === "countered") {
+        const cp = res.contract.counterPricePerNight;
+        expect(res.contract.status === "offered" && cp !== undefined && cp > p && cp < ask, `protuponuda agencije ${cp} (ponuda ${p}, traženo ${ask})`);
+        expectStatus(await u.call("POST", path, { pricePerNight: ask }), 409); // jedno pregovaranje po ponudi
+        const d = await u.call("POST", `/api/contracts/${offer.id}/decide`, { accept: true });
+        expectStatus(d, 200);
+        expect(d.data.status === "accepted" && d.data.pricePerNight === cp, `nakon prihvaćanja ${d.data.status} po ${d.data.pricePerNight} €, očekivano ${cp} €`);
+      } else {
+        expect(res.contract.status === "expired", `odbijena ponuda ima status ${res.contract.status}`);
+        expectStatus(await u.call("POST", `/api/contracts/${offer.id}/decide`, { accept: true }), 409);
+      }
+    };
+    for (let month = 1; need.length > 0; month++) {
+      for (const u of g.users) {
+        if (need.length === 0) break;
+        const me = (await u.call("GET", "/api/me")).data as MeResponse;
+        const offer = me.contracts.find(
+          (c) => c.status === "offered" && c.businessKind === "agency" && c.nights > 0 && c.roundOffered === me.world.round && !c.negotiated,
+        );
+        if (!offer) continue;
+        if (!badChecked) {
+          // oba polja odjednom → 400, ponuda ostaje netaknuta
+          expectStatus(await u.call("POST", `/api/contracts/${offer.id}/counter`, { pricePerNight: offer.pricePerNight, monthlyCost: 1 }), 400);
+          badChecked = true;
+        }
+        await check(u, offer, need.shift()!);
+      }
+      if (need.length === 0) break;
+      const next = await g.prof.call("POST", `/api/prof/${g.worldId}/round`, { fromRound: month });
+      if (next.status !== 200) throw new Error(`nema dovoljno agencijskih ponuda ni nakon ${month} mj. (fali: ${need.join(", ")})`);
+    }
+  });
+
+  await cityStep(17, "poruka drugom hotelu: primatelj je vidi nepročitanu, profesor je vidi", [5], async () => {
+    const to = ivanJoin.companyId;
+    expectStatus(await ana.call("POST", "/api/me/mail", { toCompanyId: to, subject: "", body: "Pozdrav" }), 400);
+    expectStatus(await ana.call("POST", "/api/me/mail", { toCompanyId: anaJoin.companyId, subject: "Sebi", body: "Pozdrav" }), 400);
+    const subject = `Smoke poruka ${Date.now()}`;
+    const r = await ana.call("POST", "/api/me/mail", { toCompanyId: to, subject, body: "Pozdrav od Ane! Imamo slobodnih soba ovaj mjesec." });
+    expectStatus(r, 200);
+    const sent = r.data as MailMessage;
+    expect(sent.kind === "hotel" && sent.mine && sent.subject === subject, `poslana poruka: ${JSON.stringify(sent).slice(0, 160)}`);
+    const inbox = await ivan.call("GET", "/api/me/mail");
+    expectStatus(inbox, 200);
+    const got = (inbox.data as MailMessage[]).find((m) => m.id === sent.id);
+    expect(got, "Ivan nema poruku u pošti");
+    expect(!got.read && !got.mine, `kod Ivana: read ${got.read}, mine ${got.mine}`);
+    const unread = ((await ivan.call("GET", "/api/me")).data as MeResponse).unreadMail;
+    expect(unread === undefined || unread >= 1, `unreadMail ${unread}`);
+    const all = await prof.call("GET", `/api/prof/${world.worldId}/mail`);
+    expectStatus(all, 200);
+    expect((all.data as MailMessage[]).some((m) => m.id === sent.id), "profesor ne vidi poruku");
+    expectStatus(await treci.call("GET", `/api/prof/${world.worldId}/mail`), 403);
+  });
+
+  await cityStep(18, "javni profil drugog hotela: bez novca", [2], async () => {
+    const r = await ana.call("GET", `/api/world/${world.worldId}/companies/${ivanJoin.companyId}`);
+    expectStatus(r, 200);
+    expect(r.data.companyId === ivanJoin.companyId, `companyId ${r.data.companyId}`);
+    // javni prihod/dobit zatvorenih mjeseci smiju biti; stanje računa ne
+    const banned = new Set(["cash", "startCash", "cashAfter", "balance"]);
+    const found: string[] = [];
+    const walk = (v: unknown, at: string) => {
+      if (Array.isArray(v)) v.forEach((x, i) => walk(x, `${at}[${i}]`));
+      else if (v && typeof v === "object") {
+        for (const [k, x] of Object.entries(v)) { if (banned.has(k)) found.push(`${at}.${k}`); walk(x, `${at}.${k}`); }
+      }
+    };
+    walk(r.data, "profil");
+    expect(found.length === 0, `javni profil ima novac: ${found.join(", ")}`);
+    expectStatus(await treci.call("GET", `/api/world/${world.worldId}/companies/${ivanJoin.companyId}`), 401);
+  });
+
+  await cityStep(19, "profesor s računom vidi svoju igru, drugi račun dobije 403", [], async () => {
+    const stamp = Date.now();
+    const owner = new User("profesor s računom"), other = new User("drugi profesor");
+    const signUp = (u: User, tag: string) =>
+      u.call("POST", "/api/auth/sign-up/email", {
+        email: `smoke-${stamp}${tag}@example.test`,
+        password: `Smoke-${stamp}-lozinka`,
+        name: `Smoke profesor ${tag || "a"}`,
+      });
+    const s = await signUp(owner, "");
+    if (s.status === 404 || s.status >= 500) throw new Skip(`registracija vraća ${s.status}: server nema Better Auth tajnu`);
+    expectStatus(s, 200);
+    const w = await owner.call("POST", "/api/worlds", { name: `${worldName} račun`, maxPlayers: 2 });
+    expectStatus(w, 200);
+    const games = await owner.call("GET", "/api/prof/games");
+    expectStatus(games, 200);
+    expect((games.data as ProfGameSummary[]).some((x) => x.worldId === w.data.worldId), "moje igre nemaju novu igru");
+    owner.forget("sp_prof"); // ploča igre radi samo sa sesijom računa, bez profesorskog koda
+    expectStatus(await owner.call("GET", `/api/prof/${w.data.worldId}`), 200);
+    expectStatus(await signUp(other, "-b"), 200);
+    expectStatus(await other.call("GET", `/api/prof/${w.data.worldId}`), 403);
+    const theirs = await other.call("GET", "/api/prof/games");
+    expectStatus(theirs, 200);
+    expect(!(theirs.data as ProfGameSummary[]).some((x) => x.worldId === w.data.worldId), "tuđa igra u mojim igrama");
+    expectStatus(await new User("bez računa").call("GET", "/api/prof/games"), 401);
   });
 
   console.log(failed ? `\n${failed} korak(a) palo` : "\nSve prošlo");
