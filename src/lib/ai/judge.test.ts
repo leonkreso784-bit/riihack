@@ -47,10 +47,21 @@ describe("judge", () => {
     await expect(judge(input, model)).resolves.toBeNull();
   });
 
-  it("retries once, then returns null when reasoning names a criterion number", async () => {
+  it("retries once, then keeps the criteria with a rubric reasoning when the text names a criterion number", async () => {
     const model = new MockLanguageModelV4({ doGenerate: reply({ criteriaMet: ["c1"], reasoning: "Kriterij 2 nije ispunjen." }) });
-    await expect(judge(input, model)).resolves.toBeNull();
+    await expect(judge(input, model)).resolves.toEqual({ criteriaMet: ["c1"], reasoning: "Dobro: ispriča se. Nedostaje: ponudi rješenje." });
     expect(model.doGenerateCalls).toHaveLength(2);
+  });
+
+  it("BUG-009: slash gender forms twice keep the ticked criteria", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: reply({ criteriaMet: ["c1", "c2"], reasoning: "Ispričao/la si se i ponudio/la rješenje." }) });
+    await expect(judge(input, model)).resolves.toEqual({ criteriaMet: ["c1", "c2"], reasoning: "Dobro: ispriča se; ponudi rješenje. Ništa bitno nije nedostajalo." });
+  });
+
+  it("rubric reasoning drops bracketed examples", async () => {
+    const { rubricReasoning } = await import("./judge");
+    const t = { ...input.template, rubric: [{ id: "c1", text: "Ponudi naknadu [popust, piće]", skill: "finance" as const }] };
+    expect(rubricReasoning(t, [])).toBe("Nedostaje: ponudi naknadu.");
   });
 
   it("accepts the retry when the second reasoning is clean", async () => {
