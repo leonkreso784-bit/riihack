@@ -4,9 +4,9 @@
 // Teren je statičan (board-geometry.ts), zgrade, natpisi, ugovori i animacije su React.
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { CityView, LeaderboardRow } from "@/lib/types";
-import { BIZ_META, DISTRICTS, HOTEL_HALF, allocateLots, businessLots, districtById, growth, hotelHeight, fmtDec, type PublicProfile } from "@/lib/karta";
+import { BIZ_META, DISTRICTS, HOTEL_HALF, businessLots, cityTier, districtById, growth, hotelHeight, fmtDec, visibleBusinesses, type Lot, type PublicProfile } from "@/lib/karta";
 import { cn } from "@/lib/utils";
-import { CX, DEFS, DISTRICT_LABELS, HH, HW, P, VIEW, baseLayer, groundRange, lerp, occupied, pt, rnd, terrainDrawables } from "./board-geometry";
+import { DEFS, DISTRICT_LABELS, HH, HW, P, VIEW, baseLayer, fitView, groundRange, lerp, occupied, pt, rnd, terrainDrawables, type ViewBox } from "./board-geometry";
 
 const LAYERS = [["h", "Hoteli"], ["b", "Partneri"], ["c", "Ugovori"]] as const;
 const WALL = {
@@ -240,7 +240,7 @@ const Biz = memo(function Biz({ name, letter, kindLabel, nkd, ax, ay, ht, chimne
 
 // ---------- natpisi ----------
 // Širina i položaj se mjere nakon crtanja (bez pretpostavke o fontu).
-function Chip({ x, y, name, pct, own, hot, shown, onSelect, id }: { x: number; y: number; name: string; pct: number | null; own: boolean; hot: boolean; shown: boolean; onSelect: (id: string) => void; id: string }) {
+function Chip({ x, y, name, pct, own, hot, shown, stem, onSelect, id }: { x: number; y: number; name: string; pct: number | null; own: boolean; hot: boolean; shown: boolean; stem: number; onSelect: (id: string) => void; id: string }) {
   const rect = useRef<SVGRectElement>(null);
   const inner = useRef<SVGGElement>(null);
   const measure = (el: SVGTextElement | null) => {
@@ -252,6 +252,7 @@ function Chip({ x, y, name, pct, own, hot, shown, onSelect, id }: { x: number; y
   const pctStr = pct === null ? "" : `${pct >= 0 ? "+" : ""}${pct} %`;
   return (
     <g transform={`translate(${x},${y})`} className="cb-chip" data-shown={shown ? 1 : 0} data-hot={hot ? 1 : 0} onClick={(e) => { e.stopPropagation(); onSelect(id); }} style={{ cursor: "pointer" }}>
+      {stem > 0 && <line x1="0" y1="30" x2="0" y2={stem} stroke="#1b2440" strokeOpacity=".45" strokeWidth="2" strokeDasharray="2 4" strokeLinecap="round" />}
       <g className="cb-chip-in"><g ref={inner} transform="translate(-60,0)">
         <rect ref={rect} className="cb-chip-bg" rx="17" ry="17" height="34" width="120" fill="#fff" filter="url(#cb-sh)" stroke={hot ? "#246bfd" : own ? "#ffd54a" : "none"} strokeWidth={hot ? 2.5 : 3} />
         <title>{name}</title>
@@ -331,10 +332,10 @@ const CSS = `
 
 type LegendItem = [string, string, boolean?];
 const LEGEND: LegendItem[] = [["#1640aa", "Tvoj hotel", true], ["#246bfd", "Hotel u igri"], ["#7d8698", "Hotel računala"], ["#2f8f6b", "Gradski partner"]];
-function Legend({ className }: { className?: string }) {
+function Legend({ className, bots }: { className?: string; bots: boolean }) {
   return (
     <div className={cn("text-xs", className)}>
-      {LEGEND.map(([c, t, ring]) => (
+      {LEGEND.filter(([, t]) => bots || t !== "Hotel računala").map(([c, t, ring]) => (
         <div key={t} className="my-1 flex items-center gap-1.5">
           <i className="inline-block size-[11px] rounded-[3px]" style={{ background: c, outline: ring ? "2px solid #ffd54a" : undefined }} />
           {t}
@@ -346,9 +347,46 @@ function Legend({ className }: { className?: string }) {
 }
 
 // ---------- karta ----------
-export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { city: CityView; youId: string; profiles: Record<string, PublicProfile>; selectedId?: string; onSelect: (id: string | undefined) => void }) {
+// Procjena širine natpisa (stvarna se mjeri nakon crtanja); služi samo za izbjegavanje preklapanja.
+const chipWidth = (name: string, pctStr: string) => Math.min(name.length, 22) * 10.4 + 28 + (pctStr ? (pctStr.length + 1) * 10.4 : 0);
+const hit = (a: number[], b: number[]) => a[0] < b[2] + 8 && b[0] < a[2] + 8 && a[1] < b[3] + 6 && b[1] < a[3] + 6;
+const vbStr = (v: ViewBox) => `${v.x.toFixed(1)} ${v.y.toFixed(1)} ${v.w.toFixed(1)} ${v.h.toFixed(1)}`;
+
+// Kamera se glatko vozi do novog viewBoxa izravno na DOM-u (bez ponovnog crtanja cijele karte u svakom kadru).
+function useViewBox(svg: React.RefObject<SVGSVGElement | null>, target: ViewBox, instant: boolean, dragging: React.RefObject<unknown>) {
+  const { x, y, w, h } = target;
+  const cur = useRef(target);
+  const raf = useRef(0);
+  const ready = useRef(false);
+  useEffect(() => {
+    const el = svg.current;
+    if (!el) return;
+    cancelAnimationFrame(raf.current);
+    const from = cur.current;
+    const t = { x, y, w, h };
+    const set = (v: ViewBox) => {
+      cur.current = v;
+      el.setAttribute("viewBox", vbStr(v));
+    };
+    const now = ready.current && !instant && !dragging.current;
+    ready.current = ready.current || !instant;
+    if (!now) return set(t);
+    const t0 = performance.now();
+    const tick = (time: number) => {
+      const p = Math.min(1, (time - t0) / 520);
+      const e = 1 - Math.pow(1 - p, 3);
+      set({ x: from.x + (t.x - from.x) * e, y: from.y + (t.y - from.y) * e, w: from.w + (t.w - from.w) * e, h: from.h + (t.h - from.h) * e });
+      if (p < 1) raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf.current);
+  }, [svg, x, y, w, h, instant, dragging]);
+}
+
+export function CityBoard({ city, youId, profiles, lots, selectedId, onSelect }: { city: CityView; youId: string; profiles: Record<string, PublicProfile>; lots: Record<string, Lot>; selectedId?: string; onSelect: (id: string | undefined) => void }) {
   const reduced = useReducedMotion();
   const box = useRef<HTMLDivElement>(null);
+  const svgEl = useRef<SVGSVGElement>(null);
   const [width, setWidth] = useState(0);
   const [on, setOn] = useState({ h: true, b: true, c: true });
   const [hoverId, setHoverId] = useState<string>();
@@ -377,16 +415,23 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   const compact = width > 0 && width < 640;
   const ZOOM_NOW = useMedia("(min-width: 1024px)") ? ZOOM_WIDE : ZOOM;
 
-  // Raspored: parcele hotela i tvrtki iz javnih podataka.
-  const lots = useMemo(() => allocateLots(city.hotels), [city.hotels]);
-  const bizLots = useMemo(() => businessLots(city.businesses), [city.businesses]);
+  // Raspored: parcele hotela (stalne, dolaze izvana) i tvrtki. U malom gradu se crta samo dio tvrtki.
+  const hotelsN = city.hotels.length;
+  const tier = cityTier(hotelsN);
+  const allBizLots = useMemo(() => businessLots(city.businesses), [city.businesses]);
+  const businesses = useMemo(() => {
+    const ids = new Set(city.hotels.map((h) => h.companyId));
+    const linked = new Set(city.links.filter((l) => ids.has(l.companyId)).map((l) => l.businessId));
+    return visibleBusinesses(city.businesses, linked, hotelsN);
+  }, [city.businesses, city.links, city.hotels, hotelsN]);
+  const bizLots = useMemo(() => Object.fromEntries(businesses.map((b) => [b.id, allBizLots[b.id]])), [businesses, allBizLots]);
   const maxProgress = Math.max(0, ...city.hotels.map((h) => h.progress));
 
   // Statični sloj ovisi samo o zauzetim parcelama.
-  const slotKey = city.hotels.map((h) => lots[h.companyId]?.slot.join()).join("|") + "#" + Object.values(bizLots).map((s) => s.join()).join("|");
+  const slotKey = tier + "#" + city.hotels.map((h) => lots[h.companyId]?.slot.join()).join("|") + "#" + Object.values(bizLots).map((s) => s.join()).join("|");
   const statics = useMemo(() => {
-    const occ = occupied(Object.values(lots).map((l) => l.slot), Object.values(bizLots));
-    return { base: baseLayer(), world: terrainDrawables(occ) };
+    const occ = occupied(city.hotels.flatMap((h) => (lots[h.companyId] ? [lots[h.companyId].slot] : [])), Object.values(bizLots));
+    return { base: baseLayer(tier), world: terrainDrawables(occ, tier) };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slotKey]);
 
@@ -394,10 +439,10 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   const targets = useMemo(() => {
     const t: Record<string, number> = {};
     city.hotels.forEach((h) => (t[h.companyId] = hotelHeight(h.progress, maxProgress)));
-    city.businesses.forEach((b) => (t[`b:${b.id}`] = BIZ_H));
+    businesses.forEach((b) => (t[`b:${b.id}`] = BIZ_H));
     return t;
-  }, [city.hotels, city.businesses, maxProgress]);
-  const order = useMemo(() => [...city.hotels.map((h) => h.companyId), ...city.businesses.map((b) => `b:${b.id}`)].sort(), [city.hotels, city.businesses]);
+  }, [city.hotels, businesses, maxProgress]);
+  const order = useMemo(() => [...city.hotels.map((h) => h.companyId), ...businesses.map((b) => `b:${b.id}`)].sort(), [city.hotels, businesses]);
   const heights = useTweened(targets, order, reduced);
   const hOf = (key: string) => heights[key] ?? 0;
 
@@ -421,18 +466,19 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
     type Item = { k: number; node: "s"; html: string; i: number } | { k: number; node: "h"; id: string; i: number } | { k: number; node: "b"; id: string; i: number };
     const list: Item[] = statics.world.map((d, i) => ({ k: d.k, node: "s", html: d.s, i }));
     city.hotels.forEach((h, i) => {
+      if (!lots[h.companyId]) return;
       const [ax, ay] = lots[h.companyId].slot;
       list.push({ k: ax + ay + 2 * S_H + 1.6, node: "h", id: h.companyId, i: 1e5 + i });
     });
-    city.businesses.forEach((b, i) => {
+    businesses.forEach((b, i) => {
       const [ax, ay] = bizLots[b.id];
       list.push({ k: ax + ay + 2 * S_B + 1.6, node: "b", id: b.id, i: 2e5 + i });
     });
     return list.sort((a, b) => a.k - b.k || a.i - b.i);
-  }, [statics, city.hotels, city.businesses, lots, bizLots]);
+  }, [statics, city.hotels, businesses, lots, bizLots]);
 
   const hotelById = new Map(city.hotels.map((h) => [h.companyId, h]));
-  const bizById = new Map(city.businesses.map((b) => [b.id, b]));
+  const bizById = new Map(businesses.map((b) => [b.id, b]));
   const topOf = (id: string): [number, number] => {
     const [ax, ay] = lots[id].slot;
     const { z } = groundRange(ax, ay, S_H);
@@ -445,30 +491,76 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
     return P(ax, ay, z + hOf(`b:${id}`));
   };
 
-  // Koji čipovi su stalno vidljivi: do 6 hotela svi, inače tvoj i tri najbolja po napretku.
-  const alwaysShown = useMemo(() => {
-    if (city.hotels.length <= 6) return new Set(hotelIds);
-    const top = [...city.hotels].sort((a, b) => b.progress - a.progress).slice(0, 3).map((h) => h.companyId);
-    return new Set([youId, ...top]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [city.hotels, youId]);
-
   const focusId = selectedId && lots[selectedId] ? selectedId : lots[youId] ? youId : hotelIds[0];
-  const fp = focusId && lots[focusId] ? (() => { const [ax, ay] = lots[focusId].slot; const { z } = groundRange(ax, ay, S_H); return P(ax, ay, z + 40); })() : [CX, VIEW.y + VIEW.h / 2];
+  const fp = focusId && lots[focusId] ? (() => { const [ax, ay] = lots[focusId].slot; const { z } = groundRange(ax, ay, S_H); return P(ax, ay, z + 40); })() : [VIEW.x + VIEW.w / 2, VIEW.y + VIEW.h / 2];
 
-  // Pogled: cijela ploča, ili na mobitelu približeno na tvoj hotel s povlačenjem.
+  // Kamera: viewBox se računa iz zauzetih parcela (memoizirano po skupu parcela i omjeru), pa se mali grad prikaže zumirano.
+  // Na mobitelu se veliki grad može približiti na tvoj hotel s povlačenjem; mali grad stane u kadar pa tamo nema pomicanja.
+  const aspect = compact ? ZOOM_NOW.w / ZOOM_NOW.h : 1274 / 860;
+  const usedKey = city.hotels.map((h) => lots[h.companyId]?.index).join(",") + "|" + Object.keys(bizLots).join(",");
+  const fit = useMemo(() => {
+    const used = new Set(city.hotels.map((h) => lots[h.companyId]?.district));
+    return fitView(city.hotels.flatMap((h) => (lots[h.companyId] ? [lots[h.companyId].slot] : [])), Object.values(bizLots), [...used].filter((d): d is NonNullable<typeof d> => Boolean(d)), aspect);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usedKey, aspect]);
   if (panFor !== selectedId) {
     setPanFor(selectedId);
     setPan({ x: 0, y: 0 });
   }
-  const close = compact && zoomed;
-  let vb = `${VIEW.x} ${VIEW.y} ${VIEW.w} ${VIEW.h}`;
+  const canClose = compact && fit.w > ZOOM_NOW.w * 1.08;
+  const close = canClose && zoomed;
+  let view: ViewBox = fit;
   if (close) {
     const wide = ZOOM_NOW === ZOOM_WIDE;
-    const x0 = Math.min(Math.max((wide ? CX : fp[0]) - ZOOM_NOW.w / 2 + pan.x, VIEW.x - 80), VIEW.x + VIEW.w - ZOOM_NOW.w + 80);
-    const y0 = Math.min(Math.max((wide ? VIEW.y + VIEW.h / 2 : fp[1]) - ZOOM_NOW.h * (!wide && selectedId ? 0.3 : 0.5) + pan.y, VIEW.y - 60), VIEW.y + VIEW.h - ZOOM_NOW.h + 60);
-    vb = `${x0.toFixed(1)} ${y0.toFixed(1)} ${ZOOM_NOW.w} ${ZOOM_NOW.h}`;
+    const x0 = Math.min(Math.max((wide ? fit.x + fit.w / 2 : fp[0]) - ZOOM_NOW.w / 2 + pan.x, fit.x - 80), fit.x + fit.w - ZOOM_NOW.w + 80);
+    const y0 = Math.min(Math.max((wide ? fit.y + fit.h / 2 : fp[1]) - ZOOM_NOW.h * (!wide && selectedId ? 0.3 : 0.5) + pan.y, fit.y - 60), fit.y + fit.h - ZOOM_NOW.h + 60);
+    view = { x: x0, y: y0, w: ZOOM_NOW.w, h: ZOOM_NOW.h };
   }
+  const [initialVb] = useState(() => vbStr(view));
+  useViewBox(svgEl, view, reduced || width === 0, drag);
+
+  // Natpisi okruga: samo za okruge u kadru ili s hotelom.
+  const labelIds = DISTRICTS.filter((d) => {
+    if (city.hotels.some((h) => lots[h.companyId]?.district === d.id)) return true;
+    const l = DISTRICT_LABELS[d.id];
+    const [x, y] = P(l[0], l[1], 0);
+    return x > fit.x + 110 && x < fit.x + fit.w - 110 && y - l[2] > fit.y + 60 && y < fit.y + fit.h - 80;
+  }).map((d) => d.id);
+  const labelBoxes = labelIds.map((id) => {
+    const [gx, gy, z, dx] = DISTRICT_LABELS[id];
+    const [x, y] = P(gx, gy, 0);
+    const w = districtById(id as never).name.length * 9.1 + 26;
+    return [x + dx - w / 2, y - z - 12, x + dx + w / 2, y - z + 12];
+  });
+
+  // Natpisi hotela bez preklapanja. Prioritet: tvoj hotel, odabrani, pa najbolji po napretku (do ograničenja po veličini grada).
+  // Svaki natpis proba osnovni položaj pa dva viša (s tankom crtom do zgrade); ako nigdje ne stane, skriva se i pokazuje na hover/fokus.
+  const chipPlan = (() => {
+    const cap = hotelsN <= 6 ? hotelsN : hotelsN <= 14 ? 6 : 4;
+    const pctOf = (id: string) => growth(profiles[id]?.detail?.months ?? []);
+    const prio = [...city.hotels].sort((a, b) => Number(b.companyId === youId) - Number(a.companyId === youId) || Number(b.companyId === selectedId) - Number(a.companyId === selectedId) || b.progress - a.progress || (a.companyId < b.companyId ? -1 : 1));
+    const placed: number[][] = [...labelBoxes];
+    const plan = new Map<string, number | null>();
+    prio.forEach((h, i) => {
+      const forced = h.companyId === youId || h.companyId === selectedId;
+      if (!forced && i >= cap) return void plan.set(h.companyId, null);
+      const [tx, ty] = topOf(h.companyId);
+      const own = h.companyId === youId;
+      const pct = pctOf(h.companyId);
+      const w = chipWidth(h.hotelName, pct === null ? "" : `${pct >= 0 ? "+" : ""}${pct} %`);
+      const y0 = ty - (own ? 72 : 36) - 17;
+      for (const dy of [0, -40, -80]) {
+        const box = [tx - w / 2, y0 + dy, tx + w / 2, y0 + dy + 34];
+        if (!placed.some((q) => hit(box, q))) {
+          placed.push(box);
+          return void plan.set(h.companyId, dy);
+        }
+      }
+      if (forced) plan.set(h.companyId, 0);
+      else plan.set(h.companyId, null);
+    });
+    return plan;
+  })();
 
   const down = (e: React.PointerEvent) => {
     if (!close) return;
@@ -491,9 +583,8 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   };
 
   const rowsOf = (progress: number, maxP: number) => Math.max(2, Math.round((hotelHeight(progress, maxP) - 14) / 17));
-  const shownIds = new Set([...alwaysShown, ...(hoverId ? [hoverId] : []), ...(selectedId ? [selectedId] : [])]);
-  const chipOrder = [...city.hotels].sort((a, b) => Number(shownIds.has(a.companyId)) - Number(shownIds.has(b.companyId)) || Number(hoverId === a.companyId) - Number(hoverId === b.companyId));
-  const hotelsN = city.hotels.length;
+  const chipOrder = [...city.hotels].sort((a, b) => Number(chipPlan.get(a.companyId) != null) - Number(chipPlan.get(b.companyId) != null) || Number(hoverId === a.companyId) - Number(hoverId === b.companyId));
+  const hasBots = city.hotels.some((h) => h.isBot);
 
   const arcs = city.links.flatMap((l) => {
     if (!lots[l.companyId] || !bizLots[l.businessId]) return [];
@@ -516,11 +607,14 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
       >
         <style>{CSS}</style>
         <div className="absolute inset-0">
-          <svg viewBox={vb} preserveAspectRatio="xMidYMid meet" role="group" aria-label="Karta grada Simpolis" onClick={() => !dragged.current && onSelect(undefined)}>
+          <svg ref={svgEl} viewBox={initialVb} preserveAspectRatio="xMidYMid meet" role="group" aria-label="Karta grada Simpolis" onClick={() => !dragged.current && onSelect(undefined)}>
             <g dangerouslySetInnerHTML={{ __html: DEFS }} />
-            <g className="cb-cloud" opacity=".9" filter="url(#cb-bl2)"><ellipse cx="170" cy="120" rx="80" ry="18" fill="#fff" /><ellipse cx="215" cy="104" rx="50" ry="16" fill="#fff" /></g>
-            <g className="cb-cloud b" opacity=".9" filter="url(#cb-bl2)"><ellipse cx="1180" cy="720" rx="90" ry="18" fill="#fff" /><ellipse cx="1130" cy="706" rx="48" ry="14" fill="#fff" /></g>
-            <g className="cb-cloud" opacity=".8" filter="url(#cb-bl2)"><ellipse cx="1130" cy="90" rx="70" ry="14" fill="#fff" /></g>
+            {[[0.1, 0.1, 80, ""], [0.9, 0.82, 90, "b"], [0.86, 0.06, 70, ""]].map(([fx, fy, rx, c], i) => (
+              <g key={i} className={`cb-cloud ${c}`} opacity=".85" filter="url(#cb-bl2)">
+                <ellipse cx={fit.x + fit.w * (fx as number)} cy={fit.y + fit.h * (fy as number)} rx={(rx as number) * Math.max(1, fit.w / 1200)} ry="18" fill="#fff" />
+                <ellipse cx={fit.x + fit.w * (fx as number) + 40} cy={fit.y + fit.h * (fy as number) - 15} rx={(rx as number) * 0.6 * Math.max(1, fit.w / 1200)} ry="15" fill="#fff" />
+              </g>
+            ))}
             <g pointerEvents="none" dangerouslySetInnerHTML={{ __html: statics.base }} />
             <g>
               {items.map((it) => {
@@ -539,7 +633,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
               })}
             </g>
             <g pointerEvents="none">
-              {DISTRICTS.map((d) => <DistrictLabel key={d.id} id={d.id} name={districtById(d.id).name} />)}
+              {labelIds.map((id) => <DistrictLabel key={id} id={id} name={districtById(id as never).name} />)}
               {arcs.map((a) => (
                 <g key={a.key} className="cb-contract">
                   <path className="cb-arc" d={a.d} />
@@ -553,7 +647,10 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
                 const own = h.companyId === youId;
                 const [tx, ty] = topOf(h.companyId);
                 const g = growth(profiles[h.companyId]?.detail?.months ?? []);
-                return <Chip key={h.companyId} id={h.companyId} x={tx} y={ty - (own ? 72 : 36) - 17} name={h.hotelName} pct={g} own={own} hot={selectedId === h.companyId} shown={shownIds.has(h.companyId)} onSelect={select} />;
+                const planned = chipPlan.get(h.companyId);
+                const dy = hoverId === h.companyId || planned == null ? 0 : planned;
+                const base = own ? 89 : 53;
+                return <Chip key={h.companyId} id={h.companyId} x={tx} y={ty - base + dy} name={h.hotelName} pct={g} own={own} hot={selectedId === h.companyId} shown={planned != null || hoverId === h.companyId} stem={dy < 0 ? base - 6 - dy : 0} onSelect={select} />;
               })}
             </g>
             <g pointerEvents="none">
@@ -584,17 +681,17 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
             </button>
           ))}
         </div>
-        {compact && (
+        {canClose && (
           <button onClick={() => { setZoomed((z) => !z); setPan({ x: 0, y: 0 }); }} className="absolute bottom-3 right-3 z-10 rounded-full bg-card px-3.5 py-2 text-[13px] font-bold shadow-card">
             {zoomed ? "Cijeli grad" : "Približi"}
           </button>
         )}
-        <Legend className={cn("absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2 shadow-card", compact ? "hidden" : "hidden md:block")} />
+        <Legend bots={hasBots} className={cn("absolute bottom-3 right-3 z-10 rounded-xl bg-card px-3 py-2 shadow-card", compact ? "hidden" : "hidden md:block")} />
         <div className={cn("pointer-events-none absolute bottom-3 left-1/2 z-10 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-night px-4 py-2 text-[13px] font-semibold text-white shadow-lift", !compact && "lg:block")}>
           Klikni hotel za karticu
         </div>
       </div>
-      <Legend className={cn("flex-wrap gap-x-4 px-1 [&>div]:my-0", compact ? "flex" : "flex md:hidden")} />
+      <Legend bots={hasBots} className={cn("flex-wrap gap-x-4 px-1 [&>div]:my-0", compact ? "flex" : "flex md:hidden")} />
     </div>
   );
 }

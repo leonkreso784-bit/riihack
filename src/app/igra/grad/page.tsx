@@ -1,23 +1,30 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { api, usePoll } from "@/lib/client";
+import { api, usePoll, USE_MOCK } from "@/lib/client";
 import { Panel } from "@/components/panel";
 import { PageHeader } from "@/components/page-header";
 import { Leaderboard } from "@/components/leaderboard";
 import { CityBoard } from "@/components/city/city-board";
 import { CompanyCard } from "@/components/city/company-card";
-import { allocateLots, districtById, profilesFromMe } from "@/lib/karta";
+import { districtById, profilesFromMe } from "@/lib/karta";
+import { useCityLots } from "@/components/city/use-lots";
+import { padHotels } from "@/components/city/dev-pad";
 import { NewsFeed } from "@/components/city/news-feed";
 
+const NO_HOTELS: { companyId: string; place: string }[] = [];
+
 export default function CityPage() {
-  const { data, error } = usePoll(api.me);
+  const { data: polled, error } = usePoll(api.me);
+  // Samo u mock načinu: ?n=12 dopunjuje grad izmišljenim hotelima (provjera kako se karta prilagođava veličini).
+  const padN = useMemo(() => (USE_MOCK && typeof window !== "undefined" ? Number(new URLSearchParams(window.location.search).get("n")) || 0 : 0), []);
+  const data = useMemo(() => (polled && padN > 0 ? padHotels(polled, padN) : polled), [polled, padN]);
   const [selectedId, setSelectedId] = useState<string>();
   // L14: javni profili tuđih hotela (cijena, ocjene, popunjenost). Ako ruta zakaže, kartica pokaže samo podatke iz ljestvice.
   const { data: publicList } = usePoll(() => (data ? api.worldCompanies(data.world.id) : Promise.resolve([])));
   const publicViews = useMemo(() => Object.fromEntries((publicList ?? []).map((p) => [p.companyId, p])), [publicList]);
   const profiles = useMemo(() => (data ? profilesFromMe(data, publicViews) : {}), [data, publicViews]);
-  const lots = useMemo(() => (data ? allocateLots(data.city.hotels) : {}), [data]);
+  const lots = useCityLots(data?.city.hotels ?? NO_HOTELS, data?.company.id ?? "");
   if (error) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
   if (!data) return <Skeleton />;
 
@@ -29,7 +36,7 @@ export default function CityPage() {
       <Panel title="Grad" pad="sm">
         <div className="relative lg:flex lg:items-stretch lg:gap-4">
           <div className="min-w-0 flex-1">
-            <CityBoard city={data.city} youId={data.company.id} profiles={profiles} selectedId={selectedId} onSelect={setSelectedId} />
+            <CityBoard city={data.city} youId={data.company.id} profiles={profiles} lots={lots} selectedId={selectedId} onSelect={setSelectedId} />
           </div>
           {selectedId && profiles[selectedId] && (
             <div className="contents lg:relative lg:block lg:w-[380px] lg:shrink-0">

@@ -1,5 +1,5 @@
 // Izometrijska geometrija i statični sloj karte (teren, more, ukrasi) kao SVG nizovi. Čisti kod bez Reacta.
-import { DISTRICTS, GRID, HOTEL_HALF, terrainCell, type Slot } from "@/lib/karta";
+import { DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_HALF, terrainCell, type CityTier, type Slot } from "@/lib/karta";
 
 export const HW = 34;
 export const HH = 17;
@@ -18,6 +18,52 @@ export const rnd = (n: number) => {
 
 // Cijela ploča u koordinatama pogleda.
 export const VIEW = { x: 14, y: 20, w: CX + GRID * HW + 40 - 14, h: OY + 2 * GRID * HH + DEP + 96 - 20 };
+
+// ---- kamera koja se prilagođava gradu ----
+// Pogled se računa iz parcela koje su stvarno zauzete (hoteli, tvrtke, natpisi okruga) pa se mali grad prikazuje
+// zumirano, a veliki cijeli. Parcele se pritom ne miču, mijenja se samo viewBox. Čista funkcija, memoizira se po ključu parcela.
+export type ViewBox = { x: number; y: number; w: number; h: number };
+const CHIP_ROOM = 150; // prostor iznad najvišeg hotela za natpis
+const MIN_W = 640;
+const MIN_H = 430;
+export function fitView(hotels: Slot[], bizs: Slot[], labels: string[], aspect: number): ViewBox {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  const add = (p: number[]) => {
+    x0 = Math.min(x0, p[0]);
+    x1 = Math.max(x1, p[0]);
+    y0 = Math.min(y0, p[1]);
+    y1 = Math.max(y1, p[1]);
+  };
+  for (const [ax, ay] of hotels) {
+    const s = HOTEL_HALF;
+    const c = P(ax, ay, 0);
+    add([c[0] - 150, c[1] - HOTEL_H_MAX - 22 - CHIP_ROOM]);
+    add([c[0] + 150, c[1]]);
+    add(P(ax - s, ay + s, 0));
+    add(P(ax + s, ay - s, 0));
+    add([c[0], P(ax + s, ay + s, 0)[1] + 24]);
+  }
+  for (const [ax, ay] of bizs) {
+    const c = P(ax, ay, 0);
+    add([c[0] - 40, c[1] - 90]);
+    add([c[0] + 40, c[1] + 28]);
+  }
+  for (const id of labels) {
+    const l = DISTRICT_LABELS[id];
+    if (!l) continue;
+    const p = P(l[0], l[1], 0);
+    add([p[0] + l[3] - 100, p[1] - l[2] - 50]);
+    add([p[0] + l[3] + 100, p[1] + 14]);
+  }
+  if (!isFinite(x0)) return { ...VIEW };
+  y1 += 60; // mjesto za legendu i "Klikni hotel" pri dnu kadra
+  const pad = 36;
+  let w = Math.max(x1 - x0 + 2 * pad, MIN_W);
+  let h = Math.max(y1 - y0 + 2 * pad, MIN_H);
+  if (w / h < aspect) w = h * aspect;
+  else h = w / aspect;
+  return { x: (x0 + x1) / 2 - w / 2, y: (y0 + y1) / 2 - h / 2, w, h };
+}
 
 const ELEV: Record<string, number> = { ".": 0, s: 7, g: 14, h: 30, H: 46, p: 5 };
 export const elevAt = (x: number, y: number) => ELEV[terrainCell(x, y)] ?? 0;
@@ -74,7 +120,9 @@ const lighthouse = (): Drawable => {
 };
 
 // Teren: pločice, pjena uz obalu, ukrasi. `occ` su polja koja zauzimaju zgrade (tamo nema drveća).
-export function terrainDrawables(occ: Set<string>): Drawable[] {
+// `tier` određuje gustoću ukrasa: u malom gradu više drveća i palmi (kamera je blizu), u velikom rjeđe.
+const TREE_CUT: Record<CityTier, number> = { small: 0.7, medium: 0.82, large: 0.88 };
+export function terrainDrawables(occ: Set<string>, tier: CityTier = "medium"): Drawable[] {
   const D: Drawable[] = [];
   for (let y = 0; y < GRID; y++)
     for (let x = 0; x < GRID; x++) {
@@ -109,8 +157,8 @@ export function terrainDrawables(occ: Set<string>): Drawable[] {
       if (occ.has(`${x},${y}`)) continue;
       const r = rnd(x * 13.7 + y * 7.3);
       if ((c === "h" || c === "H") && r > 0.55) ornaments.push(tree(x + 0.3 + rnd(x + y) * 0.4, y + 0.3 + rnd(x * 3 + y) * 0.4, true));
-      else if (c === "g" && r > 0.82) ornaments.push(tree(x + 0.5, y + 0.5, false));
-      else if (c === "s" && x >= 12 && y <= 6 && r > 0.6 && (x + y) % 2 === 0) ornaments.push(palm(x + 0.5, y + 0.5));
+      else if (c === "g" && r > TREE_CUT[tier]) ornaments.push(tree(x + 0.5, y + 0.5, false));
+      else if (c === "s" && ((x >= 12 && y <= 6) || x >= 18 || y >= 19) && r > (tier === "small" ? 0.5 : 0.6) && (x + y) % 2 === 0) ornaments.push(palm(x + 0.5, y + 0.5));
     }
   ornaments.push(umbrella(13.3, 4.2, "#246bfd"), umbrella(12.7, 5.5, "#fff"), umbrella(13.5, 6.2, "#f08a5d"), umbrella(12.4, 3.4, "#f5c14b"), palm(1.5, 6.2), palm(1.5, 8.6), lighthouse());
   const delay = (d: Drawable, i: number) => ({ k: d.k, s: `<g class="cb-pop" style="--d:${420 + i * 12}ms">${d.s}</g>` });
@@ -129,7 +177,7 @@ export function occupied(slots: Slot[], extra: Slot[]): Set<string> {
 }
 
 // Podloga: sjena, ploča, more, valovi i brodice (sve se crta prije svijeta).
-export function baseLayer(): string {
+export function baseLayer(tier: CityTier = "medium"): string {
   const Tp = P(0, 0), Rp = P(GRID, 0), Bp = P(GRID, GRID), Lp = P(0, GRID);
   const topPoly = pt([Tp, Rp, Bp, Lp]);
   const slab = (c: string) => `<polygon points="${pt([Lp, Bp, Rp, [Rp[0], Rp[1] + DEP], [Bp[0], Bp[1] + DEP], [Lp[0], Lp[1] + DEP]])}" fill="${c}" stroke="${c}" stroke-width="40" stroke-linejoin="round"/>`;
@@ -155,7 +203,9 @@ export function baseLayer(): string {
     const [a, b] = P(x, y);
     return `<g class="cb-boat" style="animation-delay:-${i * 0.9}s"><ellipse cx="${a}" cy="${b + 4}" rx="16" ry="5" fill="#1b2440" opacity=".12"/><path d="M${a - 14} ${b - 2} h28 l-5 8 h-18z" fill="#fff"/><path d="M${a - 14} ${b - 2} h28" stroke="${c}" stroke-width="3"/><line x1="${a}" y1="${b - 2}" x2="${a}" y2="${b - 26}" stroke="#5d6679" stroke-width="1.6"/><path d="M${a} ${b - 26} v21 h12z" fill="${c}"/></g>`;
   };
-  s += boat(9.6, 14.1, "#246bfd", 0) + boat(15.4, 11.4, "#f08a5d", 1) + boat(0.9, 2.4, "#2f8f6b", 2) + boat(11.8, 0.9, "#246bfd", 3) + boat(8.6, 17, "#2f8f6b", 4);
+  // Brodice po veličini grada: najprije one uz središnji otok, pa uz proširene četvrti.
+  const boats: [number, number, string][] = [[15.5, 6.5, "#f08a5d"], [9.6, 14.1, "#246bfd"], [5.5, 11.5, "#2f8f6b"], [15.4, 11.4, "#f08a5d"], [0.9, 2.4, "#2f8f6b"], [11.8, 0.9, "#246bfd"], [8.6, 17, "#2f8f6b"], [16.6, 9, "#246bfd"], [11, 18.2, "#f08a5d"]];
+  boats.slice(0, tier === "small" ? 4 : tier === "medium" ? 7 : boats.length).forEach(([x, y, c], i) => (s += boat(x, y, c, i)));
   return s;
 }
 
@@ -172,5 +222,7 @@ export const DISTRICT_LABELS: Record<string, [number, number, number, number]> =
   brdo: [7, 1.4, 70, 0],
   ana: [4.5, 16.5, 28, 0],
   otok: [13.5, 16.5, 28, 0],
+  marina: [20.5, 3.2, 0, 0],
+  juzna: [8.5, 24, 0, 0],
 };
 export const districtName = (id: string) => DISTRICTS.find((d) => d.id === id)?.name ?? id;
