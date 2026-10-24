@@ -10,7 +10,8 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub ~22:05.
+Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
+~22:05, ~22:20 i ~22:25.
 
 ### BUG-015 · Uvid u studenta: propuštena situacija piše „klik"
 - **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (profesor misli da je student odabrao odgovor)
@@ -41,19 +42,59 @@ Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, n
 - **Rješenje:** 🟨 čeka vlasnika.
 - **Lekcija:** ključ u podacima nije tekst za korisnika; naziv uvijek ide kroz isti popis oznaka.
 
-### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
-- **Status:** 🟡 PR [#194](https://github.com/leonkreso784-bit/riihack/pull/194) čeka Leonovo „spoji" · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
-- **Opis:** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162), provjeren pravim
-  `settleMarket` i `roundFinance`: uz 400 € hotel ima 48 % popunjenosti i 69.700 € dobiti u kolovozu, a uz
-  referentnu cijenu (~90 €) 91 % i ~23.000 €. Tester potvrdio na produkciji (22:00): hotel 4★ sa 17 soba uz 400 € i
-  5.000 € marketinga u lipnju ide s 20.000 € na 81.850 €, a susjed uz 70 € na 28.860 €.
-- **Uzrok:** u `attractiveness` (`src/lib/engine/economy.ts`) faktor cijene je ograničen na 0,5 do 1,5. Iznad 2×
-  referentne cijene više ne pada, pa hotel zadrži goste, a svaka noć donosi sve više.
-- **Rješenje:** [ADR-043](DECISIONS.md#adr-043), [#194](https://github.com/leonkreso784-bit/riihack/pull/194): iznad
-  referentne cijene faktor pada s kvadratom, iznad 2,5× je 0; test da je vrh prihoda između 80 i 150 € u sva 4
-  mjeseca (416 testova). Poslije spajanja ponovni seed demo igre i smoke.
-- **Lekcija:** granica koja štiti od ekstremnih vrijednosti može ukloniti kaznu baš ondje gdje treba. Uz motor drži
-  test koji traži najbolju odluku i provjerava da ona ima smisla u stvarnom svijetu.
+### BUG-019 · Situacija nakon isteka roka piše „Ponuđeni odgovor"
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (student misli da je nešto odabrao) · ista obitelj
+  kao [BUG-015](#bug-015--uvid-u-studenta-propuštena-situacija-piše-klik)
+- **Opis:** profesor otvori mjesec s rokom, student ne odgovori, rok istekne (`answer.mode` `"none"`, `state`
+  `"expired"`). Situacija tada piše „Ponuđeni odgovor · 1/5" i nudi „Kako je tvoj odgovor prošao kroz hotel →".
+- **Uzrok:** `src/components/verdict-card.tsx:28`: sve što nije `"own"` prikazuje se kao „Ponuđeni odgovor".
+- **Rješenje:** 🟨 čeka Rina; očekivano „Bez odgovora, rok je istekao · 1/5", bez poveznice na tok odgovora.
+- **Lekcija:** kao BUG-015; isti „sve ostalo" uvjet bio je na dva mjesta, pa popravak traži sva mjesta gdje se
+  `mode` prikazuje.
+
+### BUG-020 · Sitni tekstovi: „2 studenata", tehnički tekst u toku mjeseca
+- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Opis:** (a) „Moje igre" (`/profesor/igre`, Leonova datoteka): „2 studenata" umjesto „2 studenta". (b) „Kako je
+  izračunat mjesec" (`/igra/izvjestaj/1/tok`, Simonov): kartica „Ugled · Nije spremljeno uz obračun" je tehnički
+  tekst za studenta (`src/lib/tokovi/month-flow.ts:158`), a početni čvor ponavlja „Početak: Lipanj / Lipanj".
+- **Uzrok:** kao [BUG-016](#bug-016--krivi-hrvatski-u-brojevima-i-rodu); tekst pisan za razvoj ostao u sučelju.
+- **Rješenje:** 🟨 (a) graditelj, (b) Simon.
+- **Lekcija:** svaki tekst na ekranu čita student ili žiri; poruke za razvoj ne idu u sučelje.
+
+### BUG-021 · Ploča profesora: nema puta natrag ni koda igre nakon početka
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** nizak (srednji za demo: student koji kasni ne može ući)
+- **Opis:** ploča (`/profesor/[worldId]`) i uvid u studenta imaju samo „Odjava", bez poveznice na „Moje igre" i
+  „Knjižnica"; profesor se vraća tipkom natrag. Nakon početka igre kod igre se više ne vidi na ploči, pa student koji
+  kasni ne može ući s projektora.
+- **Rješenje:** 🟨 čeka Rina.
+- **Lekcija:** novi ekrani (računi, knjižnica) traže put do njih sa svih starih ekrana; provjeri navigaciju od
+  prijave do svake stranice.
+
+### BUG-022 · Kraj sezone na projektoru: nema podija, pobjednik izgleda kao gubitnik
+- **Status:** 🔴 otvoren (Rino, R10 podij, issue [#46](https://github.com/leonkreso784-bit/riihack/issues/46)) · **Težina:** visok (završni trenutak demoa)
+- **Opis:** ploča profesora na 1280×720 nakon „Završi sezonu": nema podija, ljestvica zauzima pola širine, desna
+  polovica je prazna; pobjednik ima crveno „▼ −19.3", drugi „▼ −36.9". Koraci: igra s 2 studenta, zatvoriti 2
+  mjeseca, „Završi sezonu".
+- **Rješenje:** 🟨 čeka Rina: podij preko cijele širine i napredak koji pobjedniku ne izgleda kao poraz.
+- **Lekcija:** završni ekran demoa provjeri na rezoluciji projektora i s pravim brojkama, ne samo s lažnim podacima.
+
+### BUG-023 · `/igra` nakon kraja sezone i dalje čeka obračun
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** nizak
+- **Opis:** kartica „Stanje računa" nakon kraja sezone i dalje piše „obračun kad profesor zatvori mjesec".
+- **Rješenje:** 🟨 čeka Rina.
+- **Lekcija:** svaki tekst koji opisuje „što slijedi" treba stanje za kraj igre.
+
+### BUG-024 · Loši pokazatelji jedva utječu na goste u vrhu sezone
+- **Status:** 🟨 čeka Leonovu odluku · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
+  pokazatelji goste)
+- **Opis:** tester (~22:25, nakon #194): hotel koji nije odgovorio ni na jednu situaciju (zadovoljstvo gostiju 34/100,
+  zaposlenici 26/100) u kolovozu ima 86 % popunjenosti i 63.102 € dobiti, najviše u gradu.
+- **Uzrok (dokumentarist iz koda, 🟨 potvrditi s graditeljem):** potražnja grada je udio kapaciteta grada
+  (`SEASON_DEMAND_BP`: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %, `rules.ts:57`), pa se u kolovozu gotovo
+  svi hoteli napune bez obzira na privlačnost. U privlačnosti (`attractiveness`, `economy.ts`) su samo recenzije i
+  zadovoljstvo gostiju, ne i zaposlenici ni ostali pokazatelji.
+- **Rješenje:** 🟨 Leon odlučuje (vidi PROGRESS).
+- **Lekcija:** test balansa treba provjeriti i obrnuto: da loša odluka gubi, ne samo da najbolja odluka ima smisla.
 
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
@@ -67,6 +108,20 @@ Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, n
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
+- **Status:** ✅ riješen 24.10. 22:14 ([#194](https://github.com/leonkreso784-bit/riihack/pull/194), Leonovo „spoji") · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
+- **Opis:** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162), provjeren pravim
+  `settleMarket` i `roundFinance`: uz 400 € hotel ima 48 % popunjenosti i 69.700 € dobiti u kolovozu, a uz
+  referentnu cijenu (~90 €) 91 % i ~23.000 €. Tester potvrdio na produkciji (22:00): hotel 4★ sa 17 soba uz 400 € i
+  5.000 € marketinga u lipnju ide s 20.000 € na 81.850 €, a susjed uz 70 € na 28.860 €.
+- **Uzrok:** u `attractiveness` (`src/lib/engine/economy.ts`) faktor cijene je ograničen na 0,5 do 1,5. Iznad 2×
+  referentne cijene više ne pada, pa hotel zadrži goste, a svaka noć donosi sve više.
+- **Rješenje:** [ADR-043](DECISIONS.md#adr-043), [#194](https://github.com/leonkreso784-bit/riihack/pull/194): iznad
+  referentne cijene faktor pada s kvadratom, iznad 2,5× je 0; test da je vrh prihoda između 80 i 150 € u sva 4
+  mjeseca (416 testova). Poslije spajanja ponovni seed demo igre i smoke.
+- **Lekcija:** granica koja štiti od ekstremnih vrijednosti može ukloniti kaznu baš ondje gdje treba. Uz motor drži
+  test koji traži najbolju odluku i provjerava da ona ima smisla u stvarnom svijetu.
 
 ### BUG-018 · Čišćenje baze obrisalo testerovu igru usred testa
 - **Status:** ✅ riješen pravilom ~22:05 (graditelj) · **Težina:** nizak (izgubljen testni napredak, ne demo)

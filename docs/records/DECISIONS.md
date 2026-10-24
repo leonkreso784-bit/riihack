@@ -14,9 +14,13 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 **Kontekst.** Hoteli dijele tržište turista (ADR-008). Kad profesor napravi igru s malo studenata, nema dovoljno
 konkurencije i tvrtki, pa ekonomija grada ne radi.
-**Odluka.** Simon dodaje botove: hotele i dobavljače koje vodi računalo, da i igra s malo ljudi ima ekonomiju.
-**Posljedice.** 🟨 Otvoreno: odlučuju li botovi po pravilima motora, a ne AI (ADR-002); dira li to motor, koji je
-Leonov; uključuje li ih profesor sam ili se dodaju automatski kad je studenata malo.
+**Odluka.** Botovi su hoteli i dobavljači koje vodi računalo, da i igra s malo ljudi ima ekonomiju (Leon, ~22:20):
+- bot odlučuje **po pravilima motora** (npr. cijena oko referentne, mala promjena prema popunjenosti), ne AI;
+- **graditelj** radi dio u motoru (bot u obračunu tržišta), a **Simon** sučelje i opis botova;
+- **profesor ih uključi** pri stvaranju igre (npr. „dopuni grad botovima"), ne dodaju se sami.
+
+**Posljedice.** Isti ishod za isto stanje, brojke računa samo motor (ADR-002). Demo igra ostaje kakva jest dok je
+profesor ne napravi s botovima.
 
 <a id="adr-043"></a>
 ## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule
@@ -33,7 +37,7 @@ referentne cijene. Poslije popravka graditelj ponovno sije demo i pokreće smoke
 [#194](https://github.com/leonkreso784-bit/riihack/pull/194) (graditelj): kvadrat počinje **već iznad referentne
 cijene**, ne tek iznad 2×. Razlog: troškovi su fiksni, pa bi uz promjenu samo iznad 2× vrh dobiti ostao na ~2× ref.
 U primjeru iz PR-a vrh prihoda je na referentnoj cijeni (100 € → 57.000 €, 400 € → 0). Dira i Simonov
-`src/lib/tokovi/month-flow.ts` (procjena „Što ako?" zove isti motor). Leon je izmjenu prijedloga odobrio (~22:15).
+`src/lib/tokovi/month-flow.ts` (procjena „Što ako?" zove isti motor). Leon je izmjenu prijedloga odobrio; spojeno 22:14. 🟨 Ponovni seed demo igre i smoke na produkciji još nisu potvrđeni.
 
 <a id="adr-042"></a>
 ## ADR-042 · Skice „Tokovi" ipak idu u aplikaciju
