@@ -3,7 +3,7 @@ import { departmentViews, investmentEffects, investmentTotal } from "@/lib/engin
 import { applyRound } from "@/lib/engine/round";
 import { DEPARTMENT_METRIC, INVEST_EFFECT_CAP, INVEST_EFFECT_DIVISOR, INVEST_MAX, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { DepartmentInvestments, Metrics, Quality, SituationView, StaffDepartment, StaffMember } from "@/lib/types";
-import { buildDepartmentFlows, lowMetricThreshold, ownInvestEffect, situationDeltas, whatIfDepartment, type DepartmentsFlowInput } from "./departments-flow";
+import { buildDepartmentFlows, buildDepartmentsBoard, LANE_ORDER, laneForSituation, lowMetricThreshold, ownInvestEffect, situationDeltas, whatIfDepartment, type DepartmentsFlowInput } from "./departments-flow";
 
 const DEPTS = Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[];
 const METRICS: Metrics = { guests: 60, reviews: 35, staff: 70, operations: 50, finance: 55 };
@@ -141,5 +141,94 @@ describe("departments flow", () => {
   it("ljudi: imena i uloge odjela", () => {
     const f = flowOf(base(), "housekeeping");
     expect(step(f, "ljudi").outputs.map((o) => [o.label, o.value])).toEqual([["Broj ljudi", "2"], ["Ana Kos", "Sobarica"], ["Ivo Pek", "Voditelj domaćinstva"]]);
+  });
+
+  it("pravilo situacija koristi množitelj iz motora, ne (kvaliteta − 3)", () => {
+    const f = flowOf(base({ situations: [sit("a", 2, 4, { reviews: 3 })] }), "housekeeping");
+    expect(step(f, "situacije").calc).toBe("+2 × 3 = +6");
+    expect(step(f, "situacije").rule.join(" ")).not.toContain("− 3");
+  });
+});
+
+describe("departments board (staze)", () => {
+  const sits = [
+    sit("hrana", 2, 5, { guests: 2, reviews: 1 }),
+    sit("recepcija", 2, 1, { guests: 3 }),
+    sit("smjene", 2, 2, { staff: 4 }),
+    sit("stara", 1, 5, { guests: 9 }),
+    sit("otvorena", 2, null),
+  ].map((s) => (s.id === "hrana" ? { ...s, area: "Restoran i sigurnost hrane" } : s));
+
+  it("staze idu redom, Recepcija i Kuhinja jedna uz drugu", () => {
+    const b = buildDepartmentsBoard(base());
+    expect(b.lanes.map((l) => l.department)).toEqual(LANE_ORDER);
+    expect([...LANE_ORDER].sort()).toEqual([...DEPTS].sort());
+    expect(b.results.map((r) => r.metric)).toEqual(["guests", "reviews", "operations", "staff"]);
+    expect(b.results[0].departments).toEqual(["reception", "kitchen"]);
+  });
+
+  it("situacija na zajedničkom pokazatelju ide u jednu stazu po području", () => {
+    expect(laneForSituation({ area: "Restoran i sigurnost hrane", title: "x" }, "guests")).toBe("kitchen");
+    expect(laneForSituation({ area: "Recepcija i rezervacije", title: "x" }, "guests")).toBe("reception");
+    expect(laneForSituation({ area: "Bilo što", title: "x" }, "reviews")).toBe("housekeeping");
+    expect(laneForSituation({ area: "Bilo što", title: "x" }, "finance")).toBeNull();
+  });
+
+  it("zbroj staza na pokazatelju jednak je motoru (applyRound + investmentEffects), ništa dvaput", () => {
+    const plan: DepartmentInvestments = { reception: 1000, kitchen: 2500, management: 3000 };
+    const b = buildDepartmentsBoard(base({ situations: sits, plan }));
+    const after = applyRound(METRICS, [
+      { quality: 5, effects: { guests: 2, reviews: 1 } },
+      { quality: 1, effects: { guests: 3 } },
+      { quality: 2, effects: { staff: 4 } },
+    ]);
+    const inv = investmentEffects(plan);
+    for (const r of b.results) {
+      const lanesOn = b.lanes.filter((l) => l.metric === r.metric);
+      expect(lanesOn.reduce((a, l) => a + l.contribution, 0)).toBe(r.change);
+      expect(r.expected).toBe(Math.min(100, Math.max(0, after[r.metric] + (inv[r.metric] ?? 0))));
+    }
+    const kitchen = b.lanes.find((l) => l.department === "kitchen")!;
+    const reception = b.lanes.find((l) => l.department === "reception")!;
+    expect(kitchen.situations.map((s) => s.title)).toEqual(["Situacija hrana"]);
+    expect(reception.situations.map((s) => [s.title, s.delta, s.tone])).toEqual([["Situacija recepcija", -6, "bad"]]);
+    expect(kitchen.situations[0].tone).toBe("good");
+    const mgmt = b.lanes.find((l) => l.department === "management")!;
+    expect(mgmt.situations[0].tone).toBe("neutral");
+    expect(mgmt.ownEffect).toBe(INVEST_EFFECT_CAP);
+    expect(mgmt.nextAt).toBeNull();
+    expect(kitchen.nextAt).toBe(3000);
+  });
+
+  it("sažetak: trošak, pomaci, čekanje, situacije bez učinka", () => {
+    const plan: DepartmentInvestments = { reception: 1000, maintenance: 400 };
+    const b = buildDepartmentsBoard(base({ situations: [...sits, sit("bez", 2, 4)], plan }));
+    expect(b.summary.totalCost).toBe(1400);
+    expect(b.summary.answered).toBe(4);
+    expect(b.summary.waiting).toBe(1);
+    expect(b.summary.unknownEffects).toBe(1);
+    expect(b.summary.empty).toBe(false);
+    expect(b.summary.moves.map((m) => m.metric)).toEqual(b.results.filter((r) => r.change !== 0).map((r) => r.metric));
+    expect(b.summary.month).toBe("Srpanj");
+  });
+
+  it("prazan početak mjeseca: bez ulaganja i odgovora tok je prazan, ali ljudi i upozorenja su tu", () => {
+    const b = buildDepartmentsBoard(base({ situations: [sit("otvorena", 2, null)] }));
+    expect(b.summary.empty).toBe(true);
+    expect(b.summary.waiting).toBe(1);
+    expect(b.results.every((r) => r.change === 0)).toBe(true);
+    const hk = b.lanes.find((l) => l.department === "housekeeping")!;
+    expect(hk.people?.map((p) => p.name)).toEqual(["Ana Kos", "Ivo Pek"]);
+    expect(hk.alerts.map((a) => a.kind)).toEqual(["cleaning", "note", "low"]);
+    expect(hk.situations).toEqual([]);
+    expect(buildDepartmentsBoard(base({ staff: null })).lanes[0].people).toBeNull();
+  });
+
+  it("ulaganje ispod praga: trošak bez boda, sljedeći bod na pragu", () => {
+    const b = buildDepartmentsBoard(base({ plan: { maintenance: 400 } }));
+    const m = b.lanes.find((l) => l.department === "maintenance")!;
+    expect(m.ownEffect).toBe(0);
+    expect(m.nextAt).toBe(INVEST_EFFECT_DIVISOR);
+    expect(m.details.ulaganje.outputs.at(-1)).toEqual({ label: "Trošak u mjesecu", value: expect.stringContaining("400"), strong: true });
   });
 });

@@ -6,7 +6,7 @@ import { FormError } from "@/components/form";
 import { DepartmentsFlow } from "@/components/tokovi/departments-flow";
 import { BackLink } from "@/components/back-link";
 
-// Tokovi, skica 3: kako odjeli utječu na hotel (ljudi, upozorenja, ulaganje, pravilo, situacije, pokazatelj, trošak).
+// Tokovi, skica 3: odjeli kao staze (ljudi, upozorenja, ulaganje, situacije) koje teku u pokazatelje.
 // Samo postojeći API: /api/me, osoblje i sobe. Osoblje i sobe se rijetko mijenjaju, pa se čitaju sporo.
 export default function DepartmentsFlowPage() {
   const { data, error } = usePoll(api.me);
@@ -25,7 +25,7 @@ export default function DepartmentsFlowPage() {
   return (
     <div className="space-y-5 pt-4 md:pt-0">
       {back}
-      <PageHeader title="Kako odjeli utječu na hotel" subtitle="Tko radi u odjelu, što ga muči, što u njega ulažeš i kako se to vidi u pokazatelju i troškovima." />
+      <PageHeader title="Kako odjeli utječu na hotel" subtitle="Svaki odjel je jedna staza: tko u njemu radi, što ga muči, koliko ulažeš i kako su prošle situacije. Desno je pokazatelj koji odjel hrani." />
       {!data ? (
         <div className="h-80 animate-pulse rounded-[var(--radius)] bg-muted" aria-busy="true" aria-label="Učitavam" />
       ) : (
