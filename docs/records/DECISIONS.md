@@ -18,12 +18,12 @@ modela bez granice. Rino je predložio sigurnosna zaglavlja (CSP, zabrana iframe
 **Odluka.**
 - AI prijedlog situacije: najviše 30 po igri i 5 u minuti, inače 429
   ([#247](https://github.com/leonkreso784-bit/riihack/pull/247)).
-- Granica poruka u razgovoru s likom provjerava se atomično.
+- Granica poruka u razgovoru s likom provjerava se atomično ([#249](https://github.com/leonkreso784-bit/riihack/pull/249)).
 - Zaglavlja `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff` i `Referrer-Policy`; stroge CSP nema.
 - Ponovni ulaz studenta samo imenom (PIN) je za nakon natjecanja.
 
 **Posljedice.** Trošak AI-ja po igri je ograničen, a demo radi kao i prije. Granica AI prijedloga nije atomična (mala
-utrka na granici, zapisano u #247). Radi graditelj; PR-ovi za poruke i zaglavlja stižu.
+utrka na granici, zapisano u #247). Radi graditelj; PR za zaglavlja stiže.
 
 <a id="adr-052"></a>
 ## ADR-052 · Napisan odgovor s ocjenom 1 ne oduzima
