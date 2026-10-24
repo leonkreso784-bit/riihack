@@ -1,5 +1,5 @@
 // Pravila igre (Global Constraints u planu izvedbe). Mijenja ih samo Leon, uz najavu timu.
-import type { MetricKey } from "./types";
+import type { MetricKey, StaffDepartment, StaffShift } from "./types";
 
 // Krugovi i situacije
 export const MAX_ROUNDS = 4; // lipanj, srpanj, kolovoz, rujan
@@ -31,6 +31,20 @@ export const METRIC_LABELS: Record<MetricKey, string> = {
   staff: "Zaposlenici",
   operations: "Operativa",
   finance: "Financije",
+};
+
+// Osoblje hotela
+export const STAFF_DEPARTMENT_LABELS: Record<StaffDepartment, string> = {
+  reception: "Recepcija",
+  housekeeping: "Domaćinstvo",
+  kitchen: "Kuhinja i restoran",
+  maintenance: "Održavanje",
+  management: "Uprava",
+};
+export const STAFF_SHIFT_LABELS: Record<StaffShift, string> = {
+  morning: "Jutarnja smjena",
+  afternoon: "Popodnevna smjena",
+  night: "Noćna smjena",
 };
 
 // Kodovi
