@@ -32,7 +32,7 @@ na koga čeka i što smo dogovorili.
 | Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | čeka |
 | Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | do tada lažni podaci |
 | Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | čeka |
-| Simon S5, S6 | „Update branch" na #48 i #47 (crveni su samo zbog stare greške s `main`-a) | Simon | — |
+| Simon S5, S6 | „Update branch" na #48 i #47 | Simon | ✅ spojeno |
 | Leon L7 | `judge` (S2) | Simon | ✅ spojeno (#44) |
 
 ## Pravila suradnje (naučeno 24.10.)
@@ -72,13 +72,13 @@ na koga čeka i što smo dogovorili.
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch (S0–S7)
 
-- **Sad radim:** obilazak žirija 1 (#51)
-- **Sljedeće:** S5 (#48) i S6 (#47) zeleni pa spojiti; S3 (#15) čim stignu L1 i L4; S4 (#16) za M3
+- **Sad radim:** obilazak žirija 1: tekst (`prezentacija/OBILAZAK-1.md`) i slajdovi https://simpolis-ziri-share.vercel.app (#55)
+- **Sljedeće:** S3 (#15) čim stignu Neon, L1, L4 i #42; S4 (#16) za M3; ugovori i vijesti na pravim podacima (L11)
 - **Čekam od drugih:** Leon: Neon, L1, L4, odluka o #42
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #42 tipovi lika, #43 roadmap, #47 S6, #48 S5, #51 žiri; zatvoriti #36
-- **Spojeno:** S0 obećanja (#35), nacrt pitcha (#38), S1 (#41), S2 (#44)
-- **Zadnje ažurirano:** sub 14:25 (popunio Claude, ispravi)
+- **Otvoreno:** #42 tipovi lika, #55 slajdovi
+- **Spojeno:** S0 (#35), nacrt pitcha (#38), S1 (#41), S2 (#44), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51); `ANTHROPIC_API_KEY` na Vercelu (production, preview, development)
+- **Zadnje ažurirano:** sub 14:21
 
 ## Rino · sučelje (R0–R10)
 
