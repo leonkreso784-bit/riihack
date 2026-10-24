@@ -6,6 +6,18 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 17:12–17:40 · S9, osoblje, produkcija na pravim podacima
+
+- **Spojeno:** S9 AI prijedlog situacije i mentor s obračunom mjeseca (#111, 17:15), osoblje po odjelima i poveznica
+  „Situacije" (#113, 17:18), dokumentacija M3 (#114). Na `main`-u svi L-zadaci (L0–L12), smoke 14/14, 272 testa.
+- **Produkcija:** integrator dobio dozvole i postavio `NEXT_PUBLIC_USE_MOCK=0` za Production (~17:40); pravi podaci
+  vidljivi nakon builda s #115 ([ADR-030](DECISIONS.md#adr-030)).
+- **Ime prijašnjeg projekta:** još u planu i u tri datoteke koda
+  ([BUG-008](BUGS.md#bug-008--ime-prijašnjeg-projekta-još-je-u-repou)).
+- **Nove sesije:** graditelj, integrator i dokumentarist ponovno pokrenuti; graditelj kreće s probom M2 na pravim
+  podacima.
+- **Otvoreno:** #115 (tajni kod demo igre), #116 (dokumentacija), #107 (kraći komentari u sučelju, čeka Rinov ok).
+
 ## Sub 24.10. ~17:25 · tajni kod demo igre
 
 - Profesorski kod demo igre bio je zadana vrijednost u javnom kodu; demo igra ponovno napravljena s novim tajnim

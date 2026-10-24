@@ -10,6 +10,18 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-008 · Ime prijašnjeg projekta još je u repou
+- **Status:** 🔴 otvoren (provjera `git grep -i` na `main`-u, sub ~17:40) · **Težina:** srednji (žiri čita repo;
+  pravilo tima je da se ime nigdje ne piše)
+- **Opis:** ime je još u planu (`docs/superpowers/plans/2026-10-24-simpolis.md`, 9 redaka) i u komentarima koda
+  (`src/app/globals.css` 2, `src/components/bottom-nav.tsx` 1, `src/components/panel.tsx` 1), te u porukama starih
+  commitova. Ostali dokumenti u `docs/` su čisti.
+- **Uzrok:** ime se koristilo kao kratica za izgled i bodovanje prije nego što je pravilo uvedeno.
+- **Rješenje:** 🟨 vlasnici datoteka zamjenjuju ime s „prijašnji projekt" (plan i kod: Leonov graditelj ili Rino);
+  povijest commitova se ne prepisuje (nema force pusha na `main`).
+- **Lekcija:** ime koje ne smije u predaju ne smije ni u komentare i commitove od prvog dana; kad se pravilo uvede,
+  odmah `git grep -i` po cijelom repou, ne samo po dokumentima.
+
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
