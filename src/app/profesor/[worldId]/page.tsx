@@ -6,6 +6,7 @@ import { Play, Users } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import type { LeaderboardRow, ProfStateResponse } from "@/lib/types";
 import { ProfBoard } from "@/components/prof-board";
+import { QrCode } from "@/components/qr-code";
 import { FormError } from "@/components/form";
 
 const noop = () => () => {};
@@ -44,17 +45,26 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
 
   return (
     <div className="space-y-6">
-      <section className="gloss anim-shine relative overflow-hidden rounded-[var(--radius)] px-6 py-8 text-center md:py-12">
-        <p className="text-lg font-semibold opacity-90 md:text-2xl">
-          Uđi na <strong className="font-extrabold">{host || "riihack.vercel.app"}/ulaz</strong> i upiši kod
-        </p>
-        <p
-          aria-label={`Kod igre ${world.joinCode.split("").join(" ")}`}
-          className="anim-pop mt-3 font-mono text-[clamp(3.5rem,13vw,10rem)] leading-none font-extrabold tracking-[0.12em]"
-        >
-          {world.joinCode}
-        </p>
-        <p className="mt-4 text-base opacity-90 md:text-xl">{world.name}</p>
+      <section className="gloss anim-shine relative flex flex-col items-center gap-6 overflow-hidden rounded-[var(--radius)] px-6 py-8 md:flex-row md:justify-center md:gap-12 md:py-12">
+        {host && (
+          <QrCode
+            text={`${location.protocol}//${host}/ulaz?kod=${world.joinCode}`}
+            label={`QR kod za ulaz u igru ${world.joinCode}`}
+            className="anim-pop size-44 shrink-0 rounded-2xl p-2 shadow-lg md:size-64"
+          />
+        )}
+        <div className="text-center">
+          <p className="text-lg font-semibold opacity-90 md:text-2xl">
+            Skeniraj QR ili uđi na <strong className="font-extrabold">{host || "riihack.vercel.app"}/ulaz</strong> i upiši kod
+          </p>
+          <p
+            aria-label={`Kod igre ${world.joinCode.split("").join(" ")}`}
+            className="anim-pop mt-3 font-mono text-[clamp(3.5rem,11vw,9rem)] leading-none font-extrabold tracking-[0.12em]"
+          >
+            {world.joinCode}
+          </p>
+          <p className="mt-4 text-base opacity-90 md:text-xl">{world.name}</p>
+        </div>
       </section>
 
       <div className="flex flex-wrap items-center justify-between gap-4">
