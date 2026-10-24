@@ -17,5 +17,6 @@ export const t = {
     plan: "Plan",
     finances: "Financije",
     city: "Grad",
+    mail: "Pošta",
   },
 };
