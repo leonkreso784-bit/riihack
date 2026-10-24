@@ -48,7 +48,7 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
     <div className="space-y-6">
       <section className="gloss anim-shine relative overflow-hidden rounded-[var(--radius)] px-6 py-8 text-center md:py-12">
         <p className="text-lg font-semibold opacity-90 md:text-2xl">
-          Uđi na <strong className="font-extrabold">{host || "riihack.vercel.app"}</strong> i upiši kod
+          Uđi na <strong className="font-extrabold">{host || "riihack.vercel.app"}/ulaz</strong> i upiši kod
         </p>
         <p
           aria-label={`Kod igre ${world.joinCode.split("").join(" ")}`}

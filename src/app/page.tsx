@@ -1,88 +1,45 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { api } from "@/lib/client";
-import { JOIN_CODE_LENGTH } from "@/lib/rules";
-import { CodeInput } from "@/components/code-input";
-import { Field, FormError, SubmitButton } from "@/components/form";
+import { ArrowRight, Building2, MessageCircle, Users } from "lucide-react";
+import { t } from "@/lib/strings";
+import { LogoMark } from "@/components/logo";
 
-const between = (s: string) => s.trim().length >= 2 && s.trim().length <= 40;
+const POINTS = [
+  { icon: Building2, title: "Pravi grad", text: "Svi hoteli dijele iste turiste. Tvoja odluka mijenja poslovanje drugih." },
+  { icon: MessageCircle, title: "Ljudi, ne gotovi odgovori", text: "Razgovaraš s gostima i zaposlenicima. Vlastite riječi vrijede više od klika." },
+  { icon: Users, title: "Razred kao Kahoot", text: "Profesor otvori grad, razred uđe kodom i igra mjesec po mjesec." },
+];
 
-// R1: Kahoot-style entry. Step 1 the game code from the projector, step 2 your name and your hotel's name.
-export default function JoinPage() {
-  const router = useRouter();
-  const [code, setCode] = useState<string | null>(null);
-  const [name, setName] = useState("");
-  const [hotelName, setHotelName] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+const focus = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
-  async function join(e: React.FormEvent) {
-    e.preventDefault();
-    if (!code || busy) return;
-    if (!between(name)) return setError("Ime mora imati od 2 do 40 znakova");
-    if (!between(hotelName)) return setError("Ime hotela mora imati od 2 do 40 znakova");
-    setBusy(true);
-    setError(null);
-    try {
-      await api.join({ joinCode: code, name: name.trim(), hotelName: hotelName.trim() });
-      router.push("/cekaonica");
-    } catch (err) {
-      setError((err as Error).message);
-      setBusy(false);
-    }
-  }
-
+// Intro page. Students go on to the code entry (/ulaz), professors to /profesor.
+export default function Home() {
   return (
-    <div className="mx-auto max-w-md pt-4 md:pt-12">
-      <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">Uđi u igru</h1>
-      <p className="mt-2 text-muted-foreground">
-        {code ? "Još samo tko si i kako se zove tvoj hotel." : "Upiši kod koji profesor pokazuje na ekranu."}
-      </p>
+    <div className="space-y-14 pb-10">
+      <section className="mx-auto flex max-w-3xl flex-col items-center gap-7 pt-8 text-center md:pt-16">
+        <LogoMark title="Simpolis" className="size-24 md:size-28" />
+        <h1 className="text-5xl font-extrabold tracking-tight text-balance md:text-7xl">Simpolis</h1>
+        <p className="max-w-xl text-lg text-balance text-muted-foreground md:text-xl">{t.tagline}</p>
+        <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+          <Link href="/ulaz" className={`gloss lift inline-flex min-h-13 items-center justify-center gap-2 rounded-2xl px-7 text-base font-bold ${focus}`}>
+            Uđi u igru <ArrowRight className="size-4" aria-hidden />
+          </Link>
+          <Link href="/profesor" className={`surface lift inline-flex min-h-13 items-center justify-center rounded-2xl px-7 text-base font-bold ${focus}`}>
+            Ja sam profesor
+          </Link>
+        </div>
+      </section>
 
-      <form onSubmit={join} className="surface mt-8 space-y-5 rounded-[var(--radius)] p-5 md:p-6">
-        {code ? (
-          <div className="flex items-center justify-between rounded-xl bg-muted px-4 py-3">
-            <span className="font-mono text-2xl font-bold tracking-[0.3em]">{code}</span>
-            <button
-              type="button"
-              onClick={() => {
-                setCode(null);
-                setError(null);
-              }}
-              className="min-h-11 rounded-lg px-2 text-sm font-semibold text-secondary-foreground hover:underline"
-            >
-              Promijeni kod
-            </button>
-          </div>
-        ) : (
-          <CodeInput length={JOIN_CODE_LENGTH} onComplete={setCode} />
-        )}
-
-        {code && (
-          <>
-            <Field id="name" label="Tvoje ime" autoFocus autoComplete="given-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="npr. Ana Kovač" />
-            <Field id="hotel" label="Ime hotela koji vodiš" autoComplete="off" value={hotelName} onChange={(e) => setHotelName(e.target.value)} placeholder="npr. Vila Ana" />
-          </>
-        )}
-
-        {error && <FormError key={error}>{error}</FormError>}
-
-        {code && (
-          <SubmitButton busy={busy} busyText="Ulazim…">
-            Uđi u igru
-          </SubmitButton>
-        )}
-      </form>
-
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Vodiš kolegij?{" "}
-        <Link href="/profesor" className="font-semibold text-secondary-foreground hover:underline">
-          Ja sam profesor
-        </Link>
-      </p>
+      <ul className="grid gap-4 md:grid-cols-3">
+        {POINTS.map(({ icon: Icon, title, text }) => (
+          <li key={title} className="surface lift rounded-[var(--radius)] p-6">
+            <span className="gloss grid size-11 place-items-center rounded-xl">
+              <Icon className="size-5" aria-hidden />
+            </span>
+            <h2 className="mt-4 text-lg font-bold tracking-tight">{title}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{text}</p>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
