@@ -33,6 +33,7 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
   const students = players.filter((p) => !p.isBot).length;
   const botCount = players.length - students;
   const full = players.length >= world.maxPlayers;
+  const [level, setLevel] = useState<NonNullable<BotsRequest["difficulty"]>>("srednje");
 
   // ADR-044: botovi (računalni hoteli) u čekaonici
   async function bots(req: BotsRequest) {
@@ -102,13 +103,27 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
         </button>
       </div>
       <div className="flex flex-wrap items-center gap-3">
-        <button type="button" onClick={() => bots({ action: "add" })} disabled={busy || full} className={botButton}>
+        <div role="radiogroup" aria-label="Težina botova" className="flex items-center gap-1 rounded-[var(--radius)] bg-muted p-1">
+          {(["lako", "srednje", "tesko"] as const).map((l) => (
+            <button
+              key={l}
+              type="button"
+              role="radio"
+              aria-checked={level === l}
+              onClick={() => setLevel(l)}
+              className={`min-h-11 rounded-xl px-4 text-sm font-bold transition-colors ${level === l ? "bg-card text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+            >
+              {l === "tesko" ? "Teško" : l === "lako" ? "Lako" : "Srednje"}
+            </button>
+          ))}
+        </div>
+        <button type="button" onClick={() => bots({ action: "add", difficulty: level })} disabled={busy || full} className={botButton}>
           <Bot className="size-5" aria-hidden /> Dodaj bota
         </button>
-        <button type="button" onClick={() => bots({ action: "fill" })} disabled={busy || players.length >= Math.min(5, world.maxPlayers)} className={botButton}>
+        <button type="button" onClick={() => bots({ action: "fill", difficulty: level })} disabled={busy || players.length >= Math.min(5, world.maxPlayers)} className={botButton}>
           <Bot className="size-5" aria-hidden /> Popuni do 5 hotela
         </button>
-        <span className="text-sm text-muted-foreground">Botovi su hoteli koje vodi računalo, da studenti imaju s kim se natjecati.</span>
+        <span className="text-sm text-muted-foreground">Botovi su hoteli koje vodi računalo. Lako: slabi odgovori i preskupo; teško: najbolji odgovori i dobra cijena.</span>
       </div>
       {error && <FormError>{error}</FormError>}
 

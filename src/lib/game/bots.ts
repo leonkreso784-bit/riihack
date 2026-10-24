@@ -45,12 +45,32 @@ export const BOT_NAMES = [
 
 // ---------- Čisti dijelovi (bez baze, testirani u bots.test.ts) ----------
 
+/** Težina bota (bira profesor): lako je loš suparnik, srednje solidan, teško jak. */
+export type BotLevel = "lako" | "srednje" | "tesko";
+export const BOT_LEVELS: BotLevel[] = ["lako", "srednje", "tesko"];
+export const BOT_LEVEL_LABELS: Record<BotLevel, string> = { lako: "lako", srednje: "srednje", tesko: "teško" };
+const LEVEL = {
+  lako: { rank: 2, priceBase: 1.1, marketing: 300 }, // treća najbolja opcija, preskupo, malo marketinga
+  srednje: { rank: 1, priceBase: 0.95, marketing: BOT_MARKETING }, // druga najbolja, oko referentne cijene
+  tesko: { rank: 0, priceBase: 1, marketing: 1500 }, // najbolja opcija, referentna cijena
+} as const;
+
+export const isBotLevel = (v: unknown): v is BotLevel => typeof v === "string" && (BOT_LEVELS as string[]).includes(v);
+/** Ime igrača bota nosi težinu („Računalo · teško"), pa ne treba nova kolona u bazi. */
+export const botPlayerName = (level: BotLevel) => `${BOT_PLAYER_NAME} · ${BOT_LEVEL_LABELS[level]}`;
+export function botLevelOf(displayName: string): BotLevel {
+  const label = displayName.split("·")[1]?.trim();
+  return BOT_LEVELS.find((l) => BOT_LEVEL_LABELS[l] === label) ?? "srednje";
+}
+
 /** Plan bota: cijena je referentna × 0,95 / 1,00 / 1,05 po indeksu bota, marketing 1.000 €, bez ulaganja. */
-export function botPlan(botIndex: number, ref: number, lastOccupancyPct?: number): PlanRequest {
+export function botPlan(botIndex: number, ref: number, lastOccupancyPct?: number, level: BotLevel = "srednje"): PlanRequest {
   // ADR-044 (Leon): mala promjena prema popunjenosti prošlog mjeseca: puno (> 85 %) +5 %, malo (< 50 %) −5 %.
   const nudge = lastOccupancyPct === undefined ? 1 : lastOccupancyPct > 85 ? 1.05 : lastOccupancyPct < 50 ? 0.95 : 1;
-  const raw = Math.round(ref * (0.95 + 0.05 * (botIndex % 3)) * nudge);
-  return { price: Math.min(PRICE_MAX, Math.max(PRICE_MIN, raw)), marketing: BOT_MARKETING };
+  const L = LEVEL[level];
+  const spread = level === "tesko" ? 0 : 0.05 * (botIndex % 3);
+  const raw = Math.round(ref * (L.priceBase + spread) * (level === "lako" ? 1 : nudge));
+  return { price: Math.min(PRICE_MAX, Math.max(PRICE_MIN, raw)), marketing: L.marketing };
 }
 
 /** Determinirani 32-bitni hash (FNV-1a) teksta. */
@@ -69,13 +89,13 @@ export function hash32(text: string): number {
  * bot je „solidan" i uzme drugu najbolju, a svaki četvrti bot je „jak" i uzme najbolju. Isti ulaz, isti izbor.
  * Kod jednakih opcija odlučuje hash bota i situacije, da svi botovi ne kliknu isto.
  */
-export function botOptionIndex(botIndex: number, situationId: string, optionCriteria: number[]): number {
+export function botOptionIndex(botIndex: number, situationId: string, optionCriteria: number[], level: BotLevel = "srednje"): number {
   if (optionCriteria.length === 0) return 0;
   const tie = hash32(`${botIndex}:${situationId}`);
   const ranked = optionCriteria
     .map((n, i) => ({ i, n, t: hash32(`${tie}:${i}`) }))
     .sort((a, b) => b.n - a.n || a.t - b.t);
-  const rank = botIndex % 4 === 0 ? 0 : 1;
+  const rank = LEVEL[level].rank;
   return ranked[Math.min(rank, ranked.length - 1)].i;
 }
 
@@ -106,7 +126,7 @@ function assertLobby(world: WorldRow) {
   if (world.status !== "lobby") throw new HttpError(409, "Botove je moguće dodavati i uklanjati samo prije početka igre");
 }
 
-async function insertBot(world: WorldRow, taken: { names: string[]; templateIds: string[]; joinIndex: number }) {
+async function insertBot(world: WorldRow, taken: { names: string[]; templateIds: string[]; joinIndex: number }, level: BotLevel) {
   const hotel = assignHotel(HOTELS, taken.templateIds);
   const name = pickBotName(taken.names);
   const companyId = crypto.randomUUID();
@@ -138,7 +158,7 @@ async function insertBot(world: WorldRow, taken: { names: string[]; templateIds:
       })),
     ),
     // bot: je nedohvatljiv, jer pravi tokenHash dolazi iz hashCode(token) i nikad nema taj prefiks
-    db.insert(players).values({ companyId, displayName: BOT_PLAYER_NAME, tokenHash: `bot:${crypto.randomUUID()}` }),
+    db.insert(players).values({ companyId, displayName: botPlayerName(level), tokenHash: `bot:${crypto.randomUUID()}` }),
   ]);
   taken.names.push(name);
   taken.templateIds.push(hotel.id);
@@ -148,7 +168,7 @@ async function insertBot(world: WorldRow, taken: { names: string[]; templateIds:
     companyId,
     round: world.round,
     type: "player.joined",
-    payload: { name: BOT_PLAYER_NAME, hotelName: name, templateId: hotel.id, place: hotel.place },
+    payload: { name: botPlayerName(level), hotelName: name, templateId: hotel.id, place: hotel.place },
   });
 }
 
@@ -161,22 +181,22 @@ function takenOf(all: Entry[]) {
 }
 
 /** Dodaj jednog bota; samo u čekaonici i dok ima mjesta (botovi se broje u maxPlayers). */
-export async function addBot(world: WorldRow): Promise<void> {
+export async function addBot(world: WorldRow, level: BotLevel = "srednje"): Promise<void> {
   assertLobby(world);
   const all = await listCompanies(world.id);
   if (all.length >= world.maxPlayers) throw new HttpError(409, "Igra je puna");
-  await insertBot(world, takenOf(all));
+  await insertBot(world, takenOf(all), level);
 }
 
 /** Dodaj botove dok broj hotela ne dosegne `target` ili igra ne bude puna. Vrati koliko ih je dodano. */
-export async function fillBots(world: WorldRow, target: number = DEFAULT_BOT_TARGET): Promise<number> {
+export async function fillBots(world: WorldRow, level: BotLevel = "srednje", target: number = DEFAULT_BOT_TARGET): Promise<number> {
   assertLobby(world);
   const all = await listCompanies(world.id);
   const taken = takenOf(all);
   const goal = Math.min(target, world.maxPlayers);
   let added = 0;
   for (let n = all.length; n < goal; n++) {
-    await insertBot(world, taken);
+    await insertBot(world, taken, level);
     added++;
   }
   return added;
@@ -217,11 +237,12 @@ export async function removeBot(world: WorldRow, companyId: string): Promise<voi
 async function playOneBot(world: WorldRow, round: number, entry: Entry, botIndex: number, offers: ContractRow[]) {
   const ctx: PlayerCtx = { player: entry.player, company: entry.company, world };
   const { company } = entry;
+  const level = botLevelOf(entry.player.displayName);
 
   if (!(await getPlanRow(company.id, round))) {
     const [roomRows, financeRows] = await Promise.all([listRooms(company.id), listFinanceRows(company.id)]);
     const last = financeRows.filter((f) => f.round < round).sort((a, b) => b.round - a.round)[0];
-    await savePlan(ctx, botPlan(botIndex, refPrice(roomRows), last?.occupancyPct));
+    await savePlan(ctx, botPlan(botIndex, refPrice(roomRows), last?.occupancyPct, level));
   }
 
   for (const { situation, answer } of await listSituationsWithAnswers(company.id, round)) {
@@ -230,7 +251,7 @@ async function playOneBot(world: WorldRow, round: number, entry: Entry, botIndex
       const found = await getSituationForCompany(situation.id, company.id);
       const options = found?.template.options ?? [];
       if (options.length === 0) continue;
-      const option = options[botOptionIndex(botIndex, situation.id, options.map((o) => o.criteria.length))];
+      const option = options[botOptionIndex(botIndex, situation.id, options.map((o) => o.criteria.length), level)];
       await submitAnswer(ctx, situation.id, { optionId: option.id });
     } catch (err) {
       console.error(`bot ${company.id}: situacija ${situation.id} nije odgovorena`, err);

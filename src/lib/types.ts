@@ -79,7 +79,7 @@ export type SendMailRequest = { toCompanyId: string; subject: string; body: stri
 export type CompanyDetailResponse = { company: CompanyView; situations: SituationView[]; reports: RoundReportView[] };
 
 // Zahtjevi
-export type BotsRequest = { action: "add" | "fill" | "remove"; companyId?: string }; // ADR-044: botovi u čekaonici
+export type BotsRequest = { action: "add" | "fill" | "remove"; companyId?: string; difficulty?: "lako" | "srednje" | "tesko" }; // ADR-044: botovi u čekaonici
 export type CreateWorldRequest = { name: string; maxPlayers: number };
 export type CreateWorldResponse = { worldId: string; joinCode: string; profCode: string };
 export type ProfLoginRequest = { profCode: string };

@@ -1,5 +1,5 @@
 // ADR-044: profesor dodaje, popunjava i uklanja botove (računalne hotele) u čekaonici.
-import { addBot, fillBots, removeBot } from "@/lib/game/bots";
+import { addBot, fillBots, isBotLevel, removeBot } from "@/lib/game/bots";
 import { loadProfState } from "@/lib/game/world";
 import { HttpError, route } from "@/lib/http";
 import { readJson, requireProf } from "@/lib/session";
@@ -9,8 +9,10 @@ export const POST = route(async (req, ctx: RouteContext<"/api/prof/[worldId]/bot
   const { worldId } = await ctx.params;
   const world = await requireProf(worldId);
   const body = await readJson(req);
-  if (body.action === "add") await addBot(world);
-  else if (body.action === "fill") await fillBots(world);
+  if (body.difficulty !== undefined && !isBotLevel(body.difficulty)) throw new HttpError(400, "Težina bota je lako, srednje ili tesko");
+  const level = isBotLevel(body.difficulty) ? body.difficulty : "srednje";
+  if (body.action === "add") await addBot(world, level);
+  else if (body.action === "fill") await fillBots(world, level);
   else if (body.action === "remove") {
     if (typeof body.companyId !== "string") throw new HttpError(400, "Nedostaje hotel za uklanjanje");
     await removeBot(world, body.companyId);

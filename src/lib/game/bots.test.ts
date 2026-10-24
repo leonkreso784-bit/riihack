@@ -8,6 +8,8 @@ import {
   addBot,
   botAcceptsContract,
   botOptionIndex,
+  botLevelOf,
+  botPlayerName,
   botPlan,
   fillBots,
   hash32,
@@ -37,6 +39,9 @@ describe("botPlan", () => {
     expect(botPlan(1, 100, 90).price).toBe(105);
     expect(botPlan(1, 100, 40).price).toBe(95);
     expect(botPlan(1, 100, 70).price).toBe(100);
+    // težina: teško na referentnoj cijeni s više marketinga, lako preskupo i s malo marketinga
+    expect(botPlan(2, 100, 70, "tesko")).toEqual({ price: 100, marketing: 1500 });
+    expect(botPlan(0, 100, 90, "lako")).toEqual({ price: 110, marketing: 300 });
   });
   it("cijena ostaje u dozvoljenom rasponu", () => {
     expect(botPlan(0, 1).price).toBe(PRICE_MIN);
@@ -44,12 +49,22 @@ describe("botPlan", () => {
   });
 });
 
+describe("botLevelOf", () => {
+  it("čita težinu iz imena igrača bota", () => {
+    expect(botLevelOf(botPlayerName("tesko"))).toBe("tesko");
+    expect(botLevelOf(botPlayerName("lako"))).toBe("lako");
+    expect(botLevelOf("Računalo")).toBe("srednje");
+  });
+});
+
 describe("botOptionIndex", () => {
-  it("solidan bot uzme drugu najbolju opciju, svaki četvrti najbolju", () => {
-    const crit = [1, 3, 0, 2]; // opcija 1 je najbolja, opcija 3 druga
-    expect(botOptionIndex(0, "s", crit)).toBe(1);
-    expect(botOptionIndex(4, "s", crit)).toBe(1);
-    for (const b of [1, 2, 3, 5]) expect(botOptionIndex(b, "s", crit)).toBe(3);
+  it("težina bira opciju: teško najbolju, srednje drugu, lako treću", () => {
+    const crit = [1, 3, 0, 2]; // najbolja je opcija 1, druga opcija 3, treća opcija 0
+    for (const b of [0, 1, 2, 5]) {
+      expect(botOptionIndex(b, "s", crit, "tesko")).toBe(1);
+      expect(botOptionIndex(b, "s", crit)).toBe(3);
+      expect(botOptionIndex(b, "s", crit, "lako")).toBe(0);
+    }
   });
   it("isti ulaz daje isti izbor i radi s malo opcija", () => {
     expect(botOptionIndex(2, "x", [2, 2, 2])).toBe(botOptionIndex(2, "x", [2, 2, 2]));
