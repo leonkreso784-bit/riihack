@@ -10,7 +10,7 @@
   --font-sans: var(--font-sans);
   --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
   --font-heading: var(--font-sans);
-  /* Simpolis game colors (HotelixSim look): text-up, bg-mint, border-warn, ... */
+  /* Simpolis game colors: text-up, bg-mint, border-warn, ... */
   --color-up: var(--up);
   --color-down: var(--down);
   --color-down-soft: var(--down-soft);
@@ -58,7 +58,7 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* HotelixSim tokens (plan, Global Constraints). Text pairs checked for WCAG AA contrast. */
+/* Simpolis tokens (plan, Global Constraints). Text pairs checked for WCAG AA contrast. */
 :root {
   --background: #f5f8fd;
   --foreground: #151b2b;
