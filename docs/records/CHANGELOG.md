@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#222](https://github.com/leonkreso784-bit/riihack/pull/222) | 23:31 | Leon | dokumentacija: kasni ulaz, bugovi s testa zatvoreni |
 | [#206](https://github.com/leonkreso784-bit/riihack/pull/206) | 23:27 | Simon | Tokovi: „Kako odjeli utječu na hotel" (`/igra/osoblje/tok`), BUG-020b |
 | [#221](https://github.com/leonkreso784-bit/riihack/pull/221) | 23:26 | Leon | BUG-027: kasni ulaz dok igra traje, demo igra 15 mjesta, smoke korak 20 (ADR-048) |
 | [#215](https://github.com/leonkreso784-bit/riihack/pull/215) | 23:22 | Simon | grad: karta se prilagođava broju hotela |
