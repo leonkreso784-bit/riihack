@@ -7,6 +7,10 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#177](https://github.com/leonkreso784-bit/riihack/pull/177) | 21:11 | Leon | L18: poruke među hotelima (`POST /api/me/mail`, `GET /api/prof/[worldId]/mail`, ugovor `SendMailRequest`) |
+| [#169](https://github.com/leonkreso784-bit/riihack/pull/169) | 21:10 | Leon | L16 ekrani: registracija, prijava i „Moje igre" profesora (Rinov ok) |
+| [#170](https://github.com/leonkreso784-bit/riihack/pull/170) | 21:10 | Simon | S12: knjižnica na stranici situacija, spremi i dodaj iz knjižnice (Rinov ok za `client.ts`) |
+| [#175](https://github.com/leonkreso784-bit/riihack/pull/175) | 21:01 | Leon | dokumentacija: R8 uvid, sitnice, dnevnik do 21:00 |
 | [#173](https://github.com/leonkreso784-bit/riihack/pull/173) | 20:58 | Rino | sitnice: oznaka „od profesora", mjesec zadnjeg obračuna na `/igra`, čekaonica bez bljeska |
 | [#168](https://github.com/leonkreso784-bit/riihack/pull/168) | 20:52 | Rino | R8: uvid profesora u razmišljanje studenta (`/profesor/[worldId]/tvrtka/[id]`) i „Promijeni ocjenu" |
 | [#171](https://github.com/leonkreso784-bit/riihack/pull/171) | 20:51 | Leon | dokumentacija: BUG-012 riješen, L17 knjižnica |
