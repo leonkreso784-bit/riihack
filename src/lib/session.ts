@@ -28,6 +28,13 @@ export async function setProfCookie(profCode: string): Promise<void> {
   (await cookies()).set(PROF_COOKIE, profCode, cookieOptions());
 }
 
+/** Odjava: briše oba kolačića (student i profesor) na ovom uređaju; podaci igre ostaju, ponovni ulaz vraća isti hotel. */
+export async function clearSessionCookies(): Promise<void> {
+  const jar = await cookies();
+  jar.delete({ name: PLAYER_COOKIE, path: "/" });
+  jar.delete({ name: PROF_COOKIE, path: "/" });
+}
+
 /** Igrač iz kolačića s tvrtkom i igrom; bez kolačića ili s nepoznatim tokenom 401. */
 export async function requirePlayer(): Promise<{ player: PlayerRow; company: CompanyRow; world: WorldRow }> {
   const token = (await cookies()).get(PLAYER_COOKIE)?.value;
