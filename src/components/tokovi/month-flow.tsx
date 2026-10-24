@@ -2,13 +2,13 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { BedDouble, Building2, Euro, FileText, Gauge, Magnet, Play, Receipt, Star, Tag, TrendingUp, Wallet, X, type LucideIcon } from "lucide-react";
-import { eur, num } from "@/lib/format";
+import { num } from "@/lib/format";
 import { MARKETING_MAX, PRICE_MAX, PRICE_MIN } from "@/lib/rules";
 import type { RoundFinance } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Panel } from "@/components/panel";
 import { Delta } from "@/components/metric-bar";
-import { buildMonthFlow, ESTIMATE_LABEL, estimateWhatIf, type FlowStep, type StepId } from "@/lib/tokovi/month-flow";
+import { buildMonthFlow, ESTIMATE_LABEL, eur, estimateWhatIf, type FlowStep, type StepId } from "@/lib/tokovi/month-flow";
 
 const ICONS: Record<StepId, LucideIcon> = {
   start: Play,
@@ -28,21 +28,21 @@ const ICONS: Record<StepId, LucideIcon> = {
 // Desktop layout: left edge x and centre y of every card on a 1560 wide canvas (columns left to right).
 const CANVAS = { w: 1560, h: 800 };
 const POS: Record<StepId, { x: number; y: number; w?: number }> = {
-  start: { x: 0, y: 385, w: 150 },
+  start: { x: 0, y: 260, w: 150 },
   ugled: { x: 190, y: 90 },
-  plan: { x: 190, y: 392, w: 208 },
-  ugovori: { x: 190, y: 700 },
-  privlacnost: { x: 458, y: 140 },
-  troskovi: { x: 458, y: 700 },
-  trziste: { x: 690, y: 140 },
-  nocenja: { x: 922, y: 140 },
-  prihod: { x: 1154, y: 140 },
+  plan: { x: 190, y: 260, w: 208 },
+  privlacnost: { x: 458, y: 170 },
+  ugovori: { x: 458, y: 470 },
+  troskovi: { x: 458, y: 680 },
+  trziste: { x: 690, y: 170 },
+  nocenja: { x: 922, y: 170 },
+  prihod: { x: 1154, y: 170 },
   dobit: { x: 1154, y: 450 },
-  financije: { x: 1384, y: 330 },
+  financije: { x: 1384, y: 340 },
   novac: { x: 1384, y: 600 },
 };
 const EDGES: [StepId, StepId][] = [
-  ["start", "ugled"], ["start", "plan"], ["start", "ugovori"],
+  ["start", "ugled"], ["start", "plan"],
   ["ugled", "privlacnost"], ["plan", "privlacnost"], ["privlacnost", "trziste"], ["ugovori", "trziste"], ["trziste", "nocenja"], ["nocenja", "prihod"],
   ["plan", "troskovi"], ["ugovori", "troskovi"],
   ["prihod", "dobit"], ["troskovi", "dobit"], ["dobit", "financije"], ["dobit", "novac"],
@@ -89,8 +89,8 @@ function StepCard({ step, selected, onSelect, className, style, controls }: { st
         </span>
         <span className="text-base leading-tight font-bold">{step.title}</span>
       </span>
-      <span className={cn("block text-3xl leading-tight font-extrabold tracking-tight tabular-nums", step.tone === "up" && "text-up", step.tone === "down" && "text-down")}>{step.big}</span>
-      <span className={cn("mt-1 block text-[0.9rem] leading-snug font-medium", dark ? "text-white/70" : "text-muted-foreground")}>{step.small}</span>
+      {step.big && <span className={cn("block text-2xl leading-tight font-extrabold tracking-tight whitespace-nowrap tabular-nums", step.tone === "up" && "text-up", step.tone === "down" && "text-down")}>{step.big}</span>}
+      <span className={cn("mt-1 block text-[0.85rem] leading-snug font-medium", dark ? "text-white/70" : "text-muted-foreground")}>{step.small}</span>
     </button>
   );
 }
@@ -105,7 +105,7 @@ function StepDetail({ step, wide }: { step: FlowStep; wide?: boolean }) {
           {step.inputs.map((r) => (
             <div key={r.label} className="flex justify-between gap-3 border-b border-border py-2 last:border-0">
               <dt className="text-muted-foreground">{r.label}</dt>
-              <dd className="text-right font-bold tabular-nums">{r.value}</dd>
+              <dd className="text-right font-bold whitespace-nowrap tabular-nums">{r.value}</dd>
             </div>
           ))}
         </dl>
@@ -125,7 +125,7 @@ function StepDetail({ step, wide }: { step: FlowStep; wide?: boolean }) {
           {step.outputs.map((r) => (
             <div key={r.label} className="flex items-baseline justify-between gap-3 py-1.5">
               <dt className="text-sm font-semibold text-muted-foreground">{r.label}</dt>
-              <dd className={cn("text-right tabular-nums", r.strong ? "text-xl font-extrabold text-secondary-foreground" : "font-bold")}>{r.value}</dd>
+              <dd className={cn("text-right whitespace-nowrap tabular-nums", r.strong ? "text-xl font-extrabold text-secondary-foreground" : "font-bold")}>{r.value}</dd>
             </div>
           ))}
         </dl>
@@ -167,13 +167,13 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
   const [scenario, setScenario] = useState<{ price: number; marketing: number }>();
   const [selected, setSelected] = useState<StepId>();
 
-  const [scale, setScale] = useState(1);
   const wrap = useRef<HTMLDivElement>(null);
+  const [scrolls, setScrolls] = useState(false);
   const detail = useRef<HTMLElement>(null);
   useEffect(() => {
     const el = wrap.current;
     if (!el) return;
-    const fit = () => setScale(Math.max(0.55, Math.min(1, el.clientWidth / CANVAS.w)));
+    const fit = () => setScrolls(el.scrollWidth > el.clientWidth + 1);
     fit();
     const ro = new ResizeObserver(fit);
     ro.observe(el);
@@ -263,9 +263,11 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
 
       {/* Desktop: cards in columns joined by lines; the open step opens its panel (Ulaz, Pravilo, Izlaz) right under the flow. */}
       <div className="hidden space-y-5 md:block">
-          <div ref={wrap} className="min-w-0 overflow-x-auto">
-          <div style={{ width: CANVAS.w * scale, height: CANVAS.h * scale }} className="relative">
-            <div style={{ width: CANVAS.w, height: CANVAS.h, transform: `scale(${scale})`, transformOrigin: "0 0" }} className="absolute top-0 left-0">
+          {scrolls && <p className="text-sm font-semibold text-muted-foreground">Povuci vodoravno za cijeli tok →</p>}
+          <div className="relative min-w-0">
+          <div ref={wrap} className="min-w-0 overflow-x-auto pb-2">
+          <div style={{ width: CANVAS.w, height: CANVAS.h }} className="relative">
+            <div style={{ width: CANVAS.w, height: CANVAS.h }} className="absolute top-0 left-0">
               <svg width={CANVAS.w} height={CANVAS.h} className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
                 {EDGES.map(([a, b]) => {
                   const A = POS[a];
@@ -296,6 +298,13 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
             </div>
           </div>
         </div>
+          {scrolls && (
+            <>
+              <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent" />
+              <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
+            </>
+          )}
+          </div>
 
         {shown && (
           <aside aria-label="Kako je izračunat korak" ref={detail} className="surface relative scroll-mt-4 rounded-[var(--radius)] p-6">

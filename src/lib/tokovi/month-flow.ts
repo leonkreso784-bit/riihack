@@ -2,7 +2,7 @@
 // (RoundFinance + breakdown, room prices, hotel count, the season table). Nothing is invented: other hotels'
 // reviews and guests are not known here, so the market step shows only the player's own result.
 import { financeEffect, refPrice, roundFinance, type MarketResult } from "@/lib/engine/economy";
-import { eur, num } from "@/lib/format";
+import { eur as eurRaw, num } from "@/lib/format";
 import {
   FINANCE_EFFECT_CAP,
   FINANCE_EFFECT_DIVISOR,
@@ -20,8 +20,8 @@ export type FlowRow = { label: string; value: string; strong?: boolean };
 export type FlowStep = {
   id: StepId;
   title: string;
-  /** Big number on the card. */
-  big: string;
+  /** Big number on the card; steps without a number have none. */
+  big?: string;
   small: string;
   tone?: "dark" | "money" | "up" | "down";
   inputs: FlowRow[];
@@ -41,6 +41,8 @@ export type Estimate =
 
 export const ESTIMATE_LABEL = "Procjena: ostali hoteli igraju isto kao ovaj mjesec.";
 
+/** Money never breaks across lines: non-breaking space before the euro sign. */
+export const eur = (n: number) => eurRaw(n).replace(/\s€$/, "\u00a0€");
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 const signed = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${eur(Math.abs(n))}`;
 const factor = (bp: number) => (bp / 10000).toFixed(2).replace(".", ",");
@@ -153,8 +155,7 @@ export function buildMonthFlow(
     {
       id: "ugled",
       title: "Ugled",
-      big: "recenzije + gosti",
-      small: "zbroj dvaju pokazatelja",
+      small: "Nije spremljeno uz obračun",
       inputs: [{ label: "Recenzije i zadovoljstvo gostiju", value: "nije spremljeno uz obračun" }],
       rule: ["Ugled = pokazatelj Recenzije + pokazatelj Zadovoljstvo gostiju (u trenutku zatvaranja mjeseca)."],
       note: "Točan zbroj nije spremljen uz obračun, pa ga ovdje ne izmišljamo. Što je veći, to si zanimljiviji turistima, a gradi se kroz mjesece.",
