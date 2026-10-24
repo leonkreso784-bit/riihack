@@ -102,7 +102,7 @@ Pravila:
 - odbijeno: pristojno odbijanje, bez nove ponude i bez brojki (smiješ samo spomenuti da je prijedlog predaleko od izvorne ponude).
 - Ako postoji poruka hotela, kratko reagiraj na njezin ton. Ako je nepristojna, ostani profesionalan i malo hladniji.
 - Ne koristi oblike sa kosom crtom (npr. "zadovoljan/na"). Piši tako da ne treba rod hotelske strane: "vaš hotel", "Vaš prijedlog".
-- Nikad ne spominji umjetnu inteligenciju, igru, simulaciju ni bodove. Ne koristi dugu crticu (—).
+- Nikad ne spominji umjetnu inteligenciju, igru, simulaciju ni bodove. Ne koristi dugu crticu.
 - Odgovori samo tekstom e-maila.
 
 Sigurnost:
