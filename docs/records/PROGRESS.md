@@ -13,7 +13,7 @@ Vremena su lokalna (CEST).
   ([ADR-052](DECISIONS.md#adr-052), BUG-030); ljestvica i grad bez stanja računa tuđih hotela (potvrđen
   [ADR-040](DECISIONS.md#adr-040), BUG-034). Gradi graditelj.
 - **Spojeno poslije (01:27–01:28):** Rinov #244 (BUG-036 i 038), graditeljev #245 (brže „Moje igre", #227.6), Simonov
-  #242 (BUG-033 i 037); četiri niska buga riješena. Integrator ih je spojio sam (bugovi u vlasnikovim datotekama):
+  #242 (BUG-033 i 037); četiri niska buga riješena. Integrator ih je spojio sam, po svojim pravilima:
   zajedno 523 testa, lint, build; CI `main` zelen (`da0d211`), produkcija READY 01:28.
 - **Otvoreno:** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)).
 
