@@ -1,9 +1,35 @@
-node_modules/
-.next/
-dist/
-build/
-.vercel/
-.env
-.env*.local
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+/dist
+
+# misc
 .DS_Store
 Thumbs.db
+*.pem
+
+# debug
+npm-debug.log*
+.pnpm-debug.log*
+
+# env files (u repo ide samo .env.example)
+.env*
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
