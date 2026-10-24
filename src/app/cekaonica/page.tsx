@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { BedDouble, MapPin } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { plural, starsLabel } from "@/lib/format";
+import { BackLink } from "@/components/back-link";
 
 // R1: after joining, wait here until the professor starts the game, then go to /igra.
 export default function WaitingRoom() {
@@ -21,7 +21,7 @@ export default function WaitingRoom() {
     return (
       <div className="mx-auto max-w-md space-y-4 pt-12 text-center">
         <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>
-        <Link href="/ulaz" className="font-semibold text-secondary-foreground hover:underline">Natrag na ulaz</Link>
+        <BackLink href="/ulaz" label="Natrag na ulaz" className="mx-auto" />
       </div>
     );
   // Game already running (late join, reload): go straight on without showing the waiting room for a moment.

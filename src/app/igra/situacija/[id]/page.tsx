@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, BedDouble, ListChecks, MessageCircle, PenLine } from "lucide-react";
+import { BedDouble, ListChecks, MessageCircle, PenLine, ArrowRight } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { CLICK_QUALITY_CAP } from "@/lib/rules";
 import { cn } from "@/lib/utils";
@@ -15,11 +15,10 @@ import { ChatPanel, Initials } from "@/components/chat-panel";
 import { OptionsForm, OwnAnswerForm } from "@/components/answer-form";
 import { VerdictCard } from "@/components/verdict-card";
 import { FlowLink } from "@/components/flow-link";
+import { BackLink } from "@/components/back-link";
 
 const back = (
-  <Link href="/igra" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-    <ArrowLeft className="size-4" aria-hidden /> Moja tvrtka
-  </Link>
+  <BackLink href="/igra" label="Moja tvrtka" />
 );
 
 // R5: one situation. Talk to the character, then answer in your own words or pick an offered answer.
@@ -133,10 +132,14 @@ function Situation({ s }: { s: SituationView }) {
               <div className="space-y-4">
                 <ChatPanel situationId={s.id} character={s.character} turns={turns} setTurns={setTurns} disabled={false} />
                 <button
+                  type="button"
                   onClick={() => setMode("own")}
-                  className="min-h-11 text-sm font-semibold text-secondary-foreground hover:underline"
+                  className="group inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary py-1 pr-1.5 pl-4 text-sm font-bold text-secondary-foreground transition-colors hover:bg-[#dbe7ff] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
-                  Spreman si? Odgovori svojim riječima →
+                  Spreman si? Odgovori svojim riječima
+                  <span className="grid size-8 place-items-center rounded-full bg-card transition-transform group-hover:translate-x-0.5">
+                    <ArrowRight className="size-4" aria-hidden />
+                  </span>
                 </button>
               </div>
             )}

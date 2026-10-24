@@ -1,11 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { PageHeader } from "@/components/page-header";
 import { FormError } from "@/components/form";
 import { DepartmentsFlow } from "@/components/tokovi/departments-flow";
+import { BackLink } from "@/components/back-link";
 
 // Tokovi, skica 3: kako odjeli utječu na hotel (ljudi, upozorenja, ulaganje, pravilo, situacije, pokazatelj, trošak).
 // Samo postojeći API: /api/me, osoblje i sobe. Osoblje i sobe se rijetko mijenjaju, pa se čitaju sporo.
@@ -14,9 +13,7 @@ export default function DepartmentsFlowPage() {
   const { data: staff } = usePoll(api.staff, 60_000);
   const { data: rooms } = usePoll(api.rooms, 60_000);
   const back = (
-    <Link href="/igra/osoblje" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-      <ArrowLeft className="size-4" aria-hidden /> Odjeli
-    </Link>
+    <BackLink href="/igra/osoblje" label="Odjeli" />
   );
   if (error && !data)
     return (

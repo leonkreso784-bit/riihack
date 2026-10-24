@@ -1,9 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
 import type { MetricKey, RoundReportView } from "@/lib/types";
@@ -12,11 +10,10 @@ import { FormError } from "@/components/form";
 import { Delta, METRIC_ICONS } from "@/components/metric-bar";
 import { MentorDialog } from "@/components/mentor-dialog";
 import { FlowLink } from "@/components/flow-link";
+import { BackLink } from "@/components/back-link";
 
 const back = (
-  <Link href="/igra" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-    <ArrowLeft className="size-4" aria-hidden /> Moja tvrtka
-  </Link>
+  <BackLink href="/igra" label="Moja tvrtka" />
 );
 
 // R7: report of a closed month: how each metric moved, then the mentor's question and the student's reflection.

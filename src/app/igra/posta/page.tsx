@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useEffectEvent, useState } from "react";
-import { ArrowLeft } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { unreadLabel } from "@/lib/format";
 import type { ContractView, MailKind, MailMessage } from "@/lib/types";
@@ -9,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { FormError } from "@/components/form";
 import { OfferCard } from "@/components/offer-card";
+import { BackLink } from "@/components/back-link";
 
 const FILTERS: { key: MailKind | "all"; label: string }[] = [
   { key: "all", label: "Sve" },
@@ -129,9 +129,7 @@ function Thread({ thread, contractId, contracts, onBack, onChange }: { thread: M
   useEffect(() => markRead(), [unread]);
   return (
     <article className="surface min-w-0 space-y-4 rounded-[var(--radius)] p-5 md:p-6" aria-label="Otvorena poruka">
-      <button type="button" onClick={onBack} className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline lg:hidden">
-        <ArrowLeft className="size-4" aria-hidden /> Sva pošta
-      </button>
+      <BackLink onClick={onBack} label="Sva pošta" className="lg:hidden" />
       <h2 className="text-xl font-extrabold tracking-tight md:text-2xl">{thread[0].subject}</h2>
       <ol className="space-y-3">
         {thread.map((m) => (

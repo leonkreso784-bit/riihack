@@ -1,10 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, BookmarkPlus, Download, Library, Plus, Send, Upload } from "lucide-react";
+import { BookmarkPlus, Download, Library, Plus, Send, Upload } from "lucide-react";
 import { api, isUnauthorized, usePoll } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { DispatchView, Playbook, ProfStateResponse, SituationSource, SituationSummary } from "@/lib/types";
@@ -15,6 +14,7 @@ import { FormError } from "@/components/form";
 import { SituationForm } from "@/components/prof/situation-form";
 import { DispatchDialog } from "@/components/prof/dispatch-dialog";
 import { LIBRARY_HINT, LibraryDialog } from "@/components/prof/library-dialog";
+import { BackLink } from "@/components/back-link";
 
 const SOURCE: Record<SituationSource, { label: string; tone: Tone }> = {
   bank: { label: "Banka", tone: "neutral" },
@@ -114,12 +114,7 @@ export default function ProfSituations() {
 
   return (
     <div className="space-y-6">
-      <Link
-        href={`/profesor/${worldId}`}
-        className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-      >
-        <ArrowLeft className="size-4" aria-hidden /> Natrag na ploču
-      </Link>
+      <BackLink href={`/profesor/${worldId}`} label="Natrag na ploču" />
 
       <div className="flex flex-wrap items-end justify-between gap-4">
         <PageHeader title="Situacije" subtitle="Napiši svoju situaciju ili odaberi iz banke i pošalji je studentima." />
