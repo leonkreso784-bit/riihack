@@ -39,7 +39,7 @@ export default function CityPage() {
         </div>
       </Panel>
       <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-        <Panel title="Ljestvica grada" action={<span className="text-xs text-muted-foreground">napredak i stanje računa</span>}>
+        <Panel title="Ljestvica grada" action={<span className="text-xs text-muted-foreground">napredak</span>}>
           <Leaderboard rows={data.city.hotels} youId={data.company.id} limit={8} />
         </Panel>
         <Panel title="Vijesti grada" pad="list">

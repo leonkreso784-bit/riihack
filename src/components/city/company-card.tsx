@@ -5,14 +5,14 @@ import { STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import { eur } from "@/lib/format";
 import { Delta } from "@/components/metric-bar";
 import { cn } from "@/lib/utils";
-import { BIZ_META, bonitet, fmtDec, growth, inBlockade, monthName, profit, reviewsCount, score, word, type PublicProfile, type ProfileDetail } from "@/lib/karta";
+import { BIZ_META, bonitet, publicBonitet, fmtDec, growth, inBlockade, monthName, profit, reviewsCount, score, word, type PublicProfile, type ProfileDetail } from "@/lib/karta";
 
 const TABS = ["Pregled", "Financije", "Registar"] as const;
 const TONE = { up: "bg-up", warn: "bg-warn", down: "bg-down", none: "bg-muted-foreground" } as const;
 
 export function CompanyCard({ profile: p, district, onClose }: { profile: PublicProfile; district: string; onClose: () => void }) {
   const [tab, setTab] = useState(0);
-  const blocked = inBlockade(p.cash);
+  const blocked = p.cash !== null && inBlockade(p.cash);
   return (
     <div
       role="dialog"
@@ -130,13 +130,17 @@ function Ocjene({ d }: { d: ProfileDetail }) {
 }
 
 function Financije({ p }: { p: PublicProfile }) {
-  const blocked = inBlockade(p.cash);
   const d = p.detail;
   const months = d?.months ?? null;
+  const pub = d?.publicFinances ?? null;
+  const ownCash = p.isYou && p.cash !== null ? p.cash : null;
+  const blocked = ownCash !== null && inBlockade(ownCash);
   const last = months?.at(-1);
-  const bon = p.startCash !== null && months ? bonitet(p.cash, p.startCash, last ? profit(last) : null) : null;
-  const g = months ? growth(months) : null;
+  const bon = ownCash !== null && p.startCash !== null && months ? bonitet(ownCash, p.startCash, last ? profit(last) : null) : pub ? publicBonitet(pub) : null;
+  const g = months ? growth(months) : pub ? growth(pub) : null;
   const shown = months?.slice(-3) ?? [];
+  const pubShown = pub?.slice(-3) ?? [];
+  const pubLast = pub?.at(-1);
   return (
     <>
       {bon && (
@@ -146,14 +150,16 @@ function Financije({ p }: { p: PublicProfile }) {
         </div>
       )}
       <div className="my-2.5 grid grid-cols-2 gap-1.5">
-        <Cell l="Status računa"><b className={blocked ? "text-down" : "text-up"}>{blocked ? "U blokadi" : "Nije u blokadi"}</b></Cell>
-        <Cell l="Novac na računu"><b>{eur(p.cash)}</b></Cell>
+        {ownCash !== null && <Cell l="Status računa"><b className={blocked ? "text-down" : "text-up"}>{blocked ? "U blokadi" : "Nije u blokadi"}</b></Cell>}
+        {ownCash !== null && <Cell l="Novac na računu"><b>{eur(ownCash)}</b></Cell>}
+        {!p.isYou && <Cell l="Prihod (zadnji mjesec)"><b>{pubLast ? eur(pubLast.revenue) : "–"}</b></Cell>}
+        {!p.isYou && <Cell l="Dobit (zadnji mjesec)"><b className={pubLast ? (pubLast.profit >= 0 ? "text-up" : "text-down") : ""}>{pubLast ? eur(pubLast.profit) : "–"}</b></Cell>}
         <Cell l="Napredak"><Delta value={p.progress} /></Cell>
         <Cell l="Rang po napretku"><b>{p.rank ? `${p.rank}.` : "–"}</b></Cell>
         {!p.isYou && <Cell l="Zadnji krug"><Delta value={p.roundGain} /></Cell>}
         {d?.share != null && <Cell l="Tržišni udio"><b>{months?.length ? `${d.share} %` : "–"}</b></Cell>}
       </div>
-      {!months && <Note>Prihod i dobit drugih hotela nisu javni.</Note>}
+      {!months && !pub && <Note>Prihod i dobit vidjet će se kad stigne javni profil hotela.</Note>}
       {months && (
         <>
           <H>Financijski sažetak</H>
@@ -172,6 +178,22 @@ function Financije({ p }: { p: PublicProfile }) {
           <Note>Objavljeno nakon zatvaranja mjeseca, kao što FINA objavljuje godišnje izvještaje. Izvor: jezgra igre.</Note>
         </>
       )}
+      {!months && pub && (
+        <>
+          <H>Javni financijski podaci</H>
+          {pubShown.length ? (
+            <table className="w-full border-collapse text-[13px]">
+              <thead><tr><th className="py-1.5 text-left" />{pubShown.map((m) => <th key={m.round} className="py-1.5 text-right text-xs font-semibold text-muted-foreground">{monthName(m.round)}</th>)}</tr></thead>
+              <tbody className="[&_td]:border-t [&_td]:py-1.5 [&_td]:text-right [&_td:first-child]:text-left tabular-nums">
+                <tr><td>Ukupni prihodi</td>{pubShown.map((m) => <td key={m.round}>{eur(m.revenue)}</td>)}</tr>
+                <tr><td><b>Dobit/gubitak</b></td>{pubShown.map((m) => <td key={m.round} className={m.profit >= 0 ? "text-up" : "text-down"}><b>{eur(m.profit)}</b></td>)}</tr>
+                <tr><td>Rast/pad prihoda</td><td colSpan={pubShown.length} className={g === null ? "" : g >= 0 ? "text-up" : "text-down"}>{g === null ? "još nema usporedbe" : `${g >= 0 ? "▲ +" : "▼ "}${g} %`}</td></tr>
+              </tbody>
+            </table>
+          ) : <Note>Financije se objavljuju nakon zatvaranja prvog mjeseca.</Note>}
+          <Note>Javno su samo prihod i dobit zatvorenih mjeseci, kao što FINA objavljuje godišnje izvještaje. Stanje računa i troškovi nisu javni.</Note>
+        </>
+      )}
     </>
   );
 }
@@ -180,7 +202,7 @@ function Registar({ p, district }: { p: PublicProfile; district: string }) {
   const rows: [string, React.ReactNode][] = [
     ["Tvrtka", `${p.name} d.o.o.`],
     ["Matični broj u igri", p.simId],
-    ["Status", inBlockade(p.cash) ? "Aktivan, račun u blokadi" : "Aktivan"],
+    ["Status", p.isYou && p.cash !== null && inBlockade(p.cash) ? "Aktivan, račun u blokadi" : "Aktivan"],
     ["Sjedište", <>{district}<span className="block text-[11px] font-normal text-muted-foreground">{p.place}</span></>],
     ["Pravni oblik", "društvo s ograničenom odgovornošću"],
     ["Djelatnost (NKD)", "55.10 Hoteli i sličan smještaj"],
