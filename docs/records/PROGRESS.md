@@ -6,6 +6,18 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 20:45–21:00 · uvid u razmišljanje studenta, nove sesije
+
+- **Spojeno:** Rinov R8 (#168, 20:52): profesor po mjesecu vidi kako je student odgovorio (vlastite riječi, klik,
+  prepisano), presudu, razgovor s likom i mentora, a uz svaki odgovor može promijeniti ocjenu. Imena hotela na ploči
+  vode na tu stranicu. Simonov radar vještina namjerno nije uključen dok nema prave podatke. Dokumentacija #171 (20:51).
+  Rinove sitnice (#173, 20:58): oznaka „od profesora" na situacijama, mjesec zadnjeg obračuna na `/igra`, čekaonica
+  bez bljeska kad igra već traje.
+- **Provjereno (integrator):** #173, #170 i #169 lokalno zajedno: typecheck, lint, 384 testa, build.
+- **Čeka Rinov ok ili Leonovo „spoji":** #170 S12 knjižnica na stranici situacija (`src/lib/client.ts`) i #169 L16
+  ekrani računa (`client.ts`, `profesor/page.tsx`, `app-frame.tsx`).
+- **Nove sesije (~20:55):** graditelj, integrator i dokumentarist. Graditelj sljedeće radi L18 poruke među hotelima.
+
 ## Sub 24.10. 20:44 · knjižnica situacija, popravak dvoklika
 
 - **Spojeno (Leonovo izravno „spoji"):** L17 knjižnica situacija (#165; tri rute, samo vlasnik, bez prijave 401) i
