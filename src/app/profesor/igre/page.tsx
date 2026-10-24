@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ChevronRight, Library, LogOut, Plus, Users } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { api, USE_MOCK } from "@/lib/client";
+import { plural } from "@/lib/format";
 import type { ProfGameSummary } from "@/lib/types";
 import { Panel } from "@/components/panel";
 import { Pill, type Tone } from "@/components/pill";
@@ -131,7 +132,7 @@ export default function MyGames() {
                           Kod <span className="font-mono font-semibold tracking-widest text-foreground">{g.joinCode}</span>
                         </span>
                         <span className="flex items-center gap-1">
-                          <Users className="size-4" aria-hidden /> {g.players} {g.players === 1 ? "student" : "studenata"}
+                          <Users className="size-4" aria-hidden /> {g.players} {plural(g.players, "student", "studenta", "studenata")}
                         </span>
                         <span>{dateFmt.format(new Date(g.createdAt))}</span>
                       </div>
