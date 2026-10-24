@@ -57,3 +57,44 @@ pokazuju drukčije odbrojavanje jer satovi nisu usklađeni.
   zadrži provjeru ≥ 70 % istih riječi (§6).
 - Redoslijed: `lib/types.ts` s Leonom → `lib/mock.ts` → ulaz kodom → čekaonica → `/igra` → situacija s razgovorom
   → izvještaj → profesorova ploča. Živa karta (W1-a) dolazi zadnja od W1 jer joj trebaju podaci iz `events`.
+
+## Drugi krug (nakon `bef8ab5`)
+
+Hvala, točke 1 i 3 su riješene, a dvostruko zatvaranje iz točke 2 pokriva `UPDATE … RETURNING`. Ostaje:
+
+### 5. 🔴 Demo igra s poznatim kodovima, a repo je javan
+
+§8a: demo igra ima „poznat kod igre i profesorski kod". Ako su kodovi u `scripts/seed-demo.ts`, svatko na
+natjecanju ih pročita na GitHubu i može upravljati našom demo igrom dok je žiri gleda.
+
+**Prijedlog:** profesorski kod demo igre iz env varijable (`DEMO_PROF_CODE`), ne iz koda. Kod igre za studente
+smije biti poznat.
+
+### 6. 🟡 Mentor je i dalje unutar zatvaranja kruga
+
+`POST /api/me/close-round` → „izvještaj i mentor". Kad istekne rok, krugove zatvara polling `GET /api/me`, pa 30
+Sonnet poziva krene unutar 30 zahtjeva u istoj sekundi.
+
+**Prijedlog:** zatvaranje odmah upiše brojke; mentorov tekst se generira kad student otvori izvještaj
+(`/igra/izvjestaj/[krug]`) i spremi u `round_reports`. Sučelje dotad pokaže „Mentor piše osvrt…".
+
+### 7. 🟡 `neon-http` ne podržava `db.transaction()`
+
+Starter koristi `drizzle-orm/neon-http`. Zatvaranje kruga piše u više tablica (`companies`, `round_reports`,
+`events`); ako jedan upis padne na pola, krug ostane zatvoren bez izvještaja.
+
+**Prijedlog:** upise zatvaranja staviti u `db.batch([...])`, koji na `neon-http` radi kao jedna transakcija. Zaštita
+`closed_round < k` ostaje prvi korak.
+
+### 8. 🟡 Odbrojavanje: `serverNow` (točka 4, još otvoreno)
+
+Uz `round_deadline` neka `/api/me` i `GET /api/prof/[worldId]` vrate `serverNow`; sučelje računa preostalo
+vrijeme iz razlike, pa projektor i mobiteli pokazuju isto.
+
+### Na mojoj strani (frontend, ne treba ništa od backenda)
+
+- „Gost razmišlja o tvom odgovoru…" i zaključan gumb dok presuda traje (§12).
+- `profCode` nakon stvaranja igre skriven iza „Prikaži", jer profesor igru vjerojatno stvara na računalu koje je
+  već na projektoru.
+- Karta (W1-a) i radar (W1-e) na lažnim podacima nose oznaku „primjer" dok se ne spoje na prave, da na pitchu ne
+  izgleda kao da su stvarni.
