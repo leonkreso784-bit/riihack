@@ -32,7 +32,9 @@ export function Leaderboard({ rows, youId, limit = 5 }: { rows: LeaderboardRow[]
 
 function Row({ row, rank, you }: { row: LeaderboardRow; rank: number; you: boolean }) {
   return (
-    <li className={cn("flex items-center gap-3 py-3", you && "-mx-3 rounded-xl border-0 bg-gradient-to-r from-[#eaf1ff] to-[#f4f8ff] px-3 ring-1 ring-primary/20")}>
+    <li
+      style={{ ["--i" as string]: rank }}
+      className={cn("anim-rise flex items-center gap-3 py-3", you && "-mx-3 rounded-xl border-0 bg-gradient-to-r from-[#eaf1ff] to-[#f4f8ff] px-3 ring-1 ring-primary/20")}>
       <span
         className={cn(
           "grid size-8 shrink-0 place-items-center rounded-full text-sm font-extrabold tabular-nums",

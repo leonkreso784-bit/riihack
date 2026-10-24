@@ -4,7 +4,6 @@ import Link from "next/link";
 import { BedDouble, ChartColumn, ChevronRight, MessageCircle, Moon, Store, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { METRIC_LABELS } from "@/lib/rules";
-import { num } from "@/lib/format";
 import type { MetricKey, SituationView } from "@/lib/types";
 import { Panel } from "@/components/panel";
 import { StatCard } from "@/components/stat-card";
@@ -12,6 +11,7 @@ import { MetricBar, METRIC_ICONS, Delta } from "@/components/metric-bar";
 import { Pill } from "@/components/pill";
 import { RoundBanner } from "@/components/round-banner";
 import { Leaderboard } from "@/components/leaderboard";
+import { CountUp } from "@/components/count-up";
 
 // ponytail: R0 preview of the hotel dashboard on mock data; R4 adds closing the round and the empty/finished states.
 export default function GamePage() {
@@ -24,7 +24,7 @@ export default function GamePage() {
   const initials = company.hotelName.split(" ").map((w) => w[0]).join("").slice(0, 2);
   return (
     <div className="space-y-5">
-      <header className="flex items-center gap-4 pt-4 md:pt-0">
+      <header className="anim-rise flex items-center gap-4 pt-4 md:pt-0">
         <span aria-hidden className="gloss-night grid size-14 shrink-0 place-items-center rounded-2xl text-xl font-extrabold">
           {initials}
         </span>
@@ -41,24 +41,26 @@ export default function GamePage() {
         </div>
       </header>
 
-      <RoundBanner world={world} syncedAt={syncedAt} />
+      <div className="anim-rise [--i:1]">
+        <RoundBanner world={world} syncedAt={syncedAt} />
+      </div>
 
       <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-        <Panel title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0–100 · od početka</span>}>
-          {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k) => (
-            <MetricBar key={k} icon={METRIC_ICONS[k]} label={METRIC_LABELS[k]} start={company.startMetrics[k]} now={company.metrics[k]} />
+        <Panel className="anim-rise [--i:2]" title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0–100 · od početka</span>}>
+          {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k, i) => (
+            <MetricBar key={k} order={i} icon={METRIC_ICONS[k]} label={METRIC_LABELS[k]} start={company.startMetrics[k]} now={company.metrics[k]} />
           ))}
         </Panel>
 
         <div className="space-y-5">
-          <div className="grid grid-cols-2 gap-3">
-            <StatCard icon={Wallet} label="Stanje računa" value={num(company.cash)} unit="€" tone="accent" note="obračun kad profesor zatvori mjesec" />
-            <StatCard icon={BedDouble} label="Popunjenost" value={june?.occupancyPct ?? "—"} unit="%" note="lipanj" />
-            <StatCard icon={ChartColumn} label="Dobit" value={june ? num(june.profit) : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note="lipanj" />
-            <StatCard icon={Moon} label="Noćenja" value={june ? num(june.nights + june.contractNights) : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />
+          <div className="anim-rise grid grid-cols-2 gap-3 [--i:3]">
+            <StatCard icon={Wallet} label="Stanje računa" value={<CountUp value={company.cash} />} unit="€" tone="accent" note="obračun kad profesor zatvori mjesec" />
+            <StatCard icon={BedDouble} label="Popunjenost" value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note="lipanj" />
+            <StatCard icon={ChartColumn} label="Dobit" value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note="lipanj" />
+            <StatCard icon={Moon} label="Noćenja" value={june ? <CountUp value={june.nights + june.contractNights} /> : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />
           </div>
 
-          <Panel title="Situacije ovog kruga" pad="list">
+          <Panel className="anim-rise [--i:4]" title="Situacije ovog kruga" pad="list">
             <ul className="divide-y">
               {data.situations.map((s) => (
                 <SituationRow key={s.id} s={s} />
@@ -69,10 +71,10 @@ export default function GamePage() {
       </div>
 
       <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-        <Panel title="Ljestvica razreda" action={<span className="text-xs text-muted-foreground">po napretku</span>}>
+        <Panel className="anim-rise [--i:5]" title="Ljestvica razreda" action={<span className="text-xs text-muted-foreground">po napretku</span>}>
           <Leaderboard rows={data.leaderboard} youId={company.id} />
         </Panel>
-        <Panel title="Ponude grada" tone="sand">
+        <Panel className="anim-rise [--i:6]" title="Ponude grada" tone="sand">
           <div className="flex items-start gap-3 text-sm">
             <Store className="mt-0.5 size-5 shrink-0" aria-hidden />
             <p>

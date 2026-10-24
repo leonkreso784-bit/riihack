@@ -68,7 +68,7 @@ export default function JoinPage() {
           </>
         )}
 
-        {error && <FormError>{error}</FormError>}
+        {error && <FormError key={error}>{error}</FormError>}
 
         {code && (
           <SubmitButton busy={busy} busyText="Ulazim…">

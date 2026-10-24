@@ -28,7 +28,7 @@ export function SubmitButton({ busy, busyText, children }: { busy: boolean; busy
 
 export function FormError({ children }: { children: React.ReactNode }) {
   return (
-    <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-sm font-medium text-down">
+    <p role="alert" className="anim-shake rounded-xl bg-down-soft px-4 py-3 text-sm font-medium text-down">
       {children}
     </p>
   );
