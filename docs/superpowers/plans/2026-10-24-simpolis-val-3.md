@@ -54,11 +54,12 @@ Sve novo je **neobavezno** dok ga svi ne pune. Leon ga upisuje u `types.ts` i u 
 po zadatku, prije koda koji ga koristi. Odjeli su već u #132.
 
 ```ts
-// L14 Javni profil hotela (karta, ljestvica): samo javni podaci, bez novca
+// L14 Javni profil hotela (karta, ljestvica): samo javni podaci, bez stanja novca i troškova
 export type CompanyPublicView = {
   companyId: string; hotelName: string; playerName: string; place: string; stars: number; roomsCount: number;
   price: number; reviews: number; guests: number; occupancyPct?: number; // occupancyPct = zadnji obračunati mjesec
   staffByDepartment: Record<StaffDepartment, number>; contracts: { businessId: string; businessName: string; title: string }[];
+  finances?: { round: number; revenue: number; profit: number }[]; // prihod i dobit zatvorenih mjeseci, najstariji prvi
 };
 
 // L15 Pošta i pregovaranje
@@ -158,8 +159,10 @@ paketi, commit `998f2dc`). Env na Vercelu (integrator): `BETTER_AUTH_SECRET`, `B
   samo iz zadnjeg **obračunatog** mjeseca, broj zaposlenih po odjelu iz `hotels.json`, aktivni ugovori.
 - Test: hotel s planom 94 € i obračunom 50 % → `price 94`, `occupancyPct 50`; bez obračuna → bez `occupancyPct`;
   odgovor nema ključeve `cash`, `metrics.finance`, `situations`.
-- Odluka za Leona: Simonova kartica „Financije" (prihod i dobit zatvorenih mjeseci, kao javni FINA podaci) **nije** u
-  javnom profilu po odluci „bez novca". Ako je želiš, dodaj `revenueByRound` u `CompanyPublicView`.
+- Odluka Leona (sub 24.10. ~21:15): prihod i dobit **zatvorenih** mjeseci tuđeg hotela su javni podaci, kao javni
+  registar FINA-e. `finances?: { round; revenue; profit }[]` iz redaka `finances` s `round ≤ worlds.settledRound`,
+  najstariji prvi, brojke iz obračuna jezgre. Stanje novca (`cash`, `cashAfter`), troškovi, raspodjela, ulaganja i plan
+  ostaju skriveni. Test: zatvoreni mjesec je u profilu, tekući neobračunati nije, nema ključeva nalik novcu.
 
 ### L15 · Pošta s agencijama i pregovaranje
 
@@ -270,7 +273,9 @@ Stil i pregled ekrana iz L16; „Nova igra" s popisa igara; poveznica „Prijava
 
 ## Otvoreno (odluka Leona)
 
-1. Kartica „Financije" za tuđe hotele (L14): bez novca (sad) ili prihod i dobit zatvorenih mjeseci kao javni podaci.
+1. ~~Kartica „Financije" za tuđe hotele (L14): bez novca (sad) ili prihod i dobit zatvorenih mjeseci kao javni podaci.~~
+   **Odlučeno** (Leon, sub ~21:15): prihod i dobit zatvorenih mjeseci javni (`CompanyPublicView.finances`), ostalo o
+   novcu skriveno.
 2. Tko radi ekrane profesorskog računa: prijedlog je Leonov agent piše stranice (L16), a Rino ih stilski pregleda
    (R14), jer Rino ima R11–R13.
 3. Smijemo li ukloniti prijavu kodom nakon predaje (sad ostaje zbog demo igre).
