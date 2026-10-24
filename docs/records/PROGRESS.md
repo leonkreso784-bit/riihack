@@ -11,15 +11,19 @@ Vremena su lokalna (CEST).
 - **Obilazak žirija 2 (~19:00):** 3 minute aplikacije uživo, odgovor pozitivan, bez primjedbi i bez novih zahtjeva.
   Za nedjelju: na obilasku 3 žiri sam isprobava aplikaciju (Simonov zapis u `PROMISE.md`, #150, 🟨 nije spojen).
 - **Spojeno:** L15 pošta i pregovaranje (#148, 19:54) po [ADR-033](DECISIONS.md#adr-033); Rinove detaljnije
-  Financije, Plan i Odjeli (#142, 19:54); karta grada kao izometrijska društvena igra (#128, 19:58; dovršio Simon jer
-  je Rino bio zauzet, Rino odobrio); kraći komentari bez imena prijašnjeg projekta (#107, 19:58); dokumentacija #153.
+  Financije, Plan i Odjeli (#142, 19:54; Leonovo izravno „spoji" umjesto Simonovog ok); Rinov QR kod ulaza na
+  čekaonici (#151) i „Završi mjesec" (#152, R4); karta grada kao izometrijska društvena igra (#128, 19:58; dovršio
+  Simon jer je Rino bio zauzet, Rino odobrio); kraći komentari bez imena prijašnjeg projekta (#107, 19:58);
+  dokumentacija #153. Zajedno 361 test, smoke 14/14, CI 5/5, produkcija READY.
 - **Shema vala 3 (sve ručno, aditivno, [ADR-026](DECISIONS.md#adr-026)):** `plans.investments`,
   `finances.investments` i `breakdown`, tablice Better Autha i `worlds.owner_id`, `mail` i stupci pregovaranja u
   `contracts`.
-- **Otvoreno:** L16 profesorski računi (#147; zelen, bez `BETTER_AUTH_SECRET` igra radi s kodom, a računi su
-  isključeni), S11 AI agent agencije (#154), Simonov zapis obilaska 2 (#150).
-- **Za sljedeće sesije (graditelj):** L17 knjižnica, L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3,
-  ime prijašnjeg projekta u planu ([BUG-008](BUGS.md#bug-008--ime-prijašnjeg-projekta-još-je-u-repou)).
+- **Otvoreno:** L16 profesorski računi (#147; bez `BETTER_AUTH_SECRET` stvaranje igre vraćalo 500,
+  [BUG-011](BUGS.md#bug-011--l16-bez-better_auth_secret-stvaranje-igre-vraća-500), popravak se provjerava), S11 AI
+  agent agencije (#154), Simonov zapis obilaska 2 (#150).
+- **Za sljedeće sesije (graditelj):** L17 knjižnica, L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3;
+  prije predaje `git grep -i` za ime prijašnjeg projekta. Plan čisti Rino
+  ([BUG-008](BUGS.md#bug-008--ime-prijašnjeg-projekta-još-je-u-repou)).
 
 ## Sub 24.10. 19:40–19:50 · L15 i L16 u PR-ovima, tjedni krug odgođen
 

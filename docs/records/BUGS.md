@@ -10,6 +10,15 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-011 · L16 bez `BETTER_AUTH_SECRET`: stvaranje igre vraća 500
+- **Status:** 🟡 graditelj popravio, integrator provjerava (sub ~19:50, PR [#147](https://github.com/leonkreso784-bit/riihack/pull/147),
+  nije spojen) · **Težina:** kritičan da je spojeno (profesor ne može napraviti igru)
+- **Opis:** u provjeri #147 `POST /api/worlds` bez varijable `BETTER_AUTH_SECRET` vraća 500.
+- **Uzrok:** Better Auth bez tajne baca grešku „default secret", iako igra s kodom računa ne treba.
+- **Rješenje:** 🟨 popravak u #147 (računi se isključuju bez tajne); zapisati kad integrator potvrdi.
+- **Lekcija:** nova ovisnost s tajnom mora raditi i kad tajne nema, ako je značajka neobavezna; provjeri glavni tok
+  bez nove env varijable prije spajanja.
+
 ### BUG-008 · Ime prijašnjeg projekta još je u repou
 - **Status:** 🟡 kod čist (#107, 19:58), plan još ne (provjera `git grep -i` na `main`-u, sub 20:00) · **Težina:** srednji (žiri čita repo;
   pravilo tima je da se ime nigdje ne piše)
@@ -17,9 +26,9 @@ opis · uzrok · rješenje · **lekcija**.
   (`src/app/globals.css` 2, `src/components/bottom-nav.tsx` 1, `src/components/panel.tsx` 1), te u porukama starih
   commitova. Ostali dokumenti u `docs/` su čisti.
 - **Uzrok:** ime se koristilo kao kratica za izgled i bodovanje prije nego što je pravilo uvedeno.
-- **Rješenje:** kod očišćen u [#107](https://github.com/leonkreso784-bit/riihack/pull/107) (spojen 19:58). Plan: 🟨 Leon je dodijelio Rinu
-  (~18:25), a graditelj ga predaje sljedećem graditelju; još 9 redaka. Povijest commitova se ne prepisuje
-  (nema force pusha na `main`).
+- **Rješenje:** kod očišćen u [#107](https://github.com/leonkreso784-bit/riihack/pull/107) (spojen 19:58). Plan (još
+  9 redaka) čisti Rino (Leonova odluka ~18:25); sljedeći graditelj prije predaje provjerava `git grep -i` i javlja
+  što je ostalo. Povijest commitova se ne prepisuje (nema force pusha na `main`).
 - **Lekcija:** ime koje ne smije u predaju ne smije ni u komentare i commitove od prvog dana; kad se pravilo uvede,
   odmah `git grep -i` po cijelom repou, ne samo po dokumentima.
 

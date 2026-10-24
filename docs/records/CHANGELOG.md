@@ -9,8 +9,10 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 | --- | --- | --- | --- |
 | [#107](https://github.com/leonkreso784-bit/riihack/pull/107) | 19:58 | Leon | kraći komentari u sučelju, bez imena prijašnjeg projekta (BUG-008) |
 | [#128](https://github.com/leonkreso784-bit/riihack/pull/128) | 19:58 | Simon | S10/R12: karta grada kao izometrijska društvena igra, kartica tvrtke (Rinov ok) |
+| [#152](https://github.com/leonkreso784-bit/riihack/pull/152) | 19:57 | Rino | R4: „Završi mjesec" za studenta |
+| [#151](https://github.com/leonkreso784-bit/riihack/pull/151) | 19:57 | Rino | QR kod za ulaz na profesorovoj čekaonici (`uqr`) |
 | [#153](https://github.com/leonkreso784-bit/riihack/pull/153) | 19:57 | Leon | dokumentacija: tjedni krug u backlog |
-| [#142](https://github.com/leonkreso784-bit/riihack/pull/142) | 19:54 | Rino | detaljnije Financije, Plan i Odjeli |
+| [#142](https://github.com/leonkreso784-bit/riihack/pull/142) | 19:54 | Rino | detaljnije Financije, Plan i Odjeli (Leonovo izravno „spoji" umjesto Simonovog ok) |
 | [#148](https://github.com/leonkreso784-bit/riihack/pull/148) | 19:54 | Leon | L15: pošta s agencijama i pregovaranje |
 | [#149](https://github.com/leonkreso784-bit/riihack/pull/149) | 19:42 | Leon | dokumentacija: #144, shema pošte |
 | [#144](https://github.com/leonkreso784-bit/riihack/pull/144) | 19:39 | Leon | raspodjela prihoda i troškova u obračunu mjeseca (`FinanceBreakdown`), zbrojevi motora isti |
