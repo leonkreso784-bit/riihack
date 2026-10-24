@@ -7,6 +7,10 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#138](https://github.com/leonkreso784-bit/riihack/pull/138) | 18:59 | Rino | `/ulaz?kod=…` sam upiše kod (prvi dio QR ulaza) |
+| [#137](https://github.com/leonkreso784-bit/riihack/pull/137) | 18:59 | Leon | L13: motor odjela, ulaganje u troškove i pokazatelje, `departments` u `/api/me` |
+| [#136](https://github.com/leonkreso784-bit/riihack/pull/136) | 18:55 | Leon | dokumentacija: ADR-033 do 036 (val 3) |
+| [#132](https://github.com/leonkreso784-bit/riihack/pull/132) | 18:54 | Leon | ugovor: ulaganje u odjele (`types.ts`, `rules.ts`, plan) |
 | [#129](https://github.com/leonkreso784-bit/riihack/pull/129) | 18:45 | Simon | S8: playbook (izvoz i uvoz) i AI prijedlog situacije na stranici situacija |
 | [#118](https://github.com/leonkreso784-bit/riihack/pull/118) | 18:02 | Leon | L12: AI prijedlog situacije za profesora (`POST …/situations/generate`) |
 | [#111](https://github.com/leonkreso784-bit/riihack/pull/111) | 17:15 | Simon | S9: AI prijedlog situacije iz stanja hotela, mentor s obračunom mjeseca |
