@@ -188,10 +188,14 @@ async function main() {
   await cityStep(14, "dvostruki obračun: dva istovremena zatvaranja mjeseca", [11], async () => {
     const roundOf = async () => ((await prof.call("GET", `/api/prof/${world.worldId}`)).data as ProfStateResponse).world.round;
     const before = await roundOf();
-    const both = await Promise.all([prof.call("POST", `/api/prof/${world.worldId}/round`, {}), prof.call("POST", `/api/prof/${world.worldId}/round`, {})]);
+    // Profesorova ploča šalje mjesec koji zatvara (fromRound), kao i dvoklik ili dvije funkcije na Vercelu.
+    const close = () => prof.call("POST", `/api/prof/${world.worldId}/round`, { fromRound: before });
+    const both = await Promise.all([close(), close()]);
     both.forEach((r) => expectStatus(r, 200));
     const after = await roundOf();
     expect(after === before + 1, `krug ${before} → ${after}`);
+    expectStatus(await close(), 200); // zakašnjeli treći klik: stanje, bez novog prelaska
+    expect((await roundOf()) === after, "zakašnjeli klik je preskočio mjesec");
     for (const u of [ana, ivan]) {
       const rounds = (await finances(u)).map((f) => f.round);
       expect(new Set(rounds).size === rounds.length, `${u.label}: dupli retci u finances: ${rounds.join(",")}`);

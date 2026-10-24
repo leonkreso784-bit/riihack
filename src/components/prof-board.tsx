@@ -127,7 +127,7 @@ function RoundControls({ worldId, round, last, onChange }: { worldId: string; ro
             <button
               type="button"
               disabled={busy}
-              onClick={() => run(() => api.openRound(worldId, minutes ? { deadlineMinutes: minutes } : {}))}
+              onClick={() => run(() => api.openRound(worldId, { fromRound: round, ...(minutes ? { deadlineMinutes: minutes } : {}) }))}
               className={cn(button, "bg-primary text-primary-foreground hover:bg-[#1f5fe0]")}
             >
               <SkipForward className="size-5" aria-hidden />
