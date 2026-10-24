@@ -70,15 +70,15 @@ na koga čeka i što smo dogovorili.
 - **Red čekanja (čeka Leonovo „spoji"):** #75 L6 situacije (blokira tok igre), #88 L11 B (mijenja plan), #89 ugovor L12 (types.ts + plan); zatim L12 faza B. #42 duplikat #63 (Simon zatvara)
 - **Zadnje ažurirano:** sub 16:50
 
-## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
+## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
 
-- **Sad radim (agenti usporedno):** L7 (#10) krugovi, odgovori, zatvaranje; L8 (#11) smoke koraci 1–10; L11 (#34) faza A: plan, obračun mjeseca, ugovori (nove datoteke), faza B nakon L7
-- **Sljedeće:** L11 faza B (pozivi u `world.ts`, podaci u `views.ts`), smoke 14/14, zatim demo igra (L8, M3)
-- **Čekam od drugih:** — (L6 #75 čeka moj pregled struke)
-- **Drugi čekaju od mene:** L7 (Rino R4–R6 na pravim podacima), L11 (Simon S5, S6 na pravim podacima)
-- **Otvoreno:** #75 L6 osam situacija (draft, ne spajati prije pregleda)
-- **Spojeno:** L0 (#37), #45, L1 (#62), L2 (#59), L3 (#64), ugovor #63, L4 API (#74), L5 (#70), L9 (#68), L10 (#69); Neon `simpolis-db`
-- **Zadnje ažurirano:** sub 15:20
+- **Sad radim:** čekam spajanje za M2; zatim demo igra (L8 `seed-demo`), playbook (M3), promjena ocjene (L12 dio 2, M3)
+- **Sljedeće:** proba M2 na pravim podacima (~17:30), `NEXT_PUBLIC_USE_MOCK=0` na produkciji kad smoke prođe 14/14 na `main`-u
+- **Čekam od drugih:** Leonovo „spoji" integratoru za #88 (L11 faza B), #89 (ugovor: profesorove situacije), #75 (L6, nakon pregleda struke), pa #95 (L12)
+- **Drugi čekaju od mene:** Simon S8 (ugovor #89, L12 #95); Rino: #96 odjava, #75 za R5 na pravoj bazi
+- **Otvoreno:** #75 L6, #88 L11 B (smoke 14/14), #89 ugovor, #95 L12 (smoke 14/14), #96 odjava
+- **Spojeno:** L0–L5, L7 (#83), L8 smoke (#81), L9, L10, L11 faza A (#82); Neon `simpolis-db`. **Pravilo:** nitko ne pokreće `npm run db:push` (drizzle-kit predlaže pražnjenje tablica); shema samo ručnim aditivnim SQL-om
+- **Zadnje ažurirano:** sub 16:50
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
