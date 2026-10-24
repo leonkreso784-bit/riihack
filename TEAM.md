@@ -79,12 +79,12 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen (514 testova, smoke 1–18 lokalno) · produkcija https://riihack.vercel.app READY (ned 00:28)
-- **Zadnja spajanja (sub 23:31–ned 00:32):** #224 poveznice „Kako …“, #225 prazan odgovor (ADR-049), #228 i #231 AI popravci iz audita, #229 Rinove sitnice iz audita, #232 Tokovi odjeli kao staze; dokumentacija #222, #223, #230, #234, #236
-- **Red čekanja:** #233 animacije čekanja i #235 paralelni botovi (nisu provjereni, za sljedeću sesiju integratora); #209 kalibracija se ne spaja prije predaje (ADR-047)
+- **CI na `main`-u:** ✅ zelen (523 testa; lokalni smoke 1–18 i 20) · produkcija https://riihack.vercel.app READY (ned 01:28), rute 200/401/404 u redu
+- **Zadnja spajanja (ned 01:05–01:33):** #233 animacije čekanja, #237 Mentor u izborniku i „Spremi ocjenu“ (lokalni merge commit: GitHub je vidio dvije zajedničke baze), #235 botovi igraju paralelno, #240 obračun grada u izvještaju, mentoru i podiju (#226), #244 BUG-036/038, #245 brže „Moje igre“ (#227.6), #242 BUG-033/037; dokumentacija #238, #243, #246
+- **Red čekanja:** #241 plan se prenosi i protuponuda bez koristi → 400 (mijenja motor, čeka Leonovo „spoji“; nakon njega graditelj ponovno sije demo i pokreće smoke na produkciji); #209 kalibracija se ne spaja prije predaje (ADR-047)
 - **Env na Vercelu:** `NEXT_PUBLIC_USE_MOCK=0` (Production, Preview), `BETTER_AUTH_SECRET` (Production, Preview) i `BETTER_AUTH_URL` (Production) postavljeni sub ~20:25
-- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne); integratorov smoke u 23:56, 00:17 i 00:27 ostavio je 3 igre „Smoke …“ za čišćenje
-- **Zadnje ažurirano:** ned 00:33
+- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne); integratorov smoke ostavio je igre „Smoke …“ za čišćenje (3 do 00:27, još 2 u ~00:50 i ~01:00; graditelj čisti)
+- **Zadnje ažurirano:** ned 01:35
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
