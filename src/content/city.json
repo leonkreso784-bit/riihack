@@ -1,0 +1,38 @@
+[
+  {
+    "id": "agencija-adria",
+    "name": "Agencija Adria",
+    "kind": "agency",
+    "description": "Riječka turistička agencija koja vodi grupe izletnika s kruzera i trajekata. Ne plaća puno, ali puni sobe."
+  },
+  {
+    "id": "agencija-ucka-tours",
+    "name": "Agencija Učka Tours",
+    "kind": "agency",
+    "description": "Mala agencija za aktivni odmor pod Učkom: planinari, biciklisti i škole u prirodi. Dolaze u manjim, urednim grupama."
+  },
+  {
+    "id": "praonica-kvarner",
+    "name": "Praonica Kvarner",
+    "kind": "laundry",
+    "description": "Industrijska praonica rublja za hotele i restorane na Kvarneru. Čisti plahte i ručnike, a uvjeti ugovora se razlikuju od ponude do ponude."
+  },
+  {
+    "id": "pekara-trsat",
+    "name": "Pekara Trsat",
+    "kind": "bakery",
+    "description": "Obiteljska pekara s Trsata koja svako jutro dostavlja svježi kruh i peciva. Gosti je pamte već pri doručku."
+  },
+  {
+    "id": "zastita-rijeka",
+    "name": "Zaštita Rijeka",
+    "kind": "security",
+    "description": "Tvrtka za fizičku i tehničku zaštitu: noćni obilasci, video nadzor i protupožarni sustavi. Skuplja je, ali smiruje recepciju."
+  },
+  {
+    "id": "vinarija-vrbnik",
+    "name": "Vinarija Vrbnik",
+    "kind": "supplier",
+    "description": "Vinarija s Krka koja hotelima isporučuje žlahtinu i lokalne delicije. Dobra vinska karta diže dojam hotela."
+  }
+]

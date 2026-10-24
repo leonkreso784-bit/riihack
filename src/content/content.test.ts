@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { HOTELS, SITUATIONS, getHotel, getSituation } from "@/content";
+import { CITY, CONTRACTS, HOTELS, SITUATIONS, getBusiness, getContract, getHotel, getSituation } from "@/content";
 import { METRIC_TOTAL, STAFF_COST_PER_ROOM, START_CASH } from "@/lib/rules";
 import type { RoomType, StaffDepartment } from "@/lib/types";
 
@@ -92,5 +92,56 @@ describe("situacije", () => {
   it("getSituation baca za nepoznat id", () => {
     expect(() => getSituation("nepostoji")).toThrow();
     for (const s of SITUATIONS) expect(getSituation(s.id)).toBe(s);
+  });
+});
+
+describe("gradske tvrtke i ugovori", () => {
+  it("6 tvrtki s jedinstvenim id-jevima, imenom i opisom", () => {
+    expect(CITY).toHaveLength(6);
+    expect(new Set(CITY.map((b) => b.id)).size).toBe(CITY.length);
+    for (const b of CITY) {
+      expect(b.name.length).toBeGreaterThan(0);
+      expect(b.description.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("8 ugovora s jedinstvenim id-jevima", () => {
+    expect(CONTRACTS).toHaveLength(8);
+    expect(new Set(CONTRACTS.map((c) => c.id)).size).toBe(CONTRACTS.length);
+  });
+
+  for (const c of CONTRACTS) {
+    describe(c.id, () => {
+      const business = CITY.find((b) => b.id === c.businessId);
+
+      it("businessId postoji, title i text popunjeni", () => {
+        expect(business).toBeDefined();
+        expect(c.title.length).toBeGreaterThan(0);
+        expect(c.text.length).toBeGreaterThan(0);
+      });
+
+      it("trajanje 1-3 kruga, monthlyCost >= 0, effects cijeli brojevi", () => {
+        expect([1, 2, 3]).toContain(c.durationRounds);
+        expect(c.monthlyCost).toBeGreaterThanOrEqual(0);
+        for (const v of Object.values(c.effects)) expect(Number.isInteger(v)).toBe(true);
+      });
+
+      it("agencijski imaju nocenja i cijenu, ostali nule", () => {
+        if (business?.kind === "agency") {
+          expect(c.nights).toBeGreaterThan(0);
+          expect(c.pricePerNight).toBeGreaterThan(0);
+        } else {
+          expect(c.nights).toBe(0);
+          expect(c.pricePerNight).toBe(0);
+        }
+      });
+    });
+  }
+
+  it("getBusiness i getContract vracaju stavku i bacaju za nepoznat id", () => {
+    expect(getBusiness(CITY[0].id)).toBe(CITY[0]);
+    expect(getContract(CONTRACTS[0].id)).toBe(CONTRACTS[0]);
+    expect(() => getBusiness("nepostoji")).toThrow();
+    expect(() => getContract("nepostoji")).toThrow();
   });
 });

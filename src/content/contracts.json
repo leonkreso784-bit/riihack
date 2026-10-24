@@ -1,0 +1,103 @@
+[
+  {
+    "id": "adria-izletnici",
+    "businessId": "agencija-adria",
+    "title": "Grupe izletnika s kruzera",
+    "text": "Agencija Adria donosi grupe izletnika s kruzera, ukupno 60 noćenja mjesečno po 70 € po noćenju. Plaćanje je u roku od 30 dana. Ugovor vrijedi dva mjeseca, bez ikakve naknade s vaše strane.",
+    "durationRounds": 2,
+    "monthlyCost": 0,
+    "nights": 60,
+    "pricePerNight": 70,
+    "effects": {}
+  },
+  {
+    "id": "adria-sezonski-paket",
+    "businessId": "agencija-adria",
+    "title": "Sezonski paket noćenja",
+    "text": "Agencija Adria jamči 80 noćenja u mjesecu po povoljnih 60 € po noćenju. Cijena je niža od redovne, ali popunjava sobe koje bi inače ostale prazne. Vrijedi jedan mjesec.",
+    "durationRounds": 1,
+    "monthlyCost": 0,
+    "nights": 80,
+    "pricePerNight": 60,
+    "effects": {}
+  },
+  {
+    "id": "ucka-aktivni-odmor",
+    "businessId": "agencija-ucka-tours",
+    "title": "Aktivni odmor pod Učkom",
+    "text": "Učka Tours dovodi planinare i bicikliste, 30 noćenja mjesečno po 90 € po noćenju. Gosti su mirni i uredni. Ugovor traje dva mjeseca.",
+    "durationRounds": 2,
+    "monthlyCost": 0,
+    "nights": 30,
+    "pricePerNight": 90,
+    "effects": {
+      "reviews": 1
+    }
+  },
+  {
+    "id": "praonica-standard",
+    "businessId": "praonica-kvarner",
+    "title": "Redovno pranje rublja",
+    "text": "Praonica Kvarner svaki dan preuzima i vraća čisto rublje. Mjesečna naknada je 1.500 €, a ugovor vrijedi dva mjeseca. Sobe se brže spremaju, pa recepcija i služba soba rade bez zastoja.",
+    "durationRounds": 2,
+    "monthlyCost": 1500,
+    "nights": 0,
+    "pricePerNight": 0,
+    "effects": {
+      "operations": 3
+    }
+  },
+  {
+    "id": "pekara-dorucak",
+    "businessId": "pekara-trsat",
+    "title": "Svježi kruh za doručak",
+    "text": "Pekara Trsat svako jutro do 6 sati isporučuje kruh i peciva za doručak. Naknada je 900 € mjesečno, ugovor traje dva mjeseca. Gosti hvale doručak, pa se raspoloženje u hotelu osjeti.",
+    "durationRounds": 2,
+    "monthlyCost": 900,
+    "nights": 0,
+    "pricePerNight": 0,
+    "effects": {
+      "guests": 2
+    }
+  },
+  {
+    "id": "zastita-nocna",
+    "businessId": "zastita-rijeka",
+    "title": "Noćna zaštita i video nadzor",
+    "text": "Zaštita Rijeka osigurava noćne obilaske i video nadzor cijelog hotela za 1.200 € mjesečno. Ugovor traje dva mjeseca. Recepcija je mirnija, a gosti se osjećaju sigurnije i to ostaje u recenzijama.",
+    "durationRounds": 2,
+    "monthlyCost": 1200,
+    "nights": 0,
+    "pricePerNight": 0,
+    "effects": {
+      "operations": 2,
+      "reviews": 1
+    }
+  },
+  {
+    "id": "vinarija-vinska-karta",
+    "businessId": "vinarija-vrbnik",
+    "title": "Vinska karta s Krka",
+    "text": "Vinarija Vrbnik isporučuje žlahtinu i lokalne delicije za vinsku kartu, za 700 € mjesečno. Ugovor traje dva mjeseca. Gosti vole lokalno i to se vidi u ocjenama.",
+    "durationRounds": 2,
+    "monthlyCost": 700,
+    "nights": 0,
+    "pricePerNight": 0,
+    "effects": {
+      "reviews": 2
+    }
+  },
+  {
+    "id": "praonica-povoljna",
+    "businessId": "praonica-kvarner",
+    "title": "Povoljno pranje rublja",
+    "text": "Praonica Kvarner nudi sniženu naknadu od 600 € mjesečno. Rublje se preuzima i vraća jednom tjedno, ponedjeljkom. Zakašnjela isporuka ili manjak čistih plahti ide na teret hotela, a svako kašnjenje naplaćuje se kaznom od 150 €. Ugovor traje dva mjeseca.",
+    "durationRounds": 2,
+    "monthlyCost": 600,
+    "nights": 0,
+    "pricePerNight": 0,
+    "effects": {
+      "operations": -2
+    }
+  }
+]
