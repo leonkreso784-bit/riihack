@@ -66,9 +66,9 @@ na koga čeka i što smo dogovorili.
 ## Stanje main-a (vodi integrator)
 
 - **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200; `/api/me` 401 bez kolačića (L4 živ)
-- **Zadnja spajanja (sub 15:00–15:10):** #63 ugovor lika, #67 pitch, #68 L9, #69 L10, #70 L5, #71 dokumentacija, #72 tema, #73 animacije, #74 L4
-- **Red čekanja:** #75 L6 situacije (čeka Leonov pregled struke i „spoji"); #42 duplikat #63 (Simon zatvara)
-- **Zadnje ažurirano:** sub 15:12
+- **Zadnja spajanja (sub 15:15–15:30):** #76 S3 lik i chat, #77 i #80 dokumentacija, #78 logo i odjava, #79 S4 mentor (156 testova zeleno)
+- **Red čekanja:** #75 L6 situacije (nacrt, čeka Leonov pregled struke i „spoji"); #42 duplikat #63 (Simon zatvara)
+- **Zadnje ažurirano:** sub 15:30
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
