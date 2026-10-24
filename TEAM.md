@@ -92,17 +92,18 @@ na koga čeka i što smo dogovorili.
 - **Spojeno:** S0–S6, S8 (#109), S9 (#111), playbook i AI prijedlog na S8 (#129), BUG-009 sudac (#120), **karta grada D (#128)**, **S11 agent agencije (#154)**; pitch i dokumenti (#99, #131); pregled L14/L15 na #148, prijedlog rubrika #110
 - **Zadnje ažurirano:** sub 20:10 (popunio Claude, ispravi)
 
-## Rino · sučelje (R0–R10)
+## Rino · sučelje (R0–R15)
 
-- **Sad radim:** R6 (#26) profesorova ploča uživo (+ poveznica „Situacije"), na lažnim podacima
-- **Sljedeće:** R5 na pravom API-ju čim #75 bude na `main`-u; R4 (+ mjesec umjesto „lipanj"); Odjava čim se spoji #96 (kod u `21bb687`); oznaka „od profesora" u R5 nakon #89; zatim Osoblje (`api.staff()`), R7, R10; M3: R8 „Promijeni ocjenu" (ruta dogovorena, tipovi u #89)
-- **Čekam od drugih:** Leon: #75 (situacije, za test R5 na pravom API-ju), #96 (logout), #89 (`source`, ugovor za R8); prijedlog: neobavezno `rubric?: { id, label }[]` u `SituationView` da presuda pokaže nazive kriterija (sad pokazuje broj); odluka o dizajnu (#39)
+- **Sad radim:** R13 pošta (`/igra/posta`: popis, ponuda, protuponuda, odgovor agencije), na lažnim pa pravim podacima
+- **Sljedeće:** R8 uvid u studenta (#28, „Promijeni ocjenu"), R14 stil profesorskih računa (kad Leon napravi ekrane), R10 podij (#46) ako stignemo
+- **Čekam od drugih:** — (sve što trebam je na `main`-u)
 - **Drugi čekaju od mene:** —
-- **Odluke:** OK da Simon u `client.ts`/`mock.ts` samo doda `createSituation`, `dispatch`, `worldSettings` po istom uzorku i javi prije PR-a. `/` je predstavljanje, ulaz kodom je **`/ulaz`** (Simon: adresa u slajdovima i obilasku → riihack.vercel.app/ulaz)
-- **Otvoreno:** —
-- **Spojeno:** R0 (#40), #49, #52, R1 (#54), R2 (#56), R3 (#57), logo (#65), animacije (#73), logo u igri i mobitel (#78), logo i favicon V1 (#91), predstavljanje na `/` i `/ulaz` (#93), R5 situacija s likom (#97, lažni podaci provjereni, pravi API čeka #75)
+- **Odluke:** pošta na računalu u bočnoj navigaciji s brojem nepročitanih, na mobitelu omotnica u gornjoj traci (donja traka ostaje na 6). Studenti idu u sljedeći mjesec zajedno: student javi „Završi mjesec", profesor otvara sljedeći svima. Tjedni krug je u Leonovom backlogu
+- **Otvoreno:** #160 R7 izvještaj mjeseca i sokratski mentor (spremno za integratora)
+- **Spojeno (od 16:45):** #127 popravci M2, #135 odjeli s ulaganjem, #138 `/ulaz?kod=`, #142 detaljnije Financije, Plan i Odjeli, #151 QR na čekaonici, #152 R4 „Završi mjesec", #157 plan bez imena prijašnjeg projekta; pregled i ok za #128 (karta) i #107
+- **Provjereno na produkciji (20:00):** QR → student → Završi mjesec → profesor vidi i otvara srpanj → Financije, Plan, Odjeli, Grad; 0 grešaka
 - **Bilješke za nastavak:** grana `rino/dokumentacija`, `docs/rino/STANJE.md`
-- **Zadnje ažurirano:** sub 16:45 (popunio Claude, ispravi)
+- **Zadnje ažurirano:** sub 20:35 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
