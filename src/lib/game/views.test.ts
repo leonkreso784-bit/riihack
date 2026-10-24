@@ -187,6 +187,7 @@ function financeRow(companyId: string, round: number, profit: number): FinanceRo
     profit,
     cashAfter: 20000 + profit,
     investments: 0,
+    breakdown: null,
   };
 }
 
