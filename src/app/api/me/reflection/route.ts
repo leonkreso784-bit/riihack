@@ -1,0 +1,43 @@
+// S4: the student's reflection on the mentor's question; answers with the mentor's debrief.
+import { getReport, saveMentorQuestion, saveReflection } from "@/db/queries";
+import { mentorDebrief, mentorQuestion } from "@/lib/ai";
+import { buildMentorInput } from "@/lib/ai/mentor-input";
+import { validateOwnAnswer } from "@/lib/engine/validate";
+import { HttpError, route } from "@/lib/http";
+import { readJson, requirePlayer } from "@/lib/session";
+import type { ReflectionRequest, RoundReportView } from "@/lib/types";
+
+export const POST = route(async (req): Promise<RoundReportView> => {
+  const { company } = await requirePlayer();
+  const body = await readJson(req);
+  const round = body.round;
+  const text = body.text;
+  if (typeof round !== "number" || !Number.isInteger(round) || round < 1 || typeof text !== "string") {
+    throw new HttpError(400, "Neispravan zahtjev: očekujem krug i tekst");
+  }
+  const request: ReflectionRequest = { round, text: text.trim() };
+  const invalid = validateOwnAnswer(request.text);
+  if (invalid) throw new HttpError(400, invalid);
+
+  const report = await getReport(company.id, request.round);
+  if (!report) throw new HttpError(404, "Krug nije zatvoren");
+  if (report.reflection) throw new HttpError(409, "Na ovo si već odgovorio");
+
+  const input = await buildMentorInput(report, company.name);
+  let question = report.mentorQuestion;
+  if (!question) {
+    question = await mentorQuestion(input);
+    await saveMentorQuestion(company.id, request.round, question);
+    question = (await getReport(company.id, request.round))?.mentorQuestion ?? question;
+  }
+  const mentorText = await mentorDebrief({ ...input, question, reflection: request.text });
+  await saveReflection(company.id, request.round, request.text, mentorText);
+  return {
+    round: request.round,
+    metricsBefore: report.metricsBefore,
+    metricsAfter: report.metricsAfter,
+    mentorQuestion: question,
+    reflection: request.text,
+    mentorText,
+  };
+});
