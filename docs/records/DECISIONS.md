@@ -8,6 +8,51 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-025"></a>
+## ADR-025 · Ugovor za profesorove situacije i redoslijed spajanja
+**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom, redoslijed dogovoren s integratorom) · **Vezano:** [ADR-024](#adr-024), [ADR-011](#adr-011), [ADR-017](#adr-017), [#75](https://github.com/leonkreso784-bit/riihack/pull/75)
+
+**Kontekst.** L12, S8 i S9 trebaju nove tipove i rute, a L11 faza B i L6 (#75) još nisu spojeni.
+**Odluka.** PR „ugovor: profesorove situacije" mijenja `types.ts` i plan zajedno; **sva nova polja su neobavezna**.
+Novi tipovi: `SituationSource`, `SituationDraft`, `SituationSummary`, `DispatchView`, `DispatchRequest`,
+`WorldSettingsRequest`, `QualityOverrideRequest`, `GenerateSituationRequest`, `SituationIdeaInput`; nova polja:
+`ProfStateResponse.bank`, `.dispatches`, `.autoDraw`, `SituationView.source`, `AnswerView.overridden`,
+`MentorInput.finance`. Nove rute: `POST /api/prof/[worldId]/situations`, `/dispatch`, `/settings` (M2);
+`/answers/[situationId]/quality` i `/situations/generate` (M3).
+**Redoslijed spajanja:** ugovor (Leonovo „spoji") → L11 faza B → L12 (`db:push` samo aditivno, neposredno prije
+spajanja). S8 ide neovisno. L6 (#75) mora biti spojen prije demoa L12 i S8, inače je banka situacija prazna.
+**Posljedice.** S8 dira Rinove `client.ts` i `mock.ts` samo za nove pozive i uz Rinovo „ok"
+([TEAM.md](../../TEAM.md) pravilo 6).
+
+<a id="adr-024"></a>
+## ADR-024 · Profesorove situacije: L12, S8, S9
+**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom, nakon obilaska žirija 1) · **Vezano:** [ADR-023](#adr-023), [ADR-025](#adr-025), [PRD](../product/PRD.md#5-kriteriji-prihvaćanja)
+
+**Kontekst.** Profesor je glavni (ADR-023), a do sada je samo vodio mjesece; situacije je izvlačila igra iz banke.
+**Odluka.**
+- **L12 (Leon, M2):** profesor piše svoje situacije (lik kojeg glumi AI, 3–5 kriterija, opcije 0–4 neobavezne,
+  učinci), bira iz banke i šalje bilo koju situaciju **odabranim studentima**, odmah ili u krug k (i sobu). Prekidač
+  „slučajno izvlačenje" (`autoDraw`). U M3 profesor može promijeniti ocjenu mentora (`overridden`).
+- **S8 (Simon, M2):** sučelje `/profesor/[worldId]/situacije`: popis, forma, dijalog „Pošalji" (kome, kada, soba),
+  prekidač.
+- **S9 (Simon, M3):** AI predlaže situaciju iz stanja hotela (`proposeSituation` → `SituationDraft`). **Profesor je
+  uvijek pregleda i spremi sam; AI ništa ne šalje studentima.**
+**Posljedice.** Rino dodaje poveznicu „Situacije" na ploči profesora; R5 mora podnijeti situaciju bez opcija; R8 u M3
+dobiva gumb „Promijeni ocjenu". „Profesor sam dodaje situacije" više nije plan nego demo
+([BACKLOG.md](BACKLOG.md)).
+
+<a id="adr-023"></a>
+## ADR-023 · Jezgra odvojena od AI-ja, profesor je glavni
+**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom) · **Vezano:** [ADR-002](#adr-002), [#86](https://github.com/leonkreso784-bit/riihack/pull/86), [PROMISE.md](../../PROMISE.md)
+
+**Kontekst.** Obilazak žirija 1 (~15:45) je prošao. Žiri (Borna Sila): ne oslanjati se na AI i ne raditi sve kao AI
+agente; temelj neka bude stabilna, pouzdana softverska mehanika. Žiri je pohvalio i partnerstvo tvrtki i fakulteta.
+**Odluka.** Jezgra (motor) je odvojena od AI-ja: AI glumi likove i radi kao mentor. **Profesor je glavni:** mentor je
+uvijek tu, ali iza njega stoji profesor. Mentor iz brojki jezgre objašnjava što se dogodilo i kako svijet radi
+(`MentorInput.finance`, S9). AI presuda po kriterijima ostaje dio mentora; bodove i dalje računa samo motor (ADR-002).
+**Posljedice.** Pitch pokazuje da je igra obična, testirana pravila, a AI samo jedan sloj ([#86](https://github.com/leonkreso784-bit/riihack/pull/86)).
+Profesor dobiva situacije (ADR-024) i promjenu ocjene mentora.
+
 <a id="adr-022"></a>
 ## ADR-022 · Smoke korak 11: Ivan postavlja 300 €, ne 150 €
 **Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ADR-019](#adr-019), [plan › L8](../superpowers/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)

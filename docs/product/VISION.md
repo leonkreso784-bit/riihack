@@ -16,7 +16,6 @@ kasni ruši recenzije hotelima koje opskrbljuje.
 2. **Ugovori između studenata**, ne samo s gradskim tvrtkama.
 3. **Banka i krediti**, porezi i općina.
 4. **Više gradova i država.**
-5. **Profesor sam dodaje situacije** za svoj kolegij.
 
 ## Kome se prodaje 🟨
 

@@ -13,6 +13,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#86](https://github.com/leonkreso784-bit/riihack/pull/86) | 15:51 | Simon | komentari žirija 1 i odgovor u pitchu |
+| [#85](https://github.com/leonkreso784-bit/riihack/pull/85) | 15:45 | Leon | dokumentacija: ADR-021 i 022, BUG-005 |
 | [#84](https://github.com/leonkreso784-bit/riihack/pull/84) | 15:42 | Leon | dokumentacija: BUG-004 |
 | [#83](https://github.com/leonkreso784-bit/riihack/pull/83) | 15:40 | Leon | L7: krugovi, odgovori s presudom, zatvaranje kruga, uvid |
 | [#82](https://github.com/leonkreso784-bit/riihack/pull/82) | 15:28 | Leon | L11 faza A: logika grada i rute (plan, ugovori, obračun, vijesti); spajanje u igru u fazi B |
