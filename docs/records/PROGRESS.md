@@ -6,6 +6,13 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 19:40–19:50 · L15 i L16 u PR-ovima, tjedni krug odgođen
+
+- **Spojeno:** dokumentacija #149 (19:42).
+- **U PR-ovima:** L15 pošta i pregovaranje (#148; 331 test, smoke 14/14, čeka Leonovo „spoji"), L16 profesorski
+  računi (#147; sukob u `src/db/schema.ts`, graditelj radi rebase).
+- **Odluka (Leon, ~19:50):** tjedni krug ide u kasnije planiranje, zasad se ne radi ([BACKLOG.md](BACKLOG.md)).
+
 ## Sub 24.10. 19:30–19:40 · raspodjela troškova, shema pošte
 
 - **Spojeno:** raspodjela prihoda i troškova u obračunu mjeseca (#144, 19:39, Leonovo „spoji"; zbrojevi motora
