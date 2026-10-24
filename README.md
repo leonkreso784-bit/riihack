@@ -34,3 +34,16 @@ Leon ([@leonkreso784-bit](https://github.com/leonkreso784-bit)), Simon ([@simons
 - [PREDAJA.md](PREDAJA.md): predložak dokumentacije i pitcha
 - **[Plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md)**: tko radi što, zadaci i prekretnice
 - [RESEARCH.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/RESEARCH.md): istraživanje (prošla izdanja, žiri, Rijeka, pitch) i ažurni vodiči za stack
+
+## Pokretanje
+
+Treba Node 24 i npm.
+
+```bash
+npm install
+cp .env.example .env.local   # upiši DATABASE_URL i ANTHROPIC_API_KEY (dobiješ ih privatno)
+npm run dev                  # http://localhost:3000
+```
+
+Provjere prije svakog spajanja: `npm run typecheck && npm run lint && npm test && npm run build`.
+Tipovi su u `src/lib/types.ts`, pravila igre u `src/lib/rules.ts`; oba mijenja samo Leon, uz najavu timu.
