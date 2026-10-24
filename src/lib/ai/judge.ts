@@ -10,10 +10,11 @@ const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
 
 const MAX_REASONING_CHARS = 400;
 const LEAKED_ID = /\b(kriterij|k)\s*\d|odgovor\s*\d|\bk\d\b/i;
+const SLASH_GENDER = /\p{L}\/(la|a|ica)\b/u; // "ispričao/la": the prompt forbids it, so retry
 
 function reasoningOk(reasoning: string): boolean {
   const text = reasoning.trim();
-  return text.length > 0 && text.length <= MAX_REASONING_CHARS && !LEAKED_ID.test(text);
+  return text.length > 0 && text.length <= MAX_REASONING_CHARS && !LEAKED_ID.test(text) && !SLASH_GENDER.test(text);
 }
 
 /** Stable part first (cacheable): rules, situation and rubric. */
@@ -33,7 +34,7 @@ function userPrompt({ transcript, text }: JudgeInput): string {
 /**
  * Judges the answer. Returns null (engine then uses FALLBACK_QUALITY) when the AI fails, times out, or twice in a row
  * returns a reasoning that is empty, too long or names criterion numbers. Errors are handled by `withAi`.
- * No `temperature` is passed: Claude 5.5 models reject sampling parameters, so the schema and the strict prompt keep it steady.
+ * No `temperature` is passed: claude-sonnet-5-5 ignores it (AI SDK warns), so the schema and the strict prompt keep it steady.
  */
 export function judge(input: JudgeInput, model?: LanguageModel): Promise<Verdict | null> {
   return withAi<Verdict | null>(async () => {
