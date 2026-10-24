@@ -15,6 +15,7 @@ import {
   isBotName,
   pickBotName,
   removeBot,
+  settlePool,
 } from "./bots";
 
 const world = (status: string) => ({ id: "00000000-0000-4000-8000-000000000000", status, maxPlayers: 10 }) as WorldRow;
@@ -107,5 +108,55 @@ describe("zaštite dodavanja i uklanjanja (bez baze)", () => {
   });
   it("removeBot s neispravnim id-em u čekaonici → 404", async () => {
     expect(await statusOf(removeBot(world("lobby"), "nije-uuid"))).toBe(404);
+  });
+});
+
+describe("settlePool (paralelno igranje botova)", () => {
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const items = Array.from({ length: 11 }, (_, i) => i);
+
+  it("radi istodobno, a ne jedno po jedno", async () => {
+    const t0 = Date.now();
+    await settlePool(items, 5, async () => sleep(40));
+    // 11 zadataka po 40 ms: slijedno ~440 ms, sa 5 radnika 3 vala ~120 ms
+    expect(Date.now() - t0).toBeLessThan(300);
+  });
+
+  it("nikad ne prelazi granicu istodobnosti", async () => {
+    let running = 0;
+    let peak = 0;
+    await settlePool(items, 4, async () => {
+      peak = Math.max(peak, ++running);
+      await sleep(10);
+      running--;
+    });
+    expect(peak).toBe(4);
+  });
+
+  it("rezultat je isti kao slijedni, neovisno o redoslijedu završetka", async () => {
+    const work = async (n: number, i: number) => {
+      await sleep((10 - (n % 10)) * 3); // kasniji završe prije
+      return `${i}:${botPlan(i, 100, undefined, "srednje").price}:${botOptionIndex(i, `s${n}`, [1, 3, 2], "tesko")}`;
+    };
+    const parallel = await settlePool(items, 5, work);
+    const sequential = [];
+    for (const [i, n] of items.entries()) sequential.push({ status: "fulfilled", value: await work(n, i) });
+    expect(parallel).toEqual(sequential);
+  });
+
+  it("pad jednog zadatka ne zaustavlja ostale", async () => {
+    const done: number[] = [];
+    const res = await settlePool(items, 3, async (n) => {
+      if (n === 4) throw new Error("bum");
+      done.push(n);
+    });
+    expect(res[4].status).toBe("rejected");
+    expect(res.filter((r) => r.status === "fulfilled")).toHaveLength(10);
+    expect(done).toHaveLength(10);
+  });
+
+  it("prazan popis i granica veća od popisa rade", async () => {
+    expect(await settlePool([], 5, async () => 1)).toEqual([]);
+    expect(await settlePool([1, 2], 9, async (n) => n)).toHaveLength(2);
   });
 });
