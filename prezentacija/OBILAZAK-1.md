@@ -5,6 +5,22 @@ aplikacija (2:00), Simon AI sudac uživo (0:45), Leon kako radi i što stiže (0
 Dok žiri govori, **Simon zapisuje sve** (ne branimo se, pitamo „što biste vi promijenili?"). Ne obećavamo ništa
 izvan 3 obećanja.
 
+## Slajdovi
+
+**https://simpolis-ziri-share.vercel.app** (strelice ili klik, `f` = cijeli zaslon). Uz koji dio ide koji slajd:
+
+| Slajd | Što | Tko |
+| --- | --- | --- |
+| 1 | Simpolis, jedna rečenica, tim | Simon |
+| 2 | Problem: −17 %, 40–50 %, 420 sati | Simon |
+| 3 | Cesim (tablice brojeva) uz naš ekran | Simon |
+| 4 | Usporedba: Cesim, CompanyGame AI, ChatGPT, Virtualni hotel, Simpolis + rečenica za prepričati | Simon |
+| 5 | Tri obećanja sa stanjem (radi / stiže do 18:45) | Simon |
+| 6 | „Pogledajmo aplikaciju" + QR → prebaci na riihack.vercel.app | Rino |
+| 7 | AI sudac: isti gost, tri odgovora | Simon |
+| 8 | Kako radi: AI ne daje bodove, protiv prepisivanja, ako AI ne radi, trošak | Leon |
+| 9 | Što stiže + pitanje žiriju | svi |
+
 ## Gdje smo (stanje 14:05)
 
 | | Radi | Stiže do 18:45 (M2) |
