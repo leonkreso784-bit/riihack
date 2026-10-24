@@ -106,10 +106,10 @@ na koga čeka i što smo dogovorili.
 - **Drugi čekaju od mene:** —
 - **Odluke:** R14 = moj pregled #169 (izgled ok). Radar vještina na R8 izostavljen dok ima samo pokazne podatke. Studenti idu u sljedeći mjesec zajedno
 - **Otvoreno:** —
-- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice, #180 bez zamrzavanja; ok za #128, #107, #166, #169, #170, #174
-- **Provjereno na produkciji:** 20:00 cijela igra (QR → Završi mjesec → sljedeći mjesec); 20:52 pošta s AI odgovorom agencije (1.500 → 1.125 → 1.313 €); **21:15 #168 i #173**: ploča → hotel → stranica studenta → ocjena 1 → 5 („5 / 5 · profesor", ostaje nakon osvježavanja); profesorova vlastita situacija ima oznaku „od profesora" (iz banke nema, tako je zamišljeno); bez bljeska čekaonice; nakon zatvaranja lipnja kartice na `/igra` pišu „lipanj"; 0 grešaka
+- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice, #180 bez zamrzavanja, #186 profesor preko računa; ok za #128, #107, #166, #169, #170, #174
+- **Provjereno na produkciji:** 20:00 cijela igra (QR → Završi mjesec → sljedeći mjesec); 20:52 pošta s AI odgovorom agencije (1.500 → 1.125 → 1.313 €); **21:15 #168 i #173**: ploča → hotel → stranica studenta → ocjena 1 → 5 („5 / 5 · profesor", ostaje nakon osvježavanja); profesorova vlastita situacija ima oznaku „od profesora" (iz banke nema, tako je zamišljeno); bez bljeska čekaonice; nakon zatvaranja lipnja kartice na `/igra` pišu „lipanj"; 0 grešaka; **21:40 #186**: naslovna → „Ja sam profesor" (samo Prijavi se / Napravi račun) → registracija → Moje igre → nova igra → QR → student uđe (1/2), igra na popisu Moje igre; `/ulaz` bez poveznice na profesora; 0 grešaka
 - **Bilješke za nastavak:** `docs/rino/STANJE.md` na grani `rino/dokumentacija`
-- **Zadnje ažurirano:** sub 21:23 (popunio Claude, ispravi)
+- **Zadnje ažurirano:** sub 21:40 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
