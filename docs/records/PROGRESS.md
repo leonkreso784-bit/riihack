@@ -15,6 +15,9 @@ Vremena su lokalna (CEST).
   općeniti odgovori gori od šutnje (čeka Leonovu odluku).
   [BUG-031](BUGS.md#bug-031--ploča-profesora-nakon-pokretanja-opet-nema-kod-igre) ploča profesora nakon pokretanja
   nema kod igre (regresija BUG-021 iz #216; Rinova datoteka, visok za obilazak 3).
+- **Tester, put žirija ✅** (QA igra, ~00:50–01:00): lik 2,7 s, presuda 1,6 s, prazan odgovor 1/5, protuponuda radi,
+  mentor < 2 s i osvrt pravi tekst, zatvaranje mjeseca 3,5 s, Tokovi rade. Nalazi: BUG-032 (#226 potvrđen), BUG-029 i
+  u sučelju, BUG-033 do 036 (niski: mentor na prazan odgovor, novac na ljestvici, botovi, sitnice sučelja).
 - **Integrator:** #233, #235 i #237 zajedno zeleni (typecheck, lint, 519 testova, build, smoke 1–18 i 20); ništa nije
   spojeno, čeka Leonovo odobrenje.
 

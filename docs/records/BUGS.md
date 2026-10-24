@@ -10,6 +10,45 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-036 · Sitnice sučelja: padež u pošti, prazan odgovor bez potvrde
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ); prazan odgovor na situaciju
+  šalje se bez pitanja „Sigurno?".
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-035 · Botovi: „(bot)" dvaput, „Moje igre" ih broji kao studente
+- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): bot ima „(bot)" u imenu i uz to značku „bot"; „Moje igre" botove broji
+  kao studente.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-034 · Ljestvica studentu pokazuje novac tuđih hotela
+- **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): ljestvica studentu pokazuje novac tuđih hotela, a po
+  [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci. 🟨 Koja točno brojka: potvrditi.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-033 · Mentor pita o „tvom odgovoru" kad je odgovor prazan
+- **Status:** 🔴 otvoren (Simon, AI) · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): na prazan odgovor mentor svejedno pita o „tvom odgovoru"
+  (usp. [ADR-049](DECISIONS.md#adr-049): kod prazne refleksije mentor to prepozna).
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-032 · Izvještaj mjeseca, mentor i podij ne vide obračun grada
+- **Status:** 🟡 u radu (graditelj, [#226](https://github.com/leonkreso784-bit/riihack/issues/226)) · **Težina:**
+  srednji (ista brojka na tri ekrana ima tri vrijednosti)
+- **Opis:** Simonov audit (#226), tester potvrdio na produkciji (ned ~00:55): podij +5,9 i +7,7, ljestvica +7,3 i
+  +9,9; izvještaj Financije ±0, Tokovi +5.
+- **Uzrok:** izvještaj (`roundReports.metricsAfter`) se upisuje pri zatvaranju tvrtke, a obračun grada
+  (`writeSettlement`, `src/lib/game/city.ts`) poslije mijenja samo `companies.metrics`; podij čita izvještaj
+  (opis u #226).
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
 - **Status:** 🔴 otvoren (Rinova datoteka `src/components/prof-board.tsx`) · **Težina:** visok (žiri na obilasku 3
   ulazi u `KVRNDM` kasnim ulazom i kod treba vidjeti s projektora)
@@ -37,6 +76,7 @@ opis · uzrok · rješenje · **lekcija**.
   **Težina:** srednji
 - **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
   plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
+  Potvrđeno i u sučelju (~00:55): plan 150/1000 u sljedećem mjesecu postane 172/0.
 - **Uzrok:** `toPlan` bez retka plana za novi mjesec vraća zadani plan (`src/lib/game/city.ts:229-238`).
 - **Rješenje:** —
 - **Lekcija:** —
