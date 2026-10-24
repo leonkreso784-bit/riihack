@@ -3,7 +3,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { ArrowRight, Calculator, Gavel, Gauge, MessageSquareText, Sparkles, Building2, X, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Panel } from "@/components/panel";
 import { AI_NOTE, buildAnswerFlow, type AnswerFlowInput, type AnswerStep, type AnswerStepId } from "@/lib/tokovi/answer-flow";
 
 const ICONS: Record<AnswerStepId, LucideIcon> = {
