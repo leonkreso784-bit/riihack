@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { MailRow } from "@/db/schema";
 import { CONTRACTS, getBusiness } from "@/content";
 import { MAIL_BODY_MAX, MAIL_SUBJECT_MAX } from "@/lib/rules";
-import { agencyFallback, agencyText, counterBody, offerBody, offerSubject, replySubject, termsText, toMailMessage } from "./mail";
+import { agencyFallback, agencyText, counterBody, offerBody, offerSubject, replySubject, sendMailError, termsText, toMailMessage } from "./mail";
 
 const agency = CONTRACTS.find((c) => c.id === "adria-izletnici")!;
 const laundry = CONTRACTS.find((c) => c.id === "praonica-standard")!;
@@ -99,5 +99,27 @@ describe("toMailMessage", () => {
     );
     expect(m).toMatchObject({ kind: "hotel", fromName: "Vila Ivo", toName: "Hotel Ana", referralId: "r1" });
     expect(m.contractId).toBeUndefined();
+  });
+});
+
+describe("poruka drugom hotelu (L18)", () => {
+  const ok = { toCompanyId: "ivo", subject: "Suradnja", body: "Imate li slobodnih soba za vikend?" };
+
+  it("ispravna poruka nema greške", () => {
+    expect(sendMailError(ok, "ana")).toBeNull();
+    expect(sendMailError({ ...ok, subject: "x".repeat(MAIL_SUBJECT_MAX), body: "y".repeat(MAIL_BODY_MAX) }, "ana")).toBeNull();
+  });
+
+  it("naslov 1–80 i tekst 1–1000 znakova (bez praznina)", () => {
+    expect(sendMailError({ ...ok, subject: "   " }, "ana")).toMatch(/Naslov/);
+    expect(sendMailError({ ...ok, subject: "x".repeat(MAIL_SUBJECT_MAX + 1) }, "ana")).toMatch(/Naslov/);
+    expect(sendMailError({ ...ok, body: "" }, "ana")).toMatch(/Tekst/);
+    expect(sendMailError({ ...ok, body: "y".repeat(MAIL_BODY_MAX + 1) }, "ana")).toMatch(/Tekst/);
+  });
+
+  it("krivi oblik ili poruka samom sebi → greška", () => {
+    expect(sendMailError({ ...ok, toCompanyId: 5 } as never, "ana")).toMatch(/hotel/);
+    expect(sendMailError({ ...ok, subject: 3 } as never, "ana")).toMatch(/Naslov/);
+    expect(sendMailError({ ...ok, toCompanyId: "ana" }, "ana")).toMatch(/sam sebi/);
   });
 });

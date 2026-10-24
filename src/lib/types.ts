@@ -74,6 +74,7 @@ export type MeResponse = { world: WorldView; company: CompanyView; situations: S
 export type ProfStateResponse = { world: WorldView & { joinCode: string; maxPlayers: number }; players: LeaderboardRow[]; city: CityView; news: NewsItem[]; bank?: SituationSummary[]; dispatches?: DispatchView[]; autoDraw?: boolean }; // bank = banka + profesorove situacije; autoDraw = slučajno izvlačenje po krugu
 export type ProfGameSummary = { worldId: string; name: string; joinCode: string; status: WorldStatus; round: number; maxRounds: number; players: number; createdAt: string }; // igre prijavljenog profesora (L16)
 export type LibraryItem = SituationSummary & { createdAt: string }; // situacija u profesorovoj knjižnici (na računu, ne u igri), L17
+export type SendMailRequest = { toCompanyId: string; subject: string; body: string }; // poruka drugom hotelu iste igre, L18
 export type CompanyDetailResponse = { company: CompanyView; situations: SituationView[]; reports: RoundReportView[] };
 
 // Zahtjevi
