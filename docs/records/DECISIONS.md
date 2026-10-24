@@ -8,6 +8,19 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-042"></a>
+## ADR-042 · Skice „Tokovi" ipak idu u aplikaciju
+**Datum:** 24.10. ~21:40 · **Status:** ✅ (Leon; graditelj prenio porukom [ODLUKA]) · **Vezano:** zamjenjuje [ADR-038](#adr-038), [ADR-002](#adr-002)
+
+**Kontekst.** U ~21:15 i ~21:30 skice „Tokovi" bile su samo za prezentaciju (ADR-038). To su nove stranice koje ne
+diraju motor, API ni bazu, a demo s njima objašnjava kako igra radi.
+**Odluka.** Simonovi [#174](https://github.com/leonkreso784-bit/riihack/pull/174) („Kako je izračunat mjesec", sa
+„Što ako?" kao procjenom u pregledniku) i [#179](https://github.com/leonkreso784-bit/riihack/pull/179) („Kako je tvoj
+odgovor prošao kroz hotel") idu u `main` preko integratora, uz Rinov ok za poveznice. Polja `SituationView.rubric?` i
+`effects?` (Simonov issue [#178](https://github.com/leonkreso784-bit/riihack/issues/178)) dodaje graditelj. Ruta
+„Što ako?" na poslužitelju se i dalje ne radi.
+**Posljedice.** Procjena „Što ako?" je samo prikaz u pregledniku; brojke mjeseca i dalje računa samo motor (ADR-002).
+
 Odluke ADR-037 do 041 donio je Leon u sub ~21:15 (graditelj ih je prenio dokumentaristu porukom [ODLUKA]).
 
 <a id="adr-041"></a>
@@ -44,7 +57,7 @@ privatno.
 
 <a id="adr-038"></a>
 ## ADR-038 · Skice „Tokovi" samo za prezentaciju; „Što ako?" se ne radi
-**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon)
+**Datum:** 24.10. ~21:15 · **Status:** 🔁 zamijenjeno u [ADR-042](#adr-042) (~21:40)
 
 **Kontekst.** Simon je napravio skice „Tokovi"; trebalo je odlučiti što od njih ide u aplikaciju.
 **Odluka.** Skice su samo za prezentaciju i ne idu u aplikaciju. Ruta „Što ako?" se ne radi.

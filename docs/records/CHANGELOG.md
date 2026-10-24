@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#183](https://github.com/leonkreso784-bit/riihack/pull/183) | 21:33 | Leon | dokumentacija: ADR-031 zatvoren |
+| [#176](https://github.com/leonkreso784-bit/riihack/pull/176) | 21:31 | Simon | popravci iz revizije: sudac čuva kriterije kad drugi pokušaj padne, AI nacrt zaključava obrazac, skraćeno ime hotela na karti |
 | [#180](https://github.com/leonkreso784-bit/riihack/pull/180) | 21:22 | Rino | dokumenti: nema zamrzavanja koda (`CLAUDE.md`, `PLAN-24H.md`, glavni plan; ADR-031) |
 | [#182](https://github.com/leonkreso784-bit/riihack/pull/182) | 21:20 | Leon | dokumentacija: odluke ADR-037 do 041, BUG-013 |
 | [#181](https://github.com/leonkreso784-bit/riihack/pull/181) | 21:15 | Leon | dokumentacija: L16 ekrani, S12, L18 |

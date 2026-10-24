@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 21:30–21:45 · popravci iz revizije, „Tokovi" ipak u aplikaciji
+
+- **Spojeno:** Simonov #176 (21:31): sudac čuva kriterije kad drugi pokušaj padne, AI nacrt zaključava obrazac,
+  skraćeno ime hotela na karti (388 testova, smoke 14/14); dokumentacija #183 (21:33).
+- **Odluka (Leon, ~21:40) mijenja onu od 21:15/21:30:** skice „Tokovi" (#174, #179) ipak idu u aplikaciju; polja
+  `SituationView.rubric?` i `effects?` dodaje graditelj; ruta „Što ako?" na poslužitelju se ne radi
+  ([ADR-042](DECISIONS.md#adr-042)).
+- **Čeka:** #174 i #179 traže Rinov ok za poveznice i Leonovu izravnu potvrdu integratoru.
+
 ## Sub 24.10. 21:20–21:30 · bez zamrzavanja i u dokumentima, „Tokovi" ostaju na granama
 
 - **Spojeno:** dokumentacija #182 (21:20); Rinov #180 (21:22): `CLAUDE.md`,
