@@ -13,6 +13,15 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#99](https://github.com/leonkreso784-bit/riihack/pull/99) | 16:41 | Simon | pitch: jednostavniji nakon žirija 1 |
+| [#97](https://github.com/leonkreso784-bit/riihack/pull/97) | 16:40 | Rino | R5: situacija s likom, odgovor i presuda |
+| [#98](https://github.com/leonkreso784-bit/riihack/pull/98) | 16:35 | Leon | dokumentacija: ADR-027 playbook |
+| [#93](https://github.com/leonkreso784-bit/riihack/pull/93) | 16:24 | Rino | predstavljanje na `/`, ulaz kodom na `/ulaz` |
+| [#94](https://github.com/leonkreso784-bit/riihack/pull/94) | 16:24 | Leon | dokumentacija: BUG-006 i ADR-026 detalji |
+| [#92](https://github.com/leonkreso784-bit/riihack/pull/92) | 16:19 | Leon | dokumentacija: BUG-006 i ADR-026 |
+| [#91](https://github.com/leonkreso784-bit/riihack/pull/91) | 16:03 | Rino | logo i favicon |
+| [#90](https://github.com/leonkreso784-bit/riihack/pull/90) | 15:59 | Leon | dokumentacija: Rinov ok za S8, prijedlog playbooka |
+| [#87](https://github.com/leonkreso784-bit/riihack/pull/87) | 15:55 | Leon | dokumentacija: odluke nakon žirija 1 |
 | [#86](https://github.com/leonkreso784-bit/riihack/pull/86) | 15:51 | Simon | komentari žirija 1 i odgovor u pitchu |
 | [#85](https://github.com/leonkreso784-bit/riihack/pull/85) | 15:45 | Leon | dokumentacija: ADR-021 i 022, BUG-005 |
 | [#84](https://github.com/leonkreso784-bit/riihack/pull/84) | 15:42 | Leon | dokumentacija: BUG-004 |

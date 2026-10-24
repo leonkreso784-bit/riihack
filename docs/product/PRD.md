@@ -38,7 +38,7 @@ ne kad je test zelen. Rokovi prekretnica su u [planu izvedbe](../superpowers/pla
 ### M1 · Obilazak 1
 
 - [ ] Profesor može napraviti igru s brojem studenata i vidi kod igre golemim slovima (`/profesor/novi`, `/profesor/[worldId]`).
-- [ ] Student može upisati kod, svoje ime i ime hotela i ući (`/`), pa vidi svoj hotel u čekaonici (`/cekaonica`).
+- [ ] Student s naslovnice (`/`, predstavljanje) dođe na ulaz (`/ulaz`), upiše kod, svoje ime i ime hotela, pa vidi svoj hotel u čekaonici (`/cekaonica`).
 - [ ] Profesor vidi kako se mjesta pune („7 / 24") i može pokrenuti igru.
 - [ ] Svaki student dobije drukčiji hotel iz banke i može pregledati sve njegove sobe po katovima (`/igra/sobe`).
 
