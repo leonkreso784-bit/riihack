@@ -21,6 +21,7 @@ import type {
   GenerateSituationRequest,
   JoinRequest,
   JoinResponse,
+  LibraryItem,
   MeResponse,
   OpenRoundRequest,
   Playbook,
@@ -47,10 +48,13 @@ async function send(path: string, method: "GET" | "POST", body?: unknown): Promi
   });
   if (!res.ok) {
     const err = (await res.json().catch(() => null)) as ApiError | null;
-    throw new Error(err?.error ?? `Greška ${res.status}`);
+    throw Object.assign(new Error(err?.error ?? `Greška ${res.status}`), { status: res.status });
   }
   return res;
 }
+
+// L17: true when the server answered 401 (no professor account signed in).
+export const isUnauthorized = (e: unknown) => (e as { status?: number } | null)?.status === 401;
 
 const get = async <T>(path: string) => (await send(path, "GET")).json() as Promise<T>;
 const post = async <T>(path: string, body: unknown = {}) => (await send(path, "POST", body)).json() as Promise<T>;
@@ -77,6 +81,10 @@ const realApi = {
   generateSituation: (worldId: string, req: GenerateSituationRequest) => post<SituationDraft>(`/api/prof/${worldId}/situations/generate`, req),
   dispatch: (worldId: string, req: DispatchRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/dispatch`, req),
   worldSettings: (worldId: string, req: WorldSettingsRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/settings`, req),
+  // S12 / L17: professor library (needs a professor account, else 401 → isUnauthorized)
+  libraryList: () => get<LibraryItem[]>("/api/prof/library"),
+  libraryCopy: (id: string, worldId: string) => post<SituationSummary>(`/api/prof/library/${id}/copy`, { worldId }),
+  librarySave: (worldId: string, templateId: string) => post<LibraryItem>(`/api/prof/${worldId}/situations/${templateId}/save`),
   join: (req: JoinRequest) => post<JoinResponse>("/api/join", req),
   me: () => get<MeResponse>("/api/me"),
   rooms: () => get<Room[]>("/api/me/rooms"),
@@ -162,6 +170,12 @@ function mockProfState(): ProfStateResponse {
   return { ...MOCK_PROF, world: { ...world, status: "lobby", round: 0, roundDeadline: null }, players: MOCK_PROF.players.slice(0, joined) };
 }
 
+// S12: mock library in memory (newest first).
+let mockLibrary: LibraryItem[] = [
+  { id: "lib-1", title: "Gost se žali na buku iz susjedne sobe", area: "Gosti", difficulty: 2, source: "custom", createdAt: "2026-10-12T09:30:00.000Z" },
+  { id: "lib-2", title: "Agencija traži popust za grupu od 30 ljudi", area: "Prodaja", difficulty: 4, source: "ai", createdAt: "2026-10-05T14:10:00.000Z" },
+];
+
 const mockApi: Api = {
   createWorld: () => {
     mockProfOpenedAt = Date.now();
@@ -239,6 +253,19 @@ const mockApi: Api = {
   worldSettings: (_worldId, req) => {
     MOCK_PROF.autoDraw = req.autoDraw;
     return wait(mockProfState());
+  },
+  libraryList: () => wait(mockLibrary),
+  libraryCopy: (id) => {
+    const item = mockLibrary.find((l) => l.id === id) ?? mockLibrary[0];
+    const summary: SituationSummary = { id: `custom-${Date.now()}`, title: item.title, area: item.area, difficulty: item.difficulty, source: "custom" };
+    MOCK_PROF.bank = [...(MOCK_PROF.bank ?? []), summary];
+    return wait(summary);
+  },
+  librarySave: (_worldId, templateId) => {
+    const s = MOCK_PROF.bank?.find((b) => b.id === templateId);
+    const item: LibraryItem = { id: `lib-${Date.now()}`, title: s?.title ?? templateId, area: s?.area ?? "Gosti", difficulty: s?.difficulty ?? 3, source: s?.source ?? "custom", createdAt: new Date().toISOString() };
+    mockLibrary = [item, ...mockLibrary];
+    return wait(item);
   },
   join: () => {
     mockLobbyUntil = Date.now() + 8000;
