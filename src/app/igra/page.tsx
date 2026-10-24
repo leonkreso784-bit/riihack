@@ -16,7 +16,7 @@ import { CloseRound } from "@/components/close-round";
 
 // Hotel dashboard (R0, R4): metrics, money, this month's situations, ranking, and "Završi mjesec".
 export default function GamePage() {
-  const { data, error, syncedAt, refresh } = usePoll(api.me);
+  const { data, error, syncedAt } = usePoll(api.me);
   if (error) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
   if (!data) return <Skeleton />;
 
@@ -47,7 +47,7 @@ export default function GamePage() {
       </div>
 
       <div className="anim-rise [--i:1]">
-        <CloseRound world={world} company={company} situations={data.situations} onClosed={refresh} />
+        <CloseRound world={world} company={company} situations={data.situations} reports={data.reports} />
       </div>
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start">

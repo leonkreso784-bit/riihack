@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { CheckCircle2, Flag, Hourglass } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CheckCircle2, ChevronRight, Flag, GraduationCap, Hourglass } from "lucide-react";
 import { api } from "@/lib/client";
 import { MISSED_QUALITY, ROUND_LABELS } from "@/lib/rules";
-import type { CompanyView, SituationView, WorldView } from "@/lib/types";
+import type { CompanyView, RoundReportView, SituationView, WorldView } from "@/lib/types";
 import { FormError } from "./form";
 
 const month = (round: number) => (ROUND_LABELS[round - 1] ?? `krug ${round}`).toLowerCase();
@@ -12,8 +14,39 @@ const month = (round: number) => (ROUND_LABELS[round - 1] ?? `krug ${round}`).to
 const ofSituations = (n: number) => `${n} ${n % 10 >= 1 && n % 10 <= 4 && !(n % 100 >= 11 && n % 100 <= 14) ? "situacije" : "situacija"}`;
 
 // R4: the student says "I'm done with this month". The professor sees it on the board and opens the next month for
-// everyone (the city settles all hotels together), so after closing the student waits.
-export function CloseRound({ world, company, situations, onClosed }: { world: WorldView; company: CompanyView; situations: SituationView[]; onClosed: () => void }) {
+// everyone (the city settles all hotels together), so after closing the student waits. Closing opens the month's
+// report, where the mentor asks a question (R7); earlier reports stay linked below.
+export function CloseRound(props: { world: WorldView; company: CompanyView; situations: SituationView[]; reports: RoundReportView[] }) {
+  return (
+    <div className="space-y-3">
+      <Status {...props} />
+      <Reports reports={props.reports} />
+    </div>
+  );
+}
+
+function Reports({ reports }: { reports: RoundReportView[] }) {
+  if (!reports.length) return null;
+  return (
+    <ul className="flex flex-wrap gap-2" aria-label="Izvještaji zatvorenih mjeseci">
+      {[...reports].sort((a, b) => a.round - b.round).map((r) => (
+        <li key={r.round}>
+          <Link
+            href={`/igra/izvjestaj/${r.round}`}
+            className="flex min-h-11 items-center gap-2 rounded-xl bg-card px-3 text-sm font-semibold shadow-sm ring-1 ring-border hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            <GraduationCap className="size-4 text-secondary-foreground" aria-hidden />
+            {ROUND_LABELS[r.round - 1] ?? `Krug ${r.round}`}: {r.reflection ? "mentor" : "mentor te pita"}
+            <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Status({ world, company, situations }: { world: WorldView; company: CompanyView; situations: SituationView[] }) {
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const sending = useRef(false);
@@ -48,7 +81,7 @@ export function CloseRound({ world, company, situations, onClosed }: { world: Wo
     setError(null);
     try {
       await api.closeRound();
-      onClosed();
+      router.push(`/igra/izvjestaj/${world.round}`);
     } catch (err) {
       setError((err as Error).message);
     } finally {
