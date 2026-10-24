@@ -100,16 +100,16 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R15)
 
-- **Sad radim:** #180 (dokumenti bez zamrzavanja, ADR-031) čeka spajanje; dalje R10 podij (#46) ako nema ništa važnije
+- **Sad radim:** R10 podij (#46) ako nema ništa važnije
 - **Sljedeće:** kad Leon spoji #169, #170, #174: kratka provjera na produkciji; R10 podij (#46); R15 kad bude L18 (#177)
 - **Čekam od drugih:** Leon: spajanje #169, #170, #174 (moj ok je na svima; #174 nakon što Simon doda poveznice); javi prioritet prije M3
 - **Drugi čekaju od mene:** —
 - **Odluke:** R14 = moj pregled #169 (izgled ok). Radar vještina na R8 izostavljen dok ima samo pokazne podatke. Studenti idu u sljedeći mjesec zajedno
-- **Otvoreno:** #180 dokumenti: nema zamrzavanja koda (ADR-031), samo dokumentacija
-- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice; ok za #128, #107, #166, #169, #170, #174
+- **Otvoreno:** —
+- **Spojeno (od 16:45):** #127, #135, #138, #142, #151 QR, #152 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta, #168 R8 uvid u studenta, #173 sitnice, #180 bez zamrzavanja; ok za #128, #107, #166, #169, #170, #174
 - **Provjereno na produkciji:** 20:00 cijela igra (QR → Završi mjesec → sljedeći mjesec); 20:52 pošta s AI odgovorom agencije (1.500 → 1.125 → 1.313 €); **21:15 #168 i #173**: ploča → hotel → stranica studenta → ocjena 1 → 5 („5 / 5 · profesor", ostaje nakon osvježavanja); profesorova vlastita situacija ima oznaku „od profesora" (iz banke nema, tako je zamišljeno); bez bljeska čekaonice; nakon zatvaranja lipnja kartice na `/igra` pišu „lipanj"; 0 grešaka
 - **Bilješke za nastavak:** `docs/rino/STANJE.md` na grani `rino/dokumentacija`
-- **Zadnje ažurirano:** sub 21:16 (popunio Claude, ispravi)
+- **Zadnje ažurirano:** sub 21:23 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
