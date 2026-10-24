@@ -20,7 +20,7 @@ export function StatCard({
   note,
 }: {
   label: string;
-  value: string | number;
+  value: React.ReactNode;
   unit: string;
   tone?: Tone;
   icon?: LucideIcon;

@@ -44,7 +44,7 @@ export function RoundBanner({ world, syncedAt, size = "md" }: { world: WorldView
   return (
     <div
       className={cn(
-        "gloss relative flex flex-wrap items-center justify-between gap-3 overflow-hidden rounded-[var(--radius)]",
+        "gloss anim-shine relative flex flex-wrap items-center justify-between gap-3 overflow-hidden rounded-[var(--radius)]",
         xl ? "px-8 py-6" : "px-5 py-4",
       )}
     >
@@ -63,7 +63,7 @@ export function RoundBanner({ world, syncedAt, size = "md" }: { world: WorldView
           className={cn(
             "relative flex items-center gap-2 rounded-full font-bold tabular-nums shadow-[inset_0_1px_0_rgb(255_255_255_/_0.2)]",
             xl ? "px-5 py-2 text-4xl" : "px-3 py-1 text-base",
-            urgent ? "bg-sand text-foreground" : "bg-black/20",
+            urgent ? "animate-pulse bg-sand text-foreground motion-reduce:animate-none" : "bg-black/20",
           )}
         >
           <Clock className={xl ? "size-8" : "size-4"} aria-hidden />

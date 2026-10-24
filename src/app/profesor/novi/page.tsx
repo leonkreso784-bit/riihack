@@ -41,7 +41,7 @@ export default function NewGame() {
           <form onSubmit={create} className="surface mt-8 space-y-5 rounded-[var(--radius)] p-5 md:p-6">
             <Field id="world-name" label="Naziv igre" autoFocus value={name} onChange={(e) => setName(e.target.value)} placeholder="npr. Hotelijerstvo 2A, ljeto" />
             <Field id="players" label="Koliko studenata igra" type="number" inputMode="numeric" min={1} max={60} value={players} onChange={(e) => setPlayers(e.target.value)} />
-            {error && <FormError>{error}</FormError>}
+            {error && <FormError key={error}>{error}</FormError>}
             <SubmitButton busy={busy} busyText="Stvaram igru…">
               Napravi igru
             </SubmitButton>

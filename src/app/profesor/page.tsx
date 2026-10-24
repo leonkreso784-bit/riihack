@@ -54,7 +54,7 @@ export default function ProfLogin() {
           spellCheck={false}
           className="font-mono tracking-widest uppercase"
         />
-        {error && <FormError>{error}</FormError>}
+        {error && <FormError key={error}>{error}</FormError>}
         <SubmitButton busy={busy} busyText="Provjeravam…">
           Otvori igru
         </SubmitButton>

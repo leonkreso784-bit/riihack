@@ -17,7 +17,20 @@ export function Delta({ value, className }: { value: number; className?: string 
 }
 
 // One metric 0–100: the bar shows "now", the tick marks where the company started.
-export function MetricBar({ label, start, now, icon: Icon }: { label: string; start: number; now: number; icon?: LucideIcon }) {
+export function MetricBar({
+  label,
+  start,
+  now,
+  icon: Icon,
+  order = 0,
+}: {
+  label: string;
+  start: number;
+  now: number;
+  icon?: LucideIcon;
+  /** Position in a list, staggers the grow-in animation. */
+  order?: number;
+}) {
   const delta = now - start;
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-2 py-2">
@@ -46,8 +59,8 @@ export function MetricBar({ label, start, now, icon: Icon }: { label: string; st
         className="relative col-span-3 h-2.5 rounded-full bg-muted shadow-[inset_0_1px_2px_rgb(21_27_43_/_0.08)]"
       >
         <div
-          className={cn("h-full rounded-full transition-[width] duration-700", delta < 0 ? "bar-fill-down" : "bar-fill")}
-          style={{ width: `${now}%` }}
+          className={cn("anim-grow h-full rounded-full transition-[width] duration-700", delta < 0 ? "bar-fill-down" : "bar-fill")}
+          style={{ width: `${now}%`, ["--i" as string]: order }}
         />
         <div
           aria-hidden

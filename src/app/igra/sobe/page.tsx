@@ -55,8 +55,8 @@ export default function RoomsPage() {
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8">
             {shown
               .filter((r) => r.floor === floor)
-              .map((r) => (
-                <li key={r.id}>
+              .map((r, i) => (
+                <li key={r.id} className="anim-rise" style={{ ["--i" as string]: i }}>
                   <RoomTile room={r} />
                 </li>
               ))}

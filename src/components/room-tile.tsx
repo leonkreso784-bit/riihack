@@ -33,7 +33,7 @@ export function RoomTile({ room }: { room: Room }) {
     >
       <span className="flex items-start justify-between gap-2">
         <span className="text-2xl font-extrabold tracking-tight tabular-nums">{room.number}</span>
-        <Icon className="size-5 shrink-0" aria-hidden />
+        <Icon className={cn("size-5 shrink-0", room.status === "broken" && "anim-wiggle")} aria-hidden />
       </span>
       <span>
         <span className="block text-xs font-semibold text-foreground/80">{ROOM_TYPE_LABELS[room.type]}</span>

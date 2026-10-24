@@ -46,13 +46,13 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
 
   return (
     <div className="space-y-6">
-      <section className="gloss relative overflow-hidden rounded-[var(--radius)] px-6 py-8 text-center md:py-12">
+      <section className="gloss anim-shine relative overflow-hidden rounded-[var(--radius)] px-6 py-8 text-center md:py-12">
         <p className="text-lg font-semibold opacity-90 md:text-2xl">
           Uđi na <strong className="font-extrabold">{host || "riihack.vercel.app"}</strong> i upiši kod
         </p>
         <p
           aria-label={`Kod igre ${world.joinCode.split("").join(" ")}`}
-          className="mt-3 font-mono text-[clamp(3.5rem,13vw,10rem)] leading-none font-extrabold tracking-[0.12em]"
+          className="anim-pop mt-3 font-mono text-[clamp(3.5rem,13vw,10rem)] leading-none font-extrabold tracking-[0.12em]"
         >
           {world.joinCode}
         </p>
@@ -62,7 +62,7 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
       <div className="flex flex-wrap items-center justify-between gap-4">
         <p className="flex items-center gap-3 text-2xl font-extrabold tabular-nums md:text-4xl" aria-live="polite">
           <Users className="size-7 text-secondary-foreground md:size-9" aria-hidden />
-          {players.length} / {world.maxPlayers}
+          <span key={players.length} className="anim-pop inline-block">{players.length}</span> / {world.maxPlayers}
           <span className="text-base font-semibold text-muted-foreground md:text-xl">studenata unutra</span>
         </p>
         <button

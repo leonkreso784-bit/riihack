@@ -8,7 +8,6 @@ export function Wordmark({ size = "md" }: { size?: "md" | "lg" | "xl" }) {
     <span className={cn("flex items-center", size === "md" ? "gap-2.5" : "gap-4")}>
       <LogoMark
         className={cn(
-          "drop-shadow-[0_6px_14px_rgb(36_107_253_/_0.35)]",
           size === "md" && "size-9",
           size === "lg" && "size-14",
           size === "xl" && "size-24",

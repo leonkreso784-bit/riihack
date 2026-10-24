@@ -29,9 +29,9 @@ export default function WaitingRoom() {
   return (
     <div className="mx-auto max-w-md pt-4 text-center md:pt-12">
       <p className="text-sm font-semibold text-muted-foreground">Dobio si hotel</p>
-      <h1 className="mt-1 text-4xl font-extrabold tracking-tight">{c.hotelName}</h1>
+      <h1 className="anim-pop mt-1 text-4xl font-extrabold tracking-tight">{c.hotelName}</h1>
 
-      <div className="surface mt-8 grid grid-cols-2 divide-x rounded-[var(--radius)] py-5">
+      <div className="surface anim-rise mt-8 grid [--i:3] grid-cols-2 divide-x rounded-[var(--radius)] py-5">
         <div className="px-4">
           <MapPin className="mx-auto size-5 text-secondary-foreground" aria-hidden />
           <p className="mt-2 font-bold">{c.place}</p>
