@@ -1,8 +1,9 @@
 // Zajednički upiti. Atomičnost: neon-http nema transakcija, pa jedna SQL naredba po operaciji.
-import { and, asc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, sql } from "drizzle-orm";
 import { db } from "./index";
-import { companies, events, players, rooms, roundReports, situations, worlds } from "./schema";
+import { companies, contracts, events, finances, players, plans, rooms, roundReports, situations, worlds } from "./schema";
 import type { CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
+import type { ContractRow, EventRow, FinanceRow, PlanRow } from "./schema";
 import { getSituation } from "@/content";
 import type { ChatTurn, SituationTemplate } from "@/lib/types";
 
@@ -130,4 +131,83 @@ export async function logEvent(e: {
     type: e.type,
     payload: e.payload,
   });
+}
+
+// ---------- Grad (L11): planovi kruga, obračuni, ugovori, vijesti ----------
+
+export async function getPlanRow(companyId: string, round: number): Promise<PlanRow | null> {
+  const rows = await db
+    .select()
+    .from(plans)
+    .where(and(eq(plans.companyId, companyId), eq(plans.round, round)))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/** Jedan plan po tvrtki i krugu: novi zapis ili prepisivanje starog (unique (company_id, round)). */
+export async function upsertPlan(p: { companyId: string; round: number; price: number; marketing: number }): Promise<PlanRow> {
+  const rows = await db
+    .insert(plans)
+    .values(p)
+    .onConflictDoUpdate({ target: [plans.companyId, plans.round], set: { price: p.price, marketing: p.marketing } })
+    .returning();
+  return rows[0];
+}
+
+/** Spremljeni planovi svih tvrtki igre za jedan krug (tvrtka bez plana nema redak). */
+export async function listPlans(worldId: string, round: number): Promise<PlanRow[]> {
+  const rows = await db
+    .select({ plan: plans })
+    .from(plans)
+    .innerJoin(companies, eq(companies.id, plans.companyId))
+    .where(and(eq(companies.worldId, worldId), eq(plans.round, round)));
+  return rows.map((r) => r.plan);
+}
+
+/** Osnovne cijene svih soba igre, za broj soba i referentnu cijenu svakog hotela. */
+export async function listRoomPrices(worldId: string): Promise<{ companyId: string; basePrice: number }[]> {
+  return db
+    .select({ companyId: rooms.companyId, basePrice: rooms.basePrice })
+    .from(rooms)
+    .innerJoin(companies, eq(companies.id, rooms.companyId))
+    .where(eq(companies.worldId, worldId));
+}
+
+export async function listWorldContracts(worldId: string): Promise<ContractRow[]> {
+  return db.select().from(contracts).where(eq(contracts.worldId, worldId));
+}
+
+/** Ugovori i ponude tvrtke, najnovije prvo. */
+export async function listCompanyContracts(companyId: string): Promise<ContractRow[]> {
+  return db
+    .select()
+    .from(contracts)
+    .where(eq(contracts.companyId, companyId))
+    .orderBy(desc(contracts.roundOffered));
+}
+
+/** Ugovor samo ako pripada toj tvrtki (inače null, i za id koji nije uuid). */
+export async function getContractForCompany(contractId: string, companyId: string): Promise<ContractRow | null> {
+  if (!isUuid(contractId)) return null;
+  const rows = await db
+    .select()
+    .from(contracts)
+    .where(and(eq(contracts.id, contractId), eq(contracts.companyId, companyId)))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+/** Obračuni tvrtke po mjesecima, redom. */
+export async function listFinanceRows(companyId: string): Promise<FinanceRow[]> {
+  return db.select().from(finances).where(eq(finances.companyId, companyId)).orderBy(asc(finances.round));
+}
+
+/** Zadnji događaji igre zadanih vrsta, najnoviji prvo. */
+export async function listEvents(worldId: string, types: string[], limit: number): Promise<EventRow[]> {
+  return db
+    .select()
+    .from(events)
+    .where(and(eq(events.worldId, worldId), inArray(events.type, types)))
+    .orderBy(desc(events.at))
+    .limit(limit);
 }

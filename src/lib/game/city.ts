@@ -1,0 +1,396 @@
+// Grad (L11): plan kruga, ponude i odluke o ugovorima, obračun mjeseca, vijesti i karta.
+// Obračun ide za cijeli grad odjednom, jer turisti biraju između svih hotela (ARHITEKTURA §5c).
+import { and, eq, lt, sql, type SQL } from "drizzle-orm";
+import type { BatchItem } from "drizzle-orm/batch";
+import { db } from "@/db";
+import { companies, contracts, events, finances, worlds } from "@/db/schema";
+import type { ContractRow, EventRow, FinanceRow, WorldRow } from "@/db/schema";
+import {
+  getContractForCompany,
+  getPlanRow,
+  listCompanies,
+  listCompanyContracts,
+  listEvents,
+  listFinanceRows,
+  listPlans,
+  listRoomPrices,
+  listRooms,
+  listWorldContracts,
+  logEvent,
+  upsertPlan,
+} from "@/db/queries";
+import { CITY, CONTRACTS, getBusiness, getContract, getHotel } from "@/content";
+import { contractEffects, contractNightsTotal, drawOffer, isActive } from "@/lib/engine/contracts";
+import { financeEffect, refPrice, roundFinance, settleMarket } from "@/lib/engine/economy";
+import { eur } from "@/lib/format";
+import { HttpError } from "@/lib/http";
+import { MARKETING_MAX, METRIC_LABELS, PRICE_MAX, PRICE_MIN, ROUND_LABELS } from "@/lib/rules";
+import type { requirePlayer } from "@/lib/session";
+import type {
+  CityView,
+  ContractStatus,
+  ContractTemplate,
+  ContractView,
+  LeaderboardRow,
+  MetricKey,
+  NewsItem,
+  PlanRequest,
+  RoundFinance,
+  RoundPlan,
+} from "@/lib/types";
+
+type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
+export type CityLink = CityView["links"][number];
+export type NewsEvent = Pick<EventRow, "type" | "round" | "companyId" | "payload" | "at">;
+
+const NEWS_LIMIT = 10;
+const NEWS_TYPES = ["player.joined", "round.opened", "contract.accepted", "round.settled"];
+const PLAN_CLOSED = "Plan se može mijenjati samo dok je krug otvoren";
+const OFFER_GONE = "Ova ponuda više ne vrijedi";
+
+// ---------- Čisti dijelovi (bez baze, testirani u city.test.ts) ----------
+
+/** Plan iz tijela zahtjeva: cijena i marketing moraju biti cijeli brojevi u rasponu, inače 400. */
+export function parsePlan(body: { price?: unknown; marketing?: unknown }): PlanRequest {
+  const { price, marketing } = body;
+  if (typeof price !== "number" || !Number.isInteger(price) || price < PRICE_MIN || price > PRICE_MAX) {
+    throw new HttpError(400, `Cijena noćenja mora biti cijeli broj od ${eur(PRICE_MIN)} do ${eur(PRICE_MAX)}`);
+  }
+  if (typeof marketing !== "number" || !Number.isInteger(marketing) || marketing < 0 || marketing > MARKETING_MAX) {
+    throw new HttpError(400, `Marketing mora biti cijeli broj od ${eur(0)} do ${eur(MARKETING_MAX)}`);
+  }
+  return { price, marketing };
+}
+
+export function toContractView(row: ContractRow): ContractView {
+  const t = getContract(row.templateId);
+  const business = getBusiness(t.businessId);
+  return {
+    id: row.id,
+    templateId: t.id,
+    businessName: business.name,
+    businessKind: business.kind,
+    title: t.title,
+    text: t.text,
+    monthlyCost: t.monthlyCost,
+    nights: t.nights,
+    pricePerNight: t.pricePerNight,
+    durationRounds: t.durationRounds,
+    roundOffered: row.roundOffered,
+    status: row.status as ContractStatus,
+    ...(row.status === "accepted" && row.activeTo !== null && { activeUntilRound: row.activeTo }),
+  };
+}
+
+export function toFinance(row: FinanceRow): RoundFinance {
+  return {
+    round: row.round,
+    nights: row.nights,
+    contractNights: row.contractNights,
+    capacityNights: row.capacityNights,
+    occupancyPct: row.occupancyPct,
+    marketSharePct: row.marketSharePct,
+    revenue: row.revenue,
+    costs: row.costs,
+    profit: row.profit,
+    cashAfter: row.cashAfter,
+  };
+}
+
+const activeRows = (rows: ContractRow[], round: number) =>
+  rows.filter((r) =>
+    isActive({ status: r.status as ContractStatus, activeFrom: r.activeFrom, activeTo: r.activeTo }, round),
+  );
+
+/** Predlošci ugovora koji vrijede u tom krugu. */
+export function activeTemplates(rows: ContractRow[], round: number): ContractTemplate[] {
+  return activeRows(rows, round).map((r) => getContract(r.templateId));
+}
+
+/** Linije karte: hotel–tvrtka za svaki ugovor koji vrijedi u tom krugu (bez ponavljanja). */
+export function toCityLinks(rows: ContractRow[], round: number): CityLink[] {
+  const seen = new Set<string>();
+  const links: CityLink[] = [];
+  for (const r of activeRows(rows, round)) {
+    const businessId = getContract(r.templateId).businessId;
+    const key = `${r.companyId}:${businessId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    links.push({ companyId: r.companyId, businessId });
+  }
+  return links;
+}
+
+/** Karta grada: sve gradske tvrtke, hoteli s ljestvice i aktivni ugovori kao linije. */
+export function toCityView(hotels: LeaderboardRow[], links: CityLink[] = []): CityView {
+  return { businesses: CITY, hotels, links };
+}
+
+const monthName = (round: number) => ROUND_LABELS[round - 1] ?? `Krug ${round}`;
+const text = (v: unknown) => (typeof v === "string" && v.length > 0 ? v : undefined);
+
+function newsText(e: NewsEvent, names: Record<string, string>): string | undefined {
+  const p = (e.payload ?? {}) as Record<string, unknown>;
+  const hotel = (e.companyId ? names[e.companyId] : undefined) ?? text(p.hotelName);
+  switch (e.type) {
+    case "player.joined": {
+      const place = text(p.place);
+      return hotel && place ? `${hotel} otvara vrata u ${place}` : undefined;
+    }
+    case "round.opened":
+      return `Počinje ${monthName(e.round).toLocaleLowerCase("hr")}`;
+    case "contract.accepted": {
+      const business = text(p.businessName);
+      return hotel && business ? `${hotel} potpisao ugovor s ${business}` : undefined;
+    }
+    case "round.settled": {
+      const topId = text(p.topCompanyId);
+      const top = (topId ? names[topId] : undefined) ?? text(p.topHotelName);
+      return top && typeof p.occupancyPct === "number"
+        ? `${monthName(e.round)}: najpopunjeniji je ${top} (${p.occupancyPct} %)`
+        : undefined;
+    }
+    default:
+      return undefined;
+  }
+}
+
+/** Vijesti grada iz dnevnika događaja: zadnjih 10, najnovije prvo. `names` = id tvrtke → ime hotela. */
+export function buildNews(events: NewsEvent[], names: Record<string, string>): NewsItem[] {
+  return [...events]
+    .sort((a, b) => new Date(b.at).getTime() - new Date(a.at).getTime())
+    .flatMap((e) => {
+      const t = newsText(e, names);
+      return t ? [{ at: new Date(e.at).toISOString(), text: t }] : [];
+    })
+    .slice(0, NEWS_LIMIT);
+}
+
+/** Zbroj učinaka na pokazatelje (samo poznati ključevi, bez nula). */
+export function sumEffects(...parts: Partial<Record<MetricKey, number>>[]): Partial<Record<MetricKey, number>> {
+  const out: Partial<Record<MetricKey, number>> = {};
+  for (const part of parts) {
+    for (const [k, v] of Object.entries(part) as [MetricKey, number][]) {
+      if (!(k in METRIC_LABELS) || !v) continue;
+      out[k] = (out[k] ?? 0) + v;
+    }
+  }
+  for (const k of Object.keys(out) as MetricKey[]) if (out[k] === 0) delete out[k];
+  return out;
+}
+
+// Pokazatelji + učinak u jednoj SQL naredbi (jsonb_set po ključu, rezano na 0–100), da se ne izgubi
+// istodobno zatvaranje kruga koje također piše pokazatelje. Ključevi su samo MetricKey, pa je sql.raw siguran.
+function metricsPlus(delta: Partial<Record<MetricKey, number>>): SQL {
+  let expr: SQL = sql`${companies.metrics}`;
+  for (const [k, d] of Object.entries(delta) as [MetricKey, number][]) {
+    if (!(k in METRIC_LABELS) || !Number.isInteger(d) || d === 0) continue;
+    const current = sql`round((${companies.metrics} ->> ${sql.raw(`'${k}'`)})::numeric)::int`;
+    expr = sql`jsonb_set(${expr}, ${sql.raw(`'{${k}}'`)}, to_jsonb(least(100, greatest(0, ${current} + ${sql.raw(String(d))}))))`;
+  }
+  return expr;
+}
+
+// ---------- Plan kruga ----------
+
+/** Plan tvrtke za krug; bez spremljenog plana cijena je referentna cijena soba, a marketing 0. */
+export async function getPlan(companyId: string, round: number): Promise<RoundPlan> {
+  const row = await getPlanRow(companyId, round);
+  if (row) return { round, price: row.price, marketing: row.marketing };
+  return { round, price: refPrice(await listRooms(companyId)), marketing: 0 };
+}
+
+/** Spremi plan tekućeg kruga (samo dok igra traje, a tvrtka krug nije zatvorila ni grad ga nije obračunao). */
+export async function savePlan(ctx: PlayerCtx, req: PlanRequest): Promise<RoundPlan> {
+  const { price, marketing } = parsePlan(req);
+  const { world, company } = ctx;
+  if (world.status !== "running" || company.closedRound >= world.round || world.settledRound >= world.round) {
+    throw new HttpError(409, PLAN_CLOSED);
+  }
+  const row = await upsertPlan({ companyId: company.id, round: world.round, price, marketing });
+  return { round: row.round, price: row.price, marketing: row.marketing };
+}
+
+// ---------- Ugovori ----------
+
+/** Po jedna ponuda po hotelu za krug (deterministički iz sjemena igre); ponovni poziv ne radi ništa. */
+export async function createOffers(world: WorldRow, round: number): Promise<void> {
+  const all = await listCompanies(world.id);
+  if (all.length === 0) return;
+  await db
+    .insert(contracts)
+    .values(
+      all.map(({ company }) => ({
+        worldId: world.id,
+        companyId: company.id,
+        templateId: drawOffer(world.seed, round, company.joinIndex, CONTRACTS).id,
+        roundOffered: round,
+      })),
+    )
+    .onConflictDoNothing();
+}
+
+/** Prihvati ili odbij ponudu tekućeg kruga. Jedan uvjetni UPDATE: druga odluka ili zakašnjeli klik dobije 409. */
+export async function decideContract(ctx: PlayerCtx, contractId: string, accept: boolean): Promise<ContractView> {
+  const { world, company } = ctx;
+  const row = await getContractForCompany(contractId, company.id);
+  if (!row) throw new HttpError(404, "Ponuda nije pronađena");
+  if (
+    row.status !== "offered" ||
+    world.status !== "running" ||
+    row.roundOffered !== world.round ||
+    world.settledRound >= row.roundOffered
+  ) {
+    throw new HttpError(409, OFFER_GONE);
+  }
+  const template = getContract(row.templateId);
+  const decided = await db
+    .update(contracts)
+    .set(
+      accept
+        ? { status: "accepted", activeFrom: row.roundOffered, activeTo: row.roundOffered + template.durationRounds - 1 }
+        : { status: "rejected" },
+    )
+    .where(
+      and(
+        eq(contracts.id, row.id),
+        eq(contracts.status, "offered"),
+        // krug ponude je još otvoren i grad ga nije obračunao (obračun prvo zauzme settled_round)
+        sql`exists (select 1 from ${worlds} where ${worlds.id} = ${contracts.worldId} and ${worlds.status} = 'running' and ${worlds.round} = ${contracts.roundOffered} and ${worlds.settledRound} < ${contracts.roundOffered})`,
+      ),
+    )
+    .returning();
+  if (!decided[0]) throw new HttpError(409, OFFER_GONE);
+  const business = getBusiness(template.businessId);
+  await logEvent({
+    worldId: world.id,
+    companyId: company.id,
+    round: row.roundOffered,
+    type: accept ? "contract.accepted" : "contract.rejected",
+    payload: { contractId: row.id, templateId: template.id, businessId: business.id, businessName: business.name },
+  });
+  return toContractView(decided[0]);
+}
+
+// ---------- Obračun mjeseca ----------
+
+/**
+ * Obračun kruga za cijeli grad, točno jednom: prvo zauzme `settled_round` (bez retka → netko je već obračunao),
+ * zatim tržište, novac, pokazatelji, retci u `finances`, istek neprihvaćenih ponuda i događaj u jednom `db.batch`.
+ */
+export async function settleCityRound(world: WorldRow, round: number): Promise<void> {
+  if (!Number.isInteger(round) || round < 1) return;
+  const claimed = await db
+    .update(worlds)
+    .set({ settledRound: round })
+    .where(and(eq(worlds.id, world.id), lt(worlds.settledRound, round)))
+    .returning({ id: worlds.id });
+  if (!claimed[0]) return;
+
+  const [all, planRows, roomPrices, contractRows] = await Promise.all([
+    listCompanies(world.id),
+    listPlans(world.id, round),
+    listRoomPrices(world.id),
+    listWorldContracts(world.id),
+  ]);
+
+  const hotels = all.map(({ company }) => {
+    const roomsOf = roomPrices.filter((r) => r.companyId === company.id);
+    const ref = refPrice(roomsOf);
+    const plan = planRows.find((p) => p.companyId === company.id);
+    const active = activeTemplates(
+      contractRows.filter((c) => c.companyId === company.id),
+      round,
+    );
+    return { company, roomsCount: roomsOf.length, ref, price: plan?.price ?? ref, marketing: plan?.marketing ?? 0, active };
+  });
+
+  const market = settleMarket(
+    round,
+    hotels.map((h) => ({
+      companyId: h.company.id,
+      roomsCount: h.roomsCount,
+      reviews: h.company.metrics.reviews,
+      guests: h.company.metrics.guests,
+      price: h.price,
+      refPrice: h.ref,
+      marketing: h.marketing,
+      contractNights: contractNightsTotal(h.active),
+    })),
+  );
+
+  const settled = hotels.map((h, k) => {
+    const finance = roundFinance(market[k], {
+      round,
+      price: h.price,
+      marketing: h.marketing,
+      staffCost: getHotel(h.company.templateId).staffCost,
+      roomsCount: h.roomsCount,
+      cashBefore: h.company.cash,
+      contracts: h.active,
+    });
+    const delta = sumEffects(contractEffects(h.active), { finance: financeEffect(finance.profit) });
+    return { company: h.company, finance, delta };
+  });
+
+  const top = settled.reduce<(typeof settled)[number] | undefined>(
+    (best, s) => (!best || s.finance.occupancyPct > best.finance.occupancyPct ? s : best),
+    undefined,
+  );
+
+  const perHotel: BatchItem<"pg">[] = settled.flatMap(({ company, finance, delta }) => [
+    db
+      .update(companies)
+      .set({ cash: sql`${companies.cash} + ${finance.profit}`, metrics: metricsPlus(delta) })
+      .where(eq(companies.id, company.id)),
+    // bez onConflict: da obračun ikad stigne dvaput, unique (company_id, round) poništi cijeli batch
+    db.insert(finances).values({ companyId: company.id, ...finance }),
+  ]);
+
+  await db.batch([
+    db.insert(events).values({
+      worldId: world.id,
+      round,
+      type: "round.settled",
+      payload: {
+        hotels: settled.length,
+        topCompanyId: top?.company.id ?? null,
+        topHotelName: top?.company.name ?? null,
+        occupancyPct: top?.finance.occupancyPct ?? null,
+      },
+    }),
+    db
+      .update(contracts)
+      .set({ status: "expired" })
+      .where(and(eq(contracts.worldId, world.id), eq(contracts.roundOffered, round), eq(contracts.status, "offered"))),
+    ...perHotel,
+  ]);
+}
+
+// ---------- Podaci za poglede (faza B: views.ts / loadMe / loadProfState) ----------
+
+/** Ponude i ugovori tvrtke, najnoviji prvo. */
+export async function listContractViews(companyId: string): Promise<ContractView[]> {
+  return (await listCompanyContracts(companyId)).map(toContractView);
+}
+
+/** Obračuni tvrtke po mjesecima, redom. */
+export async function listFinances(companyId: string): Promise<RoundFinance[]> {
+  return (await listFinanceRows(companyId)).map(toFinance);
+}
+
+/** Vijesti grada; `names` (id tvrtke → ime hotela) ako ih pozivatelj već ima, inače se pročitaju. */
+export async function loadNews(worldId: string, names?: Record<string, string>): Promise<NewsItem[]> {
+  const [rows, known] = await Promise.all([
+    listEvents(worldId, NEWS_TYPES, NEWS_LIMIT),
+    names
+      ? Promise.resolve(names)
+      : listCompanies(worldId).then((all) => Object.fromEntries(all.map(({ company }) => [company.id, company.name]))),
+  ]);
+  return buildNews(rows, known);
+}
+
+/** Linije karte za krug: aktivni ugovori igre. */
+export async function loadCityLinks(worldId: string, round: number): Promise<CityLink[]> {
+  return toCityLinks(await listWorldContracts(worldId), round);
+}

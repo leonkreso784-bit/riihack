@@ -1,0 +1,175 @@
+import { describe, expect, it } from "vitest";
+import type { ContractRow } from "@/db/schema";
+import { CITY, CONTRACTS, getBusiness } from "@/content";
+import { HttpError } from "@/lib/http";
+import { MARKETING_MAX, PRICE_MAX, PRICE_MIN } from "@/lib/rules";
+import type { LeaderboardRow } from "@/lib/types";
+import { buildNews, parsePlan, sumEffects, toCityLinks, toCityView, toContractView, type NewsEvent } from "./city";
+
+const agency = CONTRACTS.find((c) => c.nights > 0)!;
+const laundry = CONTRACTS.find((c) => c.businessId === "praonica-kvarner")!;
+
+function contract(over: Partial<ContractRow>): ContractRow {
+  return {
+    id: "k1",
+    worldId: "w",
+    companyId: "ana",
+    templateId: agency.id,
+    roundOffered: 2,
+    status: "offered",
+    activeFrom: null,
+    activeTo: null,
+    ...over,
+  };
+}
+
+function planError(body: { price?: unknown; marketing?: unknown }): HttpError | undefined {
+  try {
+    parsePlan(body);
+  } catch (err) {
+    return err as HttpError;
+  }
+  return undefined;
+}
+
+describe("parsePlan", () => {
+  it("prima cijele brojeve u rasponu, i rubove", () => {
+    expect(parsePlan({ price: 60, marketing: 0 })).toEqual({ price: 60, marketing: 0 });
+    expect(parsePlan({ price: PRICE_MIN, marketing: MARKETING_MAX })).toEqual({ price: PRICE_MIN, marketing: MARKETING_MAX });
+    expect(parsePlan({ price: PRICE_MAX, marketing: 1000 })).toEqual({ price: PRICE_MAX, marketing: 1000 });
+  });
+
+  it("cijena izvan raspona, decimalna ili nije broj → 400 s porukom na hrvatskom", () => {
+    for (const price of [PRICE_MIN - 1, PRICE_MAX + 1, 60.5, "60", undefined, null, Number.NaN]) {
+      const err = planError({ price, marketing: 0 });
+      expect(err).toBeInstanceOf(HttpError);
+      expect(err?.status).toBe(400);
+      expect(err?.message).toBe("Cijena noćenja mora biti cijeli broj od 30 € do 400 €");
+    }
+  });
+
+  it("marketing izvan raspona ili decimalan → 400", () => {
+    for (const marketing of [-1, MARKETING_MAX + 1, 1.5, "100", undefined]) {
+      const err = planError({ price: 80, marketing });
+      expect(err?.status).toBe(400);
+      expect(err?.message).toBe("Marketing mora biti cijeli broj od 0 € do 5.000 €");
+    }
+  });
+});
+
+describe("toContractView", () => {
+  it("ponuda: uvjeti iz predloška i ime tvrtke, bez roka", () => {
+    const v = toContractView(contract({}));
+    expect(v).toMatchObject({
+      id: "k1",
+      templateId: agency.id,
+      businessName: getBusiness(agency.businessId).name,
+      businessKind: "agency",
+      title: agency.title,
+      nights: agency.nights,
+      pricePerNight: agency.pricePerNight,
+      durationRounds: agency.durationRounds,
+      roundOffered: 2,
+      status: "offered",
+    });
+    expect(v.activeUntilRound).toBeUndefined();
+  });
+
+  it("prihvaćen ugovor ima activeUntilRound = activeTo", () => {
+    const v = toContractView(contract({ status: "accepted", activeFrom: 2, activeTo: 3 }));
+    expect(v.status).toBe("accepted");
+    expect(v.activeUntilRound).toBe(3);
+  });
+});
+
+describe("toCityLinks i toCityView", () => {
+  const rows = [
+    contract({ id: "a", status: "accepted", activeFrom: 2, activeTo: 3 }),
+    contract({ id: "b", status: "accepted", activeFrom: 2, activeTo: 2, templateId: laundry.id, companyId: "ivan" }),
+    contract({ id: "c", status: "offered", templateId: laundry.id }),
+    contract({ id: "d", status: "accepted", activeFrom: 3, activeTo: 3 }), // ista tvrtka i hotel kao "a"
+  ];
+
+  it("samo ugovori aktivni u krugu, bez ponavljanja linije", () => {
+    expect(toCityLinks(rows, 2)).toEqual([
+      { companyId: "ana", businessId: agency.businessId },
+      { companyId: "ivan", businessId: "praonica-kvarner" },
+    ]);
+    expect(toCityLinks(rows, 3)).toEqual([{ companyId: "ana", businessId: agency.businessId }]);
+    expect(toCityLinks(rows, 4)).toEqual([]);
+  });
+
+  it("karta: sve gradske tvrtke, hoteli s ljestvice, linije", () => {
+    const hotels: LeaderboardRow[] = [
+      { companyId: "ana", hotelName: "Vila Ana", playerName: "Ana", place: "Rijeka", progress: 5, closedRound: 1, cash: 20000, roundGain: 5 },
+    ];
+    const links = toCityLinks(rows, 2);
+    expect(toCityView(hotels, links)).toEqual({ businesses: CITY, hotels, links });
+    expect(toCityView(hotels).links).toEqual([]);
+    expect(toCityView([]).businesses).toHaveLength(6);
+  });
+});
+
+describe("buildNews", () => {
+  const names = { ana: "Vila Ana", ivan: "Hotel Lungomare" };
+  const at = (min: number) => new Date(Date.UTC(2026, 9, 24, 14, min));
+  const ev = (type: string, round: number, min: number, companyId: string | null, payload: unknown): NewsEvent => ({
+    type,
+    round,
+    companyId,
+    payload,
+    at: at(min),
+  });
+
+  it("tekstovi iz plana, najnovije prvo, nepoznati događaji preskočeni", () => {
+    const news = buildNews(
+      [
+        ev("player.joined", 0, 1, "ana", { name: "Ana", hotelName: "Vila Ana", place: "Rijeka" }),
+        ev("round.opened", 1, 5, null, {}),
+        ev("contract.accepted", 1, 12, "ivan", { businessName: "Agencija Adria" }),
+        ev("contract.rejected", 1, 13, "ana", { businessName: "Pekara Trsat" }),
+        ev("answer.saved", 1, 14, "ana", {}),
+        ev("round.settled", 3, 28, null, { topCompanyId: "ivan", topHotelName: "Stari naziv", occupancyPct: 94 }),
+      ],
+      names,
+    );
+    expect(news).toEqual([
+      { at: at(28).toISOString(), text: "Kolovoz: najpopunjeniji je Hotel Lungomare (94 %)" },
+      { at: at(12).toISOString(), text: "Hotel Lungomare potpisao ugovor s Agencija Adria" },
+      { at: at(5).toISOString(), text: "Počinje lipanj" },
+      { at: at(1).toISOString(), text: "Vila Ana otvara vrata u Rijeka" },
+    ]);
+  });
+
+  it("bez imena u mapi koristi ime iz događaja; bez podataka preskače", () => {
+    const news = buildNews(
+      [
+        ev("player.joined", 0, 1, "novi", { hotelName: "Hotel Novi", place: "Opatija" }),
+        ev("round.settled", 1, 2, null, { topCompanyId: "nema", topHotelName: "Hotel Novi", occupancyPct: 60 }),
+        ev("round.settled", 2, 3, null, { topCompanyId: null, topHotelName: null, occupancyPct: null }),
+        ev("contract.accepted", 1, 4, "nema", {}),
+      ],
+      {},
+    );
+    expect(news.map((n) => n.text)).toEqual(["Lipanj: najpopunjeniji je Hotel Novi (60 %)", "Hotel Novi otvara vrata u Opatija"]);
+  });
+
+  it("najviše 10 vijesti", () => {
+    const many = Array.from({ length: 15 }, (_, i) => ev("round.opened", 1 + (i % 4), i, null, {}));
+    const news = buildNews(many, names);
+    expect(news).toHaveLength(10);
+    expect(news[0].at).toBe(at(14).toISOString());
+  });
+});
+
+describe("sumEffects", () => {
+  it("zbraja po ključu, izbacuje nule i nepoznate ključeve", () => {
+    expect(sumEffects({ operations: 3, reviews: 1 }, { reviews: 1, finance: 0 }, { finance: -2 })).toEqual({
+      operations: 3,
+      reviews: 2,
+      finance: -2,
+    });
+    expect(sumEffects({ guests: 2 }, { guests: -2 })).toEqual({});
+    expect(sumEffects({ bogus: 5 } as never)).toEqual({});
+  });
+});
