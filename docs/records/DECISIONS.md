@@ -34,7 +34,7 @@ noć. Vlasnici dijela datoteka (Rino, Simon) rade usporedno.
 - Za Rinove i Simonove datoteke graditelj prvo provjeri njihove otvorene PR-ove i grane; Leon im javlja na Discordu.
 
 **Posljedice.** Promjena motora mijenja brojke, pa se spaja na Leonovo „spoji"; demo se sije jednom, nakon oba
-popravka balansa.
+popravka balansa. BUG-024 spojen [#213](https://github.com/leonkreso784-bit/riihack/pull/213) (22:55); BUG-026 je [#214](https://github.com/leonkreso784-bit/riihack/pull/214).
 
 <a id="adr-044"></a>
 ## ADR-044 · Botovi: drugi hoteli i dobavljači u igri s malo studenata
@@ -50,7 +50,9 @@ konkurencije i tvrtki, pa ekonomija grada ne radi.
 - **profesor ih uključi** pri stvaranju igre (npr. „dopuni grad botovima"), ne dodaju se sami.
 
 **Posljedice.** Isti ishod za isto stanje, brojke računa samo motor (ADR-002). Demo igra ostaje kakva jest dok je
-profesor ne napravi s botovima.
+profesor ne napravi s botovima. Spojeno [#205](https://github.com/leonkreso784-bit/riihack/pull/205) (23:00, Leonovo „spoji", Rinova tri uvjeta ispunjena): profesor u
+čekaonici dodaje botove s težinom Lako, Srednje ili Teško. 🟨 Polja `isBot?` i `BotsRequest` iz #205 još nisu upisana u
+blok „Ugovor" plana (javio integrator).
 
 <a id="adr-043"></a>
 ## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule

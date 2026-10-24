@@ -6,6 +6,21 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 22:45–23:05 · rok „Ručno", pokazatelji, botovi
+
+- **Spojeno:** Rinov #211 (22:50): rok mjeseca zadano „Ručno"
+  ([BUG-025](BUGS.md#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec)), podij sezone i ljestvica
+  cijelom širinom (BUG-022), kraj sezone na `/igra` (BUG-023), „Bez odgovora" kod studenta (BUG-019), „← Moje igre" i
+  kod igre na ploči (dio BUG-021). BUG-024 pokazatelji i gosti (#213, 22:55, Leonovo „spoji"). Simonovi botovi (#205,
+  23:00, Leonovo „spoji", Rinova tri uvjeta ispunjena). Uz to #203, #207, #208 (BUG-020a) i dokumentacija #210.
+  Integrator: 434 testa, smoke 18/18, CI zelen, produkcija READY 23:00.
+- **Odluka (Leon, ~22:55):** odgovorena situacija donosi plus već od ocjene 3 ([ADR-046](DECISIONS.md#adr-046),
+  BUG-026); kod je #214, čeka „spoji".
+- **Čeka:** #214 (Leonovo „spoji"); #212 (graditelj, BUG-021 ostatak; dobar dio je već u #211); #206 (Simon, rebase
+  zbog #213 u `month-flow.ts`); #209 Simonova kalibracija troškova prema stvarnim hotelima (Leon odlučuje;
+  preporuka dokumentarista: jedan paket nakon #214, uz test da solidan student napreduje, rok 03:00).
+- **🟨 Plan:** polja `isBot?` i `BotsRequest` iz #205 još nisu u bloku „Ugovor".
+
 ## Sub 24.10. 22:25–22:35 · Rino i Simon popravljaju, graditelj preuzima ostalo
 
 - **Spojeno:** Rino #200 (22:28, BUG-015 i 016 riješeni) i R10 podij za projektor #196 (22:29); Simon #195 (22:29,

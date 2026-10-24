@@ -14,7 +14,7 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
 ~22:05, ~22:20 i ~22:25.
 
 ### BUG-026 · Napredak je negativan za sve hotele od prvog mjeseca
-- **Status:** 🟡 u radu (graditelj, motor) · **Težina:** visok (ljestvica i podij pokazuju da su svi izgubili)
+- **Status:** 🟡 PR [#214](https://github.com/leonkreso784-bit/riihack/pull/214) čeka Leonovo „spoji" · **Težina:** visok (ljestvica i podij pokazuju da su svi izgubili)
 - **Opis:** tester (22:35–22:45, produkcija nakon #194): u tri igre svi hoteli imaju negativan napredak već od
   prvog mjeseca, i uz odgovore 3/5 i 5/5 (pobjednik ▼ −12.7, drugi ▼ −14.9).
 - **Uzrok (graditelj, produkcijska baza samo čitanjem):** nije od #194, sve su dobiti pozitivne. `applyRound` daje
@@ -27,28 +27,8 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
 - **Lekcija:** nakon promjene motora provjeri i izvedene brojke (napredak, ljestvica, podij), ne samo onu koju si
   mijenjao.
 
-### BUG-025 · Zadani rok „10 min" na ploči profesora sam zatvara mjesec
-- **Status:** 🔴 otvoren (Rino, Leonova odluka ~22:35) · **Težina:** kritičan za demo (žiri na obilasku lako ostane
-  dulje od 10 minuta)
-- **Opis:** tester potvrdio na produkciji (22:18): za sljedeći mjesec unaprijed je odabran rok „10 min". Kad istekne,
-  odgovori se više ne primaju, neodgovorene situacije postanu „expired" s ocjenom 1/5 i mjesec se svima zatvori.
-- **Uzrok:** `src/components/prof-board.tsx:83`, `useState<number | undefined>(10)`.
-- **Rješenje:** 🟨 čeka Rina. Očekivano (tester): zadano „Ručno" (bez roka); rok 5/10/15 min vrijedi samo ako ga
-  profesor sam klikne prije „Zatvori mjesec". Na produkciji u 22:45 i dalje zadano „10 min".
-- **Lekcija:** zadana vrijednost koja sama pokreće radnju mora biti „isključeno"; profesor je uključuje svjesno.
-
-### BUG-019 · Situacija nakon isteka roka piše „Ponuđeni odgovor"
-- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (student misli da je nešto odabrao) · ista obitelj
-  kao [BUG-015](#bug-015--uvid-u-studenta-propuštena-situacija-piše-klik)
-- **Opis:** profesor otvori mjesec s rokom, student ne odgovori, rok istekne (`answer.mode` `"none"`, `state`
-  `"expired"`). Situacija tada piše „Ponuđeni odgovor · 1/5" i nudi „Kako je tvoj odgovor prošao kroz hotel →".
-- **Uzrok:** `src/components/verdict-card.tsx:28`: sve što nije `"own"` prikazuje se kao „Ponuđeni odgovor".
-- **Rješenje:** 🟨 čeka Rina; očekivano „Bez odgovora, rok je istekao · 1/5", bez poveznice na tok odgovora.
-- **Lekcija:** kao BUG-015; isti „sve ostalo" uvjet bio je na dva mjesta, pa popravak traži sva mjesta gdje se
-  `mode` prikazuje.
-
 ### BUG-020 · Sitni tekstovi: „2 studenata", tehnički tekst u toku mjeseca
-- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Status:** 🟡 (a) riješen 22:45 ([#208](https://github.com/leonkreso784-bit/riihack/pull/208)); (b) u Simonovom [#206](https://github.com/leonkreso784-bit/riihack/pull/206) · **Težina:** nizak
 - **Opis:** (a) „Moje igre" (`/profesor/igre`, Leonova datoteka): „2 studenata" umjesto „2 studenta". (b) „Kako je
   izračunat mjesec" (`/igra/izvjestaj/1/tok`, Simonov): kartica „Ugled · Nije spremljeno uz obračun" je tehnički
   tekst za studenta (`src/lib/tokovi/month-flow.ts:158`), a početni čvor ponavlja „Početak: Lipanj / Lipanj".
@@ -57,43 +37,14 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
 - **Lekcija:** svaki tekst na ekranu čita student ili žiri; poruke za razvoj ne idu u sučelje.
 
 ### BUG-021 · Ploča profesora: nema puta natrag ni koda igre nakon početka
-- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** nizak (srednji za demo: student koji kasni ne može ući)
+- **Status:** 🟡 djelomično: „← Moje igre" i kod igre za one koji kasne u [#211](https://github.com/leonkreso784-bit/riihack/pull/211) (22:50); ostatak u graditeljevom
+  [#212](https://github.com/leonkreso784-bit/riihack/pull/212) · **Težina:** nizak (srednji za demo: student koji kasni ne može ući)
 - **Opis:** ploča (`/profesor/[worldId]`) i uvid u studenta imaju samo „Odjava", bez poveznice na „Moje igre" i
   „Knjižnica"; profesor se vraća tipkom natrag. Nakon početka igre kod igre se više ne vidi na ploči, pa student koji
   kasni ne može ući s projektora.
 - **Rješenje:** 🟨 čeka Rina.
 - **Lekcija:** novi ekrani (računi, knjižnica) traže put do njih sa svih starih ekrana; provjeri navigaciju od
   prijave do svake stranice.
-
-### BUG-022 · Kraj sezone na projektoru: nema podija, pobjednik izgleda kao gubitnik
-- **Status:** 🟡 podij spojen 22:29 (Rino, [#196](https://github.com/leonkreso784-bit/riihack/pull/196)); tester ponovno provjerava širinu i crveni ▼ · **Težina:** visok (završni trenutak demoa)
-- **Opis:** ploča profesora na 1280×720 nakon „Završi sezonu": nema podija, ljestvica zauzima pola širine, desna
-  polovica je prazna; pobjednik ima crveno „▼ −19.3", drugi „▼ −36.9". Koraci: igra s 2 studenta, zatvoriti 2
-  mjeseca, „Završi sezonu".
-- **Ponovna provjera (tester, 22:45):** podij postoji (cijeli ekran, 2. i 1. mjesto, „Nastavi"), ali (1) pobjednik
-  i dalje ima crveni „▼ −12.7"; (2) podij se sam zatvori nakon ~5 s, a ispod ostaje ljestvica na pola širine s praznom
-  desnom polovicom; (3) „Završi sezonu" u mjesecu u kojem nitko nije igrao piše „Srpanj: tko je najviše napredovao".
-- **Rješenje:** 🟨 prikaz radi Rino; crveni ▼ je točan dok je napredak negativan, pa je uzrok i u
-  [BUG-026](#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca).
-- **Lekcija:** završni ekran demoa provjeri na rezoluciji projektora i s pravim brojkama, ne samo s lažnim podacima.
-
-### BUG-023 · `/igra` nakon kraja sezone i dalje čeka obračun
-- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** nizak
-- **Opis:** kartica „Stanje računa" nakon kraja sezone i dalje piše „obračun kad profesor zatvori mjesec".
-- **Rješenje:** 🟨 čeka Rina.
-- **Lekcija:** svaki tekst koji opisuje „što slijedi" treba stanje za kraj igre.
-
-### BUG-024 · Loši pokazatelji jedva utječu na goste u vrhu sezone
-- **Status:** 🟡 u radu (graditelj, od ~22:35) · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
-  pokazatelji goste)
-- **Opis:** tester (~22:25, nakon #194): hotel koji nije odgovorio ni na jednu situaciju (zadovoljstvo gostiju 34/100,
-  zaposlenici 26/100) u kolovozu ima 86 % popunjenosti i 63.102 € dobiti, najviše u gradu.
-- **Uzrok (dokumentarist iz koda, 🟨 potvrditi s graditeljem):** potražnja grada je udio kapaciteta grada
-  (`SEASON_DEMAND_BP`: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %, `rules.ts:57`), pa se u kolovozu gotovo
-  svi hoteli napune bez obzira na privlačnost. U privlačnosti (`attractiveness`, `economy.ts`) su samo recenzije i
-  zadovoljstvo gostiju, ne i zaposlenici ni ostali pokazatelji.
-- **Rješenje:** [ADR-045](DECISIONS.md#adr-045): pokazatelji jače utječu na goste; radi graditelj.
-- **Lekcija:** test balansa treba provjeriti i obrnuto: da loša odluka gubi, ne samo da najbolja odluka ima smisla.
 
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
@@ -107,6 +58,57 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-024 · Loši pokazatelji jedva utječu na goste u vrhu sezone
+- **Status:** ✅ riješen 24.10. 22:55 ([#213](https://github.com/leonkreso784-bit/riihack/pull/213), Leonovo „spoji") · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
+  pokazatelji goste)
+- **Opis:** tester (~22:25, nakon #194): hotel koji nije odgovorio ni na jednu situaciju (zadovoljstvo gostiju 34/100,
+  zaposlenici 26/100) u kolovozu ima 86 % popunjenosti i 63.102 € dobiti, najviše u gradu.
+- **Uzrok (dokumentarist iz koda, 🟨 potvrditi s graditeljem):** potražnja grada je udio kapaciteta grada
+  (`SEASON_DEMAND_BP`: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %, `rules.ts:57`), pa se u kolovozu gotovo
+  svi hoteli napune bez obzira na privlačnost. U privlačnosti (`attractiveness`, `economy.ts`) su samo recenzije i
+  zadovoljstvo gostiju, ne i zaposlenici ni ostali pokazatelji.
+- **Rješenje:** privlačnost i potražnja hotela ovise o kvaliteti iz svih pokazatelja (gosti i recenzije po 30 %,
+  osoblje i operativa po 15 %, financije 10 %); ispod 50 privlačnost pada s kvadratom (36 → ×0,52), iznad raste do
+  ×2,0; uz sve pokazatelje na 50 isto kao prije ([ADR-045](DECISIONS.md#adr-045)).
+- **Lekcija:** test balansa treba provjeriti i obrnuto: da loša odluka gubi, ne samo da najbolja odluka ima smisla.
+
+### BUG-025 · Zadani rok „10 min" na ploči profesora sam zatvara mjesec
+- **Status:** ✅ riješen 24.10. 22:50 (Rino, [#211](https://github.com/leonkreso784-bit/riihack/pull/211)) · **Težina:** kritičan za demo (žiri na obilasku lako ostane
+  dulje od 10 minuta)
+- **Opis:** tester potvrdio na produkciji (22:18): za sljedeći mjesec unaprijed je odabran rok „10 min". Kad istekne,
+  odgovori se više ne primaju, neodgovorene situacije postanu „expired" s ocjenom 1/5 i mjesec se svima zatvori.
+- **Uzrok:** `src/components/prof-board.tsx:83`, `useState<number | undefined>(10)`.
+- **Rješenje:** zadano „Ručno" (bez roka); rok 5/10/15 min vrijedi samo ako ga profesor sam odabere.
+- **Lekcija:** zadana vrijednost koja sama pokreće radnju mora biti „isključeno"; profesor je uključuje svjesno.
+
+### BUG-022 · Kraj sezone na projektoru: nema podija, pobjednik izgleda kao gubitnik
+- **Status:** ✅ riješen 24.10. 22:50 (Rino, [#196](https://github.com/leonkreso784-bit/riihack/pull/196) i [#211](https://github.com/leonkreso784-bit/riihack/pull/211); 🟨 tester ponovno provjerava) · **Težina:** visok (završni trenutak demoa)
+- **Opis:** ploča profesora na 1280×720 nakon „Završi sezonu": nema podija, ljestvica zauzima pola širine, desna
+  polovica je prazna; pobjednik ima crveno „▼ −19.3", drugi „▼ −36.9". Koraci: igra s 2 studenta, zatvoriti 2
+  mjeseca, „Završi sezonu".
+- **Ponovna provjera (tester, 22:45):** podij postoji (cijeli ekran, 2. i 1. mjesto, „Nastavi"), ali (1) pobjednik
+  i dalje ima crveni „▼ −12.7"; (2) podij se sam zatvori nakon ~5 s, a ispod ostaje ljestvica na pola širine s praznom
+  desnom polovicom; (3) „Završi sezonu" u mjesecu u kojem nitko nije igrao piše „Srpanj: tko je najviše napredovao".
+- **Rješenje:** podij sezone preko cijele širine ostaje na ekranu, ljestvica ispod cijelom širinom, napredak na podiju
+  neutralan (bijelo, bez crvene strelice), decimalni zarez.
+- **Lekcija:** završni ekran demoa provjeri na rezoluciji projektora i s pravim brojkama, ne samo s lažnim podacima.
+
+### BUG-023 · `/igra` nakon kraja sezone i dalje čeka obračun
+- **Status:** ✅ riješen 24.10. 22:50 (Rino, [#211](https://github.com/leonkreso784-bit/riihack/pull/211)) · **Težina:** nizak
+- **Opis:** kartica „Stanje računa" nakon kraja sezone i dalje piše „obračun kad profesor zatvori mjesec".
+- **Rješenje:** „Stanje računa" nakon kraja sezone piše „konačno stanje, sezona je gotova".
+- **Lekcija:** svaki tekst koji opisuje „što slijedi" treba stanje za kraj igre.
+
+### BUG-019 · Situacija nakon isteka roka piše „Ponuđeni odgovor"
+- **Status:** ✅ riješen 24.10. 22:50 (Rino, [#211](https://github.com/leonkreso784-bit/riihack/pull/211)) · **Težina:** srednji (student misli da je nešto odabrao) · ista obitelj
+  kao [BUG-015](#bug-015--uvid-u-studenta-propuštena-situacija-piše-klik)
+- **Opis:** profesor otvori mjesec s rokom, student ne odgovori, rok istekne (`answer.mode` `"none"`, `state`
+  `"expired"`). Situacija tada piše „Ponuđeni odgovor · 1/5" i nudi „Kako je tvoj odgovor prošao kroz hotel →".
+- **Uzrok:** `src/components/verdict-card.tsx:28`: sve što nije `"own"` prikazuje se kao „Ponuđeni odgovor".
+- **Rješenje:** `verdict-card` piše „Bez odgovora" za situaciju bez odgovora.
+- **Lekcija:** kao BUG-015; isti „sve ostalo" uvjet bio je na dva mjesta, pa popravak traži sva mjesta gdje se
+  `mode` prikazuje.
 
 ### BUG-017 · AI prijedlog situacije: područje kao sirovi ključ
 - **Status:** ✅ riješen 24.10. 22:29 (Simon, [#195](https://github.com/leonkreso784-bit/riihack/pull/195); tester potvrdio 22:45) · **Težina:** nizak
