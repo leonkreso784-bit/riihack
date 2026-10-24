@@ -27,7 +27,8 @@ produkciji.
 (profesorove situacije i playbook) → [#75](https://github.com/leonkreso784-bit/riihack/pull/75) L6 (Leon pregledao struku, 3 jezične ispravke) → [#95](https://github.com/leonkreso784-bit/riihack/pull/95) L12
 → [#96](https://github.com/leonkreso784-bit/riihack/pull/96) odjava. Između koraka smoke 14/14 i provjera produkcije; **ako išta pukne, lanac staje.**
 **Posljedice.** M3 PR-ovi koji su gotovi ([#100](https://github.com/leonkreso784-bit/riihack/pull/100) playbook, [#103](https://github.com/leonkreso784-bit/riihack/pull/103) demo igra, [#104](https://github.com/leonkreso784-bit/riihack/pull/104) promjena
-ocjene mentora) čekaju iza vala.
+ocjene mentora) čekaju iza vala. **Izvedeno:** spojeno 16:50–17:06, svaki korak uz zelen CI, Vercel i produkciju;
+smoke 14/14 nakon #75; #96 spojen prije #95.
 
 <a id="adr-027"></a>
 ## ADR-027 · Playbook kao izvoz i uvoz, bez mijenjanja mehanike

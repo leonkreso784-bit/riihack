@@ -21,16 +21,16 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** na bazi koju dijeli cijeli tim alat koji „usklađuje" shemu može predložiti brisanje. Svaku promjenu
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
+## Riješeni
+
 ### BUG-004 · Smoke korak 5 na `main`-u pada: „Ana ima 0 situacija"
-- **Status:** 🟡 čeka spajanje L6 ([#75](https://github.com/leonkreso784-bit/riihack/pull/75), Leonov pregled struke) · **Težina:** srednji (smoke na `main`-u
-  crven; korisnik ne vidi jer je produkcija na lažnim podacima, [ADR-018](DECISIONS.md#adr-018))
+- **Status:** ✅ riješen 24.10. 16:55 ([#75](https://github.com/leonkreso784-bit/riihack/pull/75)); smoke na `main`-u 14/14 · **Težina:** srednji (smoke na
+  `main`-u crven; korisnik nije vidio jer je produkcija bila na lažnim podacima, [ADR-018](DECISIONS.md#adr-018))
 - **Opis:** `npm run smoke` na `main`-u: nakon pokretanja igre student nema nijednu situaciju.
 - **Uzrok:** `situations.json` je prazan dok se ne spoji L6. Kod nije neispravan: s #75 lokalno prolaze koraci 1–10.
-- **Rješenje:** spojiti #75 (na Leonovo „spoji", [ADR-017](DECISIONS.md#adr-017)).
+- **Rješenje:** spojen #75 u valu M2 ([ADR-028](DECISIONS.md#adr-028)).
 - **Lekcija:** smoke ovisi o sadržaju, ne samo o kodu. Kad su sadržaj i kod u različitim PR-ovima, crven smoke prvo
   provjeri ima li sadržaja.
-
-## Riješeni
 
 ### BUG-005 · Agent je pri gašenju dev servera pokušao ugasiti sve `node.exe` procese
 - **Status:** ✅ riješen 24.10. u L8 (pokušaj odbijen, ništa nije ugašeno) · **Težina:** nizak (alat, ne proizvod),
