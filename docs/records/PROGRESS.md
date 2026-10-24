@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~01:35 · sigurnost
+
+- **Spojeno:** dokumentacija #246 (01:33).
+- **Odluka (Leon, ~01:20, nakon Simonovog sigurnosnog pregleda):** granice AI prijedloga, atomična granica poruka s
+  likom, tri sigurnosna zaglavlja bez CSP-a, PIN poslije natjecanja ([ADR-053](DECISIONS.md#adr-053)). Graditelj:
+  #247 (granica AI prijedloga) otvoren, PR-ovi za poruke i zaglavlja stižu.
+- **Otvoreno:** #241 (plan se prenosi, čeka Leonovo „spoji"), #247.
+
 ## Ned 25.10. ~01:25 · ocjena 1 za napisan odgovor, račun tuđih hotela
 
 - **Spojeno:** dokumentacija #243 (01:16).

@@ -8,6 +8,23 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-053"></a>
+## ADR-053 · Sigurnost prije predaje: granice AI-ja i tri zaglavlja, bez CSP-a
+**Datum:** 25.10. ~01:20 · **Status:** ✅ (Leon, nakon Simonovog sigurnosnog pregleda; preneseno preko graditelja) ·
+**Vezano:** [ADR-024](#adr-024), [ADR-036](#adr-036)
+
+**Kontekst.** Igru (i kolačić profesora) može otvoriti svatko bez računa, a AI prijedlog situacije je plaćeni poziv
+modela bez granice. Rino je predložio sigurnosna zaglavlja (CSP, zabrana iframea, `nosniff`).
+**Odluka.**
+- AI prijedlog situacije: najviše 30 po igri i 5 u minuti, inače 429
+  ([#247](https://github.com/leonkreso784-bit/riihack/pull/247)).
+- Granica poruka u razgovoru s likom provjerava se atomično.
+- Zaglavlja `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff` i `Referrer-Policy`; stroge CSP nema.
+- Ponovni ulaz studenta samo imenom (PIN) je za nakon natjecanja.
+
+**Posljedice.** Trošak AI-ja po igri je ograničen, a demo radi kao i prije. Granica AI prijedloga nije atomična (mala
+utrka na granici, zapisano u #247). Radi graditelj; PR-ovi za poruke i zaglavlja stižu.
+
 <a id="adr-052"></a>
 ## ADR-052 · Napisan odgovor s ocjenom 1 ne oduzima
 **Datum:** 25.10. ~01:25 · **Status:** ✅ (Leon, preneseno preko graditelja) · **Vezano:**
