@@ -52,9 +52,10 @@ opis · uzrok · rješenje · **lekcija**.
   krivom kodu)
 - **Opis:** pri provjeri [#118](https://github.com/leonkreso784-bit/riihack/pull/118) port 3107 je bio zauzet
   (`EADDRINUSE`), integratorov server se nije podigao, pa je smoke išao na tuđi `next dev`. Integrator je taj proces
-  ugasio. 🟨 čiji je bio server.
+  ugasio; server je bio graditeljev, a proba M2 je tada već bila gotova, pa šteta nije nastala.
 - **Uzrok:** port nije provjeren prije pokretanja, a pad pokretanja servera nije zaustavio smoke.
-- **Rješenje:** smoke ponovljen na slobodnom portu 3917, 14/14.
+- **Rješenje:** smoke ponovljen na slobodnom portu 3917, 14/14; demo igra vraćena (`KVRNDM`, krug 2).
+  Dogovor: graditelj koristi portove 3107 i 3199, integrator 3917.
 - **Lekcija:** prije pokretanja provjeri je li port slobodan; ako se server ne podigne, smoke staje. Tuđi proces se
   ne gasi ([BUG-005](#bug-005--agent-je-pri-gašenju-dev-servera-pokušao-ugasiti-sve-nodeexe-procese)).
 
