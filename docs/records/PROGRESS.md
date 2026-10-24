@@ -6,11 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
-## Sub 24.10. ~18:40 · bez zamrzavanja, odjeli s ulaganjem
+## Sub 24.10. 18:35–18:50 · bez zamrzavanja, odjeli s ulaganjem, popravci pred obilazak 2
 
 - **Odluke (Leon):** nema zamrzavanja koda, gradi se do predaje ([ADR-031](DECISIONS.md#adr-031)); odjeli s pravim
   ulaganjem kroz budžet u planu mjeseca ([ADR-032](DECISIONS.md#adr-032)).
-- **Slijedi:** graditelj ugovor, motor i API za budžet odjela; Rino stranica odjela.
+- **Spojeno:** Rinovi popravci prije obilaska M2 (#127, 18:36; dvije boje upisane izravno, ne kroz tokene), Simonov
+  S8 playbook i AI prijedlog na stranici situacija (#129, 18:45; 292 testa), dokumentacija #130.
+- **Odjeli:** shema dodana aditivnim SQL-om (graditelj); ugovor #132 čeka Leonovo „spoji". Slijede motor i API
+  (graditelj) i stranica odjela (Rino).
 
 ## Sub 24.10. 18:10–18:30 · pred obilazak 2
 
