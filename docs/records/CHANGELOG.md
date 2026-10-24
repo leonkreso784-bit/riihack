@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#246](https://github.com/leonkreso784-bit/riihack/pull/246) | 01:33 | Leon | dokumentacija: ADR-052, račun tuđih hotela, BUG-033, 036, 037 i 038 riješeni |
 | [#242](https://github.com/leonkreso784-bit/riihack/pull/242) | 01:28 | Simon | mentor prepozna prazan odgovor (BUG-033), množina u Tokovima odjela (BUG-037) |
 | [#245](https://github.com/leonkreso784-bit/riihack/pull/245) | 01:27 | Leon | brže „Moje igre": igre se traže odmah, usporedno sa sesijom (#227.6) |
 | [#244](https://github.com/leonkreso784-bit/riihack/pull/244) | 01:27 | Rino | situacija ne skrola stranicu (BUG-038), poruka bez padeža i potvrda praznog odgovora (BUG-036) |
