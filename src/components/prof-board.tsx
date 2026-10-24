@@ -11,8 +11,6 @@ import { Pill } from "./pill";
 import { FormError } from "./form";
 import { RoundBanner } from "./round-banner";
 import { Leaderboard } from "./leaderboard";
-import { CityMap } from "./city/city-map";
-import { NewsFeed } from "./city/news-feed";
 
 const DEADLINES = [
   { label: "Ručno", minutes: undefined },
@@ -21,8 +19,8 @@ const DEADLINES = [
   { label: "15 min", minutes: 15 },
 ];
 
-// R6: the professor's live board for the projector. City map is the main part; next to it who still plays this
-// month, the class ranking and the city news. Students see a new month on their next poll (≤ POLL_MS).
+// R6: the professor's live board for the projector: who still plays this month and the class ranking.
+// The city (map, news) is Simon's (S5) and is not part of this board. Students see a new month on their next poll (≤ POLL_MS).
 export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateResponse; syncedAt: number; onChange: () => void }) {
   const { world, players } = state;
   const finished = world.status === "finished";
@@ -46,43 +44,33 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
         </>
       )}
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 xl:grid-cols-3">
-        <Panel title="Karta grada" className="min-w-0 xl:col-span-2">
-          <CityMap city={state.city} round={world.round} />
-        </Panel>
-
-        <div className="space-y-6">
-          {!finished && (
-            <Panel
-              title={`${ROUND_LABELS[world.round - 1]}: zatvorilo ${done.length} od ${players.length}`}
-              action={<Pill tone={playing.length ? "accent" : "up"}>{playing.length ? `${playing.length} još igra` : "svi gotovi"}</Pill>}
-            >
-              <ul className="flex flex-wrap gap-2">
-                {[...playing, ...done].map((p) => {
-                  const closed = p.closedRound >= world.round;
-                  return (
-                    <li
-                      key={p.companyId}
-                      className={cn("flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold", closed ? "bg-mint text-up" : "bg-muted")}
-                    >
-                      {closed ? <CheckCircle2 className="size-4" aria-hidden /> : <Hourglass className="size-4 text-muted-foreground" aria-hidden />}
-                      {p.hotelName}
-                      <span className="sr-only">{closed ? "zatvorio mjesec" : "još igra"}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </Panel>
-          )}
-          <Panel title="Ljestvica" action={<span className="text-sm text-muted-foreground">po napretku</span>}>
-            <Leaderboard rows={players} limit={players.length} />
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-2">
+        {!finished && (
+          <Panel
+            title={`${ROUND_LABELS[world.round - 1]}: zatvorilo ${done.length} od ${players.length}`}
+            action={<Pill tone={playing.length ? "accent" : "up"}>{playing.length ? `${playing.length} još igra` : "svi gotovi"}</Pill>}
+          >
+            <ul className="flex flex-wrap gap-2">
+              {[...playing, ...done].map((p) => {
+                const closed = p.closedRound >= world.round;
+                return (
+                  <li
+                    key={p.companyId}
+                    className={cn("flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold", closed ? "bg-mint text-up" : "bg-muted")}
+                  >
+                    {closed ? <CheckCircle2 className="size-4" aria-hidden /> : <Hourglass className="size-4 text-muted-foreground" aria-hidden />}
+                    {p.hotelName}
+                    <span className="sr-only">{closed ? "zatvorio mjesec" : "još igra"}</span>
+                  </li>
+                );
+              })}
+            </ul>
           </Panel>
-        </div>
+        )}
+        <Panel title="Ljestvica" action={<span className="text-sm text-muted-foreground">po napretku</span>}>
+          <Leaderboard rows={players} limit={players.length} />
+        </Panel>
       </div>
-
-      <Panel title="Vijesti iz grada">
-        <NewsFeed items={state.news} />
-      </Panel>
     </div>
   );
 }
