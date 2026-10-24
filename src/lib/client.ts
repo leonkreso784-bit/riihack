@@ -1,4 +1,4 @@
-// Browser-side API calls. With NEXT_PUBLIC_USE_MOCK=1 every call answers from mock.ts instead of the server.
+// Browser-side API calls. Until the backend is live every call answers from mock.ts; NEXT_PUBLIC_USE_MOCK=0 switches to the server.
 import { useEffect, useEffectEvent, useState } from "react";
 import { POLL_MS } from "./rules";
 import { MOCK_DETAIL, MOCK_ME, MOCK_PROF, MOCK_ROOMS } from "./mock";
@@ -146,7 +146,9 @@ const mockApi: Api = {
   },
 };
 
-export const api: Api = process.env.NEXT_PUBLIC_USE_MOCK === "1" ? mockApi : realApi;
+// ponytail: mock is the default so Vercel (no env var set) shows a working demo; set NEXT_PUBLIC_USE_MOCK=0 once L4/L7 routes exist.
+export const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK !== "0";
+export const api: Api = USE_MOCK ? mockApi : realApi;
 
 // Polls fn every ms (default POLL_MS) without overlapping requests. refresh() fetches right away, e.g. after a click.
 export function usePoll<T>(fn: () => Promise<T>, ms = POLL_MS) {

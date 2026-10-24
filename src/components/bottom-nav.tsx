@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { t } from "@/lib/strings";
 import { Wordmark } from "./site-header";
 import { Pill } from "./pill";
+import { USE_MOCK as MOCK } from "@/lib/client";
 
 // Plan, Financije and Grad are Simon's pages (S5, S6); until they land the links 404.
 const ITEMS = [
@@ -17,7 +18,6 @@ const ITEMS = [
   { href: "/igra/grad", label: t.nav.city, icon: Map },
 ];
 
-const MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "1";
 
 function isActive(pathname: string, href: string) {
   return href === "/igra" ? pathname === href : pathname.startsWith(href);
