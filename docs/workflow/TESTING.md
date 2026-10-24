@@ -46,6 +46,11 @@ npm run seed:demo      # treba DEMO_JOIN_CODE i DEMO_PROF_CODE u env
 
 Prije svakog obilaska žirija: demo igra svježa, krug 2 otvoren.
 
+## Baza
+
+Nikad `npm run db:push` na zajedničkoj Neon bazi. Promjena sheme = ručni aditivni SQL (`CREATE TABLE`,
+`ADD COLUMN IF NOT EXISTS`) koji pregleda Leonov graditelj ([ADR-026](../records/DECISIONS.md#adr-026)).
+
 ## Ručno: ekrani
 
 Svaki ekran na **375 px, 768 px i 1440 px**; profesorova ploča čitljiva na projektoru. Svaki broj ima ime i jedinicu

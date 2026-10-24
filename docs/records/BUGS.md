@@ -10,6 +10,17 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
+- **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
+  bazi), uhvaćeno prije upisa, podaci netaknuti
+- **Opis:** sub ~16:25 `npm run db:push` (drizzle-kit) na zajedničkoj Neon bazi predlaže pražnjenje tablica
+  `situations` i `contracts`.
+- **Uzrok:** drizzle-kit krivo čita postojeća unique ograničenja i misli da tablice treba stvoriti iznova.
+- **Rješenje:** nitko ne pokreće `db:push`; shema se mijenja ručnim aditivnim SQL-om koji pregleda Leonov graditelj
+  ([ADR-026](DECISIONS.md#adr-026)).
+- **Lekcija:** na bazi koju dijeli cijeli tim alat koji „usklađuje" shemu može predložiti brisanje. Svaku promjenu
+  sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
+
 ### BUG-004 · Smoke korak 5 na `main`-u pada: „Ana ima 0 situacija"
 - **Status:** 🟡 čeka spajanje L6 ([#75](https://github.com/leonkreso784-bit/riihack/pull/75), Leonov pregled struke) · **Težina:** srednji (smoke na `main`-u
   crven; korisnik ne vidi jer je produkcija na lažnim podacima, [ADR-018](DECISIONS.md#adr-018))
