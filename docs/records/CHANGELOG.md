@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#149](https://github.com/leonkreso784-bit/riihack/pull/149) | 19:42 | Leon | dokumentacija: #144, shema pošte |
 | [#144](https://github.com/leonkreso784-bit/riihack/pull/144) | 19:39 | Leon | raspodjela prihoda i troškova u obračunu mjeseca (`FinanceBreakdown`), zbrojevi motora isti |
 | [#146](https://github.com/leonkreso784-bit/riihack/pull/146) | 19:31 | Leon | dokumentacija: L14, shema računa |
 | [#143](https://github.com/leonkreso784-bit/riihack/pull/143) | 19:27 | Leon | L14: javni profil hotela (`GET /api/world/[worldId]/companies`), samo član igre, bez novca i ocjena |
