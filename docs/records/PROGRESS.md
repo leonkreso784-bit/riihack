@@ -12,6 +12,9 @@ Vremena su lokalna (CEST).
 - **Odluka (Leon, ~01:20, nakon Simonovog sigurnosnog pregleda):** granice AI prijedloga, atomična granica poruka s
   likom, tri sigurnosna zaglavlja bez CSP-a, PIN poslije natjecanja ([ADR-053](DECISIONS.md#adr-053)). Graditelj:
   #247 (granica AI prijedloga) otvoren, PR-ovi za poruke i zaglavlja stižu.
+- **Tester, provjera spojenog na produkciji (01:33–01:40) ✅:** BUG-032 (podij = ljestvica, izvještaj uključuje
+  obračun), BUG-033, 036, 037 i 038; #237; #245 („Moje igre" 1,2 s, hladni start 7,4 s); #235 (5 botova, zatvaranje
+  mjeseca 3,2–7,0 s). BUG-029 se provjerava nakon spajanja #241.
 - **Otvoreno:** #241 (plan se prenosi, čeka Leonovo „spoji"), #247.
 
 ## Ned 25.10. ~01:25 · ocjena 1 za napisan odgovor, račun tuđih hotela
