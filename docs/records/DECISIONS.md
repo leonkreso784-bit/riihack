@@ -14,9 +14,13 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 **Kontekst.** Hoteli dijele tržište turista (ADR-008). Kad profesor napravi igru s malo studenata, nema dovoljno
 konkurencije i tvrtki, pa ekonomija grada ne radi.
-**Odluka.** Simon dodaje botove: hotele i dobavljače koje vodi računalo, da i igra s malo ljudi ima ekonomiju.
-**Posljedice.** 🟨 Otvoreno: odlučuju li botovi po pravilima motora, a ne AI (ADR-002); dira li to motor, koji je
-Leonov; uključuje li ih profesor sam ili se dodaju automatski kad je studenata malo.
+**Odluka.** Botovi su hoteli i dobavljači koje vodi računalo, da i igra s malo ljudi ima ekonomiju (Leon, ~22:20):
+- bot odlučuje **po pravilima motora** (npr. cijena oko referentne, mala promjena prema popunjenosti), ne AI;
+- **graditelj** radi dio u motoru (bot u obračunu tržišta), a **Simon** sučelje i opis botova;
+- **profesor ih uključi** pri stvaranju igre (npr. „dopuni grad botovima"), ne dodaju se sami.
+
+**Posljedice.** Isti ishod za isto stanje, brojke računa samo motor (ADR-002). Demo igra ostaje kakva jest dok je
+profesor ne napravi s botovima.
 
 <a id="adr-043"></a>
 ## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule

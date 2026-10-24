@@ -10,7 +10,8 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub ~22:05.
+Bugove BUG-015 do 017 i 019 do 021 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
+~22:05 i ~22:20.
 
 ### BUG-015 · Uvid u studenta: propuštena situacija piše „klik"
 - **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (profesor misli da je student odabrao odgovor)
@@ -40,6 +41,34 @@ Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, n
   graditeljev).
 - **Rješenje:** 🟨 čeka vlasnika.
 - **Lekcija:** ključ u podacima nije tekst za korisnika; naziv uvijek ide kroz isti popis oznaka.
+
+### BUG-019 · Situacija nakon isteka roka piše „Ponuđeni odgovor"
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (student misli da je nešto odabrao) · ista obitelj
+  kao [BUG-015](#bug-015--uvid-u-studenta-propuštena-situacija-piše-klik)
+- **Opis:** profesor otvori mjesec s rokom, student ne odgovori, rok istekne (`answer.mode` `"none"`, `state`
+  `"expired"`). Situacija tada piše „Ponuđeni odgovor · 1/5" i nudi „Kako je tvoj odgovor prošao kroz hotel →".
+- **Uzrok:** `src/components/verdict-card.tsx:28`: sve što nije `"own"` prikazuje se kao „Ponuđeni odgovor".
+- **Rješenje:** 🟨 čeka Rina; očekivano „Bez odgovora, rok je istekao · 1/5", bez poveznice na tok odgovora.
+- **Lekcija:** kao BUG-015; isti „sve ostalo" uvjet bio je na dva mjesta, pa popravak traži sva mjesta gdje se
+  `mode` prikazuje.
+
+### BUG-020 · Sitni tekstovi: „2 studenata", tehnički tekst u toku mjeseca
+- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Opis:** (a) „Moje igre" (`/profesor/igre`, Leonova datoteka): „2 studenata" umjesto „2 studenta". (b) „Kako je
+  izračunat mjesec" (`/igra/izvjestaj/1/tok`, Simonov): kartica „Ugled · Nije spremljeno uz obračun" je tehnički
+  tekst za studenta (`src/lib/tokovi/month-flow.ts:158`), a početni čvor ponavlja „Početak: Lipanj / Lipanj".
+- **Uzrok:** kao [BUG-016](#bug-016--krivi-hrvatski-u-brojevima-i-rodu); tekst pisan za razvoj ostao u sučelju.
+- **Rješenje:** 🟨 (a) graditelj, (b) Simon.
+- **Lekcija:** svaki tekst na ekranu čita student ili žiri; poruke za razvoj ne idu u sučelje.
+
+### BUG-021 · Ploča profesora: nema puta natrag ni koda igre nakon početka
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** nizak (srednji za demo: student koji kasni ne može ući)
+- **Opis:** ploča (`/profesor/[worldId]`) i uvid u studenta imaju samo „Odjava", bez poveznice na „Moje igre" i
+  „Knjižnica"; profesor se vraća tipkom natrag. Nakon početka igre kod igre se više ne vidi na ploči, pa student koji
+  kasni ne može ući s projektora.
+- **Rješenje:** 🟨 čeka Rina.
+- **Lekcija:** novi ekrani (računi, knjižnica) traže put do njih sa svih starih ekrana; provjeri navigaciju od
+  prijave do svake stranice.
 
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj

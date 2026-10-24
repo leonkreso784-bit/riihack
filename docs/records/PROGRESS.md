@@ -9,7 +9,12 @@ Vremena su lokalna (CEST).
 ## Sub 24.10. ~22:15 · balans cijene na `main`-u, botovi za male igre
 
 - **Odluke (Leon):** formula iz #194 (kvadrat već iznad referentne cijene) je u redu. Simon dodaje botove, hotele i
-  dobavljače koje vodi računalo, za igre s malo studenata ([ADR-044](DECISIONS.md#adr-044), 🟨 detalji).
+  dobavljače koje vodi računalo, za igre s malo studenata: po pravilima motora, motor radi graditelj, a sučelje
+  Simon; profesor ih uključuje pri stvaranju igre ([ADR-044](DECISIONS.md#adr-044)).
+- **Tester, drugi krug (~22:20):** situacija nakon isteka roka piše „Ponuđeni odgovor"
+  ([BUG-019](BUGS.md#bug-019--situacija-nakon-isteka-roka-piše-ponuđeni-odgovor)), sitni tekstovi
+  ([BUG-020](BUGS.md#bug-020--sitni-tekstovi-2-studenata-tehnički-tekst-u-toku-mjeseca)), ploča profesora bez puta
+  natrag i bez koda igre nakon početka ([BUG-021](BUGS.md#bug-021--ploča-profesora-nema-puta-natrag-ni-koda-igre-nakon-početka)).
 - **Spojeno:** balans cijene #194 (22:14, Leonovo izravno „spoji";
   [BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija) riješen), `/profesor/prijava` bez
   mrtve poveznice #199 (22:13), dokumentacija #197 (22:13). 416 testova, smoke 18/18 lokalno, CI zelen, produkcija
