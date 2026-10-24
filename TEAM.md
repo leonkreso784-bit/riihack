@@ -89,6 +89,7 @@ na koga čeka i što smo dogovorili.
   promjene koda. Leon: `saveReflection` bez uvjeta „samo ako je prazno" (vidi #79).
 - **Drugi čekaju od mene:** — (`judge`, `streamCharacterReply`, `mentorQuestion`, `mentorDebrief` su na `main`-u)
 - **Otvoreno:** —
+- **E2E 15:45 (lokalno, prava Neon baza, main + L6 spojen samo lokalno):** smoke koraci 1–10 ✅ (uklj. pitanje mentora nakon zatvaranja kruga); korak 11 ✗ „nema finances za krug 2" (`views.ts` još `finances: []`). Ručno: chat s likom 2 s ✅, presuda 2,5–3 s ✅ (dobar odgovor na „Gost nezadovoljan sobom" 5/5, odgovor na krivu situaciju 1/5). Testna igra „E2E test Simon" ostala u bazi.
 - **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
 - **Zadnje ažurirano:** sub 16:00
 
