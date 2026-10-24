@@ -72,13 +72,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
 
-- **Sad radim:** čekam spajanje za M2; zatim demo igra (L8 `seed-demo`), playbook (M3), promjena ocjene (L12 dio 2, M3)
-- **Sljedeće:** proba M2 na pravim podacima (~17:30), `NEXT_PUBLIC_USE_MOCK=0` na produkciji kad smoke prođe 14/14 na `main`-u
-- **Čekam od drugih:** Leonovo „spoji" integratoru za #88 (L11 faza B), #89 (ugovor: profesorove situacije), #75 (L6, nakon pregleda struke), pa #95 (L12)
-- **Drugi čekaju od mene:** Simon S8 (ugovor #89, L12 #95); Rino: #96 odjava, #75 za R5 na pravoj bazi
-- **Otvoreno:** #75 L6, #88 L11 B (smoke 14/14), #89 ugovor, #95 L12 (smoke 14/14), #96 odjava
-- **Spojeno:** L0–L5, L7 (#83), L8 smoke (#81), L9, L10, L11 faza A (#82); Neon `simpolis-db`. **Pravilo:** nitko ne pokreće `npm run db:push` (drizzle-kit predlaže pražnjenje tablica); shema samo ručnim aditivnim SQL-om
-- **Zadnje ažurirano:** sub 16:50
+- **Sad radim:** predaja na novu sesiju graditelja; sva gradnja za M2 i M3 (backend) je gotova i čeka spajanje
+- **Sljedeće:** nakon vala proba M2 na pravim podacima, `NEXT_PUBLIC_USE_MOCK=0` na produkciji; zatim popravci, poliranje, proba demoa
+- **Čekam od drugih:** Leonovo izravno „da" integratoru za val #88 → #89 → #75 → #95 → #96; zatim #100, #103, #104
+- **Drugi čekaju od mene:** Simon S8 i `mentor-input.ts` → `getTemplate` (nakon #95); Rino R6, R4, poveznica „Situacije", R5 bez opcija
+- **Otvoreno:** #88 L11 B, #89 ugovor (profesorove situacije, Playbook), #75 L6, #95 L12, #96 odjava, #100 playbook, #103 demo igra (`npm run seed:demo`, kod igre `KVRNDM`), #104 promjena ocjene
+- **Spojeno:** L0–L5, L7, L8 smoke, L9, L10, L11 faza A; Neon `simpolis-db`. **Pravila:** nitko ne pokreće `npm run db:push` (shema samo ručnim aditivnim SQL-om); ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** sub 16:55
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
