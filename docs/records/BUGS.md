@@ -10,19 +10,6 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-### BUG-008 · Ime prijašnjeg projekta još je u repou
-- **Status:** 🟡 kod čist (#107, 19:58), plan još ne (provjera `git grep -i` na `main`-u, sub 20:00) · **Težina:** srednji (žiri čita repo;
-  pravilo tima je da se ime nigdje ne piše)
-- **Opis:** ime je bilo u planu (`docs/superpowers/plans/2026-10-24-simpolis.md`, 9 redaka) i u komentarima koda
-  (`src/app/globals.css` 2, `src/components/bottom-nav.tsx` 1, `src/components/panel.tsx` 1), te u porukama starih
-  commitova. Ostali dokumenti u `docs/` su čisti.
-- **Uzrok:** ime se koristilo kao kratica za izgled i bodovanje prije nego što je pravilo uvedeno.
-- **Rješenje:** kod očišćen u [#107](https://github.com/leonkreso784-bit/riihack/pull/107) (spojen 19:58). Plan (još
-  9 redaka) čisti Rino (Leonova odluka ~18:25); sljedeći graditelj prije predaje provjerava `git grep -i` i javlja
-  što je ostalo. Povijest commitova se ne prepisuje (nema force pusha na `main`).
-- **Lekcija:** ime koje ne smije u predaju ne smije ni u komentare i commitove od prvog dana; kad se pravilo uvede,
-  odmah `git grep -i` po cijelom repou, ne samo po dokumentima.
-
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
@@ -35,6 +22,19 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-008 · Ime prijašnjeg projekta još je u repou
+- **Status:** ✅ riješen 24.10. 20:13 (`git grep -i` po cijelom `main`-u: 0 pogodaka; provjerili integrator i
+  dokumentarist) · **Težina:** srednji (žiri čita repo; pravilo tima je da se ime nigdje ne piše)
+- **Opis:** ime je bilo u planu (`docs/superpowers/plans/2026-10-24-simpolis.md`, 9 redaka) i u komentarima koda
+  (`src/app/globals.css` 2, `src/components/bottom-nav.tsx` 1, `src/components/panel.tsx` 1), te u porukama starih
+  commitova.
+- **Uzrok:** ime se koristilo kao kratica za izgled i bodovanje prije nego što je pravilo uvedeno.
+- **Rješenje:** kod očišćen u [#107](https://github.com/leonkreso784-bit/riihack/pull/107) (19:58), plan u
+  [#157](https://github.com/leonkreso784-bit/riihack/pull/157) (Rino, 20:13). Poruke starih commitova ostaju jer se
+  povijest ne prepisuje (nema force pusha na `main`).
+- **Lekcija:** ime koje ne smije u predaju ne smije ni u komentare i commitove od prvog dana; kad se pravilo uvede,
+  odmah `git grep -i` po cijelom repou, ne samo po dokumentima.
 
 ### BUG-011 · L16 bez `BETTER_AUTH_SECRET`: stvaranje igre vraća 500
 - **Status:** ✅ riješen 24.10. 20:06 (uhvaćeno u provjeri prije spajanja [#147](https://github.com/leonkreso784-bit/riihack/pull/147)) ·

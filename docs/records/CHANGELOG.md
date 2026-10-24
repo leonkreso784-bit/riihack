@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#157](https://github.com/leonkreso784-bit/riihack/pull/157) | 20:13 | Rino | plan bez imena prijašnjeg projekta (BUG-008 riješen) |
+| [#150](https://github.com/leonkreso784-bit/riihack/pull/150) | 20:11 | Simon | `PROMISE.md`: obilazak žirija 2, opseg dopunjen s L16 i S9 |
+| [#158](https://github.com/leonkreso784-bit/riihack/pull/158) | 20:10 | Leon | dokumentacija: L16 i S11, BUG-011 |
 | [#147](https://github.com/leonkreso784-bit/riihack/pull/147) | 20:06 | Leon | L16: profesorski računi (Better Auth), moje igre, vlasnik igre (BUG-011 riješen) |
 | [#154](https://github.com/leonkreso784-bit/riihack/pull/154) | 20:06 | Simon | S11: AI agent agencije piše odgovor na protuponudu, brojke iz motora, rezerva kad AI padne |
 | [#155](https://github.com/leonkreso784-bit/riihack/pull/155) | 20:06 | Leon | `scripts/lock-merge.py`: nova ovisnost bez kvarenja lock datoteke na Windowsu |
