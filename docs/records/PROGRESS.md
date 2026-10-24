@@ -24,7 +24,9 @@ Vremena su lokalna (CEST).
   ([BUG-022](BUGS.md#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik), visok), `/igra`
   nakon kraja sezone čeka obračun ([BUG-023](BUGS.md#bug-023--igra-nakon-kraja-sezone-i-dalje-čeka-obračun)), loši
   pokazatelji jedva utječu na goste u vrhu sezone
-  ([BUG-024](BUGS.md#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone), 🟨 čeka Leonovu odluku).
+  ([BUG-024](BUGS.md#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone)).
+- **Odluka (Leon, ~22:35):** pokazatelji jače utječu na goste; graditelj s agentima preuzima sve otvorene bugove
+  ([ADR-045](DECISIONS.md#adr-045)).
 
 ## Sub 24.10. 22:00–22:10 · tester na produkciji
 

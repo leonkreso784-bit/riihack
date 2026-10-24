@@ -85,7 +85,7 @@ Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja sa
 - **Lekcija:** svaki tekst koji opisuje „što slijedi" treba stanje za kraj igre.
 
 ### BUG-024 · Loši pokazatelji jedva utječu na goste u vrhu sezone
-- **Status:** 🟨 čeka Leonovu odluku · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
+- **Status:** 🟡 u radu (graditelj, od ~22:35) · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
   pokazatelji goste)
 - **Opis:** tester (~22:25, nakon #194): hotel koji nije odgovorio ni na jednu situaciju (zadovoljstvo gostiju 34/100,
   zaposlenici 26/100) u kolovozu ima 86 % popunjenosti i 63.102 € dobiti, najviše u gradu.
@@ -93,7 +93,7 @@ Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja sa
   (`SEASON_DEMAND_BP`: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %, `rules.ts:57`), pa se u kolovozu gotovo
   svi hoteli napune bez obzira na privlačnost. U privlačnosti (`attractiveness`, `economy.ts`) su samo recenzije i
   zadovoljstvo gostiju, ne i zaposlenici ni ostali pokazatelji.
-- **Rješenje:** 🟨 Leon odlučuje (vidi PROGRESS).
+- **Rješenje:** [ADR-045](DECISIONS.md#adr-045): pokazatelji jače utječu na goste; radi graditelj.
 - **Lekcija:** test balansa treba provjeriti i obrnuto: da loša odluka gubi, ne samo da najbolja odluka ima smisla.
 
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
