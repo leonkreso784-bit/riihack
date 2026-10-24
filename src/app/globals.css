@@ -101,6 +101,65 @@
   --sidebar-ring: #246bfd;
 }
 
+/* Glossy layer: brand gradient surfaces, soft lit cards, ambient background. Text stays on solid-enough colour for AA. */
+@utility gloss {
+  background-image:
+    linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0) 45%),
+    linear-gradient(135deg, #2a6ffd 0%, #1f5fe0 55%, #173fb0 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.35),
+    inset 0 -1px 0 rgb(0 0 0 / 0.12),
+    0 10px 30px -12px rgb(36 107 253 / 0.65);
+  color: #fff;
+}
+
+@utility gloss-night {
+  background-image:
+    linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0) 50%),
+    linear-gradient(135deg, #2b3a66 0%, #1b2440 60%, #10172c 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 10px 24px -12px rgb(16 23 44 / 0.7);
+  color: #fff;
+}
+
+@utility surface {
+  background-image: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  border: 1px solid rgb(226 232 243 / 0.9);
+  box-shadow:
+    inset 0 1px 0 #ffffff,
+    0 1px 2px rgb(21 27 43 / 0.04),
+    0 12px 32px -18px rgb(21 27 43 / 0.18);
+}
+
+@utility glass {
+  background-color: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+}
+
+@utility bar-fill {
+  background-image: linear-gradient(90deg, #5b8fff, #246bfd);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), 0 0 12px -2px rgb(36 107 253 / 0.55);
+}
+
+@utility bar-fill-down {
+  background-image: linear-gradient(90deg, #e45757, #c42626);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), 0 0 12px -2px rgb(196 38 38 / 0.45);
+}
+
+@utility lift {
+  transition: transform 180ms ease, box-shadow 180ms ease;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: inset 0 1px 0 #fff, 0 18px 40px -18px rgb(21 27 43 / 0.28);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lift:hover {
+    transform: none;
+  }
+}
+
 /* ponytail: no dark theme for the demo (plan asks for light only); the starter's .dark block was dropped. */
 
 @layer base {
@@ -109,6 +168,11 @@
   }
   body {
     @apply bg-background text-foreground;
+    /* Ambient light: soft blue glow top right, mint bottom left. */
+    background-image:
+      radial-gradient(1100px 600px at 100% -10%, rgb(36 107 253 / 0.11), transparent 60%),
+      radial-gradient(900px 520px at -10% 110%, rgb(15 122 60 / 0.07), transparent 60%);
+    background-attachment: fixed;
   }
   html {
     @apply font-sans;

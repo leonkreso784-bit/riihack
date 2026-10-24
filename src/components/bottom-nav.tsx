@@ -30,14 +30,14 @@ export function GameNav() {
   const pathname = usePathname();
   return (
     <>
-      <header className="flex h-16 items-center justify-between px-4 md:hidden">
+      <header className="glass sticky top-0 z-20 -mb-2 flex h-16 items-center justify-between border-b border-white/60 px-4 md:hidden">
         <Link href="/igra" className={cn("flex min-h-11 items-center rounded-xl", focus)}>
           <Wordmark />
         </Link>
         {MOCK && <Pill tone="warn">primjer</Pill>}
       </header>
 
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-60 flex-col border-r bg-card px-3 py-5 md:flex">
+      <aside className="glass fixed inset-y-0 left-0 z-20 hidden w-60 flex-col border-r border-white/70 px-3 py-5 shadow-[1px_0_0_rgb(226_232_243)] md:flex">
         <Link href="/igra" className={cn("mb-8 flex min-h-11 items-center rounded-xl px-2", focus)}>
           <Wordmark />
         </Link>
@@ -53,7 +53,7 @@ export function GameNav() {
 
       <nav
         aria-label={t.nav.label}
-        className="fixed inset-x-0 bottom-0 z-20 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        className="glass fixed inset-x-0 bottom-0 z-20 border-t border-white/70 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-16px_rgb(21_27_43_/_0.25)] md:hidden"
       >
         <NavList pathname={pathname} variant="bottom" />
       </nav>
@@ -80,14 +80,16 @@ function NavList({ pathname, variant }: { pathname: string; variant: "side" | "b
                   : "min-h-14 flex-col items-center justify-center gap-0.5 text-[0.7rem]",
                 active
                   ? side
-                    ? "bg-secondary text-secondary-foreground"
+                    ? "gloss"
                     : "text-secondary-foreground"
                   : side
                     ? "text-muted-foreground hover:bg-muted hover:text-foreground"
                     : "text-muted-foreground",
               )}
             >
-              <Icon className={side ? "size-5" : "size-[1.375rem]"} strokeWidth={active ? 2.4 : 2} aria-hidden />
+              <span className={cn(!side && "grid h-7 w-12 place-items-center rounded-full", !side && active && "gloss")}>
+                <Icon className={side ? "size-5" : "size-[1.15rem]"} strokeWidth={active ? 2.4 : 2} aria-hidden />
+              </span>
               {label}
             </Link>
           </li>

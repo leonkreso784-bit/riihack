@@ -1,22 +1,28 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { LogoMark } from "./logo";
 
-// Simpolis wordmark: blue tile + name with the accent on "polis"; same in every header.
-export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
-  const big = size === "lg";
+// Simpolis wordmark: isometric-city mark + name with the accent on "polis"; same in every header.
+export function Wordmark({ size = "md" }: { size?: "md" | "lg" | "xl" }) {
   return (
-    <span className={cn("flex items-center", big ? "gap-3" : "gap-2.5")}>
-      <span
-        aria-hidden
+    <span className={cn("flex items-center", size === "md" ? "gap-2.5" : "gap-4")}>
+      <LogoMark
         className={cn(
-          "grid place-items-center bg-primary font-extrabold text-primary-foreground shadow-card",
-          big ? "size-14 rounded-2xl text-2xl" : "size-9 rounded-xl text-base",
+          "drop-shadow-[0_6px_14px_rgb(36_107_253_/_0.35)]",
+          size === "md" && "size-9",
+          size === "lg" && "size-14",
+          size === "xl" && "size-24",
+        )}
+      />
+      <span
+        className={cn(
+          "font-extrabold tracking-tight",
+          size === "md" && "text-xl",
+          size === "lg" && "text-3xl",
+          size === "xl" && "text-5xl md:text-6xl",
         )}
       >
-        S
-      </span>
-      <span className={cn("font-extrabold tracking-tight", big ? "text-3xl" : "text-xl")}>
-        Sim<span className="text-primary">polis</span>
+        Sim<span className="bg-gradient-to-br from-[#2a6ffd] to-[#173fb0] bg-clip-text text-transparent">polis</span>
       </span>
     </span>
   );
@@ -24,7 +30,7 @@ export function Wordmark({ size = "md" }: { size?: "md" | "lg" }) {
 
 export function SiteHeader() {
   return (
-    <header className="border-b bg-card">
+    <header className="glass sticky top-0 z-30 border-b border-white/60">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center px-4">
         <Link href="/" className="flex min-h-11 items-center rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
           <Wordmark />

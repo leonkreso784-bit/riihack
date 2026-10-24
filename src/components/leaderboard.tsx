@@ -3,7 +3,12 @@ import { num } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Delta } from "./metric-bar";
 
-const MEDALS = ["bg-[#f5c542] text-foreground", "bg-[#cfd6e1] text-foreground", "bg-[#e0a57a] text-foreground"];
+const MEDAL = "text-foreground shadow-[inset_0_1px_0_rgb(255_255_255_/_0.7),0_2px_6px_-2px_rgb(21_27_43_/_0.3)]";
+const MEDALS = [
+  `bg-gradient-to-b from-[#ffe08a] to-[#e9b730] ${MEDAL}`,
+  `bg-gradient-to-b from-[#f1f4f9] to-[#c3ccda] ${MEDAL}`,
+  `bg-gradient-to-b from-[#f3c39f] to-[#c98552] ${MEDAL}`,
+];
 
 // Ranked by progress (not money): top `limit`, plus your own row below if you are further down.
 export function Leaderboard({ rows, youId, limit = 5 }: { rows: LeaderboardRow[]; youId?: string; limit?: number }) {
@@ -27,7 +32,7 @@ export function Leaderboard({ rows, youId, limit = 5 }: { rows: LeaderboardRow[]
 
 function Row({ row, rank, you }: { row: LeaderboardRow; rank: number; you: boolean }) {
   return (
-    <li className={cn("flex items-center gap-3 py-3", you && "-mx-3 rounded-xl border-0 bg-secondary px-3")}>
+    <li className={cn("flex items-center gap-3 py-3", you && "-mx-3 rounded-xl border-0 bg-gradient-to-r from-[#eaf1ff] to-[#f4f8ff] px-3 ring-1 ring-primary/20")}>
       <span
         className={cn(
           "grid size-8 shrink-0 place-items-center rounded-full text-sm font-extrabold tabular-nums",

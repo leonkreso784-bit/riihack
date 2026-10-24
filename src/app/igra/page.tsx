@@ -24,8 +24,8 @@ export default function GamePage() {
   const initials = company.hotelName.split(" ").map((w) => w[0]).join("").slice(0, 2);
   return (
     <div className="space-y-5">
-      <header className="flex items-center gap-4 pt-2">
-        <span aria-hidden className="grid size-14 shrink-0 place-items-center rounded-2xl bg-night text-xl font-extrabold text-white shadow-card">
+      <header className="flex items-center gap-4 pt-4 md:pt-0">
+        <span aria-hidden className="gloss-night grid size-14 shrink-0 place-items-center rounded-2xl text-xl font-extrabold">
           {initials}
         </span>
         <div className="min-w-0 flex-1">
@@ -36,7 +36,7 @@ export default function GamePage() {
           </p>
         </div>
         <div className="hidden text-right sm:block">
-          <p className="text-xs font-semibold text-muted-foreground">Napredak</p>
+          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Napredak</p>
           <Delta value={company.progress} className="text-2xl" />
         </div>
       </header>
@@ -93,7 +93,7 @@ function SituationRow({ s }: { s: SituationView }) {
         href={`/igra/situacija/${s.id}`}
         className="-mx-2 flex min-h-16 items-center gap-3 rounded-xl px-2 py-3 transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary"
       >
-        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary text-secondary-foreground">
+        <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-b from-[#eef4ff] to-[#dde8ff] text-secondary-foreground shadow-[inset_0_1px_0_#fff]">
           <MessageCircle className="size-5" aria-hidden />
         </span>
         <span className="min-w-0 flex-1">

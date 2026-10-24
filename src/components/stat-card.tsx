@@ -27,16 +27,20 @@ export function StatCard({
   note?: string;
 }) {
   return (
-    <div className="rounded-[var(--radius)] border bg-card p-4 shadow-card">
-      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-        {Icon && <Icon className="size-4" aria-hidden />}
+    <div className="surface lift rounded-[var(--radius)] p-4">
+      <div className="flex items-center gap-2 text-[0.8rem] font-semibold text-muted-foreground">
+        {Icon && (
+          <span className="grid size-7 place-items-center rounded-lg bg-gradient-to-b from-[#eef4ff] to-[#dde8ff] text-secondary-foreground shadow-[inset_0_1px_0_#fff]">
+            <Icon className="size-3.5" aria-hidden />
+          </span>
+        )}
         {label}
       </div>
-      <p className={cn("mt-2 text-2xl font-extrabold tracking-tight tabular-nums", VALUE_TONES[tone])}>
+      <p className={cn("mt-3 text-[1.7rem] leading-none font-extrabold tracking-tight tabular-nums", VALUE_TONES[tone])}>
         {value}
         {unit && <span className="ml-1 text-base font-bold text-muted-foreground">{unit}</span>}
       </p>
-      {note && <p className="mt-1 text-xs text-muted-foreground">{note}</p>}
+      {note && <p className="mt-2 text-xs text-muted-foreground">{note}</p>}
     </div>
   );
 }
