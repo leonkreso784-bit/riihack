@@ -1,9 +1,64 @@
 // Zajednički upiti. Atomičnost: neon-http nema transakcija, pa jedna SQL naredba po operaciji.
-import { and, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, isNull, sql } from "drizzle-orm";
 import { db } from "./index";
-import { events, roundReports, situations } from "./schema";
-import type { RoundReportRow } from "./schema";
-import type { ChatTurn } from "@/lib/types";
+import { companies, events, players, rooms, roundReports, situations, worlds } from "./schema";
+import type { CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
+import { getSituation } from "@/content";
+import type { ChatTurn, SituationTemplate } from "@/lib/types";
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** Postgres baca grešku na id koji nije uuid; rute zato provjere oblik prije upita (inače bi bio 500). */
+export function isUuid(id: unknown): id is string {
+  return typeof id === "string" && UUID.test(id);
+}
+
+export async function getWorldByJoinCode(joinCode: string): Promise<WorldRow | null> {
+  const rows = await db.select().from(worlds).where(eq(worlds.joinCode, joinCode)).limit(1);
+  return rows[0] ?? null;
+}
+
+export async function getWorldByProfCodeHash(profCodeHash: string): Promise<WorldRow | null> {
+  const rows = await db.select().from(worlds).where(eq(worlds.profCodeHash, profCodeHash)).limit(1);
+  return rows[0] ?? null;
+}
+
+/** Sve tvrtke igre s igračem, redom ulaska. */
+export async function listCompanies(
+  worldId: string,
+): Promise<{ company: CompanyRow; player: PlayerRow }[]> {
+  return db
+    .select({ company: companies, player: players })
+    .from(companies)
+    .innerJoin(players, eq(players.companyId, companies.id))
+    .where(eq(companies.worldId, worldId))
+    .orderBy(asc(companies.joinIndex));
+}
+
+/** Sobe tvrtke po katu i broju. */
+export async function listRooms(companyId: string): Promise<RoomRow[]> {
+  return db
+    .select()
+    .from(rooms)
+    .where(eq(rooms.companyId, companyId))
+    .orderBy(asc(rooms.floor), asc(rooms.number));
+}
+
+/** Situacija samo ako pripada toj tvrtki (inače null, i za id koji nije uuid). */
+export async function getSituationForCompany(
+  situationId: string,
+  companyId: string,
+): Promise<{ situation: SituationRow; template: SituationTemplate } | null> {
+  if (!isUuid(situationId)) return null;
+  const rows = await db
+    .select()
+    .from(situations)
+    .where(and(eq(situations.id, situationId), eq(situations.companyId, companyId)))
+    .limit(1);
+  const situation = rows[0];
+  if (!situation) return null;
+  return { situation, template: getSituation(situation.templateId) };
+}
 
 /** Atomično dopisuje poruke u transkript (jedan UPDATE, bez čitanja prije pisanja). */
 export async function appendTranscript(
