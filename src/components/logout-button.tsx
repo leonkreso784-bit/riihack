@@ -12,7 +12,7 @@ export function LogoutButton({ variant = "row", className }: { variant?: "row" |
   const [busy, setBusy] = useState(false);
   async function logout() {
     setBusy(true);
-    await api.logout().catch(() => {}); // ponytail: no route yet → still leave; the cookie expires on its own
+    await api.logout().catch(() => {}); // leave even if the request fails; the cookie expires on its own
     router.replace("/");
   }
   return (

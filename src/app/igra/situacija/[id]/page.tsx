@@ -62,6 +62,7 @@ function Situation({ s }: { s: SituationView }) {
       <div className="space-y-3">
         <div className="flex flex-wrap items-center gap-2">
           <Pill tone="accent">{s.area}</Pill>
+          {s.source && s.source !== "bank" && <Pill tone="warn">od profesora</Pill>}
           <Pill>Težina {s.difficulty} / 5</Pill>
           {s.roomNumber && (
             <Link href={`/igra/sobe/${s.roomNumber}`} className="rounded-full focus-visible:outline-2 focus-visible:outline-primary">
