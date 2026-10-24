@@ -8,6 +8,27 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-032"></a>
+## ADR-032 · Odjeli s pravim ulaganjem: budžet po odjelu u planu mjeseca
+**Datum:** 24.10. ~18:40 · **Status:** ✅ (Leon) · **Vezano:** [ADR-002](#adr-002), [ADR-012](#adr-012), [ADR-011](#adr-011)
+
+**Kontekst.** Osoblje i odjeli hotela dosad su samo sadržaj ([ADR-012](#adr-012)): student ih vidi, ali na njih ne
+utječe novcem.
+**Odluka.** U planu mjeseca student svakom odjelu dodijeli budžet. Motor ga obračuna kao trošak i pomakne pokazatelj
+tog odjela, uz ograničenje. Graditelj radi motor, API i ugovor (`types.ts`, `rules.ts`, blok u planu, **sva nova
+polja neobavezna**); Rino radi stranicu odjela.
+**Posljedice.** Brojke i dalje računa samo motor (ADR-002). 🟨 točno ograničenje i pokazatelji po odjelu: zapisuju se
+kad ugovor uđe u plan.
+
+<a id="adr-031"></a>
+## ADR-031 · Nema zamrzavanja koda; gradi se do predaje
+**Datum:** 24.10. ~18:40 · **Status:** ✅ (Leon) · **Vezano:** [plan › Prekretnice](../superpowers/plans/2026-10-24-simpolis.md#prekretnice)
+
+**Kontekst.** Plan i pravila tima predviđali su zamrzavanje koda u ned 06:30, poslije samo popravci.
+**Odluka.** Zamrzavanja nema: radi se punom brzinom do predaje. Rok predaje ostaje **ned 10:30**.
+**Posljedice.** Pravilo spajanja (`main` uvijek radi, integrator, smoke) vrijedi do kraja. 🟨 zamrzavanje još piše u
+`CLAUDE.md`, `PLAN-24H.md`, `TEAM.md`, `docs/ROADMAP.md` i u planu; vlasnici ih usklađuju.
+
 <a id="adr-030"></a>
 ## ADR-030 · Integrator dobiva dozvole i sam prebacuje produkciju na prave podatke
 **Datum:** 24.10. ~17:35 · **Status:** ✅ (Leon) · **Vezano:** [ADR-029](#adr-029), [ADR-015](#adr-015)

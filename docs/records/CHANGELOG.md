@@ -18,6 +18,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#126](https://github.com/leonkreso784-bit/riihack/pull/126) | 18:30 | Leon | dokumentacija: ok za playbook u `client.ts` |
 | [#124](https://github.com/leonkreso784-bit/riihack/pull/124) | 18:27 | Leon | dokumentacija: BUG-008 u radu (Rino) |
 | [#123](https://github.com/leonkreso784-bit/riihack/pull/123) | 18:11 | Leon | dokumentacija: BUG-009 riješen |
 | [#122](https://github.com/leonkreso784-bit/riihack/pull/122) | 18:07 | Leon | dokumentacija: BUG-010 dopunjen |
