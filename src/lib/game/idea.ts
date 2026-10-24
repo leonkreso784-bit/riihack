@@ -1,6 +1,6 @@
 // Ulaz za AI prijedlog situacije (S9) iz stanja igre: hotel odabranog studenta ili, bez njega, najslabiji hotel igre.
 // Odvojeno od situations.ts jer ono ne smije uvoziti iz "@/db/queries" (kružni uvoz).
-import { getCompanyInWorld, listCompanies, listFinanceRows, listRooms } from "@/db/queries";
+import { countEvents, getCompanyInWorld, listCompanies, listFinanceRows, listRooms, logEvent } from "@/db/queries";
 import type { CompanyRow, FinanceRow, RoomRow, WorldRow } from "@/db/schema";
 import { HOTELS, getHotel } from "@/content";
 import { progress } from "@/lib/engine/round";
@@ -10,6 +10,37 @@ import { toFinance } from "./city";
 import { toRoom } from "./views";
 
 export const MAX_HINT = 300;
+
+// Granice AI prijedloga po igri: igru može otvoriti svatko bez računa, a svaki prijedlog je plaćeni poziv modela.
+// Brojimo događaje "situation.generated" u tablici events (bez promjene sheme). Nije u NEWS_TYPES pa ne ide u vijesti.
+export const AI_PROPOSALS_PER_GAME = 30;
+export const AI_PROPOSALS_PER_MINUTE = 5;
+export const PROPOSAL_WINDOW_SECONDS = 60;
+export const PROPOSAL_EVENT = "situation.generated";
+const LIMIT_GAME = "Dosegnut je broj AI prijedloga za ovu igru";
+const LIMIT_MINUTE = "Previše AI prijedloga u zadnjoj minuti. Pričekaj malo pa pokušaj ponovno.";
+
+/** Poruka greške ako je granica dosegnuta (ukupno za igru ima prednost pred minutnom), inače null. */
+export function checkProposalLimit(total: number, recent: number): string | null {
+  if (total >= AI_PROPOSALS_PER_GAME) return LIMIT_GAME;
+  if (recent >= AI_PROPOSALS_PER_MINUTE) return LIMIT_MINUTE;
+  return null;
+}
+
+/**
+ * Prije poziva AI-ja: dosegnuta granica → 429. Provjera i upis nisu atomični (neon-http nema transakcija), pa dva
+ * istodobna zahtjeva na granici−1 mogu oba proći; jedan prijedlog viška je prihvatljiv.
+ */
+export async function assertProposalAllowed(worldId: string): Promise<void> {
+  const { total, recent } = await countEvents(worldId, PROPOSAL_EVENT, PROPOSAL_WINDOW_SECONDS);
+  const error = checkProposalLimit(total, recent);
+  if (error) throw new HttpError(429, error);
+}
+
+/** Nakon uspješnog prijedloga: jedan događaj za brojanje, bez AI teksta. */
+export async function recordProposal(world: Pick<WorldRow, "id" | "round">, companyId?: string): Promise<void> {
+  await logEvent({ worldId: world.id, round: world.round, type: PROPOSAL_EVENT, payload: { companyId: companyId ?? null } });
+}
 
 /** GenerateSituationRequest iz nepouzdanog JSON-a; tip koji nije tekst → 400, natuknica skraćena na MAX_HINT. */
 export function parseGenerateRequest(body: Record<string, unknown>): GenerateSituationRequest {
