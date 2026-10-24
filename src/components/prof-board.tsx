@@ -13,6 +13,7 @@ import { FormError } from "./form";
 import { RoundBanner } from "./round-banner";
 import { Leaderboard } from "./leaderboard";
 import { RoundPodium, SeasonPodium } from "./round-podium";
+import { Dots } from "./loading";
 
 const DEADLINES = [
   { label: "Ručno", minutes: undefined },
@@ -158,7 +159,7 @@ function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: 
               className={cn(button, "bg-primary text-primary-foreground hover:bg-[#1f5fe0]")}
             >
               <SkipForward className="size-5" aria-hidden />
-              {busy ? "Zatvaram…" : `Zatvori ${ROUND_LABELS[round - 1].toLowerCase()} i otvori ${ROUND_LABELS[round].toLowerCase()}`}
+              {busy ? <><Dots /> Zatvaram mjesec</> : `Zatvori ${ROUND_LABELS[round - 1].toLowerCase()} i otvori ${ROUND_LABELS[round].toLowerCase()}`}
             </button>
           </>
         )}
@@ -175,7 +176,7 @@ function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: 
           onClick={finish}
           className={cn(button, last ? "bg-primary text-primary-foreground hover:bg-[#1f5fe0]" : "bg-muted text-foreground hover:bg-secondary")}
         >
-          <Flag className="size-5" aria-hidden /> {busy && last ? "Završavam…" : "Završi sezonu"}
+          <Flag className="size-5" aria-hidden /> {busy && last ? <><Dots /> Završavam</> : "Završi sezonu"}
         </button>
       </div>
       {error && <FormError key={error}>{error}</FormError>}

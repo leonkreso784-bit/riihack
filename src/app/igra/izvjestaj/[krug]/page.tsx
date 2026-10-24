@@ -11,6 +11,7 @@ import { Delta, METRIC_ICONS } from "@/components/metric-bar";
 import { MentorDialog } from "@/components/mentor-dialog";
 import { FlowLink } from "@/components/flow-link";
 import { BackLink } from "@/components/back-link";
+import { Thinking } from "@/components/loading";
 
 const back = (
   <BackLink href="/igra" label="Moja tvrtka" />
@@ -68,7 +69,7 @@ export default function ReportPage() {
         </Panel>
 
         <Panel title="Razgovor s mentorom" tone="mint">
-          {report ? <MentorDialog report={report} onAnswered={setAnswered} /> : <p className="text-muted-foreground">Mentor razmišlja…</p>}
+          {report ? <MentorDialog report={report} onAnswered={setAnswered} /> : <Thinking who="Mentor" text="smišlja pitanje" />}
         </Panel>
       </div>
     </div>

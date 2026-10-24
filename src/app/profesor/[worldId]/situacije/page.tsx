@@ -15,6 +15,7 @@ import { SituationForm } from "@/components/prof/situation-form";
 import { DispatchDialog } from "@/components/prof/dispatch-dialog";
 import { LIBRARY_HINT, LibraryDialog } from "@/components/prof/library-dialog";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 const SOURCE: Record<SituationSource, { label: string; tone: Tone }> = {
   bank: { label: "Banka", tone: "neutral" },
@@ -42,7 +43,7 @@ export default function ProfSituations() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   if (error && !data) return <FormError>{error.message}</FormError>;
-  if (!data) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
 
   const state: ProfStateResponse = data;
   const bank = state.bank ?? [];

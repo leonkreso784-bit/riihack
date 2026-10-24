@@ -8,6 +8,7 @@ import { messagesLeft } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { ChatTurn } from "@/lib/types";
 import { FormError } from "./form";
+import { Dots } from "./loading";
 
 const MAX_MESSAGE_CHARS = 1000; // same limit as the chat route (S3)
 
@@ -85,7 +86,7 @@ export function ChatPanel({
             <li key={i} className="flex items-end gap-2">
               <Initials name={character.name} className="size-8 text-xs" />
               <p className="max-w-[85%] rounded-2xl rounded-bl-md bg-muted px-4 py-2.5">
-                {t.text || <span className="text-muted-foreground">{character.name.split(" ")[0]} piše…</span>}
+                {t.text || <span className="inline-flex items-center gap-2 text-muted-foreground"><Dots className="text-secondary-foreground" /> {character.name.split(" ")[0]} piše</span>}
               </p>
             </li>
           ) : (

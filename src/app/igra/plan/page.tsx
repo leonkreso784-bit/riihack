@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
 import { ContractOffers } from "@/components/city/contract-offers";
+import { Dots } from "@/components/loading";
 
 const SLIDER = "h-11 w-full cursor-pointer accent-primary";
 
@@ -78,7 +79,7 @@ export default function PlanPage() {
                 disabled={saving}
                 className="gloss inline-flex min-h-11 w-full items-center justify-center rounded-xl px-5 font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60 sm:w-auto"
               >
-                {saving ? "Spremam…" : "Spremi plan"}
+                {saving ? <span className="inline-flex items-center gap-2"><Dots /> Spremam</span> : "Spremi plan"}
               </button>
               {msg && (
                 <p role={msg.ok ? "status" : "alert"} className={msg.ok ? "rounded-xl bg-mint px-4 py-3 text-sm font-semibold text-up" : "rounded-xl bg-down-soft px-4 py-3 text-sm text-down"}>

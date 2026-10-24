@@ -9,13 +9,14 @@ import { Panel } from "@/components/panel";
 import { FormError } from "@/components/form";
 import { ROOM_STATUS, ROOM_TYPE_LABELS, ROOM_VIEW_LABELS } from "@/components/room-tile";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 // R3: one room in detail.
 export default function RoomDetail() {
   const { broj } = useParams<{ broj: string }>();
   const { data: rooms, error } = usePoll(api.rooms);
   if (error && !rooms) return <FormError>{error.message}</FormError>;
-  if (!rooms) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!rooms) return <Loading />;
 
   const room = rooms.find((r) => r.number === broj);
   const back = (

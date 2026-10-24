@@ -11,6 +11,7 @@ import type { ProfGameSummary } from "@/lib/types";
 import { Panel } from "@/components/panel";
 import { Pill, type Tone } from "@/components/pill";
 import { FormError } from "@/components/form";
+import { Loading } from "@/components/loading";
 
 const PRIMARY_LINK =
   "flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-4 text-base font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
@@ -67,7 +68,7 @@ export default function MyGames() {
     router.replace("/profesor");
   }
 
-  if (pending || !user) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
+  if (pending || !user) return <Loading />;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 pt-4 md:pt-12">
@@ -99,7 +100,7 @@ export default function MyGames() {
 
       {error && <FormError key={error}>{error}</FormError>}
 
-      {!games && !error && <p className="text-muted-foreground">Učitavam igre…</p>}
+      {!games && !error && <Loading label="Učitavam igre" className="pt-8" />}
 
       {games?.length === 0 && (
         <Panel tone="accent" className="space-y-4 text-center">

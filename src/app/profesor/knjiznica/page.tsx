@@ -10,6 +10,7 @@ import { Panel } from "@/components/panel";
 import { Pill } from "@/components/pill";
 import { FormError } from "@/components/form";
 import { BackLink } from "@/components/back-link";
+import { Loading } from "@/components/loading";
 
 const SOURCE_LABEL = { bank: "Banka", custom: "Profesor", ai: "AI" } as const;
 
@@ -72,7 +73,7 @@ export default function Library() {
     setBusy(null);
   }
 
-  if (pending || (!signedIn && items === null && !error)) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
+  if (pending || (!signedIn && items === null && !error)) return <Loading />;
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 pt-4 md:pt-12">
@@ -84,7 +85,7 @@ export default function Library() {
 
       {error && <FormError key={error}>{error}</FormError>}
 
-      {!items && !error && <p className="text-muted-foreground">Učitavam knjižnicu…</p>}
+      {!items && !error && <Loading label="Učitavam knjižnicu" className="pt-8" />}
 
       {items?.length === 0 && (
         <Panel tone="accent" className="space-y-2 text-center">

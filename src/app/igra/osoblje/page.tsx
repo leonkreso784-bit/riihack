@@ -11,6 +11,7 @@ import { Panel } from "@/components/panel";
 import { Pill, type Tone } from "@/components/pill";
 import { FormError, SubmitButton } from "@/components/form";
 import { FlowLink } from "@/components/flow-link";
+import { Loading } from "@/components/loading";
 
 const DEPARTMENTS = Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[];
 const SHIFT: Record<StaffShift, { icon: typeof Sun; tone: Tone }> = {
@@ -31,7 +32,7 @@ export default function DepartmentsPage() {
   const [msg, setMsg] = useState<{ ok: boolean; text: string }>();
 
   if (error && !data) return <FormError>{error.message}</FormError>;
-  if (!data || !staff) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!data || !staff) return <Loading />;
 
   const { world, company, plan } = data;
   const invest = draft ?? plan.investments ?? {};
