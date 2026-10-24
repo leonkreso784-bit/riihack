@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 17:55–18:05 · proba M2, AI prijedlog za profesora
+
+- **Proba M2 (graditelj):** sudac odbija obrazloženja s „/la", vlastiti odgovor pada na kvalitetu 3
+  ([BUG-009](BUGS.md#bug-009--presuda-vlastitog-odgovora-pada-na-rezervu-kvaliteta-3-bez-obrazloženja), Simon).
+- **Spojeno:** L12 AI prijedlog situacije za profesora (#118, 18:02; 290 testova, smoke 14/14, produkcija READY,
+  ruta bez kolačića 403), dokumentacija #117 i #119.
+- **Incident:** integratorov smoke otišao na tuđi dev server koji je zatim ugašen
+  ([BUG-010](BUGS.md#bug-010--smoke-integratora-otišao-na-tuđi-dev-server-a-integrator-ga-je-ugasio)).
+
 ## Sub 24.10. 17:50–17:52 · produkcija na pravim podacima
 
 - **Spojeno:** #115 profesorski kod demo igre samo iz `.env.local` (17:50; typecheck, lint, 284 testa, build i CI

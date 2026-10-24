@@ -47,6 +47,17 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-010 · Smoke integratora otišao na tuđi dev server, a integrator ga je ugasio
+- **Status:** ✅ riješen 24.10. 18:02 · **Težina:** srednji (ugašen tuđi `next dev`; provjera #118 bila bi na
+  krivom kodu)
+- **Opis:** pri provjeri [#118](https://github.com/leonkreso784-bit/riihack/pull/118) port 3107 je bio zauzet
+  (`EADDRINUSE`), integratorov server se nije podigao, pa je smoke išao na tuđi `next dev`. Integrator je taj proces
+  ugasio. 🟨 čiji je bio server.
+- **Uzrok:** port nije provjeren prije pokretanja, a pad pokretanja servera nije zaustavio smoke.
+- **Rješenje:** smoke ponovljen na slobodnom portu 3917, 14/14.
+- **Lekcija:** prije pokretanja provjeri je li port slobodan; ako se server ne podigne, smoke staje. Tuđi proces se
+  ne gasi ([BUG-005](#bug-005--agent-je-pri-gašenju-dev-servera-pokušao-ugasiti-sve-nodeexe-procese)).
+
 ### BUG-007 · Profesorski kod demo igre bio je zadana vrijednost u javnom kodu
 - **Status:** ✅ rizik uklonjen 24.10. ~17:25 (kod zamijenjen); popravak skripte spojen 17:50 ([#115](https://github.com/leonkreso784-bit/riihack/pull/115)) · **Težina:**
   visok (tko pročita javni repo mogao je upravljati demo igrom pred žirijem)
