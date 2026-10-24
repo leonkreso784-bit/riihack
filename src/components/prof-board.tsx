@@ -55,13 +55,16 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
               {[...playing, ...done].map((p) => {
                 const closed = p.closedRound >= world.round;
                 return (
-                  <li
-                    key={p.companyId}
-                    className={cn("flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-semibold", closed ? "bg-mint text-up" : "bg-muted")}
-                  >
-                    {closed ? <CheckCircle2 className="size-4" aria-hidden /> : <Hourglass className="size-4 text-muted-foreground" aria-hidden />}
-                    {p.hotelName}
-                    <span className="sr-only">{closed ? "zatvorio mjesec" : "još igra"}</span>
+                  <li key={p.companyId}>
+                    {/* R8: open the student's answers, verdicts and mentor talk */}
+                    <Link
+                      href={`/profesor/${world.id}/tvrtka/${p.companyId}`}
+                      className={cn("flex min-h-11 items-center gap-1.5 rounded-full px-3 text-sm font-semibold hover:underline focus-visible:outline-2 focus-visible:outline-primary", closed ? "bg-mint text-up" : "bg-muted")}
+                    >
+                      {closed ? <CheckCircle2 className="size-4" aria-hidden /> : <Hourglass className="size-4 text-muted-foreground" aria-hidden />}
+                      {p.hotelName}
+                      <span className="sr-only">{closed ? "zatvorio mjesec" : "još igra"}</span>
+                    </Link>
                   </li>
                 );
               })}

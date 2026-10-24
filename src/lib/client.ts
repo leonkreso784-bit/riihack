@@ -21,6 +21,7 @@ import type {
   OpenRoundRequest,
   Playbook,
   PlanRequest,
+  Quality,
   ProfLoginRequest,
   ProfLoginResponse,
   ProfStateResponse,
@@ -57,6 +58,9 @@ const realApi = {
   start: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/start`),
   openRound: (worldId: string, req: OpenRoundRequest = {}) => post<ProfStateResponse>(`/api/prof/${worldId}/round`, req),
   finish: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/finish`),
+  // R8: the professor changes a student's grade (overridden: true in the answer).
+  overrideQuality: (worldId: string, situationId: string, quality: Quality) =>
+    post<AnswerView>(`/api/prof/${worldId}/answers/${situationId}/quality`, { quality }),
   companyDetail: (worldId: string, companyId: string) =>
     get<CompanyDetailResponse>(`/api/prof/${worldId}/companies/${companyId}`),
   // L14 javni profili hotela za kartu grada (S10, uz Rinov pregled u #128): igrač ili profesor te igre.
@@ -123,6 +127,7 @@ const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
 // After a mock join the "professor" starts the game 8 s later, so the waiting room can be seen in the demo.
 let mockLobbyUntil = 0;
 let mockClosedRound = 0; // "Završi mjesec" in the mock
+const mockDetail = structuredClone(MOCK_DETAIL); // R8: grade changes stick in the mock
 
 // Mock professor game: lobby until "Pokreni", students drop in one every 2.5 s so the projector view comes alive.
 // After the start the board moves too: "Zatvori mjesec" opens the next month with its deadline, "Završi" ends it.
@@ -167,7 +172,13 @@ const mockApi: Api = {
     mockProf = { ...mockProf, deadline: null, finished: true };
     return wait(mockProfState());
   },
-  companyDetail: () => wait(MOCK_DETAIL),
+  companyDetail: () => wait(mockDetail),
+  overrideQuality: (_w, id, quality) => {
+    const s = mockDetail.situations.find((x) => x.id === id);
+    if (!s?.answer) return Promise.reject(new Error("Na ovu situaciju još nema odgovora"));
+    s.answer = { ...s.answer, quality, overridden: true };
+    return wait(s.answer);
+  },
   // S8: these change MOCK_PROF in memory so the situation list updates in the demo.
   createSituation: (_worldId, draft, source) => {
     const summary: SituationSummary = {
