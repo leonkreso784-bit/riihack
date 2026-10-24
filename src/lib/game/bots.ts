@@ -28,7 +28,7 @@ export const BOT_NAMES = [
   "Hotel Bonavia",
   "Hotel Kvarner Breeze",
   "Villa Opatija Mare",
-  "Hotel Lungomare",
+  "Hotel Volosko",
   "Hotel Učka View",
   "Hotel Riviera Palace",
   "Pansion Kantrida",

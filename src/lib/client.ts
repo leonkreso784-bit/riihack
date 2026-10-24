@@ -164,7 +164,7 @@ const AGENCY_REPLY = {
 let mockProfOpenedAt = Date.now();
 let mockProfStarted = false;
 let mockBots: LeaderboardRow[] = []; // ADR-044: bots added in the mock lobby
-const MOCK_BOT_NAMES = ["Hotel Bonavia", "Hotel Kvarner Breeze", "Villa Opatija Mare", "Hotel Lungomare", "Hotel Učka View"];
+const MOCK_BOT_NAMES = ["Hotel Bonavia", "Hotel Kvarner Breeze", "Villa Opatija Mare", "Hotel Medveja", "Hotel Učka View"];
 let mockProf = { round: MOCK_PROF.world.round, deadline: MOCK_DEADLINE as string | null, finished: false };
 function mockProfState(): ProfStateResponse {
   const world = { ...MOCK_PROF.world, serverNow: new Date().toISOString() };
@@ -207,7 +207,7 @@ const mockApi: Api = {
       mockBots.push({ companyId: `bot-${mockBots.length + 1}`, hotelName: name, playerName: "Računalo", place: "Opatija", progress: 0, closedRound: 0, cash: 20000, roundGain: 0, isBot: true });
     };
     if (req.action === "add") addOne();
-    else if (req.action === "fill") while (mockBots.length < 5) addOne();
+    else if (req.action === "fill") while (mockProfState().players.length < 5) addOne(); // do 5 hotela, ne 5 botova
     else mockBots = mockBots.filter((b) => b.companyId !== req.companyId);
     return wait(mockProfState(), 150);
   },

@@ -4,6 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { useParams } from "next/navigation";
 import { Bot, Play, Users, X } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
+import { plural } from "@/lib/format";
 import type { BotsRequest, LeaderboardRow, ProfStateResponse } from "@/lib/types";
 import { ProfBoard } from "@/components/prof-board";
 import { QrCode } from "@/components/qr-code";
@@ -90,7 +91,7 @@ function Lobby({ state, onStarted }: { state: ProfStateResponse; onStarted: () =
           <Users className="size-7 text-secondary-foreground md:size-9" aria-hidden />
           <span key={players.length} className="anim-pop inline-block">{players.length}</span> / {world.maxPlayers}
           <span className="text-base font-semibold text-muted-foreground md:text-xl">
-            {students} {students === 1 ? "student" : "studenata"}, {botCount} {botCount === 1 ? "bot" : "botova"}
+            {students} {plural(students, "student", "studenta", "studenata")}, {botCount} {plural(botCount, "bot", "bota", "botova")}
           </span>
         </p>
         <button
