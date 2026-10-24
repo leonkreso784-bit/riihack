@@ -8,20 +8,21 @@ import * as schema from "@/db/schema";
 function createAuth() {
   const appUrl = process.env.BETTER_AUTH_URL;
   const appHost = appUrl ? new URL(appUrl).host : undefined;
+  const dev = process.env.NODE_ENV !== "production";
   return betterAuth({
     // neon-http nema transakcija, zato bez `transaction: true`
     database: drizzleAdapter(db, { provider: "pg", schema }),
     emailAndPassword: { enabled: true },
-    // Vercel pregledi i lokalni razvoj dobivaju svoj host; inače BETTER_AUTH_URL
+    // Samo naš projekt na Vercelu (produkcija i pregledi riihack-*); localhost samo u razvoju
     baseURL: {
-      allowedHosts: [...(appHost ? [appHost] : []), "*.vercel.app", "localhost:*", "127.0.0.1:*"],
+      allowedHosts: [...(appHost ? [appHost] : []), "riihack.vercel.app", "riihack-*.vercel.app", ...(dev ? ["localhost:*", "127.0.0.1:*"] : [])],
       fallback: appUrl,
     },
     trustedOrigins: [
       ...(appUrl ? [appUrl] : []),
-      "https://*.vercel.app",
-      "http://localhost:*",
-      "http://127.0.0.1:*",
+      "https://riihack.vercel.app",
+      "https://riihack-*.vercel.app",
+      ...(dev ? ["http://localhost:*", "http://127.0.0.1:*"] : []),
     ],
     plugins: [nextCookies()], // mora biti zadnji
   });
