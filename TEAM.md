@@ -60,14 +60,14 @@ na koga čeka i što smo dogovorili.
 | 24.10. | Simon i Rino su u Vercel timu; env dobivate s `vercel link` i `vercel env pull .env.local` | Leon |
 | 24.10. | Ploča tima u `TEAM.md`, svatko svoje polje, izravno na `main` | Leon |
 | 24.10. | Tri Leonove sesije: graditelj, integrator (jedini spaja), dokumentacija | Leon |
-| 24.10. | Na `main` od dokumentacije ide samo `TEAM.md`; ostala dokumentacija ostaje na granama (#58 vraćen s #60) | Leon |
+| 24.10. | Dokumentacija ipak ide na `main` preko PR-a (po njoj grade ljudi i agenti): #58 vraćen s #60, ponovno kao #71 (15:05) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200
-- **Zadnja spajanja (sub 14:38–15:00):** #54 R1, #56 R2, #57 R3, #65 logo, #62 L1, #59 L2, #64 L3, #55 i #61 obilazak, #66 pitch, #63 ugovor lika; #58 vraćen s #60
-- **Red čekanja:** #67 pitch i obilazak (čeka CI); #42 duplikat #63 (Simon zatvara)
-- **Zadnje ažurirano:** sub 15:00
+- **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200; `/api/me` 401 bez kolačića (L4 živ)
+- **Zadnja spajanja (sub 15:00–15:10):** #63 ugovor lika, #67 pitch, #68 L9, #69 L10, #70 L5, #71 dokumentacija, #72 tema, #73 animacije, #74 L4
+- **Red čekanja:** #75 L6 situacije (čeka Leonov pregled struke i „spoji"); #42 duplikat #63 (Simon zatvara)
+- **Zadnje ažurirano:** sub 15:12
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
