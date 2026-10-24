@@ -82,14 +82,13 @@ na koga čeka i što smo dogovorili.
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
-- **Sad radim:** proba obilaska 2 (19:00, demo samo studentski tok); slajdovi za nedjelju po PITCH nacrt 4
-- **Sljedeće:** S9 PR odmah nakon #95; gumbi playbooka na S8 stranici (M3, čeka Rinov ok za 2 poziva u `client.ts`); video demoa do ned 09:00
-- **Čekam od drugih:** integrator: #109 (S8); Leon: #95 (L12, S9 je na njemu); Rino: poveznica „Situacije" na R6 ploči
+- **Sad radim:** proba obilaska 2 (18:45, demo samo studentski tok na Leonovoj demo igri); slajdovi za nedjelju (simpolis-pitch-share.vercel.app, ne dijeliti prije nedjelje)
+- **Sljedeće:** gumbi playbooka na S8 stranici (M3, čeka Rinov ok za `exportPlaybook`/`importPlaybook` u `client.ts`, pitanje na #108); dokumentacija za predaju (`PREDAJA.md` ima stari poslovni model); video demoa do ned 09:00
+- **Čekam od drugih:** Rino: ok za playbook pozive u `client.ts`; Leon: ruta `situations/generate` (poziva `proposeSituation`)
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #109 S8 (rebase na main nakon #89, 196 testova, build ✅). Grana `simon/S9-ai-prijedlog` gotova (na `leon/L12-profesor`): `proposeSituation` (Sonnet, rok 45 s, jedan ponovni pokušaj, rezerva bez AI-ja), mentor dobiva obračun mjeseca, `mentor-input.ts` koristi `getTemplate`; 240 testova ✅, pravi poziv ~12–15 s
 - **Obilazak 1 (~15:45):** prošli, samo slajdovi; komentari u `PROMISE.md`. Slajdovi za obilazak 2: simpolis-ziri-share.vercel.app (QR na `/ulaz`)
-- **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72, #86, #99), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
-- **Zadnje ažurirano:** sub 17:00 (popunio Claude, ispravi)
+- **Spojeno:** S0 (#35), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S5 (#48), S6 (#47), **S8 (#109)**, **S9 (#111)**; pitch (#38, #66, #67, #72, #86, #99), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu. Prijedlog rubrika: #110
+- **Zadnje ažurirano:** sub 17:20 (popunio Claude, ispravi)
 
 ## Rino · sučelje (R0–R10)
 
