@@ -9,10 +9,13 @@ export type RoomStatus = "free" | "occupied" | "cleaning" | "broken";
 export type WorldStatus = "lobby" | "running" | "finished";
 export type SituationState = "open" | "answered" | "expired";
 export type AnswerMode = "click" | "own" | "none";
+export type StaffDepartment = "reception" | "housekeeping" | "kitchen" | "maintenance" | "management";
+export type StaffShift = "morning" | "afternoon" | "night";
 
 // Sadržaj (src/content/*.json)
 export type RoomTemplate = { number: string; floor: number; type: RoomType; beds: number; view: RoomView; basePrice: number; status: RoomStatus; note?: string };
-export type HotelTemplate = { id: string; place: string; stars: 2 | 3 | 4 | 5; description: string; startMetrics: Metrics; staffCost: number; startCash: number; rooms: RoomTemplate[] }; // staffCost € mjesečno
+export type StaffMember = { name: string; department: StaffDepartment; role: string; shift: StaffShift; note?: string }; // role = radno mjesto na hrvatskom
+export type HotelTemplate = { id: string; place: string; stars: 2 | 3 | 4 | 5; description: string; startMetrics: Metrics; staffCost: number; startCash: number; rooms: RoomTemplate[]; staff: StaffMember[] }; // staffCost € mjesečno
 export type BusinessKind = "agency" | "laundry" | "bakery" | "security" | "supplier";
 export type CityBusiness = { id: string; name: string; kind: BusinessKind; description: string };
 export type ContractTemplate = { id: string; businessId: string; title: string; text: string; durationRounds: 1 | 2 | 3; monthlyCost: number; nights: number; pricePerNight: number; effects: Partial<Record<MetricKey, number>> };
@@ -40,7 +43,7 @@ export type SituationView = {
 };
 export type CompanyView = { id: string; hotelName: string; playerName: string; templateId: string; place: string; stars: number; roomsCount: number; startMetrics: Metrics; metrics: Metrics; progress: number; closedRound: number; cash: number; startCash: number };
 export type RoundReportView = { round: number; metricsBefore: Metrics; metricsAfter: Metrics; mentorQuestion?: string; reflection?: string; mentorText?: string }; // pitanje stiže iz GET /api/me/report/[round]
-export type LeaderboardRow = { companyId: string; hotelName: string; playerName: string; place: string; progress: number; closedRound: number; cash: number };
+export type LeaderboardRow = { companyId: string; hotelName: string; playerName: string; place: string; progress: number; closedRound: number; cash: number; roundGain: number }; // roundGain = napredak u zadnjem zatvorenom krugu
 export type ContractView = { id: string; templateId: string; businessName: string; businessKind: BusinessKind; title: string; text: string; monthlyCost: number; nights: number; pricePerNight: number; durationRounds: number; roundOffered: number; status: ContractStatus; activeUntilRound?: number };
 export type RoundPlan = { round: number; price: number; marketing: number };
 export type RoundFinance = { round: number; nights: number; contractNights: number; capacityNights: number; occupancyPct: number; marketSharePct: number; revenue: number; costs: number; profit: number; cashAfter: number };
