@@ -72,7 +72,7 @@ export function monthBase(finance: RoundFinance, rooms: { basePrice: number }[])
     price,
     marketing: b.costMarketing,
     ref: refPrice(rooms),
-    roomsCount: Math.round(b.costRooms / FIXED_COST_PER_ROOM),
+    roomsCount: Math.round(finance.capacityNights / NIGHTS_PER_ROUND), // iz kapaciteta, ne iz troška: ne ovisi o cijeni sobe u pravilima
     cashBefore: finance.cashAfter - finance.profit,
   };
 }
