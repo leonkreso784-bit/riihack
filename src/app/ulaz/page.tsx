@@ -1,19 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
-import { JOIN_CODE_LENGTH } from "@/lib/rules";
+import { CODE_ALPHABET, JOIN_CODE_LENGTH } from "@/lib/rules";
 import { CodeInput } from "@/components/code-input";
 import { Field, FormError, SubmitButton } from "@/components/form";
+
+// QR on the projector opens /ulaz?kod=ABC123: the code is filled in, the student only types name and hotel.
+const noop = () => () => {};
+function codeFromUrl() {
+  const kod = new URLSearchParams(location.search).get("kod")?.toUpperCase() ?? "";
+  return kod.length === JOIN_CODE_LENGTH && [...kod].every((c) => CODE_ALPHABET.includes(c)) ? kod : null;
+}
 
 const between = (s: string) => s.trim().length >= 2 && s.trim().length <= 40;
 
 // R1: Kahoot-style entry. Step 1 the game code from the projector, step 2 your name and your hotel's name.
 export default function JoinPage() {
   const router = useRouter();
-  const [code, setCode] = useState<string | null>(null);
+  const urlCode = useSyncExternalStore(noop, codeFromUrl, () => null);
+  const [typed, setCode] = useState<string | null>();
+  const code = typed === undefined ? urlCode : typed; // undefined = not touched yet, so the QR code counts
   const [name, setName] = useState("");
   const [hotelName, setHotelName] = useState("");
   const [error, setError] = useState<string | null>(null);
