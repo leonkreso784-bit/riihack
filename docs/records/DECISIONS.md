@@ -51,12 +51,13 @@ privatno.
 **Posljedice.** Nema novog posla u kodu; „Što ako?" je u [BACKLOG.md](BACKLOG.md).
 
 <a id="adr-037"></a>
-## ADR-037 · Integrator sam spaja aditivne dodatke ugovoru iz plana vala 3
-**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon; Leon potvrđuje izravno integratoru) · **Vezano:** [ADR-017](#adr-017), [ADR-011](#adr-011)
+## ADR-037 · Integrator sam spaja aditivne dodatke ugovoru prepisane iz plana
+**Datum:** 24.10. ~21:15, potvrđeno integratoru ~21:20 · **Status:** ✅ (Leon) · **Vezano:** [ADR-017](#adr-017), [ADR-011](#adr-011)
 
 **Kontekst.** Svaki dodatak ugovoru čekao je Leonovo „spoji" (ADR-017), i kad je bio doslovno iz plana vala 3.
-**Odluka.** Integrator sam spaja aditivne, neobavezne (`?`) dodatke ugovoru koji su doslovno iz plana vala 3. Leonovo
-„spoji" ostaje za promjenu postojećih polja, brojke u `rules.ts` i `package.json`.
+**Odluka.** Integrator sam spaja aditivne, neobavezne dodatke ugovoru (novi tip ili polje s `?` u `types.ts`)
+prepisane iz bloka „Ugovor" u planu. Leonovo „spoji" ostaje za izmjene postojećih tipova, `rules.ts`, `package.json`,
+lock datoteku i plan.
 **Posljedice.** Djelomično mijenja ADR-017. Manje čekanja na Leona, a promjene koje mogu slomiti tuđi kod i dalje
 idu preko njega.
 
