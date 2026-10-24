@@ -3,10 +3,23 @@
 Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča po sesijama je u
 [PROGRESS.md](PROGRESS.md).
 
+## M2 · Obilazak 2 (u tijeku, rok sub 18:45)
+
+| PR | Spojeno | Autor | Što |
+| --- | --- | --- | --- |
+| [#73](https://github.com/leonkreso784-bit/riihack/pull/73) | 15:08 | Rino | animacije sučelja |
+| [#70](https://github.com/leonkreso784-bit/riihack/pull/70) | 15:07 | Leon | L5: motor B, krugovi, kvaliteta, prepisivanje, napredak |
+| [#69](https://github.com/leonkreso784-bit/riihack/pull/69) | 15:07 | Leon | L10: gradske tvrtke i ugovori (sadržaj) |
+| [#68](https://github.com/leonkreso784-bit/riihack/pull/68) | 15:02 | Leon | L9: motor C, ekonomija grada i ugovori |
+
 ## M1 · Obilazak 1 (u tijeku, rok sub 14:30)
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#74](https://github.com/leonkreso784-bit/riihack/pull/74) | 15:09 | Leon | L4: API za stvaranje igre, ulaz kodom, sobe, profesorovo stanje |
+| [#72](https://github.com/leonkreso784-bit/riihack/pull/72) | 15:07 | Simon | tema: kako Simpolis potiče učenje |
+| [#71](https://github.com/leonkreso784-bit/riihack/pull/71) | 15:07 | Leon | dokumentacija za gradnju na `main` |
+| [#67](https://github.com/leonkreso784-bit/riihack/pull/67) | 14:59 | Simon | pitch i obilazak: iskrenije tvrdnje, jedan kupac, tema na početku |
 | [#63](https://github.com/leonkreso784-bit/riihack/pull/63) | 14:58 | Leon | ugovor: `CharacterInput.messageNo?` i `maxMessages?` (ADR-016) |
 | [#66](https://github.com/leonkreso784-bit/riihack/pull/66) | 14:48 | Simon | pitch: jednostavan jezik i tko plaća |
 | [#59](https://github.com/leonkreso784-bit/riihack/pull/59) | 14:45 | Leon | L2: motor A, kodovi, dodjela hotela, provjere unosa |
