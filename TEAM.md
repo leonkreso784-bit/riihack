@@ -82,12 +82,13 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R10)
 
-- **Sad radim:** R1 (#21) ulaz, R2 (#22) profesor, R3 (#23) sobe, na lažnim podacima
-- **Sljedeće:** stranica Osoblje u R3 (do M2); R4 (#24), R5 (#25), R6 (#26) za M2
-- **Čekam od drugih:** Leon: L4 za prave podatke
+- **Sad radim:** čekam pregled i spajanje R1–R3; zatim R5 (#25) situacija s likom
+- **Sljedeće:** stranica Osoblje u R3 (do M2); R4 (#24), R5 (#25), R6 (#26), R7 (#27), R10 (#46) za M2
+- **Čekam od drugih:** Leon: L4 za prave podatke; odluka o smjeru dizajna (#39) s Leonom
 - **Drugi čekaju od mene:** —
-- **Spojeno:** R0 (#40), popravak `roundGain` (#49)
-- **Zadnje ažurirano:** sub 14:25 (popunio Claude, ispravi)
+- **Otvoreno:** R1 ulaz i čekaonica (#54), R2 profesor (#56, nosi i R1), R3 sobe (#57, nosi R1 i R2). Spojiti redom ili samo #57.
+- **Spojeno:** R0 (#40), popravak `roundGain` (#49), lažni podaci zadano na Vercelu (#52)
+- **Zadnje ažurirano:** sub 14:33 (popunio Claude, ispravi)
 
 ---
 
