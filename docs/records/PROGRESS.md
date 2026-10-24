@@ -8,7 +8,9 @@ Vremena su lokalna (CEST).
 
 ## Ned 25.10. ~00:30 · mentor spor
 
-- **Spojeno:** Simonov #231 (00:28, mentorov osvrt ne pada na fiksni tekst), dokumentacija #234 (00:28).
+- **Spojeno:** Simonov #231 (00:28, mentorov osvrt ne pada na fiksni tekst) i #232 (00:28, Tokovi: odjeli kao staze),
+  dokumentacija #234 (00:28). Integrator: 514 testova, smoke 1–18, CI zelen, produkcija READY 00:28. U bazi su 3
+  igre „Smoke …" za čišćenje prije predaje.
 - **Bug (Leon):** mentor je spor ili ne odgovori ([BUG-028](BUGS.md#bug-028--mentor-je-spor-ili-ne-odgovori));
   tester mjeri vrijeme do pitanja i osvrta na produkciji.
 
