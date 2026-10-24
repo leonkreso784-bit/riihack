@@ -56,6 +56,8 @@ export type ProfUser = { id: string; name: string; email: string };
 
 /** Prijavljeni profesor (Better Auth sesija) ili null. */
 export async function getProfUser(): Promise<ProfUser | null> {
+  // Bez BETTER_AUTH_SECRET nema računa (Better Auth bi u produkciji bacio grešku); igra radi s profesorskim kodom.
+  if (!process.env.BETTER_AUTH_SECRET) return null;
   const session = await getAuth().api.getSession({ headers: await headers() });
   if (!session) return null;
   const { id, name, email } = session.user;

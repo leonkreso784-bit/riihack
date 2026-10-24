@@ -13,15 +13,15 @@ function createAuth() {
     // neon-http nema transakcija, zato bez `transaction: true`
     database: drizzleAdapter(db, { provider: "pg", schema }),
     emailAndPassword: { enabled: true },
-    // Samo naš projekt na Vercelu (produkcija i pregledi riihack-*); localhost samo u razvoju
+    // Samo naš projekt na Vercelu (produkcija i pregledi u timu leon-kresos-projects); localhost samo u razvoju
     baseURL: {
-      allowedHosts: [...(appHost ? [appHost] : []), "riihack.vercel.app", "riihack-*.vercel.app", ...(dev ? ["localhost:*", "127.0.0.1:*"] : [])],
+      allowedHosts: [...(appHost ? [appHost] : []), "riihack.vercel.app", "riihack-*-leon-kresos-projects.vercel.app", ...(dev ? ["localhost:*", "127.0.0.1:*"] : [])],
       fallback: appUrl,
     },
     trustedOrigins: [
       ...(appUrl ? [appUrl] : []),
       "https://riihack.vercel.app",
-      "https://riihack-*.vercel.app",
+      "https://riihack-*-leon-kresos-projects.vercel.app",
       ...(dev ? ["http://localhost:*", "http://127.0.0.1:*"] : []),
     ],
     plugins: [nextCookies()], // mora biti zadnji
