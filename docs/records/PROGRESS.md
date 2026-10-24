@@ -20,6 +20,11 @@ Vremena su lokalna (CEST).
   mrtve poveznice #199 (22:13), dokumentacija #197 (22:13). 416 testova, smoke 18/18 lokalno, CI zelen, produkcija
   READY 22:14.
 - **🟨 Čeka:** ponovni seed demo igre i smoke na produkciji (integrator ga nije pokrenuo jer je baza očišćena).
+- **Tester, treći krug (~22:25):** kraj sezone na projektoru bez podija, pobjednik u crvenom
+  ([BUG-022](BUGS.md#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik), visok), `/igra`
+  nakon kraja sezone čeka obračun ([BUG-023](BUGS.md#bug-023--igra-nakon-kraja-sezone-i-dalje-čeka-obračun)), loši
+  pokazatelji jedva utječu na goste u vrhu sezone
+  ([BUG-024](BUGS.md#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone), 🟨 čeka Leonovu odluku).
 
 ## Sub 24.10. 22:00–22:10 · tester na produkciji
 

@@ -10,8 +10,8 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-Bugove BUG-015 do 017 i 019 do 021 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
-~22:05 i ~22:20.
+Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
+~22:05, ~22:20 i ~22:25.
 
 ### BUG-015 · Uvid u studenta: propuštena situacija piše „klik"
 - **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (profesor misli da je student odabrao odgovor)
@@ -69,6 +69,32 @@ Bugove BUG-015 do 017 i 019 do 021 prijavio je tester produkcije (sesija koja sa
 - **Rješenje:** 🟨 čeka Rina.
 - **Lekcija:** novi ekrani (računi, knjižnica) traže put do njih sa svih starih ekrana; provjeri navigaciju od
   prijave do svake stranice.
+
+### BUG-022 · Kraj sezone na projektoru: nema podija, pobjednik izgleda kao gubitnik
+- **Status:** 🔴 otvoren (Rino, R10 podij, issue [#46](https://github.com/leonkreso784-bit/riihack/issues/46)) · **Težina:** visok (završni trenutak demoa)
+- **Opis:** ploča profesora na 1280×720 nakon „Završi sezonu": nema podija, ljestvica zauzima pola širine, desna
+  polovica je prazna; pobjednik ima crveno „▼ −19.3", drugi „▼ −36.9". Koraci: igra s 2 studenta, zatvoriti 2
+  mjeseca, „Završi sezonu".
+- **Rješenje:** 🟨 čeka Rina: podij preko cijele širine i napredak koji pobjedniku ne izgleda kao poraz.
+- **Lekcija:** završni ekran demoa provjeri na rezoluciji projektora i s pravim brojkama, ne samo s lažnim podacima.
+
+### BUG-023 · `/igra` nakon kraja sezone i dalje čeka obračun
+- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** nizak
+- **Opis:** kartica „Stanje računa" nakon kraja sezone i dalje piše „obračun kad profesor zatvori mjesec".
+- **Rješenje:** 🟨 čeka Rina.
+- **Lekcija:** svaki tekst koji opisuje „što slijedi" treba stanje za kraj igre.
+
+### BUG-024 · Loši pokazatelji jedva utječu na goste u vrhu sezone
+- **Status:** 🟨 čeka Leonovu odluku · **Težina:** visok (srž učenja: odgovori na situacije mijenjaju pokazatelje, a
+  pokazatelji goste)
+- **Opis:** tester (~22:25, nakon #194): hotel koji nije odgovorio ni na jednu situaciju (zadovoljstvo gostiju 34/100,
+  zaposlenici 26/100) u kolovozu ima 86 % popunjenosti i 63.102 € dobiti, najviše u gradu.
+- **Uzrok (dokumentarist iz koda, 🟨 potvrditi s graditeljem):** potražnja grada je udio kapaciteta grada
+  (`SEASON_DEMAND_BP`: lipanj 60 %, srpanj 85 %, kolovoz 95 %, rujan 55 %, `rules.ts:57`), pa se u kolovozu gotovo
+  svi hoteli napune bez obzira na privlačnost. U privlačnosti (`attractiveness`, `economy.ts`) su samo recenzije i
+  zadovoljstvo gostiju, ne i zaposlenici ni ostali pokazatelji.
+- **Rješenje:** 🟨 Leon odlučuje (vidi PROGRESS).
+- **Lekcija:** test balansa treba provjeriti i obrnuto: da loša odluka gubi, ne samo da najbolja odluka ima smisla.
 
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
