@@ -32,7 +32,7 @@ Radni repo tima Leon, Simon i Rino za **Ri-Hack 4.0**, hackathon RITEH Web Teama
 - **Glavni tok prvo.** Prvo jedan korisnik i jedan scenarij od početka do kraja, a tek onda rubni slučajevi i dorada.
 - **Ne diraj tuđi dio bez pitanja.** Troje ljudi radi paralelno u istom repou. Ako izmjena dira tuđi kod, reci to prije nego što je napraviš.
 - **AI ne odlučuje o brojkama.** Bodove računa motor (`lib/engine/`), AI samo glumi likove, sudi po rubrici i piše mentora.
-- **Nakon zamrzavanja (ned 06:00) nema novih značajki**, samo popravci (vidi [PLAN-24H.md](PLAN-24H.md)).
+- **Nema zamrzavanja koda**, gradi se do predaje (ned 10:30); `main` uvijek zelen, spaja samo integrator (vidi [ADR-031](docs/records/DECISIONS.md#adr-031)).
 - **Jezik:** dokumenti i UI na hrvatskom, osim ako tema ne traži drugačije. Kod i imena varijabli na engleskom.
 
 ## Rad s agentima
