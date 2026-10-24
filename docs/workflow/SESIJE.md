@@ -28,5 +28,8 @@ Jedan redak, s oznakom na početku:
 
 ## Grane
 
+**Na `main` od dokumenata ide samo `TEAM.md`** (zajednička ploča). Ostala dokumentacija ostaje na grani
+`leon/docs-struktura` i ne spaja se (Leon, 24.10.; #58 vraćen s #60).
+
 `leon/<zadatak>` za graditelja, `leon/docs-<opis>` za dokumentarista. Nikad `git push --force` na `main`
 ([CLAUDE.md](../../CLAUDE.md)).

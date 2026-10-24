@@ -16,8 +16,10 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 (#36 i #37, #49 i #50), a jednom je `main` ostao crven (BUG-001).
 **Odluka.** Leonov rad ide kroz tri sesije: **graditelj** (L-zadaci s agentima), **integrator** (pregledava i spaja
 PR-ove cijelog tima, čuva `main`) i **dokumentarist** (samo `docs/`). Svaka u svom radnom stablu.
-**Posljedice.** Graditelj i dokumentarist ne spajaju sami, nego javljaju integratoru. 🟨 Odnosi li se pravilo
-„spaja integrator" i na Simonove i Rinove PR-ove, ili oni i dalje spajaju sami ([TEAM.md](../../TEAM.md) pravilo 3)?
+**Posljedice.** Spaja samo integrator; autor PR-a javlja da je spreman (integrator, [ODLUKA] 24.10.). 🟨 Vrijedi li to
+i za Simonove i Rinove PR-ove ([TEAM.md](../../TEAM.md) pravilo 3 kaže da spaja vlasnik)? **Dokumentacija se ne
+spaja:** na `main` ide samo `TEAM.md`, a `docs/` ostaje na grani `leon/docs-struktura` (Leon, 24.10.; #58 spojen
+pa vraćen s #60).
 
 <a id="adr-014"></a>
 ## ADR-014 · Ploča tima u `TEAM.md`, izravno na `main`
