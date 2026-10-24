@@ -119,6 +119,7 @@ const mockReport = MOCK_ME.reports[0];
 const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
 // After a mock join the "professor" starts the game 8 s later, so the waiting room can be seen in the demo.
 let mockLobbyUntil = 0;
+let mockClosedRound = 0; // "Završi mjesec" in the mock
 
 // Mock professor game: lobby until "Pokreni", students drop in one every 2.5 s so the projector view comes alive.
 // After the start the board moves too: "Zatvori mjesec" opens the next month with its deadline, "Završi" ends it.
@@ -219,6 +220,7 @@ const mockApi: Api = {
     const world = { ...MOCK_ME.world, serverNow: new Date().toISOString() };
     return wait({
       ...MOCK_ME,
+      company: { ...MOCK_ME.company, closedRound: Math.max(MOCK_ME.company.closedRound, mockClosedRound) },
       world: lobby ? { ...world, status: "lobby", round: 0, roundDeadline: null } : { ...world, roundDeadline: MOCK_DEADLINE },
     });
   },
@@ -240,7 +242,10 @@ const mockApi: Api = {
     ),
   chat: async () =>
     wordStream("Drugi apartman? Dobro, ali neka bude odmah, ne za sat vremena. I tko mi nadoknađuje izgubljeno jutro?"),
-  closeRound: () => wait({ round: 2, metricsBefore: MOCK_ME.company.metrics, metricsAfter: MOCK_ME.company.metrics }),
+  closeRound: () => {
+    mockClosedRound = MOCK_ME.world.round; // the waiting state shows on the next poll
+    return wait({ round: MOCK_ME.world.round, metricsBefore: MOCK_ME.company.metrics, metricsAfter: MOCK_ME.company.metrics });
+  },
   report: () => wait(mockReport, 1200),
   reflection: (req) =>
     wait(
