@@ -49,9 +49,16 @@ Provjereno kroz cijeli tok na produkciji (profesor stvori igru → kod → stude
 
 - **#91 logo točno kao V1** (izvorna slika iz `public/brand/`). Spremno za integratora. Dok se ne spoji, produkcija
   prikazuje stari prepisani SVG S. (#78 je spojen prije nego je ovaj commit stigao, zato novi PR.)
-- **Ulazna stranica:** `/` je od R1 **ulaz kao Kahoot** („Uđi u igru", kod igre, „Ja sam profesor"). Stara
-  predstavljačka stranica (veliki logo, „Pogledaj igru", tri kartice) je zamijenjena. Rino odlučuje treba li je vratiti
-  (npr. `/` predstavljanje s gumbima „Uđi u igru" i „Ja sam profesor", a ulaz kodom na `/ulaz`).
+- **Ulazna stranica: ODLUKA (Rino, sub 16:10): vratiti predstavljanje na `/`.** Prvi zadatak sljedeće sesije:
+  - `/` = predstavljačka stranica kakva je bila prije R1 (commit `cd6ee70`: veliki logo, „Simpolis", podnaslov,
+    tri kartice „Pravi grad", „Ljudi, ne gotovi odgovori", „Razred kao Kahoot"), ali s **izvornim logom V1** i manje
+    „AI predloška" (bez sjaja iza loga i gradijentnog teksta ako smeta). Gumbi: **„Uđi u igru"** → `/ulaz` i
+    **„Ja sam profesor"** → `/profesor`.
+  - Sadašnji ulaz kodom (R1) seli s `/` na **`/ulaz`** (premjesti `src/app/page.tsx` u `src/app/ulaz/page.tsx`).
+  - Popravi sve poveznice na ulaz: čekaonica i greške („Natrag na ulaz" → `/ulaz`), profesorova čekaonica
+    („Uđi na {host} i upiši kod" → prikazati `{host}/ulaz`).
+  - Provjeri cijeli tok na previewu (sad pravi API): profesor napravi igru → student `/ulaz` → čekaonica → `/igra`.
+- **Pravi podaci su OK** (Rino): previewi idu na pravi API, to je u redu; produkcija na lažnim dok Leon ne kaže.
 - **Gumb Odjava** maknut: treba Leonova ruta `POST /api/logout`. Kod je u commitu `21bb687`.
 - **Smjer dizajna (#39)**: odlučuješ s Leonom.
 - **Nakon žirija 1 (Leon):** profesor piše i šalje situacije (L12 backend, S8 Simon, `/profesor/[worldId]/situacije`).
@@ -60,7 +67,7 @@ Provjereno kroz cijeli tok na produkciji (profesor stvori igru → kod → stude
 - **Preview grane sad idu na pravi API** (`NEXT_PUBLIC_USE_MOCK=0` samo za Preview). Za test `/igra` na previewu prvo
   napravi igru kao profesor pa uđi kao student. Produkcija ostaje na lažnim podacima.
 
-## Sljedeće (redom, za M2 sub 18:45, Leonov redoslijed nakon žirija 1)
+## Sljedeće (redom, za M2 sub 18:45, Leonov redoslijed nakon žirija 1; prije svega vraćanje predstavljanja na `/`, vidi Otvoreno)
 
 | Red | Zadatak | Issue | Što još (nakon žirija) |
 | --- | --- | --- | --- |
