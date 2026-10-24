@@ -19,7 +19,7 @@ ovaj tekst bio istinit.
 | Vrijeme | Slajd | Što govorimo (nacrt) | Tko |
 | --- | --- | --- | --- |
 | 0:00–0:15 | 1. Udica | „AI studentu napiše savršen esej o vođenju hotela. Ali ga ne nauči što reći ljutom gostu u sobi 204. Simpolis je grad u simulaciji u kojem student vodi svoj hotel, a svaka odluka mijenja goste, novac i susjede." | |
-| 0:15–0:50 | 2. Problem | „Ana studira hotelijerstvo u Opatiji. Prvu pravu odluku s gostom donosi tek na praksi, u zadnjem semestru. Do tada uči uz AI, kao pola srednjoškolaca u Hrvatskoj. A tko vježba s AI-jem koji daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat**. Cesim, koji fakulteti koriste, traži samo brojke; ChatGPT glumi gosta, ali sutra sve zaboravi." | |
+| 0:15–0:50 | 2. Problem | „Ana studira hotelijerstvo u Opatiji. Prvu pravu odluku s gostom donosi tek na praksi, u zadnjem semestru. Do tada uči uz AI, kao gotovo pola srednjoškolaca u Hrvatskoj (40 do 50 %). A tko vježba s AI-jem koji daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat**. Cesim, koji fakulteti koriste, traži samo brojke; ChatGPT glumi gosta, ali sutra sve zaboravi." | |
 | 0:50–1:15 | 3. Obećanja | „U subotu smo vam obećali tri stvari: **pravi grad s pravom ekonomijom, odluke s ljudima umjesto gotovih odgovora, i razred kao Kahoot.** Evo sve tri, uživo." | |
 | 1:15–3:15 | 4. DEMO | Vidi „Tok demoa" ispod. | klika jedan, govori drugi |
 | 3:15–3:50 | 5. Zašto uči | „Vlastite riječi vrijede više od klika, a prepisan odgovor vrijedi kao klik. AI glumi ljude i provjerava odgovor po rubrici, ali **bodove računaju pravila igre**, isto za svakoga. Ocjena je napredak od vlastitog početka, a mentor prvo pita, tek onda objašnjava." | |
