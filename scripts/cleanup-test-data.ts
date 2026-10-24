@@ -3,6 +3,9 @@
 // S --apply briše sve odabrano u JEDNOM batchu (neon-http batch = jedna transakcija).
 // Demo igra (DEMO_JOIN_CODE, zadano KVRNDM) i igre profesora DEMO_PROF_EMAIL (ako je postavljen) su zaštićene:
 // ako bi ijedna završila u skupu za brisanje, cijelo pokretanje se prekida.
+// Način --stare (npx tsx scripts/cleanup-test-data.ts --stare [--apply]) briše stare ručne testne igre
+// s popisa OLD_TEST_WORLD_NAMES (točna imena). Računi se u tom načinu ne brišu. Uz demo igru su zaštićene
+// i igre "Hoteljerstvo", igre koje počinju s "QA " ili ih ima račun qa-…, a igre mlađe od 60 minuta se preskaču.
 import { config } from "dotenv";
 config({ path: ".env.local" });
 import { count, eq, inArray, or, type SQL } from "drizzle-orm";
@@ -21,8 +24,24 @@ const TEST_WORLD_NAME_PREFIXES = ["Smoke ", "QA ", "L16 test", "L17 test", "L18 
 const TEST_EMAIL_SUFFIXES = ["@example.test"] as const;
 /** Račun je testni ako mu e-mail počinje ovim (bez obzira na velika/mala slova). */
 const TEST_EMAIL_PREFIXES = ["integrator-test-", "smoke-", "qa-"] as const;
+/** Način --stare: TOČNA imena starih ručnih testnih igara (popis složen iz baze 24.10. navečer). */
+const OLD_TEST_WORLD_NAMES = [
+  "Test", "Test test", "Test L4", "Test L4 B", "Test L7", "Test L7 drugi", "Test L7 prazno", "Test L11", "Test L12",
+  "Test logout", "Test ocjena", "Test ocjena drugi", "Test playbook A", "Test playbook B", "Test playbook C",
+  "Test Rino 375", "Test Rino posta", "Test Rino produkcija", "Test Rino server",
+  "L12 test", "L14 druga", "L14 provjera", "L16 kod test",
+  "L15 mail 1792863555015", "L15 acc 1792863562786", "L15 cnt 1792863564467", "L15 rej 1792863566666",
+  "L15 ag0 1792863579208", "L15 ag1 1792863580930",
+  "E2E test Simon", "Odjeli provjera", "Provjera R8 2120", "Provjera računa 2135", "Rucni FINA 1792870444042",
+  "Xasdfsa", "as", "asfasg", "dfd", "sg", "xcyxcxy", "xv", "zz test",
+] as const;
+/** Način --stare: imena koja se nikad ne brišu. */
+const KEEP_WORLD_NAMES = ["Hoteljerstvo"] as const;
+/** Način --stare: igre mlađe od ovoga se preskaču (netko ih možda koristi). */
+const MIN_AGE_MS = 60 * 60 * 1000;
 // ─────────────────────────────────────────────────────────────────────────────────────────────
 
+const STARE = process.argv.includes("--stare");
 const APPLY = process.argv.includes("--apply");
 const DEMO_JOIN_CODE = (process.env.DEMO_JOIN_CODE || "KVRNDM").trim().toUpperCase();
 const DEMO_PROF_EMAIL = process.env.DEMO_PROF_EMAIL?.trim().toLowerCase() || null;
@@ -161,6 +180,86 @@ function fmtDate(d: Date): string {
   return d.toISOString().replace("T", " ").slice(0, 16);
 }
 
+/** Zaštita za --stare: demo/profesor kao i inače, plus Hoteljerstvo i QA igre (ime "QA " ili vlasnik qa-…). */
+async function stareProtectedSet(): Promise<{ worldIds: Set<string>; profUserId: string | null }> {
+  const base = await protectedSet();
+  const users = await db.select({ id: user.id, email: user.email }).from(user);
+  const qaUserIds = new Set(users.filter((u) => u.email.trim().toLowerCase().startsWith("qa-")).map((u) => u.id));
+  const all = await db.select({ id: worlds.id, name: worlds.name, ownerId: worlds.ownerId }).from(worlds);
+  for (const w of all) {
+    const keep =
+      (KEEP_WORLD_NAMES as readonly string[]).includes(w.name) ||
+      w.name.startsWith("QA ") ||
+      (w.ownerId !== null && qaUserIds.has(w.ownerId));
+    if (keep) base.worldIds.add(w.id);
+  }
+  return base;
+}
+
+async function mainStare(): Promise<void> {
+  console.log(APPLY ? "Način: STARE, BRISANJE (--stare --apply)\n" : "Način: STARE, SUHI PROLAZ (za brisanje dodaj --apply)\n");
+  console.log(`Zaštićeni: demo igra (kod ${DEMO_JOIN_CODE}), igre DEMO_PROF_EMAIL, "Hoteljerstvo", QA igre. Računi se ne brišu.`);
+
+  const prot = await stareProtectedSet();
+  const demoBefore = await demoState();
+  console.log(demoBefore ? `Demo igra postoji (${demoBefore.companies} hotela).` : "Upozorenje: demo igra ne postoji u bazi.");
+
+  const allWorlds: WorldInfo[] = await db
+    .select({ id: worlds.id, name: worlds.name, joinCode: worlds.joinCode, createdAt: worlds.createdAt, ownerId: worlds.ownerId })
+    .from(worlds);
+  const listed = allWorlds.filter((w) => (OLD_TEST_WORLD_NAMES as readonly string[]).includes(w.name));
+  const cutoff = Date.now() - MIN_AGE_MS;
+  const tooNew = listed.filter((w) => w.createdAt.getTime() > cutoff);
+  const chosen = listed
+    .filter((w) => w.createdAt.getTime() <= cutoff)
+    .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  const worldIds = chosen.map((w) => w.id);
+
+  assertNothingProtected(worldIds, [], prot);
+
+  console.log(`\nIgre za brisanje: ${chosen.length}`);
+  for (const w of chosen) console.log(`  - ${w.name}  ${fmtDate(w.createdAt)}`);
+  console.log(`Preskočeno (mlađe od 60 min): ${tooNew.length}`);
+  for (const w of tooNew) console.log(`  - ${w.name}  ${fmtDate(w.createdAt)}`);
+  const found = new Set(listed.map((w) => w.name));
+  const missing = OLD_TEST_WORLD_NAMES.filter((n) => !found.has(n));
+  if (missing.length) console.log(`Imena s popisa kojih nema u bazi: ${missing.length}`);
+  console.log(`Ostaje igara: ${allWorlds.length - chosen.length} (od ${allWorlds.length})`);
+
+  const targets = worldIds.length ? worldTargets(worldIds) : [];
+  console.log("\nRetci po tablici:");
+  for (const t of targets) console.log(`  ${t.label.padEnd(20)} ${await countWhere(t.table, t.where)}`);
+
+  if (targets.length === 0) {
+    console.log("\nNema starih testnih igara. Gotovo.");
+    return;
+  }
+  if (!APPLY) {
+    console.log("\nSuhi prolaz: ništa nije obrisano. Za brisanje pokreni s --stare --apply.");
+    return;
+  }
+
+  // Ponovna provjera zaštite neposredno prije brisanja
+  assertNothingProtected(worldIds, [], await stareProtectedSet());
+
+  const before = await tableTotals();
+  const deletes = targets.map((t) => db.delete(t.table).where(t.where) as BatchItem<"pg">);
+  await db.batch([deletes[0], ...deletes.slice(1)]);
+  const after = await tableTotals();
+
+  console.log("\nTablica               prije    poslije");
+  for (const t of ALL_TABLES) {
+    console.log(`  ${t.label.padEnd(20)} ${String(before.get(t.label)).padStart(6)} ${String(after.get(t.label)).padStart(9)}`);
+  }
+
+  const demoAfter = await demoState();
+  if (demoBefore && (!demoAfter || demoAfter.id !== demoBefore.id || demoAfter.companies !== demoBefore.companies)) {
+    console.error("\nUPOZORENJE: demo igra se promijenila! Provjeri bazu.");
+    process.exit(1);
+  }
+  console.log(demoAfter ? `\nDemo igra netaknuta (${demoAfter.companies} hotela). Gotovo.` : "\nGotovo (demo igre nema).");
+}
+
 async function main(): Promise<void> {
   console.log(APPLY ? "Način: BRISANJE (--apply)\n" : "Način: SUHI PROLAZ (ništa se ne briše; za brisanje dodaj --apply)\n");
   console.log(`Zaštićena demo igra: kod ${DEMO_JOIN_CODE}`);
@@ -240,7 +339,7 @@ async function main(): Promise<void> {
   console.log(demoAfter ? `\nDemo igra netaknuta (${demoAfter.companies} hotela). Gotovo.` : "\nGotovo (demo igre nema).");
 }
 
-main().catch((err: unknown) => {
+(STARE ? mainStare() : main()).catch((err: unknown) => {
   console.error("Greška:", err instanceof Error ? err.message : String(err));
   process.exit(1);
 });
