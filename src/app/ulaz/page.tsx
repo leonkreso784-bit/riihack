@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useSyncExternalStore } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
 import { CODE_ALPHABET, JOIN_CODE_LENGTH } from "@/lib/rules";
@@ -48,7 +47,7 @@ export default function JoinPage() {
     <div className="mx-auto max-w-md pt-4 md:pt-12">
       <h1 className="text-4xl font-extrabold tracking-tight md:text-5xl">Uđi u igru</h1>
       <p className="mt-2 text-muted-foreground">
-        {code ? "Još samo tko si i kako se zove tvoj hotel." : "Upiši kod koji profesor pokazuje na ekranu."}
+        {code ? "Još samo tko si i kako se zove tvoj hotel." : "Skeniraj QR kod s profesorovog ekrana ili upiši kod ispod njega."}
       </p>
 
       <form onSubmit={join} className="surface mt-8 space-y-5 rounded-[var(--radius)] p-5 md:p-6">
@@ -85,13 +84,6 @@ export default function JoinPage() {
           </SubmitButton>
         )}
       </form>
-
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Vodiš kolegij?{" "}
-        <Link href="/profesor" className="font-semibold text-secondary-foreground hover:underline">
-          Ja sam profesor
-        </Link>
-      </p>
     </div>
   );
 }
