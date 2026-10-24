@@ -140,6 +140,7 @@ export function toLeaderboard(all: CompanyWithPlayer[], reports: RoundReportRow[
         closedRound: company.closedRound,
         cash: company.cash,
         roundGain: roundGain(company.startMetrics, last.get(company.id)),
+        ...(company.kind === "bot" && { isBot: true }), // ADR-044
       } satisfies LeaderboardRow,
     }))
     .sort((a, b) => b.row.progress - a.row.progress || b.row.cash - a.row.cash || a.joinIndex - b.joinIndex)

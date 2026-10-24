@@ -13,6 +13,7 @@ const WALL = {
   h: ["#4d8fff", "#1f5be0", "#17409e"],
   me: ["#2f62e6", "#173fae", "#122f7e"],
   blk: ["#ec7e7b", "#c24a4a", "#8e2d2d"],
+  bot: ["#a9b1c0", "#7d8698", "#596172"], // ADR-044: hotel koji vodi računalo
   b: ["#44ac86", "#2a7d5c", "#1f6a4c"],
 } as const;
 const ROOF = 22;
@@ -87,7 +88,7 @@ type HotelProps = {
   ay: number;
   ht: number;
   rows: number;
-  tone: "h" | "me" | "blk";
+  tone: "h" | "me" | "blk" | "bot";
   litPct: number;
   selected: boolean;
   onSelect: (id: string) => void;
@@ -329,7 +330,7 @@ const CSS = `
 `;
 
 type LegendItem = [string, string, boolean?];
-const LEGEND: LegendItem[] = [["#1640aa", "Tvoj hotel", true], ["#246bfd", "Hotel u igri"], ["#2f8f6b", "Gradski partner"]];
+const LEGEND: LegendItem[] = [["#1640aa", "Tvoj hotel", true], ["#246bfd", "Hotel u igri"], ["#7d8698", "Hotel računala"], ["#2f8f6b", "Gradski partner"]];
 function Legend({ className }: { className?: string }) {
   return (
     <div className={cn("text-xs", className)}>
@@ -534,7 +535,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
                 const [ax, ay] = lots[h.companyId].slot;
                 const prof = profiles[h.companyId];
                 const pct = prof?.detail?.occupancyPct ?? 55;
-                return <Hotel key={`h-${h.companyId}`} id={h.companyId} name={h.hotelName} ax={ax} ay={ay} ht={hOf(h.companyId)} rows={rowsOf(h.progress, maxProgress)} tone={h.companyId === youId ? "me" : "h"} litPct={pct} selected={selectedId === h.companyId} onSelect={select} onHover={hover} />;
+                return <Hotel key={`h-${h.companyId}`} id={h.companyId} name={h.hotelName} ax={ax} ay={ay} ht={hOf(h.companyId)} rows={rowsOf(h.progress, maxProgress)} tone={h.companyId === youId ? "me" : h.isBot ? "bot" : "h"} litPct={pct} selected={selectedId === h.companyId} onSelect={select} onHover={hover} />;
               })}
             </g>
             <g pointerEvents="none">

@@ -27,8 +27,10 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
   const { world, players } = state;
   const finished = world.status === "finished";
   const last = world.round >= world.maxRounds;
-  const done = players.filter((p) => p.closedRound >= world.round);
-  const playing = players.filter((p) => p.closedRound < world.round);
+  // ADR-044: botovi igraju sami pri zatvaranju mjeseca, pa nisu na popisu „još igra"
+  const humans = players.filter((p) => !p.isBot);
+  const done = humans.filter((p) => p.closedRound >= world.round);
+  const playing = humans.filter((p) => p.closedRound < world.round);
   const [anonymous, setAnonymous] = useState(false);
   // R10: the podium shows the month that was just closed (after "Zatvori … i otvori …", "Završi sezonu" or "Pokaži podij").
   const [podium, setPodium] = useState<{ rows: LeaderboardRow[]; month: string } | null>(null);
@@ -65,7 +67,7 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
       <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-6", !finished && "lg:grid-cols-2")}>
         {!finished && (
           <Panel
-            title={`${ROUND_LABELS[world.round - 1]}: zatvorilo ${done.length} od ${players.length}`}
+            title={`${ROUND_LABELS[world.round - 1]}: zatvorilo ${done.length} od ${humans.length}`}
             action={<Pill tone={playing.length ? "accent" : "up"}>{playing.length ? `${playing.length} još igra` : "svi gotovi"}</Pill>}
           >
             <ul className="flex flex-wrap gap-2">

@@ -32,6 +32,7 @@ import type {
   ProfGameSummary,
   ProfStateResponse,
 } from "@/lib/types";
+import { playBots } from "./bots";
 import { createOffers, listNewsEvents, settleCityRound } from "./city";
 import { MAIL_LIMIT, countUnreadMail, listMailRows } from "./mail";
 import { closeRoundForAll, openRound } from "./round";
@@ -146,6 +147,7 @@ export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Pro
   if (world.status === "finished" || world.round >= MAX_ROUNDS) throw new HttpError(409, "Sezona je gotova");
   const k = world.round;
 
+  await playBots(world, k); // ADR-044: botovi igraju mjesec k prije zatvaranja
   await closeRoundForAll(world, k);
   // Obračun mjeseca k za cijeli grad, nakon zatvaranja krugova i prije prelaska u k + 1. Ima vlastitu zaštitu
   // (settled_round), pa smije biti pozvan i iz drugog istodobnog klika.
@@ -167,6 +169,7 @@ export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Pro
 export async function finishWorld(world: WorldRow): Promise<WorldRow> {
   if (world.status === "lobby") throw new HttpError(409, "Igra još nije krenula");
   if (world.status === "finished") return world;
+  await playBots(world, world.round); // ADR-044
   await closeRoundForAll(world, world.round);
   await settleCityRound(world, world.round); // obračun zadnjeg mjeseca
   const [done] = await db
@@ -202,6 +205,7 @@ export async function expireRoundIfDue(
     )
     .returning();
   if (!world) return false;
+  await playBots(world, world.round); // ADR-044: i istek roka zatvara mjesec, botovi ne smiju ostati bez poteza
   await closeRoundForAll(world, world.round);
   await settleCityRound(world, world.round); // rok je zatvorio mjesec
   await logEvent({ worldId, round: world.round, type: "round.expired", payload: { round: world.round } });

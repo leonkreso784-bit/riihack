@@ -8,6 +8,7 @@ import type {
   AnswerRequest,
   AnswerView,
   ApiError,
+  BotsRequest,
   ChatRequest,
   CompanyDetailResponse,
   ContractDecisionRequest,
@@ -21,6 +22,7 @@ import type {
   GenerateSituationRequest,
   JoinRequest,
   JoinResponse,
+  LeaderboardRow,
   LibraryItem,
   MeResponse,
   OpenRoundRequest,
@@ -69,6 +71,8 @@ const realApi = {
   start: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/start`),
   openRound: (worldId: string, req: OpenRoundRequest = {}) => post<ProfStateResponse>(`/api/prof/${worldId}/round`, req),
   finish: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/finish`),
+  // ADR-044: computer-run hotels in the lobby (add, fill up to 5, remove).
+  bots: (worldId: string, req: BotsRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/bots`, req),
   // R8: the professor changes a student's grade (overridden: true in the answer).
   overrideQuality: (worldId: string, situationId: string, quality: Quality) =>
     post<AnswerView>(`/api/prof/${worldId}/answers/${situationId}/quality`, { quality }),
@@ -159,6 +163,8 @@ const AGENCY_REPLY = {
 // After the start the board moves too: "Zatvori mjesec" opens the next month with its deadline, "Završi" ends it.
 let mockProfOpenedAt = Date.now();
 let mockProfStarted = false;
+let mockBots: LeaderboardRow[] = []; // ADR-044: bots added in the mock lobby
+const MOCK_BOT_NAMES = ["Hotel Bonavia", "Hotel Kvarner Breeze", "Villa Opatija Mare", "Hotel Lungomare", "Hotel Učka View"];
 let mockProf = { round: MOCK_PROF.world.round, deadline: MOCK_DEADLINE as string | null, finished: false };
 function mockProfState(): ProfStateResponse {
   const world = { ...MOCK_PROF.world, serverNow: new Date().toISOString() };
@@ -170,7 +176,7 @@ function mockProfState(): ProfStateResponse {
       players: MOCK_PROF.players.map((p) => ({ ...p, closedRound: Math.max(p.closedRound, mockProf.round - 1) })),
     };
   const joined = Math.min(MOCK_PROF.players.length, Math.floor((Date.now() - mockProfOpenedAt) / 2500));
-  return { ...MOCK_PROF, world: { ...world, status: "lobby", round: 0, roundDeadline: null }, players: MOCK_PROF.players.slice(0, joined) };
+  return { ...MOCK_PROF, world: { ...world, status: "lobby", round: 0, roundDeadline: null }, players: [...MOCK_PROF.players.slice(0, joined), ...mockBots] };
 }
 
 // S12: mock library in memory (newest first).
@@ -183,6 +189,7 @@ const mockApi: Api = {
   createWorld: () => {
     mockProfOpenedAt = Date.now();
     mockProfStarted = false;
+    mockBots = [];
     return wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" });
   },
   profLogin: () => wait({ worldId: MOCK_PROF.world.id }),
@@ -193,6 +200,17 @@ const mockApi: Api = {
     ]),
   profState: () => wait(mockProfState()),
   worldCompanies: () => wait<CompanyPublicView[]>([]),
+  bots: (worldId, req) => {
+    void worldId;
+    const addOne = () => {
+      const name = `${MOCK_BOT_NAMES[mockBots.length % MOCK_BOT_NAMES.length]} (bot)`;
+      mockBots.push({ companyId: `bot-${mockBots.length + 1}`, hotelName: name, playerName: "Računalo", place: "Opatija", progress: 0, closedRound: 0, cash: 20000, roundGain: 0, isBot: true });
+    };
+    if (req.action === "add") addOne();
+    else if (req.action === "fill") while (mockBots.length < 5) addOne();
+    else mockBots = mockBots.filter((b) => b.companyId !== req.companyId);
+    return wait(mockProfState(), 150);
+  },
   start: () => {
     mockProfStarted = true;
     mockProf = { round: 1, deadline: MOCK_DEADLINE, finished: false };

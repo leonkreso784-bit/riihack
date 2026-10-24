@@ -37,7 +37,8 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
   const all = await listCompanies(world.id);
 
   // Izgubljen kolačić (osvježavanje, drugi preglednik): isti hotel i novi token, i kad je igra krenula ili puna.
-  const back = all.find((c) => sameName(c.company.name, hotelName) && sameName(c.player.displayName, name));
+  // ADR-044: botovi se ne mogu preuzeti upisom njihovih imena
+  const back = all.find((c) => c.company.kind !== "bot" && sameName(c.company.name, hotelName) && sameName(c.player.displayName, name));
   if (back) {
     await db.update(players).set({ tokenHash }).where(eq(players.id, back.player.id));
     const hotel = getHotel(back.company.templateId);

@@ -48,6 +48,7 @@ function Row({ row, rank, you, anonymous }: { row: LeaderboardRow; rank: number;
         <p className="truncate font-bold">
           {row.hotelName}
           {you && <span className="ml-2 text-xs font-bold text-secondary-foreground">ti</span>}
+          {row.isBot && <span className="ml-2 rounded-full bg-muted px-2 py-0.5 align-middle text-xs font-bold text-muted-foreground">bot</span>}
         </p>
         <p className="truncate text-xs text-muted-foreground">
           {anonymous ? row.place : `${row.playerName} · ${row.place}`}
