@@ -10,18 +10,6 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-### BUG-009 · Presuda vlastitog odgovora pada na rezervu: kvaliteta 3, bez obrazloženja
-- **Status:** 🔴 otvoren (prijavio graditelj u probi M2, sub ~18:00) · **Vlasnik:** Simon (`src/lib/ai/judge.ts`,
-  `src/lib/ai/prompts.ts`) · **Težina:** visok (vlastiti odgovor je jezgra demoa; student ne dobije obrazloženje)
-- **Opis:** u probi je odbijeno 4 od 4 obrazloženja suca; nakon dva pokušaja `judge.ts` vraća `null`, pa motor uzima
-  rezervnu kvalitetu 3.
-- **Uzrok:** prompt suca traži obraćanje s „ti", a hrvatski perfekt u 2. licu traži rod, pa model piše „postavio/la".
-  `judge.ts` takvo obrazloženje odbacuje (`SLASH_GENDER`) i zato odbacuje i ispravno ispunjene kriterije.
-- **Rješenje:** 🟨 prijedlog graditelja: obrazloženje u bezličnom obliku („Kuhinja je postavljena…") ili „/la" ne
-  odbacivati nego zadržati `criteriaMet`. Ista provjera postoji u `propose.ts` (S9); 🟨 provjeriti pada li i ondje.
-- **Lekcija:** provjera stila ne smije baciti presudu. Kad prompt i provjera izlaza traže nešto što jezik teško daje
-  zajedno, prvo izmjeri koliko odgovora prolazi na pravom pozivu.
-
 ### BUG-008 · Ime prijašnjeg projekta još je u repou
 - **Status:** 🔴 otvoren (provjera `git grep -i` na `main`-u, sub ~17:40) · **Težina:** srednji (žiri čita repo;
   pravilo tima je da se ime nigdje ne piše)
@@ -46,6 +34,19 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-009 · Presuda vlastitog odgovora pada na rezervu: kvaliteta 3, bez obrazloženja
+- **Status:** ✅ riješen 24.10. 18:07 ([#120](https://github.com/leonkreso784-bit/riihack/pull/120), Simon; 292 testa, smoke
+  14/14) · **Težina:** visok (vlastiti odgovor je jezgra demoa; student ne dobije obrazloženje)
+- **Opis:** u probi M2 (graditelj, ~18:00) odbijeno je 4 od 4 obrazloženja suca; nakon dva pokušaja `judge.ts` vraća
+  `null`, pa motor uzima rezervnu kvalitetu 3.
+- **Uzrok:** prompt suca traži obraćanje s „ti", a hrvatski perfekt u 2. licu traži rod, pa model piše „postavio/la".
+  `judge.ts` takvo obrazloženje odbacuje (`SLASH_GENDER`) i s njim odbacuje i ispravno označene kriterije.
+- **Rješenje:** presuda zadržava označene kriterije; kad stil obrazloženja dvaput ne prođe, obrazloženje se slaže iz
+  rubrike (`judge.ts`, `prompts.ts`). Ista provjera postoji u `propose.ts` (S9), a #120 je ne mijenja; 🟨 provjeriti
+  pada li prijedlog situacije na isti način.
+- **Lekcija:** provjera stila ne smije baciti presudu. Kad prompt i provjera izlaza traže nešto što jezik teško daje
+  zajedno, prvo izmjeri koliko odgovora prolazi na pravom pozivu.
 
 ### BUG-010 · Smoke integratora otišao na tuđi dev server, a integrator ga je ugasio
 - **Status:** ✅ riješen 24.10. 18:02 · **Težina:** srednji (ugašen tuđi `next dev`; provjera #118 bila bi na
