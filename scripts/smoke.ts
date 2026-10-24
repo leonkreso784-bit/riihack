@@ -158,13 +158,16 @@ async function main() {
     CITY ? step(n, name, needs, fn) : skipped(n, name);
   const finances = async (u: User) => ((await u.call("GET", "/api/me")).data as MeResponse).finances;
 
-  await cityStep(11, "cijena 60 € daje Ani više noćenja nego Ivanu po 300 €", [10], async () => {
+  await cityStep(11, "cijena 60 € daje Ani više noćenja nego Ivanu po 300 €; plan se prenosi (#227.1)", [10], async () => {
     expectStatus(await ana.call("POST", "/api/me/plan", { price: 60, marketing: 0 }), 200);
     expectStatus(await ivan.call("POST", "/api/me/plan", { price: 300, marketing: 0 }), 200);
     expectStatus(await prof.call("POST", `/api/prof/${world.worldId}/round`, {}), 200);
     const a = (await finances(ana)).find((f) => f.round === 2), i = (await finances(ivan)).find((f) => f.round === 2);
     expect(a && i, "nema finances za krug 2");
     expect(a.nights > i.nights, `Ana ${a.nights} noćenja, Ivan ${i.nights}`);
+    // #227.1: plan mjeseca 2 je zadani plan mjeseca 3
+    const plan = ((await ana.call("GET", "/api/me")).data as MeResponse).plan;
+    expect(plan.round === 3 && plan.price === 60 && plan.marketing === 0, `plan mjeseca 3: ${JSON.stringify(plan)}`);
   });
 
   await cityStep(12, "cash = početni račun + dobit iz finances; izvještaj mjeseca vidi obračun (#226)", [11], async () => {
@@ -264,7 +267,7 @@ async function main() {
     expect(f.costs === costs, `costs ${f.costs} ≠ zbroj stavki ${costs}`);
   });
 
-  await cityStep(16, "protuponuda agenciji: prihvaćeno, protuponuda agencije, odbijeno", [], async () => {
+  await cityStep(16, "protuponuda agenciji: prihvaćeno, protuponuda agencije, odbijeno; ista cijena → 400 (#227.3)", [], async () => {
     // Ponude su slučajne (sjeme igre), pa 8 hotela kroz najviše 4 mjeseca skuplja tri agencijske ponude s noćenjima.
     const g = await smallGame("pregovor", ["Ema", "Filip", "Gita", "Hrvoje", "Iva", "Jura", "Kata", "Lovro"]);
     const need: NegotiationResult["outcome"][] = ["accepted", "countered", "rejected"];
@@ -310,6 +313,8 @@ async function main() {
         if (!badChecked) {
           // oba polja odjednom → 400, ponuda ostaje netaknuta
           expectStatus(await u.call("POST", `/api/contracts/${offer.id}/counter`, { pricePerNight: offer.pricePerNight, monthlyCost: 1 }), 400);
+          // #227.3: ista cijena nije u korist hotela → 400, pregovor ostaje neiskorišten (check ga odmah koristi)
+          expectStatus(await u.call("POST", `/api/contracts/${offer.id}/counter`, { pricePerNight: offer.pricePerNight }), 400);
           badChecked = true;
         }
         await check(u, offer, need.shift()!);
