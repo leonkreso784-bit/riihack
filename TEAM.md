@@ -81,13 +81,15 @@ na koga čeka i što smo dogovorili.
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch (S0–S7)
 
-- **Sad radim:** obilazak žirija 1: tekst (`prezentacija/OBILAZAK-1.md`) i slajdovi https://simpolis-ziri-share.vercel.app (#55)
-- **Sljedeće:** S3 (#15) čim stignu Neon, L1, L4 i #42; S4 (#16) za M3; ugovori i vijesti na pravim podacima (L11)
-- **Čekam od drugih:** Leon: Neon, L1, L4, odluka o #42
+- **Sad radim:** pitch i obilazak žirija (slajdovi https://simpolis-ziri-share.vercel.app); S4 sokratski mentor sljedeće
+- **Sljedeće:** S3 PR čim L4 bude na `main`-u; S4 (#16) za M3; karta, plan i financije na prave podatke kad stigne L11
+- **Čekam od drugih:** Leon: L4 (`requirePlayer`, `getSituationForCompany`) za S3. Pitanja za S3: (1) vraća li
+  `getSituationForCompany` `situation.transcript` kao `ChatTurn[]`? (2) `src/content/situations.json` je zasad `[]`
+  (L6?) (3) dva istodobna chat zahtjeva mogu oba proći limit od 6 poruka: ostavljam kao rubni slučaj, OK?
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #42 tipovi lika, #55 slajdovi
-- **Spojeno:** S0 (#35), nacrt pitcha (#38), S1 (#41), S2 (#44), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51); `ANTHROPIC_API_KEY` na Vercelu (production, preview, development)
-- **Zadnje ažurirano:** sub 14:21
+- **Otvoreno:** #72 tema (kako potiče učenje); grana `simon/S3-lik` (lik + ruta chat, testovi zeleni, čeka L4)
+- **Spojeno:** S0 (#35), pitch (#38, #66, #67), S1 (#41), S2 (#44), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
+- **Zadnje ažurirano:** sub 15:05
 
 ## Rino · sučelje (R0–R10)
 
