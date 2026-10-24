@@ -4,7 +4,7 @@
 
 | Vrijeme | Što | Gotovo kad |
 | --- | --- | --- |
-| sub 12 – 13 | Potvrda [ARHITEKTURA.md](ARHITEKTURA.md) i podjele, `lib/types.ts`, prazan Next.js na Vercelu, Supabase projekt | prazan projekt je na javnom linku, svi imaju `.env.local` |
+| sub 12 – 13 | Potvrda [ARHITEKTURA.md](ARHITEKTURA.md) i podjele, `lib/types.ts`, kostur iz Simonovog startera na Vercelu, Neon baza | prazan projekt je na javnom linku, svi imaju `.env.local` |
 | sub 13 – 18 | **Glavni tok hotela:** profesor stvori svijet → student uđe kodom → krug 1 → situacija klikom → zatvori krug → pokazatelji se promijene. Usporedo: Simon lik i presuda, Rino ekrani na lažnim podacima, Leon sadržaj hotela | jedan student odigra jedan krug od početka do kraja, makar ružno |
 | sub 18 – 21 | Spajanje: razgovor s likom, vlastiti odgovor s presudom, mentor, profesorova ploča uživo, odbrojavanje | demo s dva studenta i profesorom radi na javnom linku |
 | sub 21 – 22 | **Snimka demoa** (rezerva) i prvi merge svih grana | video postoji |
