@@ -4,6 +4,11 @@
 i [PROMISE.md](../../PROMISE.md) › „Što NIJE u opsegu". Kamo idemo i redoslijed: [VISION.md](../product/VISION.md).
 Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-10-24-simpolis.md) i issueovima.
 
+## Prijedlozi koji čekaju odluku
+
+- 🟨 **Profesorov „playbook"** (Rino, ~16:35): profesor sam određuje mehaniku igre, unosi svoje situacije iz
+  playbooka i ponovno ih koristi u novim igrama. Čeka Leonovu odluku.
+
 ## Planirano (pitch, slajd „Što dalje")
 
 - Studenti vode i druge vrste tvrtki: turistička agencija, dobavljač, zaštitarska firma.
