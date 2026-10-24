@@ -48,7 +48,10 @@ privatno.
 
 **Kontekst.** Simon je napravio skice „Tokovi"; trebalo je odlučiti što od njih ide u aplikaciju.
 **Odluka.** Skice su samo za prezentaciju i ne idu u aplikaciju. Ruta „Što ako?" se ne radi.
-**Posljedice.** Nema novog posla u kodu; „Što ako?" je u [BACKLOG.md](BACKLOG.md).
+**Posljedice.** Nema novog posla u kodu; „Što ako?" je u [BACKLOG.md](BACKLOG.md). Leon (~21:30, Simonu): Simonovi
+PR-ovi [#174](https://github.com/leonkreso784-bit/riihack/pull/174) (skica 1 sa „Što ako?") i
+[#179](https://github.com/leonkreso784-bit/riihack/pull/179) (skica 2) ne idu u `main`; grane ostaju za slajdove
+(slike ili Simonov Vercel link).
 
 <a id="adr-037"></a>
 ## ADR-037 · Integrator sam spaja aditivne dodatke ugovoru prepisane iz plana
@@ -127,9 +130,10 @@ na pokazatelj odjela (1 bod na 1000 €); vrijednosti vrijede iz `rules.ts`. Mot
 
 **Kontekst.** Plan i pravila tima predviđali su zamrzavanje koda u ned 06:30, poslije samo popravci.
 **Odluka.** Zamrzavanja nema: radi se punom brzinom do predaje. Rok predaje ostaje **ned 10:30**.
-**Posljedice.** Pravilo spajanja (`main` uvijek radi, integrator, smoke) vrijedi do kraja. 🟨 zamrzavanje još piše u
-`CLAUDE.md`, `PLAN-24H.md` i u glavnom planu (s ploče u `TEAM.md` maknuto 21:15, `ff2a870`); vlasnici ih usklađuju (`docs/ROADMAP.md` i pitch uskladio
-Simon u [#131](https://github.com/leonkreso784-bit/riihack/pull/131)).
+**Posljedice.** Pravilo spajanja (`main` uvijek radi, integrator, smoke) vrijedi do kraja. Dokumenti
+usklađeni: `docs/ROADMAP.md` i pitch (Simon, [#131](https://github.com/leonkreso784-bit/riihack/pull/131)), ploča u
+`TEAM.md` (integrator, 21:15) te `CLAUDE.md`, `PLAN-24H.md` i glavni plan (Rino,
+[#180](https://github.com/leonkreso784-bit/riihack/pull/180), 21:22).
 
 <a id="adr-030"></a>
 ## ADR-030 · Integrator dobiva dozvole i sam prebacuje produkciju na prave podatke
