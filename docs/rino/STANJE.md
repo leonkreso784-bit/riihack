@@ -26,7 +26,7 @@
 | Produkcija (`main`) | https://riihack.vercel.app |
 | Preview grane | `https://riihack-git-<grana-s-crticama>-leon-kresos-projects.vercel.app` (prijava u Vercel, Rino je u timu) |
 | Lažni podaci | zadano **uključeni**; `NEXT_PUBLIC_USE_MOCK=0` na Vercelu prebacuje na pravi API (Leon, kad L4–L7 rade) |
-| Logo | `public/brand/logo.svg`, `src/components/logo.tsx` (`LogoMark`), `src/app/icon.svg` |
+| Logo | **izvorna slika V1**: `public/brand/logo.png`, kvadrat `public/brand/logo-mark.png`, `src/components/logo.tsx` (`LogoMark`), `src/app/icon.png`. Ne crtati iznova. |
 | Tema i animacije | `src/app/globals.css` (tokeni, `gloss`, `surface`, `glass`, `anim-*`, sve isključeno uz reduced-motion) |
 | Zajedničke komponente | `panel`, `stat-card`, `metric-bar`, `pill`, `round-banner`, `leaderboard`, `count-up`, `form`, `room-tile`, `code-input` |
 
@@ -47,7 +47,7 @@ Provjereno kroz cijeli tok na produkciji (profesor stvori igru → kod → stude
 
 ## Otvoreno
 
-- **#78** uspravan logo, logo u igri na pločici, mobitel bez prelijevanja. Spremno za integratora.
+- **#78** logo točno kao V1 (izvorna slika), logo u igri na pločici, mobitel bez prelijevanja. Spremno za integratora.
 - **Gumb Odjava** je maknut: treba Leonova ruta `POST /api/logout` (upisano u TEAM.md). Kod je u povijesti grane
   `rino/logo-odjava` (commit `21bb687`), lako se vrati.
 - **Smjer dizajna (#39)**: Simon predlaže A (BitLife); odlučuješ s Leonom. Do tada vrijedi HotelixSim izgled.
