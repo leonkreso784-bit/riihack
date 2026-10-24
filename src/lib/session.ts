@@ -96,7 +96,7 @@ export async function requireProf(worldId: string): Promise<WorldRow> {
   throw new HttpError(403, "Samo profesor ove igre");
 }
 
-/** Igra za člana: igrač čija je tvrtka u toj igri ili profesor te igre (javni podaci, npr. karta); inače 401. */
+/** Igra za člana: igrač čija je tvrtka u toj igri ili profesor te igre (kod ili račun vlasnika; javni podaci, npr. karta); inače 401. */
 export async function requireWorldMember(worldId: string): Promise<WorldRow> {
   const jar = await cookies();
   const token = jar.get(PLAYER_COOKIE)?.value;
@@ -118,6 +118,17 @@ export async function requireWorldMember(worldId: string): Promise<WorldRow> {
       .where(and(eq(worlds.id, worldId), eq(worlds.profCodeHash, await hashCode(normalizeCode(code)))))
       .limit(1);
     if (rows[0]) return rows[0];
+  }
+  if (isUuid(worldId)) {
+    const user = await getProfUser(); // L16: vlasnik igre s profesorskim računom
+    if (user) {
+      const rows = await db
+        .select()
+        .from(worlds)
+        .where(and(eq(worlds.id, worldId), eq(worlds.ownerId, user.id)))
+        .limit(1);
+      if (rows[0]) return rows[0];
+    }
   }
   throw new HttpError(401, "Uđi u igru kodom");
 }
