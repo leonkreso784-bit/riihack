@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 19:20–19:30 · javni profil hotela, shema računa
+
+- **Spojeno:** L14 javni profil hotela (#143, 19:27; testni podaci popravljeni, 307 testova, smoke 14/14) po
+  [ADR-035](DECISIONS.md#adr-035); dokumentacija #145.
+- **Shema L16 (graditelj, ~19:25):** tablice `user`, `session`, `account`, `verification` i `worlds.owner_id` (prazan)
+  aditivnim SQL-om; `worlds` 112 redaka prije i poslije ([ADR-036](DECISIONS.md#adr-036)).
+- **Otvoreno:** #144 raspodjela prihoda i troškova u obračunu (čeka Leonovo „spoji"), #142 (Simonov ok), #128 (Rinov
+  pregled), #107 (pregled).
+
 ## Sub 24.10. 19:05–19:20 · plan vala 3 na `main`-u, stranica odjela
 
 - **Spojeno:** plan vala 3 (#134, 19:16, Leonovo „spoji"), paket `uqr` za QR ulaza (#139, 19:16; `npm ci` prolazi),
