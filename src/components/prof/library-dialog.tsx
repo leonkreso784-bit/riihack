@@ -57,6 +57,7 @@ function LibraryBody({ worldId, onClose, onAdded }: { worldId: string; onClose: 
       onAdded();
     } catch (err) {
       if (isUnauthorized(err)) setHint(true);
+      else if ((err as { status?: number }).status === 403) setError("Ova igra nije vezana uz tvoj profesorski račun, pa u nju ne možeš dodavati iz knjižnice. Otvori igru koju si napravio prijavljen.");
       else setError((err as Error).message);
     }
     setAdding(null);
