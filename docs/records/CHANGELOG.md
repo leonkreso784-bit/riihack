@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#243](https://github.com/leonkreso784-bit/riihack/pull/243) | 01:16 | Leon | dokumentacija: ADR-050 i 051, BUG-032 riješen, BUG-037 do 039 |
 | [#240](https://github.com/leonkreso784-bit/riihack/pull/240) | 01:12 | Leon | izvještaj mjeseca, mentor i podij vide obračun grada (BUG-032, #226) |
 | [#235](https://github.com/leonkreso784-bit/riihack/pull/235) | 01:12 | Simon | botovi igraju mjesec paralelno, najviše 5 odjednom (#227.2) |
 | [#237](https://github.com/leonkreso784-bit/riihack/pull/237) | 01:12 | Rino | „Mentor" u izborniku nakon prvog mjeseca; profesor sprema ocjenu gumbom |

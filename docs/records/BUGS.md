@@ -18,7 +18,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-038 · Situacija na mobitelu sama skrola i skrije naslov
-- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Status:** 🟡 PR [#244](https://github.com/leonkreso784-bit/riihack/pull/244) (Rino) čeka spajanje · **Težina:** nizak
 - **Opis:** tester (ned ~01:08, produkcija, 375 px): pri otvaranju situacije stranica sama skrola 178 px, a naslov
   ostane pod zaglavljem.
 - **Uzrok:** `scrollIntoView` na kraj razgovora pri učitavanju (`src/components/chat-panel.tsx:50`).
@@ -33,7 +33,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-036 · Sitnice sučelja: padež u razgovoru, prazan odgovor bez potvrde
-- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Status:** 🟡 PR [#244](https://github.com/leonkreso784-bit/riihack/pull/244) (Rino) čeka spajanje · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ; `src/components/chat-panel.tsx:110`); prazan odgovor na situaciju
   šalje se bez pitanja „Sigurno?".
 - **Rješenje:** —
@@ -47,10 +47,11 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-034 · Ljestvica studentu pokazuje novac tuđih hotela
-- **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku · **Težina:** nizak
+- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): ljestvica studentu pokazuje novac tuđih hotela, a po
-  [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci. 🟨 Koja točno brojka: potvrditi.
-- **Rješenje:** —
+  [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci.
+- **Rješenje:** Leon (~01:25): ljestvica i grad pokazuju samo napredak, prihod i dobit tuđih hotela, bez stanja
+  računa; svoj račun student vidi (ADR-040). Radi graditelj.
 - **Lekcija:** —
 
 ### BUG-033 · Mentor pita o „tvom odgovoru" kad je odgovor prazan
@@ -72,14 +73,14 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** kad se nešto makne sa sučelja, provjeri oslanja li se na to drugi tok (ovdje kasni ulaz).
 
 ### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
-- **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku (brojke) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
+- **Status:** 🟡 u radu (graditelj, [ADR-052](DECISIONS.md#adr-052)) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
   za općenite odgovore)
 - **Opis:** tester (ned ~00:50, sezona na produkciji): napisan odgovor koji promaši temu dobije kvalitetu 1, isto −2×
   kao propuštena situacija. Student s 8 općenitih odgovora završi na −60,9, gore od studenta koji nije odgovorio
   ništa (−54,6) i od botova (+27, +30).
 - **Uzrok:** učinak po kvaliteti iz [ADR-046](DECISIONS.md#adr-046): 1 (loš ili propušten) −2×. 🟨 Zašto je općeniti
   student gori od onoga bez odgovora, nije utvrđeno.
-- **Rješenje:** —
+- **Rješenje:** Leon (~01:25): napisan odgovor s ocjenom 1 ima množitelj 0; propušten i prazan ostaju −2×.
 - **Lekcija:** —
 
 ### BUG-029 · Plan se ne prenosi u sljedeći mjesec
