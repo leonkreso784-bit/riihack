@@ -1,7 +1,7 @@
 // S4: the Socratic mentor. One question after a round, one debrief after the student's reflection.
 import { generateText, type LanguageModel } from "ai";
 import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
-import type { MentorInput, MentorItem, MetricKey } from "@/lib/types";
+import type { MentorInput, MentorItem, MetricKey, RoundFinance } from "@/lib/types";
 import { modelFor, withAi } from "./client";
 import { fallbackDebrief, fallbackMentorQuestion } from "./fallbacks";
 import { MENTOR_DEBRIEF_SYSTEM, MENTOR_QUESTION_SYSTEM } from "./prompts";
@@ -28,6 +28,19 @@ export function weakestItem(items: MentorItem[]): MentorItem | undefined {
   return items.reduce<MentorItem | undefined>((w, i) => (!w || i.quality < w.quality ? i : w), undefined);
 }
 
+const eur = (n: number) => `${n.toLocaleString("hr-HR")} €`;
+
+/** The month's accounts as the engine computed them, in euros and percent. The mentor explains them and never recomputes. */
+export function financeBlock(f: RoundFinance): string {
+  return [
+    "Obračun mjeseca (izračunala ga je jezgra igre):",
+    `- Noćenja: ${f.nights} od ${f.capacityNights} mogućih, popunjenost ${f.occupancyPct} %; od toga ${f.contractNights} po ugovorima`,
+    `- Tržišni udio: ${f.marketSharePct} %`,
+    `- Prihod: ${eur(f.revenue)}; troškovi: ${eur(f.costs)}; dobit: ${eur(f.profit)}`,
+    `- Novac nakon mjeseca: ${eur(f.cashAfter)}`,
+  ].join("\n");
+}
+
 /** Facts in human units only: Croatian labels, "/100", deltas like "+6", month names. Never raw keys. */
 export function factsBlock(input: MentorInput): string {
   const month = ROUND_LABELS[input.round - 1] ?? `${input.round}. krug`;
@@ -51,7 +64,8 @@ export function factsBlock(input: MentorInput): string {
       return lines.join("\n");
     })
     .join("\n");
-  return `Hotel: ${clean(input.hotelName)}\nKrug: ${month}\n\nPokazatelji (prije → poslije):\n${metrics}\n\nOdluke u krugu:\n${items || "- (nema odluka)"}`;
+  const finance = input.finance ? `\n\n${financeBlock(input.finance)}` : "";
+  return `Hotel: ${clean(input.hotelName)}\nKrug: ${month}\n\nPokazatelji (prije → poslije):\n${metrics}${finance}\n\nOdluke u krugu:\n${items || "- (nema odluka)"}`;
 }
 
 const cache = { anthropic: { cacheControl: { type: "ephemeral" as const } } };

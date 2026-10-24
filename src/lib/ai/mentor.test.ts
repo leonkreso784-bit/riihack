@@ -95,3 +95,14 @@ describe("factsBlock", () => {
     expect(facts).not.toMatch(/\b(guests|reviews|staff|operations|finance)\b/);
   });
 });
+
+describe("factsBlock with finance", () => {
+  it("adds the month's accounts in euros and percent, and omits them otherwise", () => {
+    const finance = { round: 1, nights: 120, contractNights: 20, capacityNights: 480, occupancyPct: 25, marketSharePct: 14, revenue: 9500, costs: 7000, profit: 2500, cashAfter: 12500 };
+    const facts = factsBlock({ ...input, finance });
+    expect(facts).toContain("Obračun mjeseca");
+    expect(facts).toContain("popunjenost 25 %");
+    expect(facts).toMatch(/dobit: 2\D?500 €/);
+    expect(factsBlock(input)).not.toContain("Obračun mjeseca");
+  });
+});
