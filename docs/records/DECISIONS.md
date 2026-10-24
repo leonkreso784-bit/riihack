@@ -17,8 +17,10 @@ utječe novcem.
 **Odluka.** U planu mjeseca student svakom odjelu dodijeli budžet. Motor ga obračuna kao trošak i pomakne pokazatelj
 tog odjela, uz ograničenje. Graditelj radi motor, API i ugovor (`types.ts`, `rules.ts`, blok u planu, **sva nova
 polja neobavezna**); Rino radi stranicu odjela.
-**Posljedice.** Brojke i dalje računa samo motor (ADR-002). 🟨 točno ograničenje i pokazatelji po odjelu: zapisuju se
-kad ugovor uđe u plan.
+**Posljedice.** Brojke i dalje računa samo motor (ADR-002). Shema ručnim aditivnim SQL-om ([ADR-026](#adr-026)):
+`plans.investments` (jsonb, `'{}'`) i `finances.investments` (int, 0), broj redaka nepromijenjen. Ugovor je
+[#132](https://github.com/leonkreso784-bit/riihack/pull/132) (🟨 čeka Leonovo „spoji"); predlaže do 3000 € mjesečno po
+odjelu i najviše +3 na pokazatelj odjela (1 bod na 1000 €). Konačne vrijednosti vrijede iz plana kad se spoji.
 
 <a id="adr-031"></a>
 ## ADR-031 · Nema zamrzavanja koda; gradi se do predaje
