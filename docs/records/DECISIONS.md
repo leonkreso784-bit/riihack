@@ -8,6 +8,33 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-020"></a>
+## ADR-020 · Razgovor s likom (S3): transkript, situacije, rubni slučaj
+**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon, na Simonova pitanja) · **Vezano:** [#76](https://github.com/leonkreso784-bit/riihack/pull/76), [#75](https://github.com/leonkreso784-bit/riihack/pull/75), [ADR-016](#adr-016)
+
+**Kontekst.** Simon za S3 (lik u ulozi i ruta chat) treba tri odgovora prije spajanja.
+**Odluka.** (1) Transkript razgovora je `ChatTurn[]`. (2) Situacije (`situations.json`) puni L6 (#75), koji čeka
+Leonov pregled struke. (3) Dva istodobna chat zahtjeva mogu prijeći ograničenje od 6 poruka: to je **prihvaćen rubni
+slučaj**, uz uvjet da sučelje drži gumb onemogućenim dok lik odgovara.
+**Posljedice.** R5 (situacija s likom) mora onemogućiti slanje dok traje odgovor lika.
+
+<a id="adr-019"></a>
+## ADR-019 · Smoke (L8, koraci 1–10) gradi se usporedno s L7
+**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [plan › L8](../superpowers/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [TESTING.md](../workflow/TESTING.md)
+
+**Kontekst.** U planu je smoke (L8) vezan uz M2 i M3, a koraci 1–10 provjeravaju upravo rute iz L4 i L7.
+**Odluka.** Koraci 1–10 smokea grade se usporedno s L7, ne tek u M3. Koraci 11–14 (grad) dolaze nakon L11.
+**Posljedice.** Koraci 1–10 su spremni kad i L7.
+
+<a id="adr-018"></a>
+## ADR-018 · Pravi podaci najprije samo na Previewu
+**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [ADR-013](#adr-013), [#74](https://github.com/leonkreso784-bit/riihack/pull/74)
+
+**Kontekst.** L4 je živ (#74), a rute za krugove i odgovore (L7) još ne postoje.
+**Odluka.** `NEXT_PUBLIC_USE_MOCK=0` samo za **Preview** na Vercelu; **produkcija ostaje na lažnim podacima** dok tim
+ne odluči drukčije.
+**Posljedice.** Prave podatke vidiš na preview linku PR-a; https://riihack.vercel.app pokazuje oznaku „primjer".
+
 <a id="adr-017"></a>
 ## ADR-017 · Ugovor i situacije spajaju se samo na Leonovo „spoji"
 **Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [ADR-015](#adr-015), [ADR-011](#adr-011), [#75](https://github.com/leonkreso784-bit/riihack/pull/75)
@@ -37,7 +64,8 @@ planu zajedno; Simon zatvara #42 kao duplikat. #63 spojen u 14:58.
 PR-ove cijelog tima, čuva `main`) i **dokumentarist** (samo `docs/`). Svaka u svom radnom stablu.
 **Posljedice.** Spaja samo integrator; autor PR-a javlja da je spreman (integrator, [ODLUKA] 24.10.). Vrijedi za
 PR-ove cijelog tima ([TEAM.md](../../TEAM.md) pravilo 3), i to **automatski** za sve što prođe provjeru na svježem
-`main`-u (Leon, ~15:00). **Dokumentacija je na
+`main`-u (Leon, ~15:00), osim iznimki iz ADR-017. Stanje PR-ova (draft, ready, spajanje) vodi **isključivo**
+integrator; graditelj samo gradi i javlja (Leon, ~15:15). **Dokumentacija je na
 `main`-u** jer po njoj grade ljudi i agenti (Leon, ~15:05; prije toga kratko samo na grani, #58 vraćen s #60).
 
 <a id="adr-014"></a>
@@ -56,8 +84,8 @@ PR-ove cijelog tima ([TEAM.md](../../TEAM.md) pravilo 3), i to **automatski** za
 **Kontekst.** Na Vercelu nije bio postavljen `NEXT_PUBLIC_USE_MOCK`, pa je `/igra` zvala nepostojeći `/api/me`.
 **Odluka.** Sučelje zadano čita `lib/mock.ts`; `NEXT_PUBLIC_USE_MOCK=0` prebacuje na poslužitelj. Ekran pokazuje
 oznaku „primjer" dok su podaci lažni.
-**Posljedice.** Kad L4/L7 rute prorade, Leon na Vercelu postavlja `NEXT_PUBLIC_USE_MOCK=0` (Production i Preview) i
-radi redeploy; isto u `.env.example`.
+**Posljedice.** Kad L4/L7 rute prorade, na Vercelu se postavlja `NEXT_PUBLIC_USE_MOCK=0` i radi redeploy. Za sada
+samo na Previewu ([ADR-018](#adr-018)).
 
 <a id="adr-012"></a>
 ## ADR-012 · Osoblje hotela je sadržaj, bez baze
