@@ -14,11 +14,18 @@ import { Leaderboard } from "@/components/leaderboard";
 import { CountUp } from "@/components/count-up";
 import { CloseRound } from "@/components/close-round";
 import { plural, starsLabel } from "@/lib/format";
+import { BackLink } from "@/components/back-link";
 
 // Hotel dashboard (R0, R4): metrics, money, this month's situations, ranking, and "Završi mjesec".
 export default function GamePage() {
   const { data, error, syncedAt } = usePoll(api.me);
-  if (error) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
+  if (error)
+    return (
+      <div className="space-y-4">
+        <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>
+        <BackLink href="/ulaz" label="Uđi u igru" />
+      </div>
+    );
   if (!data) return <Skeleton />;
 
   const { company, world } = data;

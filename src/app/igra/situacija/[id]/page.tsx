@@ -100,7 +100,7 @@ function Situation({ s }: { s: SituationView }) {
       ) : !open ? (
         <Panel>
           <p className="font-bold">Ovaj krug je završio.</p>
-          <p className="text-muted-foreground">Na ovu situaciju nisi odgovorio, pa vrijedi najmanju ocjenu.</p>
+          <p className="text-muted-foreground">Na ovu situaciju nisi odgovorio, pa dobiva najmanju ocjenu.</p>
         </Panel>
       ) : (
         <>
