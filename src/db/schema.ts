@@ -9,7 +9,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
-import type { ChatTurn, Metrics, Verdict } from "@/lib/types";
+import type { ChatTurn, Metrics, SituationTemplate, Verdict } from "@/lib/types";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () =>
@@ -26,6 +26,7 @@ export const worlds = pgTable("worlds", {
   status: text("status").notNull().default("lobby"),
   seed: integer("seed").notNull(),
   settledRound: integer("settled_round").notNull().default(0),
+  autoDraw: boolean("auto_draw").notNull().default(true), // L12: slučajno izvlačenje situacija pri otvaranju kruga
   createdAt: createdAt(),
 });
 
@@ -190,6 +191,31 @@ export const contracts = pgTable(
   (t) => [unique().on(t.companyId, t.roundOffered)],
 );
 
+// L12: profesorove situacije (napisane ili AI prijedlog koji je profesor spremio), samo za svoju igru.
+export const customSituations = pgTable("custom_situations", {
+  id: text("id").primaryKey(), // "custom-…"
+  worldId: uuid("world_id")
+    .notNull()
+    .references(() => worlds.id),
+  source: text("source").notNull().default("custom"), // "custom" | "ai"
+  template: jsonb("template").$type<SituationTemplate>().notNull(),
+  createdAt: createdAt(),
+});
+
+// L12: profesorova slanja situacije. "sent" = upisano odmah u tekući krug; "scheduled" = izvršava openRound(round).
+export const dispatches = pgTable("dispatches", {
+  id: id(),
+  worldId: uuid("world_id")
+    .notNull()
+    .references(() => worlds.id),
+  templateId: text("template_id").notNull(),
+  round: integer("round").notNull(),
+  companyIds: jsonb("company_ids").$type<string[]>(), // null = svi studenti
+  roomNumber: text("room_number"),
+  status: text("status").notNull().default("scheduled"),
+  createdAt: createdAt(),
+});
+
 export type WorldRow = typeof worlds.$inferSelect;
 export type CompanyRow = typeof companies.$inferSelect;
 export type PlayerRow = typeof players.$inferSelect;
@@ -201,3 +227,5 @@ export type EventRow = typeof events.$inferSelect;
 export type PlanRow = typeof plans.$inferSelect;
 export type FinanceRow = typeof finances.$inferSelect;
 export type ContractRow = typeof contracts.$inferSelect;
+export type CustomSituationRow = typeof customSituations.$inferSelect;
+export type DispatchRow = typeof dispatches.$inferSelect;

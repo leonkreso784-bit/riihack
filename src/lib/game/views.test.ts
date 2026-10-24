@@ -39,6 +39,7 @@ const world: WorldRow = {
   status: "lobby",
   seed: 42,
   settledRound: 0,
+  autoDraw: true,
   createdAt: NOW,
 };
 
