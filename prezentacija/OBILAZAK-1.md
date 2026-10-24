@@ -13,16 +13,17 @@ izvan 3 obećanja.
 | --- | --- | --- |
 | 1 | Simpolis: „kao igra vođenja tvrtke, ali za pravi posao" | Simon |
 | 2 | Problem: 17 % lošiji rezultat, 40–50 %, 420 sati | Simon |
-| 3 | Usporedba: Cesim, CompanyGame AI, ChatGPT, Virtualni hotel, Simpolis + rečenica za prepričati | Simon |
-| 4 | Četiri stvari koje drugi nemaju zajedno (USP) | Simon |
-| 5 | Tri obećanja (samo „AI sudac radi" je označeno) | Simon |
-| 6 | „Pogledajmo aplikaciju" + mobiteli + QR → prebaci na riihack.vercel.app | Rino |
-| 7 | AI sudac: isti gost, tri odgovora | Simon |
-| 8 | Kako radi: AI ne daje bodove, prepisivanje, ako AI ne radi, trošak | Leon |
-| 9 | „U nedjelju sva tri obećanja, uživo" + pitanje žiriju | svi |
-| 10–11 | **Dodatak za pitanja:** Cesim uz naš ekran; usporedba korištenja (tablice ili razgovor). Ne prikazujemo ih, osim ako žiri pita. | Simon |
+| 3 | **Tema: kako potiče učenje** (misliš sam, vidiš zašto ti gradivo treba, natječeš se sa sobom, učiš s razredom za pravi posao) | Simon |
+| 4 | Usporedba + rečenica za prepričati | Simon |
+| 5 | Četiri stvari koje drugi nemaju zajedno (USP) | Simon |
+| 6 | Tri obećanja | Simon |
+| 7 | „Pogledajmo aplikaciju" + mobiteli + QR → riihack.vercel.app | Rino |
+| 8 | AI sudac: isti gost, tri odgovora | Simon |
+| 9 | Kako radi: AI ne daje bodove | Leon |
+| 10 | „U nedjelju sva tri obećanja, uživo" + pitanje žiriju | svi |
+| 11–12 | **Dodatak za pitanja:** Cesim uz naš ekran; usporedba korištenja. Samo ako žiri pita. | Simon |
 
-Simon na slajdovima 1–5 ima oko 1:30 (5 brzih slajdova, po 15–20 s), Rino 1:45, Simon 0:30, Leon 0:30, pitanje 0:15.
+Simon na slajdovima 1–6 ima oko 1:40 (slajd 3 je najvažniji, 25 s; ostali po 15 s), Rino 1:45, Simon 0:30, Leon 0:30, pitanje 0:15.
 
 ## Gdje smo (stanje 14:05)
 
@@ -98,6 +99,16 @@ prvo promijenili?". Odmah nakon: odgovor u `PROMISE.md`, izmjene u roadmap.
 - Poluge koje **stvarno postoje** u igri: cijena noćenja, marketing, ugovori s gradskim tvrtkama (pekara za doručak,
   praonica, zaštitar, agencija), osoblje hotela, razgovori s gostima i zaposlenicima. **Ne spominjemo** renovaciju,
   opremu ni zapošljavanje boljeg ili lošijeg osoblja: to danas nije u igri.
+
+## Glavno pitanje: kako ovo potiče učenje? (odgovor u 20 s)
+
+> „Ne možeš prepisati odgovor: AI ne piše rješenje, nego glumi gosta, pa moraš sam smisliti što reći. Onda vidiš
+> posljedicu u recenzijama i novcu, i točno što je nedostajalo, pa znaš zašto ti gradivo treba. Natječeš se sa
+> sobom, ne s najboljima, pa ni slabiji student ne odustaje. I učiš s razredom, za pravi posao."
+
+Dokazi ako pitaju: simulacijske igre +14 % proceduralnog znanja i +20 % samopouzdanja (Sitzmann 2011., meta-analiza
+65 studija); AI koji daje samo naputke nije štetio učenju (Bastani i sur. 2025.). **Ne tvrditi** da su igre same po
+sebi motivirajuće: meta-analiza Wouters 2013. to nije potvrdila; mi tvrdimo da tjeraju na razmišljanje i daju razlog.
 
 ## Pitanja koja žiri uvijek pita (kratki odgovori)
 
