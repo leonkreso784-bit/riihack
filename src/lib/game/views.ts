@@ -195,6 +195,8 @@ export function toSituationView(
     state: situation.state as SituationState,
     transcript: situation.transcript,
     ...(answer && { answer: toAnswerView(answer) }),
+    // Rubrika i učinak tek nakon odgovora, da student prije odgovora ne vidi kriterije (Tokovi skica 2).
+    ...(answer && { rubric: t.rubric.map((c) => ({ id: c.id, text: c.text })), effects: t.effects }),
     source: sourceOfTemplateId(found.id), // L12: banka, profesor ili AI prijedlog koji je profesor spremio
   };
 }

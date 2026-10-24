@@ -380,6 +380,13 @@ describe("toSituationView", () => {
     expect(toSituationView({ ...row, situation: { ...row.situation, templateId: ai.id } }, "H", [ai])?.source).toBe("ai");
   });
 
+  it("nakon odgovora: tekst kriterija rubrike i učinak situacije (Tokovi skica 2), bez vještina", () => {
+    const v = toSituationView({ situation: situationRow("s1", 1, { state: "answered" }), answer: answerRow("s1") }, "H", [TEMPLATE])!;
+    expect(v.rubric).toEqual(TEMPLATE.rubric.map((c) => ({ id: c.id, text: c.text })));
+    expect(v.effects).toEqual(TEMPLATE.effects);
+    expect(JSON.stringify(v)).not.toContain("skill");
+  });
+
   it("odgovor s presudom; prazna polja izostavljena", () => {
     const own = toSituationView({ situation: situationRow("s1", 1, { state: "answered" }), answer: answerRow("s1") }, "H", [TEMPLATE])!;
     expect(own.answer).toEqual({
