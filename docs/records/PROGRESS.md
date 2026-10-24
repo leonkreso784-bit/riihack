@@ -6,6 +6,13 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 20:10–20:15 · repo bez imena prijašnjeg projekta
+
+- **Spojeno:** Simonov zapis obilaska 2 i dopuna opsega u `PROMISE.md` (#150, 20:11), Rinovo čišćenje plana (#157,
+  20:13, Leonovo „spoji"), dokumentacija #158 (20:10). Otvorenih PR-ova nema.
+- **BUG-008 riješen:** `git grep -i` po cijelom `main`-u daje 0 pogodaka
+  ([BUG-008](BUGS.md#bug-008--ime-prijašnjeg-projekta-još-je-u-repou)).
+
 ## Sub 24.10. 20:00–20:10 · profesorski računi i AI agent agencije na `main`-u
 
 - **Spojeno u 20:06 (sve na Leonovo izravno „spoji"):** L16 profesorski računi (#147) po
@@ -18,7 +25,7 @@ Vremena su lokalna (CEST).
 ## Sub 24.10. 19:50–20:00 · L15 i karta grada na `main`-u, predaja sesija
 
 - **Obilazak žirija 2 (~19:00):** 3 minute aplikacije uživo, odgovor pozitivan, bez primjedbi i bez novih zahtjeva.
-  Za nedjelju: na obilasku 3 žiri sam isprobava aplikaciju (Simonov zapis u `PROMISE.md`, #150, 🟨 nije spojen).
+  Za nedjelju: na obilasku 3 žiri sam isprobava aplikaciju (Simonov zapis u `PROMISE.md`, #150).
 - **Spojeno:** L15 pošta i pregovaranje (#148, 19:54) po [ADR-033](DECISIONS.md#adr-033); Rinove detaljnije
   Financije, Plan i Odjeli (#142, 19:54; Leonovo izravno „spoji" umjesto Simonovog ok); Rinov QR kod ulaza na
   čekaonici (#151) i „Završi mjesec" (#152, R4); karta grada kao izometrijska društvena igra (#128, 19:58; dovršio

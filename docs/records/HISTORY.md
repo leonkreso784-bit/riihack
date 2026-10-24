@@ -5,7 +5,7 @@ prekretnica: [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md#prekretn
 
 | Kad | Prekretnica | Ref |
 | --- | --- | --- |
-| sub 24.10. ~19:00 | **Obilazak žirija 2 prošao:** aplikacija uživo 3 min, odgovor pozitivan, bez primjedbi ([#150](https://github.com/leonkreso784-bit/riihack/pull/150), 🟨 nije spojen) | #150 |
+| sub 24.10. ~19:00 | **Obilazak žirija 2 prošao:** aplikacija uživo 3 min, odgovor pozitivan, bez primjedbi | #150 |
 | sub 24.10. ~17:52 | **Produkcija na pravim podacima** (prije samo Preview) ([ADR-030](DECISIONS.md#adr-030)) | #115 |
 | sub 24.10. 17:09–17:15 | **Kod za M3 na `main`-u:** playbook, demo igra, promjena ocjene mentora, AI prijedlog situacije; 272 testa | #100, #103, #104, #111 |
 | sub 24.10. 16:50–17:06 | **Val M2 spojen** redom uz smoke 14/14 i provjeru produkcije ([ADR-028](DECISIONS.md#adr-028)); čeka obilazak 2 u 18:45 | #88, #89, #75, #96, #95 |
