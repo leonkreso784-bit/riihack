@@ -27,9 +27,8 @@ planu zajedno; Simon zatvara #42 kao duplikat. #63 spojen u 14:58.
 PR-ove cijelog tima, čuva `main`) i **dokumentarist** (samo `docs/`). Svaka u svom radnom stablu.
 **Posljedice.** Spaja samo integrator; autor PR-a javlja da je spreman (integrator, [ODLUKA] 24.10.). Vrijedi za
 PR-ove cijelog tima ([TEAM.md](../../TEAM.md) pravilo 3), i to **automatski** za sve što prođe provjeru na svježem
-`main`-u (Leon, ~15:00). **Dokumentacija se ne
-spaja:** na `main` ide samo `TEAM.md`, a `docs/` ostaje na grani `leon/docs-struktura` (Leon, 24.10.; #58 spojen
-pa vraćen s #60).
+`main`-u (Leon, ~15:00). **Dokumentacija je na
+`main`-u** jer po njoj grade ljudi i agenti (Leon, ~15:05; prije toga kratko samo na grani, #58 vraćen s #60).
 
 <a id="adr-014"></a>
 ## ADR-014 · Ploča tima u `TEAM.md`, izravno na `main`

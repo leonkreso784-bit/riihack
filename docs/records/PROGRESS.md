@@ -13,7 +13,7 @@ Vremena su lokalna (CEST).
   ([ADR-016](DECISIONS.md#adr-016)), PR #63 otvoren.
 - **Rino:** R1 ulaz kao Kahoot i čekaonica (#54, 14:38).
 - **Simon:** slajdovi obilaska žirija (#55) i Rinov tok demoa nakon R1 (#61).
-- **Dokumentacija:** #58 spojen pa vraćen s #60: na `main` ide samo `TEAM.md` ([ADR-015](DECISIONS.md#adr-015)).
+- **Dokumentacija:** #58 spojen, vraćen s #60, pa ponovno na `main` jer po njoj grade ljudi i agenti ([ADR-015](DECISIONS.md#adr-015)).
 - **Vercel:** Rino prihvatio pozivnicu u Vercel tim (Leon, ~15:00), pa mu rade `vercel link` i `vercel env pull`.
 - **Spojeno do 15:00:** L2 motor A (#59), L3 banka od 6 hotela (#64), R2 profesor (#56), R3 sobe (#57), logo (#65),
   pitch (#66), ugovor lika (#63). Integrator od sada spaja automatski sve što prođe provjeru ([ADR-015](DECISIONS.md#adr-015)).

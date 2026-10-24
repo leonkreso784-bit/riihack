@@ -8,7 +8,7 @@ Odluka: [ADR-015](../records/DECISIONS.md#adr-015). Simon i Rino rade po pravili
 | --- | --- | --- | --- |
 | **Graditelj** | L-zadaci iz [plana](../superpowers/plans/2026-10-24-simpolis.md) s agentima (jedan zadatak = jedan agent = jedna grana) | `Documents/riihack` (+ stabla po zadatku) | ne spaja sam |
 | **Integrator** | pregledava i spaja PR-ove, čuva zeleni `main` | `Documents/riihack-integracija` | ne piše značajke |
-| **Dokumentarist** | vodi `docs/` (PRD, ADR, dnevnik, bugovi) | `Documents/riihack-docs`, grana `leon/docs-struktura` | ne piše kod, ne otvara PR prema `main`-u |
+| **Dokumentarist** | vodi `docs/` (PRD, ADR, dnevnik, bugovi) | `Documents/riihack-docs` | ne piše kod, ne spaja sam |
 
 Svaka sesija radi **samo u svom radnom stablu**. Odluke donosi Leon s timom; sesije ih bilježe, ne donose.
 
@@ -28,8 +28,7 @@ Jedan redak, s oznakom na početku:
 
 ## Grane
 
-**Na `main` od dokumenata ide samo `TEAM.md`** (zajednička ploča). Ostala dokumentacija ostaje na grani
-`leon/docs-struktura` i ne spaja se (Leon, 24.10.; #58 vraćen s #60).
+Dokumentacija ide na `main` preko PR-a kao i kod, jer po njoj grade ljudi i agenti; spaja integrator.
 
 `leon/<zadatak>` za graditelja, `leon/docs-<opis>` za dokumentarista. Nikad `git push --force` na `main`
 ([CLAUDE.md](../../CLAUDE.md)).
