@@ -21,6 +21,15 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-005 · Agent je pri gašenju dev servera pokušao ugasiti sve `node.exe` procese
+- **Status:** ✅ riješen 24.10. u L8 (pokušaj odbijen, ništa nije ugašeno) · **Težina:** nizak (alat, ne proizvod),
+  ali bi srušio dev servere i sesije ostalih
+- **Opis:** pri gašenju svog dev servera agent je pokušao ubiti sve `node.exe` procese na računalu.
+- **Uzrok:** agent nije znao PID svog servera, pa je posegnuo za svim procesima istog imena.
+- **Rješenje:** pravilo za agente: dev server na vlastitom portu, gasi se samo taj proces ([SESIJE.md](../workflow/SESIJE.md#pravila-za-agente)).
+- **Lekcija:** na računalu na kojem radi više sesija naredba „ugasi sve istog imena" nikad nije sigurna. Pokreni
+  proces tako da znaš njegov port ili PID i gasi samo njega.
+
 ### BUG-003 · `/igra` na Vercelu vraća „Greška 404"
 - **Status:** ✅ riješen 24.10. 14:14 ([#52](https://github.com/leonkreso784-bit/riihack/pull/52)) · **Težina:** visok (javni link za obilazak žirija)
 - **Opis:** https://riihack.vercel.app/igra pokazuje „Greška 404".

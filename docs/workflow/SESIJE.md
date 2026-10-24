@@ -26,6 +26,11 @@ Jedan redak, s oznakom na početku:
 
 `[ODLUKA]` postaje ADR u [DECISIONS.md](../records/DECISIONS.md), `[BUG]` unos u [BUGS.md](../records/BUGS.md).
 
+## Pravila za agente
+
+- Dev server na **vlastitom portu** (`npm run dev -- -p <port>`); gasi se **samo taj proces**, nikad svi `node.exe`
+  ([BUG-005](../records/BUGS.md#bug-005--agent-je-pri-gašenju-dev-servera-pokušao-ugasiti-sve-nodeexe-procese)).
+
 ## Grane
 
 Dokumentacija ide na `main` preko PR-a kao i kod, jer po njoj grade ljudi i agenti; spaja integrator.
