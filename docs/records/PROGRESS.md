@@ -14,6 +14,7 @@ Vremena su lokalna (CEST).
 - **Rino:** R1 ulaz kao Kahoot i čekaonica (#54, 14:38).
 - **Simon:** slajdovi obilaska žirija (#55) i Rinov tok demoa nakon R1 (#61).
 - **Dokumentacija:** #58 spojen pa vraćen s #60: na `main` ide samo `TEAM.md` ([ADR-015](DECISIONS.md#adr-015)).
+- **Vercel:** Rino prihvatio pozivnicu u Vercel tim (Leon, ~15:00), pa mu rade `vercel link` i `vercel env pull`.
 - **Otvoreno:** #59 L2 motor, #63 ugovor lika, #64 L3 banka hotela, #65 novi logo.
 
 ## Sub 24.10. ~14:30 · tri sesije, dokumentacija
