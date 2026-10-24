@@ -27,10 +27,11 @@ Otvori ekran koji si mijenjao u pregledniku: preview link PR-a (pravi podaci) i 
 (lažni podaci dok tim ne odluči, [ADR-018](../records/DECISIONS.md#adr-018)). Vercel nema tvoj `.env.local`
 ([BUG-003](../records/BUGS.md#bug-003--igra-na-vercelu-vraća-greška-404)).
 
-## Smoke cijelog toka (L8, koraci 1–10 usporedno s L7)
+## Smoke cijelog toka (L8)
 
 ```bash
-npm run smoke          # BASE_URL zadano http://localhost:3000
+npm run smoke                  # koraci 1–10, BASE_URL zadano http://localhost:3000
+SMOKE_CITY=1 npm run smoke     # i koraci 11–14 (grad: plan, obračun mjeseca, ugovori)
 ```
 
 Koraci (14, od stvaranja igre do dvostrukog obračuna mjeseca) su u

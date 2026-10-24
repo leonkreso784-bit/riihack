@@ -3,6 +3,23 @@
 **Ovo je jedini ulaz u dokumentaciju.** Mape su složene po **ulozi dokumenta**, ne po temi. Dokumenti u korijenu
 repoa ostaju gdje jesu (na njih upućuju issueovi i `CLAUDE.md`); ovdje su samo linkani.
 
+## Za novu sesiju (čitaj ovim redom)
+
+1. [CLAUDE.md](../CLAUDE.md): pravila rada u repou.
+2. [TEAM.md](../TEAM.md): ploča (tko što radi sada, tko na koga čeka, pravila suradnje, stanje `main`-a).
+3. [workflow/SESIJE.md](workflow/SESIJE.md): uloge sesija, oznake poruka, pravila za agente.
+4. [records/DECISIONS.md](records/DECISIONS.md): najnovije odluke su na vrhu.
+5. [product/PRD.md](product/PRD.md): što demo mora moći po prekretnicama.
+6. [workflow/TESTING.md](workflow/TESTING.md): provjere prije PR-a, smoke, baza.
+7. Svoj zadatak u [planu izvedbe](superpowers/plans/2026-10-24-simpolis.md) i otvoreni PR-ovi (`gh pr list`).
+
+**Pravila koja se najlakše prekrše:** nitko ne pokreće `npm run db:push`
+([ADR-026](records/DECISIONS.md#adr-026)); ugovor (`types.ts`, `rules.ts`, `package.json`) i sadržaj situacija spajaju
+se samo na Leonovo „spoji" ([ADR-017](records/DECISIONS.md#adr-017)); spaja samo integrator
+([ADR-015](records/DECISIONS.md#adr-015)); dev server na svom portu, gasi se samo taj proces
+([SESIJE.md](workflow/SESIJE.md#pravila-za-agente)); novo polje u ugovoru je neobavezno
+([ADR-011](records/DECISIONS.md#adr-011)).
+
 ## Mape
 
 | Mapa | Uloga | Mijenja se |

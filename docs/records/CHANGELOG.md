@@ -13,6 +13,14 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#95](https://github.com/leonkreso784-bit/riihack/pull/95) | 17:06 | Leon | L12: profesorove situacije, slanje odabranima, izbor iz banke |
+| [#109](https://github.com/leonkreso784-bit/riihack/pull/109) | 17:04 | Simon | S8: sučelje za profesorove situacije i slanje |
+| [#108](https://github.com/leonkreso784-bit/riihack/pull/108) | 17:02 | Rino | R6: profesorova ploča uživo |
+| [#105](https://github.com/leonkreso784-bit/riihack/pull/105) | 17:01 | Leon | dokumentacija: ADR-028 i 029 |
+| [#96](https://github.com/leonkreso784-bit/riihack/pull/96) | 16:59 | Leon | odjava: `POST /api/logout` briše kolačiće |
+| [#75](https://github.com/leonkreso784-bit/riihack/pull/75) | 16:55 | Leon | L6: 8 situacija s rubrikama (BUG-004 riješen) |
+| [#89](https://github.com/leonkreso784-bit/riihack/pull/89) | 16:52 | Leon | ugovor: profesorove situacije i playbook |
+| [#88](https://github.com/leonkreso784-bit/riihack/pull/88) | 16:50 | Leon | L11 faza B: obračun mjeseca, ugovori i vijesti u igri |
 | [#99](https://github.com/leonkreso784-bit/riihack/pull/99) | 16:41 | Simon | pitch: jednostavniji nakon žirija 1 |
 | [#97](https://github.com/leonkreso784-bit/riihack/pull/97) | 16:40 | Rino | R5: situacija s likom, odgovor i presuda |
 | [#98](https://github.com/leonkreso784-bit/riihack/pull/98) | 16:35 | Leon | dokumentacija: ADR-027 playbook |

@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 16:50–17:10 · val M2 spojen
+
+- **Val M2** ([ADR-028](DECISIONS.md#adr-028)), na Leonovo izravno „da": #88 L11 faza B (16:50) → #89 ugovor (16:52)
+  → #75 L6 (16:55) → #96 odjava (16:59) → #95 L12 (17:06). Nakon svakog koraka testovi (196, nakon L6 220), CI na
+  `main`-u, Vercel i produkcija zeleni; smoke 14/14 (`SMOKE_CITY=1`) nakon #75
+  ([BUG-004](BUGS.md#bug-004--smoke-korak-5-na-main-u-pada-ana-ima-0-situacija) riješen).
+- **Usporedno spojeno:** R6 profesorova ploča uživo (#108), S8 sučelje za profesorove situacije (#109).
+- **M3 čeka iza vala:** playbook (#100), demo igra (#103), promjena ocjene mentora (#104).
+- **Slijedi:** proba M2 na pravim podacima, pa prave podatke i na produkciji ([ADR-029](DECISIONS.md#adr-029)).
+
 ## Sub 24.10. 16:15–16:50 · M2 val spreman, M3 gotov iza njega
 
 - **Spojeno:** R5 situacija s likom (#97), predstavljanje na `/` i ulaz na `/ulaz` (#93), logo (#91), jednostavniji
