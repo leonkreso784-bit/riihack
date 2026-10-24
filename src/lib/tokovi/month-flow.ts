@@ -80,7 +80,8 @@ export function estimateWhatIf(finance: RoundFinance, rooms: { basePrice: number
   const changed = scenario.price !== base.price || scenario.marketing !== base.marketing;
   if (!changed) return { ok: true, changed, finance };
 
-  const s = finance.marketSharePct / 100;
+  // Share is stored rounded down to a whole percent, so take the middle of that percent.
+  const s = Math.min(0.995, (finance.marketSharePct + 0.5) / 100);
   const r = (priceBpOf(scenario.price, base.ref) * marketingBpOf(scenario.marketing)) / (priceBpOf(base.price, base.ref) * marketingBpOf(base.marketing));
   const freeTourists = finance.nights / s; // all free tourists in the city, from our own share
   const others = (1 - s) / s; // other hotels' weight, in units of our old weight
@@ -164,10 +165,10 @@ export function buildMonthFlow(
     {
       id: "plan",
       title: "Tvoj plan",
-      big: eur(price),
+      big: price > 0 ? eur(price) : "bez gostiju",
       small: `cijena po noći · marketing ${eur(marketing)}`,
       inputs: [
-        { label: "Cijena po noći", value: eur(price) },
+        { label: "Cijena po noći", value: price > 0 ? eur(price) : "nije poznata (mjesec bez gostiju s tržišta)" },
         { label: "Prosječna cijena tvojih soba", value: eur(base.ref) },
         { label: "Marketing", value: eur(marketing) },
         { label: "Ulaganja u odjele", value: eur(b.costInvestments) },
@@ -176,7 +177,7 @@ export function buildMonthFlow(
         "Faktor cijene = prosječna cijena soba ÷ tvoja cijena (najmanje 0,50, najviše 1,50).",
         `Faktor marketinga = 1 + marketing ÷ ${num(2 * MARKETING_MAX)} (najviše 1,50).`,
       ],
-      calc: `${num(base.ref)} ÷ ${num(price)} → ${factor(pBp)} · 1 + ${num(marketing)} ÷ ${num(2 * MARKETING_MAX)} → ${factor(mBp)}`,
+      calc: price > 0 ? `${num(base.ref)} ÷ ${num(price)} → ${factor(pBp)} · 1 + ${num(marketing)} ÷ ${num(2 * MARKETING_MAX)} → ${factor(mBp)}` : undefined,
       note: "Ovo su tvoje odluke. Sve ostalo slijedi iz pravila. Cijena po noći je izračunata iz prihoda i noćenja tog mjeseca.",
       outputs: [
         { label: "Faktor cijene", value: `× ${factor(pBp)}` },
@@ -258,7 +259,7 @@ export function buildMonthFlow(
       big: eur(f.revenue),
       small: `gosti ${eur(b.revenueOwn)} + ugovori ${eur(b.revenueContracts)}`,
       inputs: [
-        { label: "Slobodna noćenja × cijena", value: `${num(f.nights)} × ${eur(price)} = ${eur(b.revenueOwn)}` },
+        { label: "Slobodna noćenja × cijena", value: price > 0 ? `${num(f.nights)} × ${eur(price)} = ${eur(b.revenueOwn)}` : `0 noćenja = ${eur(0)}` },
         { label: "Ugovori", value: eur(b.revenueContracts) },
       ],
       rule: ["Prihod = slobodna noćenja × tvoja cijena + prihod ugovora."],

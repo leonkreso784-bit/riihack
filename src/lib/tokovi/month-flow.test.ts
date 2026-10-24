@@ -149,4 +149,13 @@ describe("buildMonthFlow", () => {
     if (!est.ok) throw new Error("expected an estimate");
     expect(flow.steps.find((s) => s.id === "novac")!.outputs[0].value).toContain(est.finance.cashAfter.toLocaleString("hr-HR"));
   });
+
+  it("does not show a 0 € price for a month without market guests", () => {
+    const empty = { ...real, nights: 0, marketSharePct: 0, breakdown: { ...real.breakdown!, revenueOwn: 0 } };
+    const flow = buildMonthFlow(empty, MY_ROOMS, 4, 2)!;
+    const plan = flow.steps.find((s) => s.id === "plan")!;
+    expect(plan.big).toBe("bez gostiju");
+    expect(plan.calc).toBeUndefined();
+    expect(estimateWhatIf(empty, MY_ROOMS, { price: 90, marketing: 1000 }).ok).toBe(false);
+  });
 });

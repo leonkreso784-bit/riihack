@@ -220,7 +220,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
         <p className="mb-4 text-sm text-muted-foreground">{est.ok ? ESTIMATE_LABEL : est.reason}</p>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-x-8 gap-y-5 md:grid-cols-2">
           <Slider id={`${uid}-cijena`} label="Cijena po noći" value={current.price} min={priceMin} max={priceMax} step={1} disabled={!est.ok} format={eur} onChange={(n) => set({ price: n })} />
-          <Slider id={`${uid}-marketing`} label="Marketing" value={current.marketing} min={0} max={MARKETING_MAX} step={50} disabled={!est.ok} format={eur} onChange={(n) => set({ marketing: n })} />
+          <Slider id={`${uid}-marketing`} label="Marketing" value={current.marketing} min={0} max={MARKETING_MAX} step={current.marketing % 50 === 0 ? 50 : 1} disabled={!est.ok} format={eur} onChange={(n) => set({ marketing: n })} />
         </div>
         {est.ok && (
           <div className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4" aria-live="polite">
@@ -327,7 +327,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
                 <span className="h-full w-0.5 rounded-full bg-[#c3d0e6]" />
               </div>
             )}
-            <StepCard step={s} selected={selected === s.id} onSelect={() => setSelected(selected === s.id ? undefined : s.id)} controls={`${uid}-${s.id}`} className="w-full" />
+            <StepCard step={s} selected={selected === s.id} onSelect={() => setSelected(selected === s.id ? undefined : s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />
             {selected === s.id && (
               <div id={`${uid}-${s.id}`} className="mt-2 rounded-[var(--radius)] border bg-card p-4">
                 <StepDetail step={s} />

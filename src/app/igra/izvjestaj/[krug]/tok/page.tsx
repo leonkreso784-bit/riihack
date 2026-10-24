@@ -24,6 +24,18 @@ export default function MonthFlowPage() {
     </Link>
   );
 
+  if (!Number.isInteger(round) || round < 1 || round > ROUND_LABELS.length)
+    return (
+      <div className="space-y-4 pt-4 md:pt-0">
+        <Link href="/igra" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
+          <ArrowLeft className="size-4" aria-hidden /> Moja tvrtka
+        </Link>
+        <Panel tone="sand">
+          <p className="text-sm">Taj mjesec ne postoji. Igra ima {ROUND_LABELS.length} mjeseca, od lipnja do rujna.</p>
+        </Panel>
+      </div>
+    );
+
   if (error && !data)
     return (
       <div className="space-y-4 pt-4 md:pt-0">
