@@ -1,6 +1,6 @@
 // S3: POST /api/situations/[id]/chat. One student message in, the character's reply out as a text stream.
 import { streamCharacterReply } from "@/lib/ai";
-import { appendTranscript, getSituationForCompany } from "@/db/queries";
+import { afterReservation, appendTranscript, getSituationForCompany, reserveStudentTurn } from "@/db/queries";
 import { HttpError } from "@/lib/http";
 import { MAX_STUDENT_MESSAGES, PASTE_SHARE } from "@/lib/rules";
 import { requirePlayer } from "@/lib/session";
@@ -24,26 +24,25 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     if (!found) throw new HttpError(404, "Situacija nije pronađena");
     const { situation, template } = found;
 
-    const sent = situation.transcript.filter((t) => t.role === "student").length;
-    if (situation.state !== "open" || sent >= MAX_STUDENT_MESSAGES) throw new HttpError(409, "Razgovor je gotov");
+    // Mjesto za poruku se rezervira jednim uvjetnim UPDATE-om PRIJE poziva AI-ja, pa istodobni zahtjevi ne mogu
+    // proći granicu od MAX_STUDENT_MESSAGES (sigurnosni pregled). Ako AI padne, poruka ostaje i broji se.
+    const reserved = await reserveStudentTurn(situation.id, company.id, message, MAX_STUDENT_MESSAGES);
+    if (!reserved) throw new HttpError(409, "Razgovor je gotov");
+    const { prior, messageNo } = afterReservation(reserved);
 
     return streamCharacterReply(
       {
         template,
         hotelName: company.name,
         roomNumber: situation.roomNumber ?? undefined,
-        transcript: situation.transcript,
+        transcript: prior,
         message,
         pasted: pastedChars / message.length > PASTE_SHARE,
-        messageNo: sent + 1,
+        messageNo,
         maxMessages: MAX_STUDENT_MESSAGES,
       },
       undefined,
-      (reply) =>
-        appendTranscript(situation.id, [
-          { role: "student", text: message },
-          { role: "character", text: reply },
-        ]),
+      (reply) => appendTranscript(situation.id, [{ role: "character", text: reply }]),
     );
   } catch (err) {
     if (err instanceof HttpError) return Response.json({ error: err.message }, { status: err.status });
