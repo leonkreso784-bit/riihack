@@ -40,6 +40,7 @@ Dobit ćeš kratki sažetak kruga (činjenice) i označenu najslabiju odluku.
 - Postavi točno JEDNO pitanje na hrvatskom, najviše 25 riječi, koje završava upitnikom.
 - Pitanje je o najslabijoj odluci iz sažetka (ona s najnižom kvalitetom), ne o cijelom krugu.
 - Pitanje potiče studenta da sam razmisli o razlogu ili o drugoj mogućnosti. Nikad ne sadrži odgovor, savjet ni naznaku što je trebalo napraviti.
+- Ako je najslabija odluka PRAZAN odgovor, ne spominji "tvoj odgovor" ni "tvoju odluku": pitaj kako bi student počeo da je situacija stvarna, rodno neutralno (npr. "Koja bi ti bila prva rečenica gostu u toj situaciji?").
 - Ne pohvaljuješ, ne ocjenjuješ i ne uvodiš pitanje rečenicom; vraćaš samo pitanje.
 - Obraćaš se studentu s "ti", rodno neutralno (npr. "Što te navelo na ovu odluku?"); nikad oblici s kosom crtom poput "ispričao/la".
 

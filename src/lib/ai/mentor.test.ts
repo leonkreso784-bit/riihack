@@ -96,6 +96,19 @@ describe("factsBlock", () => {
   });
 });
 
+describe("factsBlock with an empty own answer (BUG-033)", () => {
+  const empty: MentorInput = {
+    ...input,
+    items: [{ title: "Ljutit gost u sobi 204", mode: "own", quality: 1, answerText: "", criteriaMissed: ["Ponudi naknadu"] }],
+  };
+  const facts = factsBlock(empty);
+  it("says the answer was empty instead of 'wrote an own answer'", () => {
+    expect(facts).toContain("PRAZAN odgovor");
+    expect(facts).not.toContain("napisao vlastiti odgovor");
+    expect(facts).not.toContain("<odgovor_studenta>");
+  });
+});
+
 describe("factsBlock with finance", () => {
   it("adds the month's accounts in euros and percent, and omits them otherwise", () => {
     const finance = { round: 1, nights: 120, contractNights: 20, capacityNights: 480, occupancyPct: 25, marketSharePct: 14, revenue: 9500, costs: 7000, profit: 2500, cashAfter: 12500 };

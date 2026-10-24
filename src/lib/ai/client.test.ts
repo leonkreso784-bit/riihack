@@ -35,7 +35,7 @@ describe("withAi", () => {
 
 describe("fallbacks", () => {
   it("mentor question is the fixed text", () => {
-    expect(fallbackMentorQuestion(input)).toBe("Koju bi odluku iz ovog kruga sljedeći put donio drukčije i zašto?");
+    expect(fallbackMentorQuestion(input)).toBe("Koja bi odluka iz ovog kruga sljedeći put bila drukčija i zašto?");
     expect(MENTOR_FALLBACK_QUESTION).toBe(fallbackMentorQuestion(input));
   });
 
