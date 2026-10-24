@@ -14,6 +14,7 @@ import { FormError } from "@/components/form";
 import { ChatPanel, Initials } from "@/components/chat-panel";
 import { OptionsForm, OwnAnswerForm } from "@/components/answer-form";
 import { VerdictCard } from "@/components/verdict-card";
+import { FlowLink } from "@/components/flow-link";
 
 const back = (
   <Link href="/igra" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
@@ -88,9 +89,7 @@ function Situation({ s }: { s: SituationView }) {
           <div className="space-y-2">
             <VerdictCard answer={answer} options={s.options} character={s.character} expired={s.state === "expired"} />
             {answer.mode !== "none" && (
-              <Link href={`/igra/situacija/${s.id}/tok`} className="inline-flex min-h-11 items-center gap-2 font-semibold text-secondary-foreground hover:underline">
-                Kako je tvoj odgovor prošao kroz hotel →
-              </Link>
+              <FlowLink href={`/igra/situacija/${s.id}/tok`} title="Kako je tvoj odgovor prošao kroz hotel" hint="Od odgovora do ocjene i pokazatelja" />
             )}
           </div>
           {turns.length > 0 && (

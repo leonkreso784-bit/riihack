@@ -11,6 +11,7 @@ import { Panel } from "@/components/panel";
 import { FormError } from "@/components/form";
 import { Delta, METRIC_ICONS } from "@/components/metric-bar";
 import { MentorDialog } from "@/components/mentor-dialog";
+import { FlowLink } from "@/components/flow-link";
 
 const back = (
   <Link href="/igra" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
@@ -41,10 +42,8 @@ export default function ReportPage() {
       <header>
         <p className="text-sm font-semibold text-muted-foreground">Izvještaj mjeseca</p>
         <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">{month}</h1>
-        <Link href={`/igra/izvjestaj/${round}/tok`} className="inline-flex min-h-11 items-center font-semibold text-secondary-foreground hover:underline">
-          Kako je izračunat mjesec →
-        </Link>
       </header>
+      <FlowLink href={`/igra/izvjestaj/${round}/tok`} title="Kako je izračunat mjesec" hint="Obračun korak po korak i „Što ako?“" />
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-start">
         <Panel title="Što se promijenilo">

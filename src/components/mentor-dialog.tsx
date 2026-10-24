@@ -29,7 +29,9 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
-    if (short || sending.current) return;
+    if (sending.current) return;
+    // The server also wants MIN_OWN_ANSWER_CHARS, so say why instead of a silent grey button.
+    if (short) return setError(`Mentoru napiši barem ${MIN_OWN_ANSWER_CHARS} znakova, on odgovara na tvoje razmišljanje. ${charsLeft(MIN_OWN_ANSWER_CHARS - length)}.`);
     sending.current = true;
     setBusy(true);
     setError(null);
@@ -72,7 +74,7 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
               {short ? charsLeft(MIN_OWN_ANSWER_CHARS - length) : `${length} / ${MAX_OWN_ANSWER_CHARS} znakova`}
             </p>
             {error && <FormError key={error}>{error}</FormError>}
-            <SubmitButton busy={busy} disabled={short} busyText="Mentor čita tvoj odgovor…">Pošalji mentoru</SubmitButton>
+            <SubmitButton busy={busy} busyText="Mentor čita tvoj odgovor…">Pošalji mentoru</SubmitButton>
           </form>
         )
       )}
