@@ -22,6 +22,8 @@ const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).len
 
 const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
 const MODE_LABELS = { click: "odabrao ponuđenu opciju", own: "napisao vlastiti odgovor", none: "nije odgovorio" } as const;
+/** An own answer with no text (ADR-049 allows it): the mentor must not talk about "your answer". */
+const emptyOwn = (i: MentorItem) => i.mode === "own" && !i.answerText?.trim();
 const looksLikeId = (s: string) => /^[a-z]{0,2}\d+$/i.test(s.trim());
 
 /** The weakest decision: lowest quality, the first one on a tie. */
@@ -58,9 +60,11 @@ export function factsBlock(input: MentorInput): string {
       const missed = i.criteriaMissed.filter((m) => !looksLikeId(m));
       const lines = [
         `- Situacija: ${clean(i.title)}${i === weakest ? " (NAJSLABIJA ODLUKA)" : ""}`,
-        `  Student je ${MODE_LABELS[i.mode]}; kvaliteta ${i.quality} od 5.`,
+        emptyOwn(i)
+          ? `  Student je poslao PRAZAN odgovor (ništa nije napisao); kvaliteta ${i.quality} od 5. Nema odgovora o kojem bi se pričalo.`
+          : `  Student je ${MODE_LABELS[i.mode]}; kvaliteta ${i.quality} od 5.`,
       ];
-      if (i.answerText) lines.push(`  <odgovor_studenta>${clean(i.answerText)}</odgovor_studenta>`);
+      if (i.answerText?.trim()) lines.push(`  <odgovor_studenta>${clean(i.answerText)}</odgovor_studenta>`);
       if (missed.length) lines.push(`  Što je nedostajalo: ${missed.map(clean).join("; ")}`);
       return lines.join("\n");
     })

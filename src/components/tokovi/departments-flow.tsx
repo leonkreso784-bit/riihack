@@ -8,6 +8,7 @@ import { AlertTriangle, ArrowDown, CheckCircle2, CircleSlash, Gauge, HandCoins, 
 import { INVEST_EFFECT_CAP, INVEST_EFFECT_DIVISOR, INVEST_MAX } from "@/lib/rules";
 import type { StaffDepartment } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { plural } from "@/lib/format";
 import { Panel } from "@/components/panel";
 import { Slider, StepDetail, type FlowStepData } from "@/components/tokovi/flow-ui";
 import {
@@ -475,7 +476,7 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
               {summary.empty
                 ? `Za ${summary.month.toLowerCase()} još ništa: nema ulaganja ni odgovora s učinkom. Prvi bod na pokazatelju odjela daje ulaganje od ${eur(INVEST_EFFECT_DIVISOR)}.`
                 : `Ulaganja i odgovori iz staza zbrajaju se po pokazateljima. Sve se upisuje kad se ${summary.month.toLowerCase()} zatvori.`}
-              {summary.waiting > 0 && ` Još ${summary.waiting} ${summary.waiting === 1 ? "situacija čeka" : "situacija čeka"} tvoj odgovor.`}
+              {summary.waiting > 0 && ` Još ${summary.waiting} ${plural(summary.waiting, "situacija čeka", "situacije čekaju", "situacija čeka")} tvoj odgovor.`}
             </p>
           </div>
           <div>

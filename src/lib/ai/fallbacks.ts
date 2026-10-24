@@ -3,7 +3,7 @@ import { METRIC_LABELS } from "@/lib/rules";
 import type { MentorInput, Metrics, MetricKey, SituationDraft, SituationIdeaInput } from "@/lib/types";
 
 export const CHARACTER_FALLBACK = "Ispričavam se, trenutno ne mogu razgovarati. Odgovorite mi pisano, molim vas.";
-export const MENTOR_FALLBACK_QUESTION = "Koju bi odluku iz ovog kruga sljedeći put donio drukčije i zašto?";
+export const MENTOR_FALLBACK_QUESTION = "Koja bi odluka iz ovog kruga sljedeći put bila drukčija i zašto?";
 
 export function fallbackMentorQuestion(_input: MentorInput): string {
   return MENTOR_FALLBACK_QUESTION;
