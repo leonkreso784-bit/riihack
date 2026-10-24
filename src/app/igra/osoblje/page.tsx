@@ -5,7 +5,7 @@ import { AlertTriangle, Moon, Sun, Sunset, Users } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur } from "@/lib/format";
 import { DEPARTMENT_METRIC, INVEST_EFFECT_CAP, INVEST_EFFECT_DIVISOR, INVEST_MAX, METRIC_LABELS, ROUND_LABELS, STAFF_DEPARTMENT_LABELS, STAFF_SHIFT_LABELS } from "@/lib/rules";
-import type { DepartmentInvestments, DepartmentView, StaffDepartment, StaffMember, StaffShift } from "@/lib/types";
+import type { DepartmentInvestments, DepartmentView, MetricKey, Metrics, StaffDepartment, StaffMember, StaffShift } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
 import { Pill, type Tone } from "@/components/pill";
@@ -38,6 +38,11 @@ export default function DepartmentsPage() {
   const open = world.status === "running" && company.closedRound < world.round;
   const month = (ROUND_LABELS[world.round - 1] ?? `krug ${world.round}`).toLowerCase();
   const views = new Map((data.departments ?? []).map((v) => [v.department, v]));
+  // Metric history: start of the season, then after each closed month (from the month reports).
+  const history: { label: string; metrics: Metrics }[] = [
+    { label: "Početak", metrics: company.startMetrics },
+    ...[...data.reports].sort((a, b) => a.round - b.round).map((r) => ({ label: ROUND_LABELS[r.round - 1] ?? `Krug ${r.round}`, metrics: r.metricsAfter })),
+  ];
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -65,6 +70,7 @@ export default function DepartmentsPage() {
             department={d}
             view={views.get(d)}
             people={staff.filter((s) => s.department === d)}
+            history={history}
             value={invest[d] ?? 0}
             disabled={!open || saving}
             onChange={(v) => setDraft({ ...invest, [d]: v })}
@@ -96,6 +102,7 @@ function Department({
   department,
   view,
   people,
+  history,
   value,
   disabled,
   onChange,
@@ -103,6 +110,7 @@ function Department({
   department: StaffDepartment;
   view?: DepartmentView;
   people: StaffMember[];
+  history: { label: string; metrics: Metrics }[];
   value: number;
   disabled: boolean;
   onChange: (v: number) => void;
@@ -124,6 +132,8 @@ function Department({
           <span className="text-muted-foreground">{METRIC_LABELS[metric]}</span>
           {view && <span className="font-bold tabular-nums">{view.metricValue}/100</span>}
         </p>
+
+        {history.length > 1 && <Trend metric={metric} history={history} />}
 
         {view?.alerts.map((a) => (
           <p key={a} className="flex items-start gap-2 rounded-xl bg-sand px-3 py-2 text-sm">
@@ -171,5 +181,23 @@ function Department({
         </ul>
       </div>
     </Panel>
+  );
+}
+
+// The department's metric month by month, with the change against the month before.
+function Trend({ metric, history }: { metric: MetricKey; history: { label: string; metrics: Metrics }[] }) {
+  return (
+    <ol className="flex flex-wrap gap-x-4 gap-y-1 text-xs" aria-label={`${METRIC_LABELS[metric]} kroz sezonu`}>
+      {history.map((h, i) => {
+        const v = h.metrics[metric];
+        const d = i ? v - history[i - 1].metrics[metric] : 0;
+        return (
+          <li key={h.label} className="tabular-nums">
+            <span className="text-muted-foreground">{h.label}</span> <strong>{v}</strong>
+            {i > 0 && d !== 0 && <span className={d > 0 ? "text-up" : "text-down"}> {d > 0 ? `+${d}` : d}</span>}
+          </li>
+        );
+      })}
+    </ol>
   );
 }

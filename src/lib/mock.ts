@@ -74,7 +74,7 @@ const COMPANY: CompanyView = {
   id: "c-ana",
   hotelName: "Vila Ana",
   playerName: "Ana Kovač",
-  templateId: "rijeka-3",
+  templateId: "rijeka-centar",
   place: "Rijeka",
   stars: 3,
   roomsCount: MOCK_ROOMS.length,
