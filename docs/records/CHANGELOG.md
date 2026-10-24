@@ -7,6 +7,13 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#205](https://github.com/leonkreso784-bit/riihack/pull/205) | 23:00 | Simon | botovi: računalni hoteli s težinom, profesor ih dodaje u čekaonici (ADR-044) |
+| [#213](https://github.com/leonkreso784-bit/riihack/pull/213) | 22:55 | Leon | BUG-024: kvaliteta iz svih pokazatelja određuje privlačnost i potražnju hotela (ADR-045) |
+| [#211](https://github.com/leonkreso784-bit/riihack/pull/211) | 22:50 | Rino | rok „Ručno" (BUG-025), podij sezone i ljestvica cijelom širinom (BUG-022), kraj sezone na `/igra` (BUG-023), „Bez odgovora" (BUG-019), „← Moje igre" i kod igre na ploči |
+| [#210](https://github.com/leonkreso784-bit/riihack/pull/210) | 22:45 | Leon | dokumentacija: ponovna provjera testera, BUG-025 i 026 |
+| [#208](https://github.com/leonkreso784-bit/riihack/pull/208) | 22:45 | Leon | „Moje igre": „2 studenta" (BUG-020a) |
+| [#207](https://github.com/leonkreso784-bit/riihack/pull/207) | 22:45 | Leon | skripta za čišćenje: `--stare` za stare testne igre |
+| [#203](https://github.com/leonkreso784-bit/riihack/pull/203) | 22:37 | Leon | seed: knjižnica situacija na demo računu |
 | [#204](https://github.com/leonkreso784-bit/riihack/pull/204) | 22:30 | Leon | dokumentacija: ADR-045 |
 | [#192](https://github.com/leonkreso784-bit/riihack/pull/192) | 22:29 | Simon | grad: tuđi hoteli bez stanja računa, javni prihod i dobit, visina zgrade po napretku (ADR-040) |
 | [#196](https://github.com/leonkreso784-bit/riihack/pull/196) | 22:29 | Rino | R10: podij mjeseca i sezone za projektor, „Pokaži podij", anonimna ljestvica |

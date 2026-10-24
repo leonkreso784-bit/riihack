@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-046"></a>
+## ADR-046 · Odgovorena situacija donosi plus već od ocjene 3
+**Datum:** 24.10. ~22:55 · **Status:** ✅ (Leon; prijedlog graditelja) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
+
+**Kontekst.** Učinak situacije na pokazatelje bio je (kvaliteta − 3) × učinak: ocjena 3 nije donosila ništa, a
+propuštena (kvaliteta 1) oduzimala je dvostruko. Financije vraćaju najviše +5 mjesečno, pa je napredak bio negativan
+za sve hotele, i uz dobre odgovore.
+**Odluka.** Učinak po kvaliteti: 1 (loš ili propušten odgovor) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×. Radi graditelj
+zajedno s BUG-024, pa jedan ponovni seed demo igre i smoke.
+**Posljedice.** Odgovoriti i potruditi se uvijek je bolje nego ne odgovoriti. Mijenjaju se brojke, pa se spaja na
+Leonovo „spoji".
+
 <a id="adr-045"></a>
 ## ADR-045 · Graditelj preuzima otvorene bugove; pokazatelji jače utječu na goste
 **Datum:** 24.10. ~22:35 · **Status:** ✅ (Leon) · **Vezano:** [BUG-024](BUGS.md#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone), [ADR-002](#adr-002)
@@ -22,7 +34,7 @@ noć. Vlasnici dijela datoteka (Rino, Simon) rade usporedno.
 - Za Rinove i Simonove datoteke graditelj prvo provjeri njihove otvorene PR-ove i grane; Leon im javlja na Discordu.
 
 **Posljedice.** Promjena motora mijenja brojke, pa se spaja na Leonovo „spoji"; demo se sije jednom, nakon oba
-popravka balansa.
+popravka balansa. BUG-024 spojen [#213](https://github.com/leonkreso784-bit/riihack/pull/213) (22:55); BUG-026 je [#214](https://github.com/leonkreso784-bit/riihack/pull/214).
 
 <a id="adr-044"></a>
 ## ADR-044 · Botovi: drugi hoteli i dobavljači u igri s malo studenata
@@ -38,7 +50,9 @@ konkurencije i tvrtki, pa ekonomija grada ne radi.
 - **profesor ih uključi** pri stvaranju igre (npr. „dopuni grad botovima"), ne dodaju se sami.
 
 **Posljedice.** Isti ishod za isto stanje, brojke računa samo motor (ADR-002). Demo igra ostaje kakva jest dok je
-profesor ne napravi s botovima.
+profesor ne napravi s botovima. Spojeno [#205](https://github.com/leonkreso784-bit/riihack/pull/205) (23:00, Leonovo „spoji", Rinova tri uvjeta ispunjena): profesor u
+čekaonici dodaje botove s težinom Lako, Srednje ili Teško. 🟨 Polja `isBot?` i `BotsRequest` iz #205 još nisu upisana u
+blok „Ugovor" plana (javio integrator).
 
 <a id="adr-043"></a>
 ## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule

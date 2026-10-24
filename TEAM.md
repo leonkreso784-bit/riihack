@@ -70,6 +70,7 @@ na koga čeka i što smo dogovorili.
 | 24.10. ~22:00 | Balans cijene (#162): u motoru privlačnost iznad 2× referentne cijene pada dalje, iznad 2,5× je 0; `PRICE_MAX` i Plan ostaju; poslije ponovno demo i smoke ([ADR-043](docs/records/DECISIONS.md#adr-043)) | Leon |
 | 24.10. ~22:20 | Botovi (hoteli i dobavljači koje vodi računalo) za igre s malo studenata: po pravilima motora, ne AI; profesor ih uključuje pri stvaranju igre; izmjena ~22:50: botove cijele radi Simon (#205), graditelj pregledava ([ADR-044](docs/records/DECISIONS.md#adr-044)) | Leon |
 | 24.10. ~22:35 | Pokazatelji jače utječu na goste (BUG-024); graditelj preuzima sve otvorene bugove s agentima, za Rinove i Simonove datoteke prvo provjeri njihove grane ([ADR-045](docs/records/DECISIONS.md#adr-045)) | Leon |
+| 24.10. ~22:55 | Učinak situacije po ocjeni: 1 (loše ili propušteno) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3× (BUG-026); radi graditelj s BUG-024 ([ADR-046](docs/records/DECISIONS.md#adr-046)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
