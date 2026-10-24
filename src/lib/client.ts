@@ -66,10 +66,6 @@ const realApi = {
   plan: (req: PlanRequest) => post<RoundPlan>("/api/me/plan", req),
   decideContract: (contractId: string, req: ContractDecisionRequest) =>
     post<ContractView>(`/api/contracts/${contractId}/decide`, req),
-  // Clears the sp_player / sp_prof cookies (route is Leon's, see TEAM.md "Tko na koga čeka").
-  logout: async () => {
-    await send("/api/logout", "POST", {});
-  },
 };
 
 type Api = typeof realApi;
@@ -175,7 +171,6 @@ const mockApi: Api = {
     const c = MOCK_ME.contracts.find((k) => k.id === id) ?? MOCK_ME.contracts[0];
     return wait({ ...c, status: req.accept ? "accepted" : "rejected" });
   },
-  logout: () => wait(undefined, 200),
 };
 
 // ponytail: mock is the default so Vercel (no env var set) shows a working demo; set NEXT_PUBLIC_USE_MOCK=0 once L4/L7 routes exist.

@@ -8,7 +8,6 @@ import { t } from "@/lib/strings";
 import { Wordmark } from "./site-header";
 import { Pill } from "./pill";
 import { USE_MOCK as MOCK } from "@/lib/client";
-import { LogoutButton } from "./logout-button";
 
 // Plan, Financije and Grad are Simon's pages (S5, S6); until they land the links 404.
 const ITEMS = [
@@ -33,23 +32,19 @@ export function GameNav() {
     <>
       <header className="glass sticky top-0 z-20 -mb-2 flex h-16 items-center justify-between border-b border-white/60 px-4 md:hidden">
         <Link href="/igra" className={cn("flex min-h-11 items-center rounded-xl", focus)}>
-          <Wordmark />
+          <Wordmark tile />
         </Link>
-        <span className="flex items-center gap-1">
-          {MOCK && <Pill tone="warn">primjer</Pill>}
-          <LogoutButton variant="icon" />
-        </span>
+        {MOCK && <Pill tone="warn">primjer</Pill>}
       </header>
 
       <aside className="glass fixed inset-y-0 left-0 z-20 hidden w-60 flex-col border-r border-white/70 px-3 py-5 shadow-[1px_0_0_rgb(226_232_243)] md:flex">
-        <Link href="/igra" className={cn("mb-8 flex min-h-11 items-center rounded-xl px-2", focus)}>
-          <Wordmark />
+        <Link href="/igra" className={cn("mb-8 flex min-h-11 items-center rounded-2xl px-1", focus)}>
+          <Wordmark tile tagline="grad u kojem učiš" />
         </Link>
         <nav aria-label={t.nav.label}>
           <NavList pathname={pathname} variant="side" />
         </nav>
-        <div className="mt-auto space-y-2">
-          <LogoutButton />
+        <div className="mt-auto">
           {MOCK && (
             <p className="rounded-xl bg-sand px-3 py-2 text-xs leading-snug">
               <strong className="font-bold">Primjer.</strong> Prikazani su lažni podaci dok backend ne proradi.
