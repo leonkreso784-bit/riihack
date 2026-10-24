@@ -74,6 +74,33 @@ describe("economy", () => {
     expect(f.contractNights).toBe(40);
   });
 
+  it("roundFinance: raspodjela prihoda i troškova zbraja se u revenue i costs", () => {
+    const agency = { nights: 40, pricePerNight: 70, monthlyCost: 0 } as ContractTemplate;
+    const laundry = { nights: 0, pricePerNight: 0, monthlyCost: 1500 } as ContractTemplate;
+    const m = { companyId: "A", nights: 400, contractNights: 40, capacityNights: 600, occupancyPct: 73, marketSharePct: 50 };
+    const f = roundFinance(m, {
+      round: 2,
+      price: 80,
+      marketing: 1000,
+      staffCost: 9000,
+      roomsCount: 20,
+      cashBefore: 20000,
+      contracts: [agency, laundry],
+      investments: 2000,
+    });
+    expect(f.breakdown).toEqual({
+      revenueOwn: 32000,
+      revenueContracts: 2800,
+      costStaff: 9000,
+      costRooms: 6000,
+      costMarketing: 1000,
+      costContracts: 1500,
+      costInvestments: 2000,
+    });
+    expect(f.revenue).toBe(34800);
+    expect(f.costs).toBe(19500);
+  });
+
   it("roundFinance s ulaganjem u odjele", () => {
     const agency = { nights: 40, pricePerNight: 70, monthlyCost: 0 } as ContractTemplate;
     const m = { companyId: "A", nights: 400, contractNights: 40, capacityNights: 600, occupancyPct: 73, marketSharePct: 50 };

@@ -1,4 +1,4 @@
-import type { ContractTemplate, RoundFinance } from "@/lib/types";
+import type { ContractTemplate, FinanceBreakdown, RoundFinance } from "@/lib/types";
 import {
   FINANCE_EFFECT_CAP,
   FINANCE_EFFECT_DIVISOR,
@@ -98,13 +98,18 @@ export function roundFinance(
   },
 ): RoundFinance {
   const investments = i.investments ?? 0;
-  const revenue = m.nights * i.price + i.contracts.reduce((s, c) => s + c.nights * c.pricePerNight, 0);
+  const breakdown: FinanceBreakdown = {
+    revenueOwn: m.nights * i.price,
+    revenueContracts: i.contracts.reduce((s, c) => s + c.nights * c.pricePerNight, 0),
+    costStaff: i.staffCost,
+    costRooms: i.roomsCount * FIXED_COST_PER_ROOM,
+    costMarketing: i.marketing,
+    costContracts: i.contracts.reduce((s, c) => s + c.monthlyCost, 0),
+    costInvestments: investments,
+  };
+  const revenue = breakdown.revenueOwn + breakdown.revenueContracts;
   const costs =
-    i.staffCost +
-    i.roomsCount * FIXED_COST_PER_ROOM +
-    i.marketing +
-    i.contracts.reduce((s, c) => s + c.monthlyCost, 0) +
-    investments;
+    breakdown.costStaff + breakdown.costRooms + breakdown.costMarketing + breakdown.costContracts + breakdown.costInvestments;
   const profit = revenue - costs;
   return {
     round: i.round,
@@ -118,6 +123,7 @@ export function roundFinance(
     profit,
     cashAfter: i.cashBefore + profit,
     investments,
+    breakdown,
   };
 }
 

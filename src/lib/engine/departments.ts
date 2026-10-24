@@ -10,7 +10,7 @@ import type {
   StaffMember,
 } from "@/lib/types";
 
-export const INVESTMENT_ERROR = "Ulaganje po odjelu mora biti cijeli broj od 0 do 3.000 €";
+export const INVESTMENT_ERROR = `Ulaganje po odjelu mora biti cijeli broj od 0 do ${INVEST_MAX.toLocaleString("hr-HR")} €`;
 const LOW_METRIC = 40;
 
 /** 2–4, 22–24 … (osim 12–14): „sobe", „čekaju"; inače „soba", „čeka". */
