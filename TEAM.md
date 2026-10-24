@@ -28,10 +28,10 @@ na koga čeka i što smo dogovorili.
 
 | Tko čeka | Što | Od koga | Stanje |
 | --- | --- | --- | --- |
-| Leon L1, Simon S3 | Neon baza (`DATABASE_URL`) | Leon (prihvatiti uvjete na Vercelu) | čeka |
-| Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | čeka |
+| Leon L1, Simon S3 | Neon baza (`DATABASE_URL`) | Leon (prihvatiti uvjete na Vercelu) | ✅ sub 14:35, `simpolis-db` (Frankfurt), env na Vercelu |
+| Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | L1 ✅ (#62); L4 čeka |
 | Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | do tada lažni podaci |
-| Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | čeka |
+| Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | ✅ da, kao neobavezna (`?`): PR #63; Simon zatvara #42 |
 | Simon S5, S6 | „Update branch" na #48 i #47 | Simon | ✅ spojeno |
 | Leon L7 | `judge` (S2) | Simon | ✅ spojeno (#44) |
 
@@ -71,12 +71,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
-- **Sad radim:** Neon baza; zatim L1 (#4), L2 (#5) i L3 (#6) usporedno, s agentima
-- **Sljedeće:** L4 (#7), API za ulaz i profesora, za M1
-- **Čekam od drugih:** —
-- **Drugi čekaju od mene:** Neon, L1 i L4 (Simon S3); L4 (Rino R1–R3 na pravim podacima); odluka o #42
-- **Spojeno:** L0 (#37), ugovor za osoblje i `roundGain` (#45)
-- **Zadnje ažurirano:** sub 14:25
+- **Sad radim:** L4 (#7), API za ulaz i profesora, čim se spoje L2 i L3
+- **Sljedeće:** za M2 usporedno L5 (#8), L6 (#9), L9 (#32), L10 (#33); zatim L7 (#10), pa L11 (#34) plan i obračun
+- **Čekam od drugih:** integrator: spajanje #59 (L2), #64 (L3), #63 (ugovor)
+- **Drugi čekaju od mene:** L4 (Simon S3; Rino R1–R3 na pravim podacima)
+- **Otvoreno:** #59 L2 motor A, #64 L3 banka 6 hotela, #63 ugovor (#42)
+- **Spojeno:** L0 (#37), ugovor za osoblje i `roundGain` (#45), L1 baza (#62, 11 tablica u Neonu)
+- **Zadnje ažurirano:** sub 14:47
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch (S0–S7)
 
