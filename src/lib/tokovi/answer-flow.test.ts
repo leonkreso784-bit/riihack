@@ -47,8 +47,8 @@ describe("buildAnswerFlow", () => {
       expect(outs).toHaveLength(3);
     }
     const q2 = step(flow({ answer: own(["c2", "c3"]), rubric: RUBRIC, effects: EFFECTS }), "ucinak");
-    expect(q2.outputs.map((o) => o.value)).toEqual(["−4", "−3", "−3"]);
-    expect(q2.calc).toContain("(2 − 3) × 4 = −4");
+    expect(q2.outputs.map((o) => o.value)).toEqual(["0", "0", "0"]);
+    expect(q2.calc).toContain("0 × 4 = 0");
   });
 
   it("s rubrikom pokazuje tekst kriterija, bez nje samo brojeve i napomenu", () => {
