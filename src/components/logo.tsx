@@ -1,21 +1,17 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-// Simpolis mark (V1, upright): two ribbons, blue and navy, joining into one S. Same drawing as public/brand/logo.svg.
+// Simpolis mark: Rino's chosen V1 logo, exactly as delivered (public/brand/logo.png), cropped to a square.
 export function LogoMark({ className, title }: { className?: string; title?: string }) {
   return (
-    <svg
-      viewBox="0 0 64 64"
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={9}
-      className={cn("shrink-0", className)}
-      role={title ? "img" : undefined}
+    <Image
+      src="/brand/logo-mark.png"
+      alt={title ?? ""}
       aria-hidden={title ? undefined : true}
-    >
-      {title && <title>{title}</title>}
-      <path d="M45 14H26A9 9 0 0 0 26 32H32" stroke="#246BFD" />
-      <path d="M32 32H38A9 9 0 0 1 38 50H19" stroke="#151B2B" />
-    </svg>
+      width={256}
+      height={256}
+      priority
+      className={cn("shrink-0 object-contain", className)}
+    />
   );
 }
