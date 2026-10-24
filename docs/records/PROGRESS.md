@@ -17,6 +17,10 @@ Vremena su lokalna (CEST).
   ([BUG-025](BUGS.md#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec), kritičan za demo), popravlja
   Rino; Rino radi i BUG-023 i ostatak BUG-022 (Leon na Discordu, 22:35).
 - **🟨 Provjera:** tester ponovno gleda podij na 1280×720 (širina i crveni ▼ kod pobjednika, BUG-022).
+- **Graditelj (22:30–22:40):** demo igra ponovno posijana nakon #194, smoke na produkciji 19/19 (22:30). Knjižnica
+  demo računa dobila 4 situacije (#203; Leon: „knjižnica je prazna"). Drugo čišćenje starih testnih igara (#207):
+  obrisano 47, ostale 33 (demo, igre na demo računu, testerove QA igre, „Smoke …", Simonove probe). Otvoreni PR-ovi:
+  #208 (BUG-020a), a agenti rade BUG-024 te BUG-019, 020b i 021 u jednom PR-u.
 
 ## Sub 24.10. ~22:15 · balans cijene na `main`-u, botovi za male igre
 
@@ -31,7 +35,7 @@ Vremena su lokalna (CEST).
   [BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija) riješen), `/profesor/prijava` bez
   mrtve poveznice #199 (22:13), dokumentacija #197 (22:13). 416 testova, smoke 18/18 lokalno, CI zelen, produkcija
   READY 22:14.
-- **🟨 Čeka:** ponovni seed demo igre i smoke na produkciji (integrator ga nije pokrenuo jer je baza očišćena).
+- **Čekalo:** ponovni seed demo igre i smoke na produkciji; napravljeno u 22:30 (vidi gore).
 - **Tester, treći krug (~22:25):** kraj sezone na projektoru bez podija, pobjednik u crvenom
   ([BUG-022](BUGS.md#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik), visok), `/igra`
   nakon kraja sezone čeka obračun ([BUG-023](BUGS.md#bug-023--igra-nakon-kraja-sezone-i-dalje-čeka-obračun)), loši
