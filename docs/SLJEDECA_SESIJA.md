@@ -41,7 +41,7 @@ Review Focus i svoj zadatak. Radi u grani leon/L9-ekonomija. Dira samo datoteke 
 
 - PR #2 (Rinove napomene) je spojen; sve njegove točke su u planu.
 - **PR #31 (Simon):** prijedlog R10 gamifikacije (podij kruga, top 5 + moje mjesto, anonimno) i napretka kao
-  normaliziranog dobitka (HotelixSim DEMO §8). Mijenja samo plan, ali traži novo polje `LeaderboardRow.roundGain` u
+  normaliziranog dobitka (Hake 1998). Mijenja samo plan, ali traži novo polje `LeaderboardRow.roundGain` u
   `types.ts`: odlučuješ ti s Rinom **prije L0**, jer L0 piše `types.ts`.
-- **Tekstovi situacija:** pišu se iznova (ideje iz HotelixSima smiju, tekst ne).
+- **Tekstovi situacija:** pišu se iznova.
 - **Vizualna arhitektura** (`docs/arhitektura.html`, artefakt na claude.ai) još pokazuje stariju verziju.

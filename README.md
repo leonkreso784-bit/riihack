@@ -30,7 +30,7 @@ Leon ([@leonkreso784-bit](https://github.com/leonkreso784-bit)), Simon ([@simons
 - [CLAUDE.md](CLAUDE.md): kako radimo u repou (i upute za Claude Code)
 - [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md): uloge, stack, git pravila
 - [PLAN-24H.md](PLAN-24H.md): raspored 24 sata
-- [IDEJA.md](IDEJA.md): tema, ideja, obrasci iz HotelixSima, ime
+- [IDEJA.md](IDEJA.md): tema, ideja, obrasci igre, ime
 - [ARHITEKTURA.md](ARHITEKTURA.md): stack, model podataka, motor, AI, API, ekrani
 - [PREDAJA.md](PREDAJA.md): predložak dokumentacije i pitcha
 - **[Plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md)**: tko radi što, zadaci i prekretnice

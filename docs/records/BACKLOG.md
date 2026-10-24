@@ -12,7 +12,7 @@ Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-1
 - Profesor podešava mehaniku igre (sezona, potražnja, cijene, broj krugova); u demou samo playbook bez mehanike ([ADR-027](DECISIONS.md#adr-027)).
 - Više gradova i država.
 - Šok gumb, novine, glas, replay sezone.
-- Značke iz kriterija rubrike (npr. „Smirivač gostiju"), [plan › Gamifikacija](../superpowers/plans/2026-10-24-simpolis.md#gamifikacija-bodovanje-iz-hotelixsima-l5-odlučeno-2410).
+- Značke iz kriterija rubrike (npr. „Smirivač gostiju"), [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md) (L5, gamifikacija).
 
 ## Samo sučelje u demou (lažni podaci, oznaka „primjer")
 

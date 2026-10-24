@@ -47,8 +47,7 @@ ispoliranost). Rješenje mora biti pristupačno, održivo i primjenjivo u stvarn
 
 ## Odabrana ideja
 
-**Simpolis.** Radimo na foru Leonovog **HotelixSima** (simulacija vođenja hotela za studente). Prenosimo **ideju i obrasce, ne
-kod**: kod se piše tijekom hackathona. Ime **ne smije biti HotelixSim** ni sličan.
+**Simpolis.** Simulacija vođenja hotela za studente, u gradu s pravom ekonomijom. Sav kod se piše tijekom hackathona.
 
 - **U jednoj rečenici:** **grad u simulaciji** u kojem svaki student vodi svoju tvrtku (prvo hotel); sve tvrtke
   dijele iste goste, sklapaju ugovore s drugim tvrtkama grada i zarađuju novac, pa odluka jednoga mijenja
@@ -60,7 +59,7 @@ kod**: kod se piše tijekom hackathona. Ime **ne smije biti HotelixSim** ni sli�
 - **Koji problem rješava:** AI danas daje gotove odgovore pa se ne uči; ovdje gotov odgovor vrijedi manje od
   vlastitog razmišljanja.
 
-### Obrasci iz HotelixSima
+### Obrasci igre
 
 1. **Ulogu dobiješ, ne biraš.** Svi kreću s istim ukupnim zbrojem, drukčije raspoređenim (fer natjecanje).
 2. **Krugovi sa situacijama.** U svakom krugu stižu situacije (problem, prilika, težina).
@@ -77,7 +76,7 @@ kod**: kod se piše tijekom hackathona. Ime **ne smije biti HotelixSim** ni sli�
 1. **Profesor stvara igru** i upiše **koliko studenata igra**. Dobije **kod igre** od 6 znakova koji pokaže na
    projektoru (kao Kahoot) i **profesorski kod** za upravljanje (bez računa).
 2. **Studenti ulaze kodom**, upišu **svoje ime i ime hotela** koji vode. Svaki dobije **drukčiji hotel** iz banke
-   hotela, sa svim sobama koje se mogu pregledati (kao HotelixSim). Svi kreću s istim zbrojem pokazatelja i dobiju
+   hotela, sa svim sobama koje se mogu pregledati. Svi kreću s istim zbrojem pokazatelja i dobiju
    iste situacije u istom krugu.
 3. Profesor vidi kako se mjesta pune („7 / 24") i pokrene igru.
 4. **Profesor vodi tempo:** gumb „Otvori sljedeći krug" ili krug s odbrojavanjem (X minuta). Tko ne odgovori,
@@ -86,7 +85,7 @@ kod**: kod se piše tijekom hackathona. Ime **ne smije biti HotelixSim** ni sli�
 6. **Uvid u razmišljanje:** profesor otvori studenta i vidi odgovore, razgovor s likom i AI ocjenu po rubrici.
 7. *Ako ostane vremena:* profesor ubaci „šok" situaciju svima odjednom.
 
-**Opseg:** ne gradimo proizvod koji radi do kraja. Najbitnije iz HotelixSima ide u bazu i backend, ostalo je
+**Opseg:** ne gradimo proizvod koji radi do kraja. Najbitnije ide u bazu i backend, ostalo je
 sučelje na lažnim podacima ili samo plan ([ARHITEKTURA.md](ARHITEKTURA.md) §1a).
 
 ### Otvoreno
