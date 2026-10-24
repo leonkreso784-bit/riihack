@@ -4,6 +4,7 @@ import type {
   CompanyDetailResponse,
   CompanyView,
   ContractView,
+  DispatchView,
   LeaderboardRow,
   MeResponse,
   Metrics,
@@ -14,6 +15,7 @@ import type {
   RoomType,
   RoundFinance,
   RoundReportView,
+  SituationSummary,
   SituationView,
   WorldView,
 } from "./types";
@@ -246,11 +248,24 @@ export const MOCK_ME: MeResponse = {
   news: NEWS,
 };
 
+// S8: professor's situation bank (mutable in memory so the mock createSituation / dispatch calls change the list).
+const MOCK_BANK: SituationSummary[] = [
+  { id: "overbooking", title: "Prekobukirana soba", area: "Gosti", difficulty: 3, source: "bank" },
+  { id: "kvar-klime", title: "Klima ne radi usred srpnja", area: "Operativa", difficulty: 2, source: "bank" },
+  { id: "custom-1", title: "Gost traži povrat novca za cijeli boravak", area: "Financije", difficulty: 4, source: "custom" },
+];
+const MOCK_DISPATCHES: DispatchView[] = [
+  { id: "d-1", templateId: "custom-1", title: "Gost traži povrat novca za cijeli boravak", round: 3, companyIds: null, status: "scheduled" },
+];
+
 export const MOCK_PROF: ProfStateResponse = {
   world: { ...WORLD, joinCode: "KVRN26", maxPlayers: 24 },
   players: LEADERBOARD,
   city: CITY,
   news: NEWS,
+  bank: MOCK_BANK,
+  dispatches: MOCK_DISPATCHES,
+  autoDraw: true,
 };
 
 export const MOCK_DETAIL: CompanyDetailResponse = { company: COMPANY, situations: SITUATIONS, reports: REPORTS };
