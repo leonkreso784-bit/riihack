@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { CheckCircle2, XCircle } from "lucide-react";
 import { api } from "@/lib/client";
 import { counterError } from "@/lib/engine/negotiate";
-import { eur } from "@/lib/format";
+import { eur, plural } from "@/lib/format";
 import { MAIL_BODY_MAX, NEGOTIATE_COUNTER_PCT, NEGOTIATE_OK_PCT } from "@/lib/rules";
 import type { ContractView } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -49,7 +49,7 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
         <CheckCircle2 className="mt-0.5 size-5 shrink-0" aria-hidden />
         <span>
           <strong>Ugovor potpisan.</strong>{" "}
-          {byPrice ? `${c.nights} noćenja po ${eur(c.pricePerNight)} = ${eur(total)}` : `${eur(c.monthlyCost)} mjesečno`}, {c.durationRounds} mj.
+          {byPrice ? `${c.nights} ${plural(c.nights, "noćenje", "noćenja", "noćenja")} po ${eur(c.pricePerNight)} = ${eur(total)}` : `${eur(c.monthlyCost)} mjesečno`}, {c.durationRounds} mj.
         </span>
       </p>
     );
@@ -95,7 +95,7 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (!invalid) run(() => api.counter(c.id, byPrice ? { pricePerNight: value, message: message.trim() || undefined } : { monthlyCost: value, message: message.trim() || undefined }));
+            if (!invalid && gain > 0) run(() => api.counter(c.id, byPrice ? { pricePerNight: value, message: message.trim() || undefined } : { monthlyCost: value, message: message.trim() || undefined }));
           }}
           className="space-y-3"
         >
@@ -118,7 +118,7 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
             </p>
           </div>
           <div className="space-y-1">
-            <p className="text-xs font-semibold text-muted-foreground">Kako agencija odlučuje (klikni za prijedlog cijene)</p>
+            <p className="text-xs font-semibold text-muted-foreground">Kako {byPrice ? "agencija" : "dobavljač"} odlučuje (klikni za prijedlog cijene)</p>
             <div className="grid grid-cols-3 gap-2 text-xs">
               {(
                 [
@@ -153,7 +153,7 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
           </label>
           {error && <FormError key={error}>{error}</FormError>}
           <div className="flex flex-wrap gap-2">
-            <button type="submit" disabled={busy || !!invalid} className={cn(button, "bg-primary text-primary-foreground hover:bg-[#1f5fe0]")}>
+            <button type="submit" disabled={busy || !!invalid || gain <= 0} className={cn(button, "bg-primary text-primary-foreground hover:bg-[#1f5fe0]")}>
               {busy ? "Šaljem…" : "Pošalji protuponudu"}
             </button>
             <button type="button" onClick={() => setCounter(false)} className={cn(button, "bg-muted font-semibold")}>Odustani</button>

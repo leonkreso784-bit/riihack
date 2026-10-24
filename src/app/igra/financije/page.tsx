@@ -2,7 +2,7 @@
 
 import { ChartColumn, Percent, Trophy, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
-import { eur, num } from "@/lib/format";
+import { eur, num, plural } from "@/lib/format";
 import { breakdown, growthPct, type Breakdown } from "@/lib/finance-view";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { RoundFinance } from "@/lib/types";
@@ -64,7 +64,7 @@ export default function FinancePage() {
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard icon={Wallet} label="Stanje računa" value={num(company.cash)} unit="€" tone="accent" note={`${diff >= 0 ? "+" : "−"}${eur(Math.abs(diff))} od početnih ${eur(company.startCash)}`} />
-        <StatCard icon={ChartColumn} label="Dobit sezone" value={num(totalProfit)} unit="€" tone={totalProfit < 0 ? "down" : "up"} note={`${finances.length} obračunat${finances.length === 1 ? "" : "a"} mjesec${finances.length === 1 ? "" : "a"}`} />
+        <StatCard icon={ChartColumn} label="Dobit sezone" value={num(totalProfit)} unit="€" tone={totalProfit < 0 ? "down" : "up"} note={`${finances.length} ${plural(finances.length, "obračunat mjesec", "obračunata mjeseca", "obračunatih mjeseci")}`} />
         <StatCard icon={Percent} label="Prosječna popunjenost" value={avgOccupancy ?? "—"} unit={avgOccupancy === null ? "" : "%"} />
         <StatCard icon={Trophy} label="Rang po novcu" value={rank ? `${rank}.` : "—"} unit="" note={`od ${leaderboard.length} hotela`} />
       </div>
