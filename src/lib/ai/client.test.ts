@@ -41,7 +41,7 @@ describe("fallbacks", () => {
 
   it("debrief names the metric that rose most and the one that fell most", () => {
     const text = fallbackDebrief(input);
-    expect(text).toContain("Najviše si podigao zadovoljstvo gostiju (+6/100)");
+    expect(text).toContain("Najviše je porastao pokazatelj zadovoljstvo gostiju (+6/100)");
     expect(text).toContain("zaposlenici (−7/100)");
   });
 

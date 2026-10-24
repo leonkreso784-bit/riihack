@@ -11,6 +11,7 @@ export const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "
 
 const MAX_QUESTION_WORDS = 25;
 const MAX_DEBRIEF_CHARS = 1200;
+const DEBRIEF_TIMEOUT_MS = 35_000; // two Sonnet attempts of 5 to 9 s each must fit; the student waits on this call
 const LEAKED_ID = /\b(kriterij|k|c)\s*\d|\bkriterija\b/i;
 const SLASH_GENDER = /\p{L}+\/\p{L}+/u; // "ispričao/la"; "€/noć" and "58/100" have no letter before the slash
 const metricKeys = Object.keys(METRIC_LABELS) as MetricKey[];
@@ -75,6 +76,11 @@ async function ask(system: string, prompt: string, model?: LanguageModel): Promi
     model: modelFor("mentor", model),
     instructions: { role: "system", content: system, providerOptions: cache },
     prompt,
+    maxOutputTokens: 1200,
+    // Sonnet 5.5 thinks by default and cannot turn it off: the debrief took 8 to 16 s per call, so two attempts ran
+    // past the 20 s cap and the student got the fixed fallback text (audit 24.10.). Low effort: the mentor only
+    // explains facts it is given.
+    providerOptions: { anthropic: { effort: "low" } },
   });
   return text.trim();
 }
@@ -122,5 +128,5 @@ export function mentorDebrief(
       if (debriefOk(text)) return text;
     }
     return fallbackDebrief(input);
-  }, fallbackDebrief(input));
+  }, fallbackDebrief(input), DEBRIEF_TIMEOUT_MS);
 }

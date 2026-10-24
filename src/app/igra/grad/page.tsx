@@ -45,7 +45,8 @@ export default function CityPage() {
           )}
         </div>
       </Panel>
-      <div className="grid gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+      {/* minmax(0, 1fr): bez toga stupac na mobitelu uzme najširi redak ljestvice (imena botova) i stranica dobije vodoravni scroll (audit 25.10.) */}
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
         <Panel title="Ljestvica grada" action={<span className="text-xs text-muted-foreground">napredak</span>}>
           <Leaderboard rows={data.city.hotels} youId={data.company.id} limit={8} />
         </Panel>

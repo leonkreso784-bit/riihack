@@ -22,10 +22,10 @@ export function fallbackDebrief(input: MentorInput): string {
   const worst = deltas.reduce((a, b) => (b.delta < a.delta ? b : a));
 
   const parts: string[] = [];
-  if (best.delta > 0) parts.push(`Najviše si podigao ${lower(best.key)} (${signed(best.delta)}/100).`);
-  if (worst.delta < 0) parts.push(`Najviše su pali ${lower(worst.key)} (${signed(worst.delta)}/100).`);
+  if (best.delta > 0) parts.push(`Najviše je porastao pokazatelj ${lower(best.key)} (${signed(best.delta)}/100).`);
+  if (worst.delta < 0) parts.push(`Najviše je pao pokazatelj ${lower(worst.key)} (${signed(worst.delta)}/100).`);
   if (parts.length === 0) return "U ovom krugu se pokazatelji nisu promijenili. Što bi sljedeći put pokušao drukčije?";
-  if (worst.delta < 0) parts.push(`Što bi sljedeći put napravio da ${lower(worst.key)} ne padnu?`);
+  if (worst.delta < 0) parts.push(`Što bi sljedeći put bilo drukčije da pokazatelj ${lower(worst.key)} ne padne?`);
   return parts.join(" ");
 }
 
