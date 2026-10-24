@@ -1,3 +1,4 @@
+import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Tone } from "./pill";
 
@@ -15,18 +16,27 @@ export function StatCard({
   value,
   unit,
   tone = "neutral",
+  icon: Icon,
+  note,
 }: {
   label: string;
   value: string | number;
   unit: string;
   tone?: Tone;
+  icon?: LucideIcon;
+  note?: string;
 }) {
   return (
-    <div className="rounded-[var(--radius)] border bg-card p-4">
-      <p className="text-sm font-semibold text-muted-foreground">{label}</p>
-      <p className={cn("mt-1 text-2xl font-extrabold tabular-nums", VALUE_TONES[tone])}>
-        {value} <span className="text-base font-bold text-muted-foreground">{unit}</span>
+    <div className="rounded-[var(--radius)] border bg-card p-4 shadow-card">
+      <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+        {Icon && <Icon className="size-4" aria-hidden />}
+        {label}
+      </div>
+      <p className={cn("mt-2 text-2xl font-extrabold tracking-tight tabular-nums", VALUE_TONES[tone])}>
+        {value}
+        {unit && <span className="ml-1 text-base font-bold text-muted-foreground">{unit}</span>}
       </p>
+      {note && <p className="mt-1 text-xs text-muted-foreground">{note}</p>}
     </div>
   );
 }

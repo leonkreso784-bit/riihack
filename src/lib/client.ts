@@ -95,6 +95,8 @@ function wordStream(text: string, ms = 40): ReadableStream<string> {
 }
 
 const mockReport = MOCK_ME.reports[0];
+// Mock round ends 10 minutes after the page loads; serverNow moves with the clock like the real API.
+const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
 
 const mockApi: Api = {
   createWorld: () => wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" }),
@@ -108,7 +110,7 @@ const mockApi: Api = {
     const c = MOCK_ME.company;
     return wait({ companyId: c.id, hotelName: c.hotelName, place: c.place, stars: c.stars });
   },
-  me: () => wait(MOCK_ME),
+  me: () => wait({ ...MOCK_ME, world: { ...MOCK_ME.world, roundDeadline: MOCK_DEADLINE, serverNow: new Date().toISOString() } }),
   rooms: () => wait(MOCK_ROOMS),
   answer: (_id, req) =>
     wait(
@@ -149,6 +151,7 @@ export const api: Api = process.env.NEXT_PUBLIC_USE_MOCK === "1" ? mockApi : rea
 // Polls fn every ms (default POLL_MS) without overlapping requests. refresh() fetches right away, e.g. after a click.
 export function usePoll<T>(fn: () => Promise<T>, ms = POLL_MS) {
   const [data, setData] = useState<T>();
+  const [syncedAt, setSyncedAt] = useState(0); // client clock when data arrived, for countdowns
   const [error, setError] = useState<Error>();
   const [nonce, setNonce] = useState(0);
   // Always calls the newest fn, so callers can pass an inline arrow without restarting the poll.
@@ -162,6 +165,7 @@ export function usePoll<T>(fn: () => Promise<T>, ms = POLL_MS) {
         const next = await load();
         if (alive) {
           setData(next);
+          setSyncedAt(Date.now());
           setError(undefined);
         }
       } catch (e) {
@@ -177,5 +181,5 @@ export function usePoll<T>(fn: () => Promise<T>, ms = POLL_MS) {
     };
   }, [ms, nonce]);
 
-  return { data, error, refresh: () => setNonce((n) => n + 1) };
+  return { data, error, syncedAt, refresh: () => setNonce((n) => n + 1) };
 }

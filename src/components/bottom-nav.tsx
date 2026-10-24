@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { BedDouble, Building2, Map, SlidersHorizontal, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/strings";
+import { Wordmark } from "./site-header";
+import { Pill } from "./pill";
 
 // Plan, Financije and Grad are Simon's pages (S5, S6); until they land the links 404.
 const ITEMS = [
@@ -15,38 +17,82 @@ const ITEMS = [
   { href: "/igra/grad", label: t.nav.city, icon: Map },
 ];
 
+const MOCK = process.env.NEXT_PUBLIC_USE_MOCK === "1";
+
 function isActive(pathname: string, href: string) {
   return href === "/igra" ? pathname === href : pathname.startsWith(href);
 }
 
-// Game navigation: bottom bar on phones, sidebar from 768 px.
+const focus = "focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary";
+
+// Game navigation (HotelixSim layout): fixed sidebar with wordmark from 768 px; top bar + bottom tabs on phones.
 export function GameNav() {
   const pathname = usePathname();
   return (
-    <nav
-      aria-label={t.nav.label}
-      className="fixed inset-x-0 bottom-0 z-20 border-t bg-card md:sticky md:top-6 md:h-fit md:w-52 md:shrink-0 md:rounded-[var(--radius)] md:border"
-    >
-      <ul className="grid grid-cols-5 md:grid-cols-1 md:gap-1 md:p-2">
-        {ITEMS.map(({ href, label, icon: Icon }) => {
-          const active = isActive(pathname, href);
-          return (
-            <li key={href}>
-              <Link
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-0.5 text-xs font-semibold text-muted-foreground md:min-h-11 md:flex-row md:justify-start md:gap-3 md:rounded-xl md:px-3 md:text-sm",
-                  active && "text-primary md:bg-secondary",
-                )}
-              >
-                <Icon className="size-5" aria-hidden />
-                {label}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </nav>
+    <>
+      <header className="flex h-16 items-center justify-between px-4 md:hidden">
+        <Link href="/igra" className={cn("flex min-h-11 items-center rounded-xl", focus)}>
+          <Wordmark />
+        </Link>
+        {MOCK && <Pill tone="warn">primjer</Pill>}
+      </header>
+
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-60 flex-col border-r bg-card px-3 py-5 md:flex">
+        <Link href="/igra" className={cn("mb-8 flex min-h-11 items-center rounded-xl px-2", focus)}>
+          <Wordmark />
+        </Link>
+        <nav aria-label={t.nav.label}>
+          <NavList pathname={pathname} variant="side" />
+        </nav>
+        {MOCK && (
+          <p className="mt-auto rounded-xl bg-sand px-3 py-2 text-xs leading-snug">
+            <strong className="font-bold">Primjer.</strong> Prikazani su lažni podaci dok backend ne proradi.
+          </p>
+        )}
+      </aside>
+
+      <nav
+        aria-label={t.nav.label}
+        className="fixed inset-x-0 bottom-0 z-20 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      >
+        <NavList pathname={pathname} variant="bottom" />
+      </nav>
+    </>
+  );
+}
+
+function NavList({ pathname, variant }: { pathname: string; variant: "side" | "bottom" }) {
+  const side = variant === "side";
+  return (
+    <ul className={side ? "space-y-1" : "mx-auto grid max-w-md grid-cols-5"}>
+      {ITEMS.map(({ href, label, icon: Icon }) => {
+        const active = isActive(pathname, href);
+        return (
+          <li key={href}>
+            <Link
+              href={href}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex font-semibold transition-colors",
+                focus,
+                side
+                  ? "min-h-11 items-center gap-3 rounded-xl px-3 text-sm"
+                  : "min-h-14 flex-col items-center justify-center gap-0.5 text-[0.7rem]",
+                active
+                  ? side
+                    ? "bg-secondary text-secondary-foreground"
+                    : "text-secondary-foreground"
+                  : side
+                    ? "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    : "text-muted-foreground",
+              )}
+            >
+              <Icon className={side ? "size-5" : "size-[1.375rem]"} strokeWidth={active ? 2.4 : 2} aria-hidden />
+              {label}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
   );
 }

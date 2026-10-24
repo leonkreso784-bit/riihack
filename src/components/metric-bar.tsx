@@ -1,21 +1,41 @@
+import { Coins, MessageSquare, Settings, User, Users, type LucideIcon } from "lucide-react";
+import type { MetricKey } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-// One metric 0–100: bar shows "now", the tick marks where the company started.
-export function MetricBar({ label, start, now }: { label: string; start: number; now: number }) {
+export const METRIC_ICONS: Record<MetricKey, LucideIcon> = {
+  guests: User,
+  reviews: MessageSquare,
+  staff: Users,
+  operations: Settings,
+  finance: Coins,
+};
+
+export function Delta({ value, className }: { value: number; className?: string }) {
+  const tone = value > 0 ? "text-up" : value < 0 ? "text-down" : "text-muted-foreground";
+  const text = value > 0 ? `▲ +${value}` : value < 0 ? `▼ −${-value}` : "±0";
+  return <span className={cn("font-bold whitespace-nowrap tabular-nums", tone, className)}>{text}</span>;
+}
+
+// One metric 0–100: the bar shows "now", the tick marks where the company started.
+export function MetricBar({ label, start, now, icon: Icon }: { label: string; start: number; now: number; icon?: LucideIcon }) {
   const delta = now - start;
-  const tone = delta > 0 ? "text-up" : delta < 0 ? "text-down" : "text-muted-foreground";
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between gap-2 text-sm">
-        <span className="font-semibold">{label}</span>
-        <span className="tabular-nums">
-          <span className="font-bold">{now}</span>
-          <span className="text-muted-foreground">/100</span>
-          <span className={cn("ml-2 font-bold", tone)}>
-            {delta > 0 ? `+${delta}` : delta < 0 ? `−${-delta}` : "±0"}
-          </span>
+    <div className="grid grid-cols-[auto_1fr_auto] items-center gap-x-3 gap-y-2 py-2">
+      {Icon ? (
+        <span className="grid size-8 place-items-center rounded-lg bg-secondary text-secondary-foreground">
+          <Icon className="size-4" aria-hidden />
         </span>
-      </div>
+      ) : (
+        <span />
+      )}
+      <span className="text-sm font-semibold">{label}</span>
+      <span className="flex items-baseline gap-3 text-sm">
+        <span className="tabular-nums">
+          <strong className="text-base font-extrabold">{now}</strong>
+          <span className="text-muted-foreground">/100</span>
+        </span>
+        <Delta value={delta} className="min-w-12 text-right text-xs" />
+      </span>
       <div
         role="meter"
         aria-label={label}
@@ -23,13 +43,18 @@ export function MetricBar({ label, start, now }: { label: string; start: number;
         aria-valuemax={100}
         aria-valuenow={now}
         aria-valuetext={`${now} od 100, početak ${start}`}
-        className="relative h-2.5 rounded-full bg-muted"
+        className="relative col-span-3 h-2 rounded-full bg-muted"
       >
         <div
-          className={cn("h-full rounded-full", delta < 0 ? "bg-down" : "bg-primary")}
+          className={cn("h-full rounded-full transition-[width] duration-700", delta < 0 ? "bg-down" : "bg-primary")}
           style={{ width: `${now}%` }}
         />
-        <div aria-hidden className="absolute -top-1 h-4.5 w-0.5 rounded-full bg-foreground/60" style={{ left: `${start}%` }} />
+        <div
+          aria-hidden
+          title={`Početak: ${start}`}
+          className="absolute -top-1 h-4 w-0.5 rounded-full bg-foreground/50"
+          style={{ left: `${start}%` }}
+        />
       </div>
     </div>
   );

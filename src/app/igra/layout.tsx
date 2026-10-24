@@ -1,11 +1,11 @@
 import { GameNav } from "@/components/bottom-nav";
 
-// Student game shell: sidebar from 768 px, bottom bar on phones (pb keeps content above it).
+// Student game shell: fixed sidebar from 768 px, bottom tabs on phones (pb keeps content above them).
 export default function GameLayout({ children }: LayoutProps<"/igra">) {
   return (
-    <div className="flex gap-6 pb-20 md:pb-0">
+    <div className="min-h-dvh md:pl-60">
       <GameNav />
-      <div className="min-w-0 flex-1">{children}</div>
+      <main className="mx-auto max-w-5xl px-4 pb-28 md:px-8 md:pt-8 md:pb-12">{children}</main>
     </div>
   );
 }
