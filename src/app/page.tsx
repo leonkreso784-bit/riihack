@@ -6,8 +6,7 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/client";
 import { JOIN_CODE_LENGTH } from "@/lib/rules";
 import { CodeInput } from "@/components/code-input";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Field, FormError, SubmitButton } from "@/components/form";
 
 const between = (s: string) => s.trim().length >= 2 && s.trim().length <= 40;
 
@@ -64,46 +63,17 @@ export default function JoinPage() {
 
         {code && (
           <>
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-sm font-semibold">Tvoje ime</Label>
-              <Input
-                id="name"
-                autoFocus
-                autoComplete="given-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="npr. Ana Kovač"
-                className="h-12 rounded-xl bg-card px-4 text-base"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="hotel" className="text-sm font-semibold">Ime hotela koji vodiš</Label>
-              <Input
-                id="hotel"
-                autoComplete="off"
-                value={hotelName}
-                onChange={(e) => setHotelName(e.target.value)}
-                placeholder="npr. Vila Ana"
-                className="h-12 rounded-xl bg-card px-4 text-base"
-              />
-            </div>
+            <Field id="name" label="Tvoje ime" autoFocus autoComplete="given-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="npr. Ana Kovač" />
+            <Field id="hotel" label="Ime hotela koji vodiš" autoComplete="off" value={hotelName} onChange={(e) => setHotelName(e.target.value)} placeholder="npr. Vila Ana" />
           </>
         )}
 
-        {error && (
-          <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-sm font-medium text-down">
-            {error}
-          </p>
-        )}
+        {error && <FormError>{error}</FormError>}
 
         {code && (
-          <button
-            type="submit"
-            disabled={busy}
-            className="min-h-12 w-full rounded-xl bg-primary px-4 text-base font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
-          >
-            {busy ? "Ulazim…" : "Uđi u igru"}
-          </button>
+          <SubmitButton busy={busy} busyText="Ulazim…">
+            Uđi u igru
+          </SubmitButton>
         )}
       </form>
 
