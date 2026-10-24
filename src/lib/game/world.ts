@@ -1,7 +1,7 @@
 // Igra (svijet) na poslužitelju: stvaranje, prijava profesora, pokretanje, krugovi, kraj sezone i stanja za ekrane.
-import { and, count, eq, isNotNull, lte } from "drizzle-orm";
+import { and, count, desc, eq, isNotNull, lte } from "drizzle-orm";
 import { db } from "@/db";
-import { companies, worlds } from "@/db/schema";
+import { companies, players, worlds } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
 import {
   getCompanyInWorld,
@@ -29,13 +29,14 @@ import type {
   OpenRoundRequest,
   ProfLoginRequest,
   ProfLoginResponse,
+  ProfGameSummary,
   ProfStateResponse,
 } from "@/lib/types";
 import { createOffers, listNewsEvents, settleCityRound } from "./city";
 import { MAIL_LIMIT, countUnreadMail, listMailRows } from "./mail";
 import { closeRoundForAll, openRound } from "./round";
 import { listBank, listDispatches, loadTemplates } from "./situations";
-import { toCompanyDetail, toMeResponse, toProfState } from "./views";
+import { toCompanyDetail, toMeResponse, toProfGameSummary, toProfState } from "./views";
 
 type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
 
@@ -43,7 +44,8 @@ const MAX_DEADLINE_MINUTES = 180;
 
 const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff; // stane u Postgres integer
 
-export async function createWorld(req: CreateWorldRequest): Promise<CreateWorldResponse> {
+/** ownerId = prijavljeni profesorski račun (L16); bez njega igra radi samo s profesorskim kodom. */
+export async function createWorld(req: CreateWorldRequest, ownerId: string | null = null): Promise<CreateWorldResponse> {
   const name = typeof req.name === "string" ? req.name.trim() : "";
   if (name.length < 2 || name.length > 60) throw new HttpError(400, "Naziv igre mora imati od 2 do 60 znakova");
   const maxPlayers = req.maxPlayers;
@@ -57,7 +59,7 @@ export async function createWorld(req: CreateWorldRequest): Promise<CreateWorldR
     const profCode = generateCode(PROF_CODE_LENGTH);
     const rows = await db
       .insert(worlds)
-      .values({ name, maxPlayers, joinCode, profCodeHash: await hashCode(profCode), seed: randomSeed() })
+      .values({ name, maxPlayers, joinCode, profCodeHash: await hashCode(profCode), seed: randomSeed(), ownerId })
       .onConflictDoNothing()
       .returning({ id: worlds.id });
     if (rows[0]) {
@@ -66,6 +68,19 @@ export async function createWorld(req: CreateWorldRequest): Promise<CreateWorldR
     }
   }
   throw new HttpError(503, "Nije uspjelo napraviti kod igre. Pokušaj ponovno.");
+}
+
+/** Igre prijavljenog profesora, najnovije prvo, s brojem studenata (jedan upit). */
+export async function listProfGames(ownerId: string): Promise<ProfGameSummary[]> {
+  const rows = await db
+    .select({ world: worlds, players: count(players.id) })
+    .from(worlds)
+    .leftJoin(companies, eq(companies.worldId, worlds.id))
+    .leftJoin(players, eq(players.companyId, companies.id))
+    .where(eq(worlds.ownerId, ownerId))
+    .groupBy(worlds.id)
+    .orderBy(desc(worlds.createdAt));
+  return rows.map((r) => toProfGameSummary(r.world, r.players));
 }
 
 /** Profesor na drugom uređaju upiše svoj kod; ruta postavi kolačić s normaliziranim kodom. */
