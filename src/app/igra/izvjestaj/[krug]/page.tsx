@@ -41,6 +41,9 @@ export default function ReportPage() {
       <header>
         <p className="text-sm font-semibold text-muted-foreground">Izvještaj mjeseca</p>
         <h1 className="text-3xl font-extrabold tracking-tight md:text-4xl">{month}</h1>
+        <Link href={`/igra/izvjestaj/${round}/tok`} className="inline-flex min-h-11 items-center font-semibold text-secondary-foreground hover:underline">
+          Kako je izračunat mjesec →
+        </Link>
       </header>
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-start">

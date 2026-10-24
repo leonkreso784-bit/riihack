@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChartColumn, Percent, Trophy, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, num } from "@/lib/format";
@@ -57,6 +58,11 @@ export default function FinancePage() {
   return (
     <div className="space-y-5 pt-4 md:pt-0">
       <PageHeader title="Financije" subtitle="Novac hotela i obračun po mjesecima." />
+      {finances.length > 0 && (
+        <Link href={`/igra/izvjestaj/${finances[finances.length - 1].round}/tok`} className="inline-flex min-h-11 items-center font-semibold text-secondary-foreground hover:underline">
+          Kako je izračunat mjesec →
+        </Link>
+      )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <StatCard icon={Wallet} label="Stanje računa" value={num(company.cash)} unit="€" tone="accent" note={`${diff >= 0 ? "+" : "−"}${eur(Math.abs(diff))} od početnih ${eur(company.startCash)}`} />
