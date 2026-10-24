@@ -34,6 +34,8 @@ Vremena su lokalna (CEST).
 ## Sub 24.10. 19:50–20:00 · L15 i karta grada na `main`-u, predaja sesija
 
 - **Obilazak žirija 2 (~19:00):** 3 minute aplikacije uživo, odgovor pozitivan, bez primjedbi i bez novih zahtjeva.
+  Leon: žiri je ostao bez riječi, reakcija „wow"; na sve što smo rekli i na svako njihovo pitanje imali smo dobar
+  odgovor, pa nisu našli primjedbu.
   Za nedjelju: na obilasku 3 žiri sam isprobava aplikaciju (Simonov zapis u `PROMISE.md`, #150).
 - **Spojeno:** L15 pošta i pregovaranje (#148, 19:54) po [ADR-033](DECISIONS.md#adr-033); Rinove detaljnije
   Financije, Plan i Odjeli (#142, 19:54; Leonovo izravno „spoji" umjesto Simonovog ok); Rinov QR kod ulaza na
