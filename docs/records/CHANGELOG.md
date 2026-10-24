@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#217](https://github.com/leonkreso784-bit/riihack/pull/217) | 23:14 | Leon | plan: ugovor za botove (`isBot?`, `BotsRequest`) iz #205 |
+| [#219](https://github.com/leonkreso784-bit/riihack/pull/219) | 23:13 | Leon | dokumentacija: ADR-047 i 048, kasni ulaz |
 | [#216](https://github.com/leonkreso784-bit/riihack/pull/216) | 23:08 | Rino | `/profesor` bez bljeska prijave, ploča bez dvostrukog „Moje igre" |
 | [#214](https://github.com/leonkreso784-bit/riihack/pull/214) | 23:06 | Leon | BUG-026: odgovor na situaciju uvijek se isplati (učinak po ocjeni, ADR-046) |
 | [#218](https://github.com/leonkreso784-bit/riihack/pull/218) | 23:06 | Leon | dokumentacija: ADR-046, bugovi riješeni, botovi |

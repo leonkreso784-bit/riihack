@@ -10,7 +10,7 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 <a id="adr-048"></a>
 ## ADR-048 · Kasni ulaz: student ulazi i u igru koja je već počela
-**Datum:** 24.10. ~23:10 · **Status:** ✅ (Leon) · **Vezano:** [BUG-027](BUGS.md#bug-027--kasni-student-ne-može-ući-u-igru-koja-je-počela), [ADR-041](#adr-041)
+**Datum:** 24.10. ~23:05 · **Status:** ✅ (Leon) · **Vezano:** [BUG-027](BUGS.md#bug-027--kasni-student-ne-može-ući-u-igru-koja-je-počela), [ADR-041](#adr-041)
 
 **Kontekst.** Na ploči piše „Kasniš? Uđi na /ulaz s kodom", a server novom studentu nakon „Pokreni" vraća 409. Demo
 igra `KVRNDM` je već u 2. mjesecu, pa žiri na obilasku 3 ne bi mogao ući kao novi student.
@@ -20,7 +20,7 @@ ostaje zatvoren. Radi graditelj, uz test da kasni ulaz ne kvari obračun, trži�
 
 <a id="adr-047"></a>
 ## ADR-047 · Kalibracija troškova (#209) ne ide prije predaje
-**Datum:** 24.10. ~23:15 · **Status:** ✅ (Leon; mišljenje graditelja) · **Vezano:** [ADR-046](#adr-046)
+**Datum:** 24.10. ~23:10 · **Status:** ✅ (Leon; mišljenje graditelja) · **Vezano:** [ADR-046](#adr-046)
 
 **Kontekst.** Simonov [#209](https://github.com/leonkreso784-bit/riihack/pull/209) usklađuje troškove sa stvarnim kvarnerskim hotelima (PDV 13 %, provizija
 portala 8 %, materijal 17 %, plaće po zvjezdicama), pa marža pada s 29–86 % na 11–31 %.
@@ -30,7 +30,7 @@ negativan (BUG-026), a brojke su računate prije #213. U pitchu je kalibracija �
 
 <a id="adr-046"></a>
 ## ADR-046 · Odgovorena situacija donosi plus već od ocjene 3
-**Datum:** 24.10. ~22:55 · **Status:** ✅ (Leon; prijedlog graditelja) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
+**Datum:** 24.10. ~22:50 · **Status:** ✅ (Leon; prijedlog graditelja) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
 
 **Kontekst.** Učinak situacije na pokazatelje bio je (kvaliteta − 3) × učinak: ocjena 3 nije donosila ništa, a
 propuštena (kvaliteta 1) oduzimala je dvostruko. Financije vraćaju najviše +5 mjesečno, pa je napredak bio negativan
@@ -71,8 +71,8 @@ konkurencije i tvrtki, pa ekonomija grada ne radi.
 
 **Posljedice.** Isti ishod za isto stanje, brojke računa samo motor (ADR-002). Demo igra ostaje kakva jest dok je
 profesor ne napravi s botovima. Spojeno [#205](https://github.com/leonkreso784-bit/riihack/pull/205) (23:00, Leonovo „spoji", Rinova tri uvjeta ispunjena): profesor u
-čekaonici dodaje botove s težinom Lako, Srednje ili Teško. 🟨 Polja `isBot?` i `BotsRequest` iz #205 još nisu upisana u
-blok „Ugovor" plana (javio integrator).
+čekaonici dodaje botove s težinom Lako, Srednje ili Teško. Polja `isBot?` i `BotsRequest` upisana su u blok „Ugovor"
+plana u [#217](https://github.com/leonkreso784-bit/riihack/pull/217) (23:14).
 
 <a id="adr-043"></a>
 ## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule
