@@ -1,85 +1,37 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
-import { api } from "@/lib/client";
 import { authClient } from "@/lib/auth-client";
-import { PROF_CODE_LENGTH } from "@/lib/rules";
-import { Field, FormError, SubmitButton } from "@/components/form";
 
-// R2: the professor comes back with their 12-character code, or starts a new game.
-export default function ProfLogin() {
-  const router = useRouter();
-  const [code, setCode] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const session = authClient.useSession(); // L16: prijavljeni profesor vidi poveznicu na svoje igre
+const BUTTON =
+  "flex min-h-14 items-center justify-center rounded-[var(--radius)] px-4 text-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
-  async function login(e: React.FormEvent) {
-    e.preventDefault();
-    const profCode = code.replace(/[\s-]/g, "").toUpperCase();
-    if (profCode.length !== PROF_CODE_LENGTH) return setError(`Profesorski kod ima ${PROF_CODE_LENGTH} znakova`);
-    setBusy(true);
-    setError(null);
-    try {
-      const { worldId } = await api.profLogin({ profCode });
-      router.push(`/profesor/${worldId}`);
-    } catch (err) {
-      setError((err as Error).message);
-      setBusy(false);
-    }
-  }
+// R2: the professor works from their account (L16): new games and existing ones live in "Moje igre".
+// ponytail: code login (/api/prof/login) is no longer linked; the code from /profesor/novi still works through the API.
+export default function ProfEntry() {
+  const session = authClient.useSession();
 
   return (
     <div className="mx-auto max-w-md pt-4 md:pt-12">
       <h1 className="text-4xl font-extrabold tracking-tight">Profesor</h1>
-      <p className="mt-2 text-muted-foreground">Napravi novu igru za razred ili se vrati u postojeću.</p>
+      <p className="mt-2 text-muted-foreground">Prijavi se i vodi svoje igre: nove igre i one koje već traju su na tvom računu.</p>
 
-      <Link
-        href="/profesor/novi"
-        className="mt-8 flex min-h-14 items-center justify-center gap-2 rounded-[var(--radius)] bg-primary px-4 text-lg font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-      >
-        <Plus className="size-5" aria-hidden /> Nova igra
-      </Link>
-
-      <form onSubmit={login} className="surface mt-6 space-y-5 rounded-[var(--radius)] p-5 md:p-6">
-        <Field
-          id="prof-code"
-          label="Već imaš igru? Upiši profesorski kod"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-          placeholder="12 znakova"
-          autoComplete="off"
-          autoCapitalize="characters"
-          spellCheck={false}
-          className="font-mono tracking-widest uppercase"
-        />
-        {error && <FormError key={error}>{error}</FormError>}
-        <SubmitButton busy={busy} busyText="Provjeravam…">
-          Otvori igru
-        </SubmitButton>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <div className="mt-8 space-y-3">
         {session.data ? (
-          <Link href="/profesor/igre" className="font-semibold text-secondary-foreground hover:underline">
+          <Link href="/profesor/igre" className={`${BUTTON} bg-primary text-primary-foreground hover:bg-[#1f5fe0]`}>
             Moje igre
           </Link>
         ) : (
           <>
-            Imaš račun?{" "}
-            <Link href="/profesor/prijava" className="font-semibold text-secondary-foreground hover:underline">
+            <Link href="/profesor/prijava" className={`${BUTTON} bg-primary text-primary-foreground hover:bg-[#1f5fe0]`}>
               Prijavi se
-            </Link>{" "}
-            ili{" "}
-            <Link href="/profesor/registracija" className="font-semibold text-secondary-foreground hover:underline">
-              napravi račun
+            </Link>
+            <Link href="/profesor/registracija" className={`${BUTTON} surface hover:bg-muted`}>
+              Napravi račun
             </Link>
           </>
         )}
-      </p>
+      </div>
     </div>
   );
 }
