@@ -6,7 +6,7 @@ Vremena su lokalna (CEST).
 
 ---
 
-## Sub 24.10. 23:05–23:20 · balans gotov, kasni ulaz, bez kalibracije
+## Sub 24.10. 23:05–23:15 · balans gotov, kasni ulaz, bez kalibracije
 
 - **Spojeno:** BUG-026 (#214, 23:06, Leonovo „spoji"), Rinov #216 (23:08), dokumentacija #218 (23:06). Integrator:
   436 testova, smoke 18/18, CI zelen, produkcija READY 23:08.
@@ -15,7 +15,10 @@ Vremena su lokalna (CEST).
   ([ADR-047](DECISIONS.md#adr-047)).
 - **Sljedeće:** jedan ponovni seed demo igre i smoke (graditelj), pa tester igra cijelu sezonu s dobrim i lošim
   studentom.
-- **Čeka:** #212 (Rinov ok), #217 ugovor botova u planu (Leonovo „spoji"), #206 i #215 (Simonov rebase).
+- **Spojeno poslije:** dokumentacija #219 (23:13), ugovor botova u planu #217 (23:14, Leonovo „spoji").
+- **Čeka:** #212 (Rinov ok), #206 i #215 (Simonov rebase), PR za kasni ulaz (graditelj).
+- **Ispravak:** vremena odluka 22:50–23:10 u ovom zapisu i ADR-ovima ispravljena po vremenima PR-ova; dokumentarist ih
+  je prije pisao 5 minuta unaprijed.
 
 ## Sub 24.10. 22:45–23:05 · rok „Ručno", pokazatelji, botovi
 
@@ -25,7 +28,7 @@ Vremena su lokalna (CEST).
   kod igre na ploči (dio BUG-021). BUG-024 pokazatelji i gosti (#213, 22:55, Leonovo „spoji"). Simonovi botovi (#205,
   23:00, Leonovo „spoji", Rinova tri uvjeta ispunjena). Uz to #203, #207, #208 (BUG-020a) i dokumentacija #210.
   Integrator: 434 testa, smoke 18/18, CI zelen, produkcija READY 23:00.
-- **Odluka (Leon, ~22:55):** odgovorena situacija donosi plus već od ocjene 3 ([ADR-046](DECISIONS.md#adr-046),
+- **Odluka (Leon, ~22:50):** odgovorena situacija donosi plus već od ocjene 3 ([ADR-046](DECISIONS.md#adr-046),
   BUG-026); kod je #214, čeka „spoji".
 - **Čeka:** #214 (Leonovo „spoji"); #212 (graditelj, BUG-021 ostatak; dobar dio je već u #211); #206 (Simon, rebase
   zbog #213 u `month-flow.ts`); #209 Simonova kalibracija troškova prema stvarnim hotelima (Leon odlučuje;

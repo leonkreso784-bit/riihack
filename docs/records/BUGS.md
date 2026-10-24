@@ -14,7 +14,7 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
 ~22:05, ~22:20 i ~22:25.
 
 ### BUG-027 · Kasni student ne može ući u igru koja je počela
-- **Status:** 🟡 u radu (graditelj, od ~23:10) · **Težina:** visok (žiri na obilasku 3 ulazi u demo igru koja je u
+- **Status:** 🟡 u radu (graditelj, od ~23:05; PR stiže) · **Težina:** visok (žiri na obilasku 3 ulazi u demo igru koja je u
   2. mjesecu)
 - **Opis:** graditelj (~23:05): ploča piše „Kasniš? Uđi na /ulaz s kodom" (Rinov #211), a `join.ts` novom studentu
   nakon „Pokreni" vraća 409.
@@ -63,7 +63,7 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
   4 samo +1×. Financije mjesečno dobiju najviše +5 (`FINANCE_EFFECT_CAP`). U testerovim igrama 14 od 20 situacija je
   isteklo, većinom zbog roka „10 min" ([BUG-025](#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec)).
   Primjer: klima 4/5 i povišica 1/5 u prvom mjesecu → zaposlenici −10, financije −4.
-- **Rješenje:** [ADR-046](DECISIONS.md#adr-046) (Leon, ~22:55): učinak 1 → −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×;
+- **Rješenje:** [ADR-046](DECISIONS.md#adr-046) (Leon, ~22:50): učinak 1 → −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×;
   radi graditelj zajedno s [BUG-024](#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone).
 - **Lekcija:** nakon promjene motora provjeri i izvedene brojke (napredak, ljestvica, podij), ne samo onu koju si
   mijenjao.
