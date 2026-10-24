@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#236](https://github.com/leonkreso784-bit/riihack/pull/236) | 00:32 | Leon | dokumentacija: BUG-028 mentor spor |
 | [#234](https://github.com/leonkreso784-bit/riihack/pull/234) | 00:28 | Leon | dokumentacija: popravci iz audita |
 | [#232](https://github.com/leonkreso784-bit/riihack/pull/232) | 00:28 | Simon | Tokovi: odjeli kao staze (skica 3 v2) |
 | [#231](https://github.com/leonkreso784-bit/riihack/pull/231) | 00:28 | Simon | mentorov osvrt ne pada na fiksni tekst (BUG-028, dio) |

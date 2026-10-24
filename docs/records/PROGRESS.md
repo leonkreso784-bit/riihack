@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~00:45 · nove sesije
+
+- **Spojeno:** dokumentacija #236 (00:32). Od tada na `main` nije spojeno ništa osim ploče integratora.
+- **Nove sesije** (~00:40): integrator, tester (igre „QA …") i dokumentarist; graditelj radi #226 i #227.
+- **Otvoreno:** Rinovi #233 (animacije čekanja) i #237 (mentor u izborniku nakon prvog mjeseca; profesor sprema
+  ocjenu gumbom), Simonov #235 (botovi igraju paralelno, #227.2); #209 se ne spaja
+  ([ADR-047](DECISIONS.md#adr-047)). 🟨 #233 i #237 su dorada sučelja: Rino u opisu traži Leonovu odluku spajaju li
+  se prije žirija.
+- **Provjereno:** ime prijašnjeg projekta nema na `main`-u (`git grep -i`).
+
 ## Ned 25.10. ~00:30 · mentor spor
 
 - **Spojeno:** Simonov #231 (00:28, mentorov osvrt ne pada na fiksni tekst) i #232 (00:28, Tokovi: odjeli kao staze),
