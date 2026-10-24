@@ -93,16 +93,15 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R10)
 
-- **Sad radim:** pauza; sljedeća sesija: R5 (#25) s opcijama i bez njih + oznaka „od profesora"
-- **Sljedeće:** za M2 (18:45): R5 → R6 (+ poveznica „Situacije") → R4 (+ mjesec umjesto „lipanj"); zatim Osoblje (`api.staff()`), R7, R10; M3: R8 „Promijeni ocjenu"
-- **Čekam od drugih:** Leon: spajanje #91, `POST /api/logout`, ruta za „Promijeni ocjenu"; odluka o dizajnu (#39)
+- **Sad radim:** R6 (#26) profesorova ploča uživo (+ poveznica „Situacije"), na lažnim podacima
+- **Sljedeće:** R5 na pravom API-ju čim #75 bude na `main`-u; R4 (+ mjesec umjesto „lipanj"); Odjava čim se spoji #96 (kod u `21bb687`); oznaka „od profesora" u R5 nakon #89; zatim Osoblje (`api.staff()`), R7, R10; M3: R8 „Promijeni ocjenu" (ruta dogovorena, tipovi u #89)
+- **Čekam od drugih:** Leon: #75 (situacije, za test R5 na pravom API-ju), #96 (logout), #89 (`source`, ugovor za R8); prijedlog: neobavezno `rubric?: { id, label }[]` u `SituationView` da presuda pokaže nazive kriterija (sad pokazuje broj); odluka o dizajnu (#39)
 - **Drugi čekaju od mene:** —
-- **Odluke:** OK da Simon u `client.ts`/`mock.ts` samo doda `createSituation`, `dispatch`, `worldSettings` po istom uzorku i javi prije PR-a
-- **Otvoreno:** #91 logo točno kao V1 (izvorna slika), spremno za integratora
-- **Spojeno:** R0 (#40), #49, #52, R1 (#54), R2 (#56), R3 (#57), logo (#65), animacije (#73), logo u igri i mobitel (#78)
+- **Odluke:** OK da Simon u `client.ts`/`mock.ts` samo doda `createSituation`, `dispatch`, `worldSettings` po istom uzorku i javi prije PR-a. `/` je predstavljanje, ulaz kodom je **`/ulaz`** (Simon: adresa u slajdovima i obilasku → riihack.vercel.app/ulaz)
+- **Otvoreno:** —
+- **Spojeno:** R0 (#40), #49, #52, R1 (#54), R2 (#56), R3 (#57), logo (#65), animacije (#73), logo u igri i mobitel (#78), logo i favicon V1 (#91), predstavljanje na `/` i `/ulaz` (#93), R5 situacija s likom (#97, lažni podaci provjereni, pravi API čeka #75)
 - **Bilješke za nastavak:** grana `rino/dokumentacija`, `docs/rino/STANJE.md`
-- **Zadnje ažurirano:** sub 16:05 (popunio Claude, ispravi)
-
+- **Zadnje ažurirano:** sub 16:45 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
