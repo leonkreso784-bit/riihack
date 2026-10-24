@@ -244,7 +244,7 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
       id: "situacije",
       title: "Situacije ovog mjeseca",
       big: sit.length ? signed(sitSum) : undefined,
-      small: !input.situations ? "Situacije se još učitavaju" : sit.length ? `Odgovorenih na ovom pokazatelju: ${sit.length}` : "Nijedna odgovorena ne dira ovaj pokazatelj",
+      small: !input.situations ? "Situacije se još učitavaju" : sit.length ? `Odgovorenih na ovom pokazatelju: ${sit.length}` : "Nijedna odgovorena situacija ne dira ovaj pokazatelj",
       tone: sitSum > 0 ? "up" : sitSum < 0 ? "down" : undefined,
       inputs: [
         { label: "Situacije u mjesecu", value: input.situations ? String(thisMonth.length) : "Nije učitano" },
