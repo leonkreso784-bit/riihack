@@ -3,7 +3,7 @@
 > **Za agente:** svaki zadatak radi jedan agent u svom stablu, TDD za motor s vrijednostima iz ovog plana. Pravila iz
 > [glavnog plana](2026-10-24-simpolis.md) vrijede i dalje (Global Constraints, Review Focus, vlasništvo datoteka).
 
-**Pisano za:** Leona, Simona, Rina i njihove agente. Stanje: sub 24.10. 18:50. Odluke su Leonove, sub 18:55–19:20.
+**Pisano za:** Leona, Simona, Rina i njihove agente. Stanje: sub 24.10. 18:55. Odluke su Leonove, sub 18:35–18:50.
 
 **Cilj vala 3:** hotel postaje prava tvrtka u gradu. Student ulaže u odjele, dopisuje se i pregovara s agencijama,
 dopisuje se s drugim hotelima i predlaže im suradnju, a na karti Kvarnera vidi druge hotele i tvrtke. Profesor ima
@@ -123,7 +123,7 @@ export type ReferralRequest = { toCompanyId: string; maxNights: number; commissi
 
 Svaki zadatak koji mijenja shemu: SQL u jednoj transakciji, najava integratoru prije i poslije, broj redaka isti.
 
-- **L13** ✅ `plans.investments jsonb default '{}'`, `finances.investments int default 0` (sub 19:00).
+- **L13** ✅ `plans.investments jsonb default '{}'`, `finances.investments int default 0` (sub ~18:45).
 - **L15** `mail(id uuid pk, world_id fk, thread_id uuid, kind text, from_company_id uuid null, to_company_id uuid null, business_id text null, subject text, body text, contract_id uuid null, referral_id uuid null, read_at timestamptz null, created_at)`; `contracts.counter_price_per_night int null`, `contracts.counter_monthly_cost int null`, `contracts.agreed_price_per_night int null`, `contracts.agreed_monthly_cost int null`, `contracts.negotiated boolean default false`.
 - **L16** Better Auth tablice `user`, `session`, `account`, `verification` (iz `npx auth@latest generate`, pregledane); `worlds.owner_id text null` (FK na `user.id`).
 - **L17** `library_situations(id text pk 'lib-…', owner_id text fk user, template jsonb, source text, created_at)`.
@@ -183,7 +183,7 @@ obračun koristi dogovorene cijene), `src/lib/game/views.ts` (`mail`, `unreadMai
 `src/db/auth-schema.ts`, `src/app/api/prof/games/route.ts`; ekrani `src/app/profesor/prijava/page.tsx`,
 `src/app/profesor/registracija/page.tsx`, `src/app/profesor/igre/page.tsx` (novi; stil i pregled radi Rino, R14).
 Modify `src/lib/session.ts` (`requireProf` prihvaća i sesiju vlasnika), `src/app/api/worlds/route.ts` (`owner_id`),
-`package.json` (Leonova odluka 19:20).
+`package.json` (Leonova odluka, sub ~18:45).
 
 - `betterAuth({ database: drizzleAdapter(db, { provider: "pg", schema }), emailAndPassword: { enabled: true },
   plugins: [nextCookies()] })`; bez `transaction: true` (neon-http nema transakcija).
