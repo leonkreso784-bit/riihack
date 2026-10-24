@@ -17,7 +17,7 @@ export const PASTE_SHARE = 0.5;
 
 // Razgovor i vlastiti odgovor
 export const MAX_STUDENT_MESSAGES = 6;
-export const MIN_OWN_ANSWER_CHARS = 20;
+export const MIN_OWN_ANSWER_CHARS = 0; // bez donje granice (Rino, Leon sub ~23:50): i prazan odgovor prolazi, a sudac i mentor ga prepoznaju
 export const MAX_OWN_ANSWER_CHARS = 2000;
 
 // Osvježavanje sučelja

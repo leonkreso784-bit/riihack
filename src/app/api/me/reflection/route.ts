@@ -7,6 +7,8 @@ import { HttpError, route } from "@/lib/http";
 import { readJson, requirePlayer } from "@/lib/session";
 import type { ReflectionRequest, RoundReportView } from "@/lib/types";
 
+const EMPTY_REFLECTION_NOTE = "Nisi ništa napisao, pa ti kažem što vidim u brojkama.";
+
 export const POST = route(async (req): Promise<RoundReportView> => {
   const { company } = await requirePlayer();
   const body = await readJson(req);
@@ -21,7 +23,7 @@ export const POST = route(async (req): Promise<RoundReportView> => {
 
   const report = await getReport(company.id, request.round);
   if (!report) throw new HttpError(404, "Krug nije zatvoren");
-  if (report.reflection) throw new HttpError(409, "Na ovo si već odgovorio");
+  if (report.reflection !== null) throw new HttpError(409, "Na ovo si već odgovorio");
 
   const input = await buildMentorInput(report, company.name);
   let question = report.mentorQuestion;
@@ -30,7 +32,11 @@ export const POST = route(async (req): Promise<RoundReportView> => {
     await saveMentorQuestion(company.id, request.round, question);
     question = (await getReport(company.id, request.round))?.mentorQuestion ?? question;
   }
-  const mentorText = await mentorDebrief({ ...input, question, reflection: request.text });
+  // Bez donje granice: prazan odgovor mentor prepozna (uvodna rečenica i bez AI-ja), pa nastavi od brojki.
+  const empty = request.text === "";
+  const reflection = empty ? "(Student nije ništa napisao. Mentor je to već rekao, ne ponavljaj.)" : request.text;
+  const debrief = await mentorDebrief({ ...input, question, reflection });
+  const mentorText = empty ? `${EMPTY_REFLECTION_NOTE} ${debrief}` : debrief;
   await saveReflection(company.id, request.round, request.text, mentorText);
   return {
     round: request.round,
