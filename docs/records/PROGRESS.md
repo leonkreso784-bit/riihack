@@ -6,6 +6,18 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 21:00–21:15 · ekrani računa, knjižnica u sučelju, poruke među hotelima
+
+- **Spojeno:** dokumentacija #175 (21:01); Simonov S12 knjižnica na stranici situacija (#170, 21:10) i L16 ekrani
+  računa: registracija, prijava, „Moje igre" (#169, 21:10), oba uz Rinov ok na GitHubu (21:01); L18 poruke među
+  hotelima (#177, 21:11, Leonovo „spoji" jer dira ugovor): hotel šalje poruku drugom hotelu iste igre, profesor vidi
+  sve poruke igre. Poruke ne idu u vijesti grada. Sučelje „Nova poruka" je Rinov R15.
+- **Provjereno (integrator):** sve zajedno 387 testova, smoke 14/14, CI zelen; produkcija READY 21:11 (sve stranice
+  200, API bez kolačića 401, nepostojeći kod igre 404).
+- **Za čišćenje baze prije predaje:** testna igra „L18 test" (graditelj je drži na svom popisu).
+- **🟨 Otvoreno:** zastarjelo „zamrzavanje" u `CLAUDE.md`, `PLAN-24H.md`, `TEAM.md` i glavnom planu
+  ([ADR-031](DECISIONS.md#adr-031)); poruka za Rina pripremljena (21:09).
+
 ## Sub 24.10. 20:45–21:00 · uvid u razmišljanje studenta, nove sesije
 
 - **Spojeno:** Rinov R8 (#168, 20:52): profesor po mjesecu vidi kako je student odgovorio (vlastite riječi, klik,
