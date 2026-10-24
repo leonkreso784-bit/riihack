@@ -82,14 +82,14 @@ na koga čeka i što smo dogovorili.
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
-- **Sad radim:** S8 sučelje profesorovih situacija (grana `simon/S8-profesor-situacije`, na lažnim podacima i ugovoru #89; Rinov ok za `client.ts`/`mock.ts`, samo dodaje); pojednostavljenje pitcha i slajdova (manje teksta)
-- **Sljedeće:** S8 PR nakon #89; nakon L12 u `mentor-input.ts` zamijeniti `getSituation` s `getTemplate`; S4 `MentorInput.finance` (S9, M3); S9 AI prijedlog situacije (M3); video demoa do ned 09:00
-- **Čekam od drugih:** Leon: #89 (ugovor), L11 faza B (`views.ts` puni `finances`, `contracts`, `news`), L12; L6 na `main` (inače nema situacija)
+- **Sad radim:** proba obilaska 2 (19:00, demo samo studentski tok); slajdovi za nedjelju po PITCH nacrt 4
+- **Sljedeće:** S9 PR odmah nakon #95; gumbi playbooka na S8 stranici (M3, čeka Rinov ok za 2 poziva u `client.ts`); video demoa do ned 09:00
+- **Čekam od drugih:** integrator: #109 (S8); Leon: #95 (L12, S9 je na njemu); Rino: poveznica „Situacije" na R6 ploči
 - **Drugi čekaju od mene:** —
-- **Obilazak 1 (~15:45):** prošli. Pokazali **samo slajdove, bez živog demoa**: demo čuvamo za obilazak 2 (19:00). Komentari u `PROMISE.md`.
-- **E2E 15:45** (lokalno, prava baza, main + L6 samo lokalno): smoke 1–10 ✅, 11 ✗ (nema `finances`); chat 2 s ✅, presuda 2,5–3 s ✅ (5/5 i 1/5 točno)
-- **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72, #86), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
-- **Zadnje ažurirano:** sub 16:00
+- **Otvoreno:** #109 S8 (rebase na main nakon #89, 196 testova, build ✅). Grana `simon/S9-ai-prijedlog` gotova (na `leon/L12-profesor`): `proposeSituation` (Sonnet, rok 45 s, jedan ponovni pokušaj, rezerva bez AI-ja), mentor dobiva obračun mjeseca, `mentor-input.ts` koristi `getTemplate`; 240 testova ✅, pravi poziv ~12–15 s
+- **Obilazak 1 (~15:45):** prošli, samo slajdovi; komentari u `PROMISE.md`. Slajdovi za obilazak 2: simpolis-ziri-share.vercel.app (QR na `/ulaz`)
+- **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72, #86, #99), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
+- **Zadnje ažurirano:** sub 17:00 (popunio Claude, ispravi)
 
 ## Rino · sučelje (R0–R10)
 
