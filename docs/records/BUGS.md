@@ -10,16 +10,89 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-036 · Sitnice sučelja: padež u pošti, prazan odgovor bez potvrde
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ); prazan odgovor na situaciju
+  šalje se bez pitanja „Sigurno?".
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-035 · Botovi: „(bot)" dvaput, „Moje igre" ih broji kao studente
+- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): bot ima „(bot)" u imenu i uz to značku „bot"; „Moje igre" botove broji
+  kao studente.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-034 · Ljestvica studentu pokazuje novac tuđih hotela
+- **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): ljestvica studentu pokazuje novac tuđih hotela, a po
+  [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci. 🟨 Koja točno brojka: potvrditi.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-033 · Mentor pita o „tvom odgovoru" kad je odgovor prazan
+- **Status:** 🔴 otvoren (Simon, AI) · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): na prazan odgovor mentor svejedno pita o „tvom odgovoru"
+  (usp. [ADR-049](DECISIONS.md#adr-049): kod prazne refleksije mentor to prepozna).
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-032 · Izvještaj mjeseca, mentor i podij ne vide obračun grada
+- **Status:** 🟡 u radu (graditelj, [#226](https://github.com/leonkreso784-bit/riihack/issues/226)) · **Težina:**
+  srednji (ista brojka na tri ekrana ima tri vrijednosti)
+- **Opis:** Simonov audit (#226), tester potvrdio na produkciji (ned ~00:55): podij +5,9 i +7,7, ljestvica +7,3 i
+  +9,9; izvještaj Financije ±0, Tokovi +5.
+- **Uzrok:** izvještaj (`roundReports.metricsAfter`) se upisuje pri zatvaranju tvrtke, a obračun grada
+  (`writeSettlement`, `src/lib/game/city.ts`) poslije mijenja samo `companies.metrics`; podij čita izvještaj
+  (opis u #226).
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
+- **Status:** 🔴 otvoren (Rinova datoteka `src/components/prof-board.tsx`) · **Težina:** visok (žiri na obilasku 3
+  ulazi u `KVRNDM` kasnim ulazom i kod treba vidjeti s projektora)
+- **Opis:** tester (ned ~00:53, produkcija, 1280×720, QA igra): nakon „Pokreni" ploča nema ni kod igre ni QR; kod
+  je samo na „Moje igre". Regresija [BUG-021](#bug-021--ploča-profesora-nema-puta-natrag-ni-koda-igre-nakon-početka).
+- **Uzrok:** Rinov `1efbe71` ([#216](https://github.com/leonkreso784-bit/riihack/pull/216), 23:08) maknuo je redak
+  „Kasniš? Uđi na /ulaz s kodom …" s ploče, a kasni ulaz je proradio tek s #221 (23:26). Na `main`-u
+  `prof-board.tsx` više ne prikazuje `joinCode`; ni otvoreni #237 ga ne vraća.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
+- **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku (brojke) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
+  za općenite odgovore)
+- **Opis:** tester (ned ~00:50, sezona na produkciji): napisan odgovor koji promaši temu dobije kvalitetu 1, isto −2×
+  kao propuštena situacija. Student s 8 općenitih odgovora završi na −60,9, gore od studenta koji nije odgovorio
+  ništa (−54,6) i od botova (+27, +30).
+- **Uzrok:** učinak po kvaliteti iz [ADR-046](DECISIONS.md#adr-046): 1 (loš ili propušten) −2×. 🟨 Zašto je općeniti
+  student gori od onoga bez odgovora, nije utvrđeno.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-029 · Plan se ne prenosi u sljedeći mjesec
+- **Status:** 🟡 u radu (graditelj, [#227](https://github.com/leonkreso784-bit/riihack/issues/227) točka 1) ·
+  **Težina:** srednji
+- **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
+  plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
+  Potvrđeno i u sučelju (~00:55): plan 150/1000 u sljedećem mjesecu postane 172/0.
+- **Uzrok:** `toPlan` bez retka plana za novi mjesec vraća zadani plan (`src/lib/game/city.ts:229-238`).
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-028 · Mentor je spor ili ne odgovori
-- **Status:** 🟡 dio popravljen ([#231](https://github.com/leonkreso784-bit/riihack/pull/231), 00:28); tester mjeri na produkciji · **Težina:** visok (žiri u izvještaju mjeseca
-  čeka mentora)
+- **Status:** 🟡 na API-ju brzo ([#231](https://github.com/leonkreso784-bit/riihack/pull/231), 00:28); tester još
+  provjerava sučelje u pregledniku · **Težina:** visok (žiri u izvještaju mjeseca čeka mentora)
 - **Opis:** Leon (~00:30): u izvještaju mjeseca i kod odgovora mentoru mentor je jako spor ili uopće ne odgovori.
 - **Uzrok (graditelj iz koda):** mentor je Sonnet 5.5; svaki AI poziv ima rok 20 s (`AI_TIMEOUT_MS`,
   `src/lib/ai/client.ts:13`) i jedan ponovni pokušaj, a `POST /api/me/reflection` redom zove pitanje mentora (ako ga
   još nema) pa osvrt, pa student u najgorem slučaju čeka 40+ s. Osvrt je uz to u 9 od 15 pokušaja bio odbijen zbog
   broja rečenica i padao na fiksni tekst (Simon).
-- **Rješenje:** #231 (Simon): osvrt više ne pada na fiksni tekst (15/15, 3–4,5 s po pokušaju). 🟨 Ako je na
-  produkciji i dalje sporije od ~10 s ili bez odgovora: Simon (AI), uz graditelja za rutu.
+- **Rješenje:** #231 (Simon): osvrt više ne pada na fiksni tekst (15/15, 3–4,5 s po pokušaju).
+- **Mjerenje na produkciji (tester, ~00:46, API, QA igra, 4 mjeseca):** pitanje mentora 1,9–4,1 s, osvrt 4,3–5,0 s,
+  0 od 4 osvrta fiksni tekst; zatvaranje mjeseca s 2 bota 4,6–5,7 s. Ispod granice od ~10 s; ako sučelje u
+  pregledniku ipak čeka dulje, vlasnik je Simon (AI), uz graditelja za rutu.
 - **Lekcija:** AI poziv na putu korisnika treba mjeriti na produkciji (vrijeme i udio rezervnih odgovora); stroga
   provjera izlaza bez mjerenja tiho pretvori pravi odgovor u fiksni tekst.
 

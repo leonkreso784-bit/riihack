@@ -6,6 +6,33 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~00:50 · test sezone, provjera otvorenih PR-ova
+
+- **Tester, cijela sezona na produkciji ✅:** dobar student +90 (popunjenost do 100 %), loš −54,6 (do 5 %);
+  zatvaranje mjeseca 4,4–6,1 s. 🟨 Podij na 1280×720 nije javljen.
+- **Bugovi (tester):** [BUG-029](BUGS.md#bug-029--plan-se-ne-prenosi-u-sljedeći-mjesec) plan se ne prenosi (radi
+  graditelj, #227.1); [BUG-030](BUGS.md#bug-030--odgovor-koji-promaši-temu-kažnjava-se-kao-propušten-pa-je-gori-od-šutnje)
+  općeniti odgovori gori od šutnje (čeka Leonovu odluku).
+  [BUG-031](BUGS.md#bug-031--ploča-profesora-nakon-pokretanja-opet-nema-kod-igre) ploča profesora nakon pokretanja
+  nema kod igre (regresija BUG-021 iz #216; Rinova datoteka, visok za obilazak 3).
+- **Tester, put žirija ✅** (QA igra, ~00:50–01:00): lik 2,7 s, presuda 1,6 s, prazan odgovor 1/5, protuponuda radi,
+  mentor < 2 s i osvrt pravi tekst, zatvaranje mjeseca 3,5 s, Tokovi rade. Nalazi: BUG-032 (#226 potvrđen), BUG-029 i
+  u sučelju, BUG-033 do 036 (niski: mentor na prazan odgovor, novac na ljestvici, botovi, sitnice sučelja).
+- **Integrator:** #233, #235 i #237 zajedno zeleni (typecheck, lint, 519 testova, build, smoke 1–18 i 20); ništa nije
+  spojeno, čeka Leonovo odobrenje.
+
+## Ned 25.10. ~00:45 · nove sesije
+
+- **Spojeno:** dokumentacija #236 (00:32). Od tada na `main` nije spojeno ništa osim ploče integratora.
+- **Nove sesije** (~00:40): integrator, tester (igre „QA …") i dokumentarist; graditelj radi #226 i #227.
+- **Otvoreno:** Rinovi #233 (animacije čekanja) i #237 (mentor u izborniku nakon prvog mjeseca; profesor sprema
+  ocjenu gumbom), Simonov #235 (botovi igraju paralelno, #227.2); #209 se ne spaja
+  ([ADR-047](DECISIONS.md#adr-047)). 🟨 #233 i #237 su dorada sučelja: Rino u opisu traži Leonovu odluku spajaju li
+  se prije žirija.
+- **Provjereno:** ime prijašnjeg projekta nema na `main`-u (`git grep -i`).
+- **BUG-028 (tester, ~00:46, API na produkciji):** pitanje mentora 1,9–4,1 s, osvrt 4,3–5,0 s, svi osvrti pravi tekst;
+  zatvaranje mjeseca s 2 bota 4,6–5,7 s. Sučelje u pregledniku tek se provjerava.
+
 ## Ned 25.10. ~00:30 · mentor spor
 
 - **Spojeno:** Simonov #231 (00:28, mentorov osvrt ne pada na fiksni tekst) i #232 (00:28, Tokovi: odjeli kao staze),
