@@ -167,10 +167,14 @@ async function main() {
     expect(a.nights > i.nights, `Ana ${a.nights} noćenja, Ivan ${i.nights}`);
   });
 
-  await cityStep(12, "cash = početni račun + dobit iz finances", [11], async () => {
+  await cityStep(12, "cash = početni račun + dobit iz finances; izvještaj mjeseca vidi obračun (#226)", [11], async () => {
     const me = (await ana.call("GET", "/api/me")).data as MeResponse;
     const profit = me.finances.reduce((s, f) => s + f.profit, 0);
     expect(me.company.cash === me.company.startCash + profit, `cash ${me.company.cash} ≠ ${me.company.startCash} + ${profit}`);
+    // krug 3 je tek otvoren, pa su pokazatelji tvrtke točno izvještaj mjeseca 2 s obračunom grada
+    const r = await ana.call("GET", "/api/me/report/2"); expectStatus(r, 200);
+    const after = JSON.stringify((r.data as RoundReportView).metricsAfter), now = JSON.stringify(me.company.metrics);
+    expect(after === now, `izvještaj ${after} ≠ tvrtka ${now}`);
   });
 
   // Ponuda kruga je slučajna (iz sjemena igre), pa korak 13 ima svoju malu igru za jednog studenta: nova igra
