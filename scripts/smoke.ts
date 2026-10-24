@@ -130,8 +130,8 @@ async function main() {
     expectStatus(r, 409);
   });
 
-  await step(8, "vlastiti odgovor od 15 znakova → 400", [5], async () => {
-    const r = await ana.call("POST", `/api/situations/${anaSits[1].id}/answer`, { text: "x".repeat(15), pastedChars: 0 });
+  await step(8, "predug vlastiti odgovor (2001 znak) → 400", [5], async () => {
+    const r = await ana.call("POST", `/api/situations/${anaSits[1].id}/answer`, { text: "x".repeat(2001), pastedChars: 0 });
     expectStatus(r, 400);
   });
 

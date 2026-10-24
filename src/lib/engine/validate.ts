@@ -11,7 +11,7 @@ export function validateJoin(input: JoinRequest): string | null {
 
 export function validateOwnAnswer(text: string): string | null {
   const len = text.trim().length;
-  if (len < MIN_OWN_ANSWER_CHARS) return `Napiši barem jednu rečenicu (najmanje ${MIN_OWN_ANSWER_CHARS} znakova)`;
+  if (len < MIN_OWN_ANSWER_CHARS) return "Napiši odgovor";
   if (len > MAX_OWN_ANSWER_CHARS) return `Odgovor je predug (najviše ${MAX_OWN_ANSWER_CHARS} znakova)`;
   return null;
 }

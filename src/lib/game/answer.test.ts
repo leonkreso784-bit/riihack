@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { HttpError } from "@/lib/http";
 import { CLICK_QUALITY_CAP, FALLBACK_QUALITY } from "@/lib/rules";
 import type { ChatTurn, JudgeInput, SituationTemplate, Verdict } from "@/lib/types";
-import { ALREADY_ANSWERED, ROUND_OVER, answerBlocked, gradeAnswer, parseAnswerRequest, toAnswerViewFromGraded } from "./answer";
+import { ALREADY_ANSWERED, EMPTY_ANSWER_REASONING, ROUND_OVER, answerBlocked, gradeAnswer, parseAnswerRequest, toAnswerViewFromGraded } from "./answer";
 
 const TEMPLATE: SituationTemplate = {
   id: "t1",
@@ -40,8 +40,9 @@ describe("parseAnswerRequest", () => {
     expect(statusOf(() => parseAnswerRequest({ optionId: 2 }, ids))).toBe(400);
   });
   it("ni klik ni tekst → 400", () => expect(statusOf(() => parseAnswerRequest({}, ids))).toBe(400));
-  it("vlastiti odgovor od 15 znakova → 400, predug → 400", () => {
-    expect(statusOf(() => parseAnswerRequest({ text: "Kratak odgovor.", pastedChars: 0 }, ids))).toBe(400);
+  it("bez donje granice: kratak i prazan tekst prolaze, predug → 400", () => {
+    expect(parseAnswerRequest({ text: "Hvala", pastedChars: 0 }, ids)).toEqual({ kind: "text", text: "Hvala", pastedChars: 0 });
+    expect(parseAnswerRequest({ text: "   " }, ids)).toEqual({ kind: "text", text: "", pastedChars: 0 });
     expect(statusOf(() => parseAnswerRequest({ text: "a".repeat(2001), pastedChars: 0 }, ids))).toBe(400);
   });
   it("pastedChars mora biti broj ≥ 0; bez njega 0; reže se na duljinu teksta", () => {
@@ -92,6 +93,13 @@ describe("gradeAnswer", () => {
     const g = await gradeAnswer({ kind: "text", text: OWN, pastedChars: 0 }, input, judge);
     expect(g).toMatchObject({ mode: "own", quality: 5, copied: false, verdict: verdict(["c1", "c2", "c3", "c4", "c5"]) });
     expect(judge).toHaveBeenCalledWith({ template: TEMPLATE, hotelName: "Vila Ana", text: OWN, transcript: TRANSCRIPT });
+  });
+
+  it("prazan tekst: bez AI-ja, ništa ispunjeno, kvaliteta 1 i obrazloženje da nije ništa napisano", async () => {
+    const judge = vi.fn();
+    const g = await gradeAnswer({ kind: "text", text: "", pastedChars: 0 }, input, judge);
+    expect(g).toMatchObject({ mode: "own", text: "", quality: 1, copied: false, verdict: { criteriaMet: [], reasoning: EMPTY_ANSWER_REASONING } });
+    expect(judge).not.toHaveBeenCalled();
   });
 
   it("zalijepljen tekst: presuda, najviše 4, copied", async () => {

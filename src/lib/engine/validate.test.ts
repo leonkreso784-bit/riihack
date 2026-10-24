@@ -16,8 +16,9 @@ describe("validateJoin", () => {
 });
 
 describe("validateOwnAnswer", () => {
-  it("odbija prekratak odgovor", () => {
-    expect(validateOwnAnswer("kratko")).toBe("Napiši barem jednu rečenicu (najmanje 20 znakova)");
+  it("bez donje granice: kratak i prazan prolaze", () => {
+    expect(validateOwnAnswer("Hvala")).toBeNull();
+    expect(validateOwnAnswer("")).toBeNull();
   });
   it("odbija predug odgovor", () => {
     expect(validateOwnAnswer("a".repeat(2001))).toBe("Odgovor je predug (najviše 2000 znakova)");

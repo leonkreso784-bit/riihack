@@ -9,6 +9,7 @@ import { qualityForOwn, qualityFromClick } from "@/lib/engine/quality";
 import { roomStatusAfter } from "@/lib/engine/round";
 import { validateOwnAnswer } from "@/lib/engine/validate";
 import { HttpError } from "@/lib/http";
+import { MISSED_QUALITY } from "@/lib/rules";
 import type { requirePlayer } from "@/lib/session";
 import type { AnswerMode, AnswerRequest, AnswerView, ChatTurn, JudgeInput, Quality, SituationTemplate, Verdict } from "@/lib/types";
 import { renderTemplate } from "./views";
@@ -17,6 +18,8 @@ type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
 
 export const ROUND_OVER = "Ovaj krug je završio";
 export const ALREADY_ANSWERED = "Na ovu situaciju si već odgovorio";
+
+export const EMPTY_ANSWER_REASONING = "Odgovor je prazan: nijedan kriterij nije ispunjen.";
 
 export type ParsedAnswer = { kind: "click"; optionId: string } | { kind: "text"; text: string; pastedChars: number };
 
@@ -82,6 +85,11 @@ export async function gradeAnswer(
     return { mode: "click", optionId: option.id, text: null, pastedChars: 0, verdict: null, quality: qualityFromClick(option), copied: false };
   }
   const { text, pastedChars } = parsed;
+  if (text === "") {
+    // Prazan odgovor (bez donje granice teksta): nema što suditi, pa bez AI-ja; vrijedi kao loš odgovor.
+    const verdict: Verdict = { criteriaMet: [], reasoning: EMPTY_ANSWER_REASONING };
+    return { mode: "own", optionId: null, text, pastedChars: 0, verdict, quality: MISSED_QUALITY as Quality, copied: false };
+  }
   const kind = classifyOwnAnswer(text, pastedChars, template.options);
   if (kind.kind === "copiedOption") {
     const option = template.options.find((o) => o.id === kind.optionId)!;
