@@ -276,6 +276,8 @@ Izvorna podjela W1 i W2 ostaje u tablici radi opisa.
 
 ## 10 · Struktura repoa
 
+> Vrijedi struktura iz [plana izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md) (starter koristi `src/`, Neon i Drizzle). Popis ispod je izvorna skica.
+
 ```
 app/            ekrani i app/api/* (Rino ekrani, backend rute)
 lib/engine/     motor, čiste funkcije + testovi

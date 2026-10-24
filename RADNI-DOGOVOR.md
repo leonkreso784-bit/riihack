@@ -7,12 +7,13 @@ ljudi ne dira iste datoteke.
 
 | Tko | Što | Mape |
 | --- | --- | --- |
-| **Rino** | sve ekrane: ulaz, profesorova ploča, uvid u studenta, igra, situacija s razgovorom, izvještaj | `app/` (osim `app/api/`), `components/`, `lib/mock.ts` |
-| **Leon** 🟨 | motor, sadržaj hotela, baza, API igre (svijet, ulaz, stanje, klik, zatvaranje kruga, profesorove rute), deploy | `lib/engine/`, `content/hotel/`, `drizzle/`, `lib/db/`, `scripts/`, `app/api/` (osim AI ruta) |
-| **Simon** 🟨 | AI sloj: lik, presuda, mentor, promptovi, rezerve kad AI padne; zatim agencija i ugovori | `lib/ai/`, `prompts/`, `app/api/situations/[id]/chat`, `content/agency/` |
-| **Zajedno** | `lib/types.ts` (oblik odgovora API-ja) pišu Leon i Rino **prvi**, prije ičeg drugog; mijenja se samo uz dogovor | `lib/types.ts` |
+| **Rino** | sve ekrane: ulaz, čekaonica, profesor, moja tvrtka, sobe, situacija, izvještaj, uvid (R0–R9) | `src/app/**` osim `api/`, `igra/plan`, `igra/financije`; `src/components/` osim `wow/`; `src/lib/client.ts`, `mock.ts` |
+| **Leon** | kostur, baza, motor, sadržaj, API igre, smoke, demo igra, deploy (L0–L8) | `src/db/`, `src/lib/engine/`, `src/lib/game/`, `src/lib/session.ts`, `http.ts`, `types.ts`, `rules.ts`, `src/content/`, `src/app/api/**` osim dvije AI rute, `scripts/`, `.github/` |
+| **Simon** | obećanja, AI sloj, lik, presuda, sokratski mentor, karta i radar, plan i financije (sučelje), prezentacija (S0–S7) | `src/lib/ai/`, `api/situations/[id]/chat`, `api/me/reflection`, `src/components/wow/`, `src/app/igra/plan`, `igra/financije`, `src/lib/mock-wow.ts`, `prezentacija/`, `PROMISE.md` |
 
 🟨 Podjelu backenda Leon i Simon još potvrđuju. Rino radi frontend (dogovoreno).
+
+Točan popis datoteka i redoslijed: [plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md). Svatko radi s više agenata usporedno.
 
 **Granica Leon i Simon:** ruta za vlastiti odgovor (`POST /api/situations/[id]/answer`) je Leonova; ona zove
 Simonovu funkciju `judge()` iz `lib/ai/`. Zatvaranje kruga je Leonovo; ono zove Simonov `mentor()`. Simon izlaže

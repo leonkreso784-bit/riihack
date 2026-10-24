@@ -1,18 +1,16 @@
 # Plan do predaje
 
-**Rok: nedjelja 25.10.2026. u 10:00.** Satnice su okvirne (🟨), od subote 24.10. u podne.
+**Rok: nedjelja 25.10.2026. u 10:30** (prezentacija i GitHub link u #prezentacije). Detaljni zadaci i
+redoslijed po ljudima: [plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md).
 
-| Vrijeme | Što | Gotovo kad |
+| Prekretnica | Rok | Što žiri vidi |
 | --- | --- | --- |
-| sub 12 – 13 | Potvrda [ARHITEKTURA.md](ARHITEKTURA.md) i podjele, `lib/types.ts`, kostur iz Simonovog startera na Vercelu, Neon baza | prazan projekt je na javnom linku, svi imaju `.env.local` |
-| sub 13 – 18 | **Glavni tok hotela:** profesor stvori svijet → student uđe kodom → krug 1 → situacija klikom → zatvori krug → pokazatelji se promijene. Usporedo: Simon lik i presuda, Rino ekrani na lažnim podacima, Leon sadržaj hotela | jedan student odigra jedan krug od početka do kraja, makar ružno |
-| sub 18 – 21 | Spajanje: razgovor s likom, vlastiti odgovor s presudom, mentor, profesorova ploča uživo, odbrojavanje | demo s dva studenta i profesorom radi na javnom linku |
-| sub 21 – 22 | **Snimka demoa** (rezerva) i prvi merge svih grana | video postoji |
-| sub 22 – ned 02 | Agencija i ugovor s hotelom 🟨, uvid u razmišljanje studenta, ljestvica | ugovor između dviju tvrtki radi u demou |
-| ned 02 – 06 | Spavanje u smjenama (svatko barem 2 h), dorada izgleda, rubni slučajevi | demo izgleda dovršeno |
-| **ned 06** | **Zamrzavanje koda.** Nakon ovoga samo popravci | — |
-| ned 06 – 09 | Dokumentacija ([PREDAJA.md](PREDAJA.md)), nova snimka demoa, pitch | sve spremno za predaju |
-| ned 09 – 10 | Proba pitcha, **predaja na Discordu prije 10:00** | predano |
+| M0 Temelj | sub 13:15 | kostur na javnom linku, CI zelen |
+| M1 Obilazak 1 | sub 14:30 (žiri ~14:45) | 3 obećanja; profesor napravi igru, student uđe kodom i vidi hotel i sobe |
+| M2 Obilazak 2 | sub 18:45 (žiri 19:00) | 3 obećanja rade na javnom linku |
+| M3 Obilazak 3 | ned 07:45 (žiri 08:00) | cijeli demo, demo igra, responsive |
+| **Zamrzavanje** | **ned 06:30** | poslije samo popravci |
+| M4 Predaja | ned 10:15 | prezentacija, video, PREDAJA.md, link |
 
 ## Fiksne točke (ri-hack.com, program)
 
@@ -30,7 +28,7 @@ Napomena: zamrzavanje u 20. satu (ned 06:30) je prije 3. obilaska; nakon obilask
 
 ## Pravila
 
-- Nakon zamrzavanja (ned 06) nema novih značajki, samo popravci.
-- Agencija i ugovori kreću **tek kad hotel radi od početka do kraja**.
+- Nakon zamrzavanja (ned 06:30) nema novih značajki, samo popravci.
+- Agencija i ugovori su plan za pitch, ne kod.
 - Snimiti video demoa čim radi, za slučaj da live demo zakaže.
 - Ako je netko zapeo dulje od 30 minuta, javlja timu.
