@@ -4,6 +4,7 @@ import type {
   CompanyRow,
   ContractRow,
   FinanceRow,
+  MailRow,
   PlanRow,
   PlayerRow,
   RoomRow,
@@ -18,6 +19,7 @@ import { progress } from "@/lib/engine/round";
 import { renderSituationText } from "@/lib/engine/text";
 import { MAX_ROUNDS } from "@/lib/rules";
 import { buildNews, toCityLinks, toCityView, toContractView, toFinance, toPlan, type NewsEvent } from "./city";
+import { MAIL_LIMIT, toMailMessage } from "./mail";
 import type {
   AnswerMode,
   AnswerView,
@@ -212,7 +214,8 @@ const hotelNames = (all: CompanyWithPlayer[]) =>
 /**
  * `situations` = situacije tvrtke (u odgovor idu samo one tekućeg kruga); `reports` = izvještaji svih tvrtki igre
  * (tvrtka dobije svoje, ljestvica skok kruga); `plan` = spremljeni plan tekućeg kruga (bez njega zadani);
- * `finances` = obračuni tvrtke; `departments` = stanje odjela iz osoblja predloška, soba, pokazatelja i ulaganja plana.
+ * `finances` = obračuni tvrtke; `departments` = stanje odjela iz osoblja predloška, soba, pokazatelja i ulaganja plana;
+ * `mail` = pošta tvrtke najnovija prvo (u odgovor ide zadnjih 30), `unreadMail` = broj nepročitanih (L15).
  */
 export function toMeResponse(
   input: {
@@ -225,12 +228,14 @@ export function toMeResponse(
     reports?: RoundReportRow[];
     plan?: PlanRow | null;
     finances?: FinanceRow[];
+    mail?: MailRow[];
+    unreadMail?: number;
   } & CityInput,
   now: Date = new Date(),
   pool?: SituationTemplate[],
 ): MeResponse {
   const { world, company, player, rooms, all, situations = [], reports = [] } = input;
-  const { plan = null, finances = [], contracts = [], events = [] } = input;
+  const { plan = null, finances = [], contracts = [], events = [], mail = [], unreadMail = 0 } = input;
   const leaderboard = toLeaderboard(all, reports);
   const current = situations.filter((s) => s.situation.round === world.round);
   const roundPlan = toPlan(world.round, plan, rooms);
@@ -254,6 +259,8 @@ export function toMeResponse(
       rooms: rooms.map((r) => ({ number: r.number, status: r.status as RoomStatus })),
       investments: roundPlan.investments ?? {},
     }),
+    mail: mail.slice(0, MAIL_LIMIT).map((m) => toMailMessage(m, company.id, hotelNames(all))),
+    unreadMail,
   };
 }
 

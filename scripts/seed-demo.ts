@@ -6,7 +6,7 @@ config({ path: ".env.local" });
 import { eq, inArray } from "drizzle-orm";
 import { db } from "../src/db";
 import {
-  answers, companies, contracts, customSituations, dispatches, events, finances, plans, players, rooms,
+  answers, companies, contracts, customSituations, dispatches, events, finances, mail, plans, players, rooms,
   roundReports, situations, worlds,
 } from "../src/db/schema";
 import { getWorld, listCompanies, listFinanceRows, listRooms, listSituationsWithAnswers, saveMentorQuestion } from "../src/db/queries";
@@ -88,6 +88,7 @@ async function wipeDemo(): Promise<void> {
   const cIds = db.select({ id: companies.id }).from(companies).where(eq(companies.worldId, old.id));
   const sIds = db.select({ id: situations.id }).from(situations).where(inArray(situations.companyId, cIds));
   await db.batch([
+    db.delete(mail).where(eq(mail.worldId, old.id)), // L15: prije ugovora i tvrtki (FK bez cascade)
     db.delete(answers).where(inArray(answers.situationId, sIds)),
     db.delete(situations).where(inArray(situations.companyId, cIds)),
     db.delete(rooms).where(inArray(rooms.companyId, cIds)),

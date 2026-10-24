@@ -38,7 +38,7 @@ const finance = (round: number, occupancyPct: number) =>
     cashAfter: 48000,
     investments: 0,
   }) as FinanceRow;
-const contract: ContractRow = {
+const contract = {
   id: "k",
   worldId: "w",
   companyId: "ana",
@@ -47,7 +47,7 @@ const contract: ContractRow = {
   status: "accepted",
   activeFrom: 1,
   activeTo: 1 + agency.durationRounds - 1,
-};
+} as ContractRow;
 const rooms = template.rooms.map((r) => ({ basePrice: r.basePrice }));
 const base = { company, playerName: "Ana", template, round: 2, plan, rooms, finances: [], contracts: [] };
 

@@ -76,3 +76,10 @@ export const DEPARTMENT_METRIC: Record<StaffDepartment, MetricKey> = {
   maintenance: "operations",
   management: "staff",
 };
+
+// Pregovaranje s agencijama (L15): protuponuda do NEGOTIATE_OK_PCT % u korist hotela → prihvaćeno; do
+// NEGOTIATE_COUNTER_PCT % → agencija jednom nudi sredinu; više → odbijeno i ponuda propada.
+export const NEGOTIATE_OK_PCT = 15;
+export const NEGOTIATE_COUNTER_PCT = 30;
+export const MAIL_SUBJECT_MAX = 80;
+export const MAIL_BODY_MAX = 1000;
