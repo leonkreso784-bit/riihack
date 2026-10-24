@@ -156,11 +156,6 @@ export function AnswerFlow({ input }: { input: AnswerFlowInput }) {
         ))}
       </ol>
 
-      {!input.rubric?.length && (
-        <Panel tone="sand" pad="sm">
-          <p className="text-sm">Za ovu situaciju za sada vidiš samo koliko je kriterija ispunjeno, bez njihovih tekstova.</p>
-        </Panel>
-      )}
     </div>
   );
 }

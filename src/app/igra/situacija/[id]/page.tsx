@@ -85,7 +85,12 @@ function Situation({ s }: { s: SituationView }) {
 
       {answer ? (
         <div className="grid gap-5 lg:grid-cols-2">
-          <VerdictCard answer={answer} options={s.options} character={s.character} />
+          <div className="space-y-2">
+            <VerdictCard answer={answer} options={s.options} character={s.character} />
+            <Link href={`/igra/situacija/${s.id}/tok`} className="inline-flex min-h-11 items-center gap-2 font-semibold text-secondary-foreground hover:underline">
+              Kako je tvoj odgovor prošao kroz hotel →
+            </Link>
+          </div>
           {turns.length > 0 && (
             <Panel title="Razgovor">
               <ChatPanel situationId={s.id} character={s.character} turns={turns} setTurns={setTurns} disabled />
