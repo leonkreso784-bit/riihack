@@ -29,8 +29,8 @@ na koga čeka i što smo dogovorili.
 | Tko čeka | Što | Od koga | Stanje |
 | --- | --- | --- | --- |
 | Leon L1, Simon S3 | Neon baza (`DATABASE_URL`) | Leon (prihvatiti uvjete na Vercelu) | ✅ sub 14:35, `simpolis-db` (Frankfurt), env na Vercelu |
-| Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | L1 ✅ (#62); L4 čeka |
-| Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | do tada lažni podaci |
+| Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | ✅ L1 (#62) i L4 (#74) spojeni |
+| Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | ✅ L4 spojen (#74); `NEXT_PUBLIC_USE_MOCK=0` je na Vercelu samo za Preview (PR pregledi idu na pravi API), produkcija ostaje na lažnim podacima |
 | Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | ✅ spojeno kao #63 (neobavezna polja) |
 | Simon S5, S6 | „Update branch" na #48 i #47 | Simon | ✅ spojeno |
 | Leon L7 | `judge` (S2) | Simon | ✅ spojeno (#44) |
@@ -72,13 +72,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
-- **Sad radim:** L4 (#7), API za ulaz i profesora, čim se spoje L2 i L3
-- **Sljedeće:** za M2 usporedno L5 (#8), L6 (#9), L9 (#32), L10 (#33); zatim L7 (#10), pa L11 (#34) plan i obračun
-- **Čekam od drugih:** integrator: spajanje #59 (L2), #64 (L3), #63 (ugovor)
-- **Drugi čekaju od mene:** L4 (Simon S3; Rino R1–R3 na pravim podacima)
-- **Otvoreno:** #59 L2 motor A, #64 L3 banka 6 hotela, #63 ugovor (#42)
-- **Spojeno:** L0 (#37), ugovor za osoblje i `roundGain` (#45), L1 baza (#62, 11 tablica u Neonu)
-- **Zadnje ažurirano:** sub 14:47
+- **Sad radim (agenti usporedno):** L7 (#10) krugovi, odgovori, zatvaranje; L8 (#11) smoke koraci 1–10; L11 (#34) faza A: plan, obračun mjeseca, ugovori (nove datoteke), faza B nakon L7
+- **Sljedeće:** L11 faza B (pozivi u `world.ts`, podaci u `views.ts`), smoke 14/14, zatim demo igra (L8, M3)
+- **Čekam od drugih:** — (L6 #75 čeka moj pregled struke)
+- **Drugi čekaju od mene:** L7 (Rino R4–R6 na pravim podacima), L11 (Simon S5, S6 na pravim podacima)
+- **Otvoreno:** #75 L6 osam situacija (draft, ne spajati prije pregleda)
+- **Spojeno:** L0 (#37), #45, L1 (#62), L2 (#59), L3 (#64), ugovor #63, L4 API (#74), L5 (#70), L9 (#68), L10 (#69); Neon `simpolis-db`
+- **Zadnje ažurirano:** sub 15:20
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch (S0–S7)
 
