@@ -65,11 +65,12 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen (292 testa, smoke 14/14) · produkcija https://riihack.vercel.app na **pravim podacima** od sub 17:52: `/`, `/ulaz`, `/igra`, `/profesor` 200; `/api/me` 401 bez kolačića; `/api/join` s krivim kodom 404
-- **Zadnja spajanja (sub 17:50–18:27):** #115 demo kod samo iz `.env.local`, #118 L12 AI prijedlog situacije (`POST /api/prof/[worldId]/situations/generate`), #120 BUG-009 presuda zadržava kriterije (Simon), dokumentacija #116, #117, #119, #121–#124
-- **Red čekanja:** #107 kraći komentari i čišćenje imena prijašnjeg projekta (BUG-008; nacrt, čeka Rina)
+- **CI na `main`-u:** ✅ zelen (375 testova, smoke 14/14) · produkcija https://riihack.vercel.app na pravim podacima; `/api/me` i `/api/prof/games` 401 bez kolačića
+- **Zadnja spajanja (sub 18:30–20:17):** val 3: #132 ugovor odjela, #134 plan vala 3, #135 i #137 odjeli, #139 `uqr`, #142 Financije, Plan i Odjeli, #143 L14 javni profil, #144 raspodjela financija, #147 L16 profesorski računi, #148 L15 pošta i pregovaranje, #151 QR, #152 „Završi mjesec", #128 karta grada, #154 S11 agent agencija; čišćenje imena #107 i #157 (repo čist); dokumentacija
+- **Red čekanja:** prazan
+- **Env na Vercelu:** `NEXT_PUBLIC_USE_MOCK=0` (Production, Preview), `BETTER_AUTH_SECRET` (Production, Preview) i `BETTER_AUTH_URL` (Production) postavljeni sub ~20:25
 - **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917
-- **Zadnje ažurirano:** sub 18:28
+- **Zadnje ažurirano:** sub 20:25
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
