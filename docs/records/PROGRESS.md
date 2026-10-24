@@ -6,6 +6,27 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~01:15 · obračun grada spojen, kod igre na ploči ne treba
+
+- **Spojeno:** Rinov #237 (mentor u izborniku, ocjena gumbom), Simonov #235 (botovi paralelno) i #240
+  ([BUG-032](BUGS.md#bug-032--izvještaj-mjeseca-mentor-i-podij-ne-vide-obračun-grada) riješen), sva tri 01:12.
+  Leonovo „spoji" (~01:02 i ~01:10). Integrator: prije spajanja #233, #235, #237 i #240 zajedno 522 testa, build,
+  smoke 1–18 i 20; poslije CI `main` zelen (`96a8dff`), produkcija READY 01:12.
+- **Odluka (Leon, ~01:10, preko testera):** kod igre i QR na ploči nakon pokretanja nisu potrebni
+  ([ADR-051](DECISIONS.md#adr-051)); BUG-031 spušten na nisko.
+- **Čeka Leonovo „spoji":** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)), Simonov #242 (BUG-033 i 037).
+
+## Ned 25.10. ~01:05 · plan se prenosi, obračun grada
+
+- **Spojeno:** dokumentacija #238 i Rinov #233 (animacije čekanja), oba 01:05.
+- **Graditelj, čeka Leonovo „spoji":** #240 (izvještaj, mentor i podij vide obračun grada; BUG-032, #226) i #241 (plan
+  se prenosi, protuponuda bez koristi je 400; BUG-029, [ADR-050](DECISIONS.md#adr-050)). Oba mijenjaju brojke: nakon
+  spajanja ponovni seed demo igre i smoke.
+- **Još otvoreno:** Rinov #237, Simonov #235.
+- **Tester, profesor ✅** (~01:08: registracija, igra, bot, AI prijedlog, slanje, knjižnica, uvid, promjena ocjene,
+  kraj sezone) **i mobitel 375 i 768 px ✅** bez vodoravnog scrolla. Nalazi: BUG-037 do 039 (niski); AI prijedlog
+  situacije traje 16 s.
+
 ## Ned 25.10. ~00:50 · test sezone, provjera otvorenih PR-ova
 
 - **Tester, cijela sezona na produkciji ✅:** dobar student +90 (popunjenost do 100 %), loš −54,6 (do 5 %);
