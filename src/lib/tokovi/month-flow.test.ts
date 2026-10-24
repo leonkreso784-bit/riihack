@@ -11,10 +11,10 @@ const contract = { nights: 40, pricePerNight: 60, monthlyCost: 250 } as Contract
 // A small city: the player (index 0) and three others, all settled by the real engine.
 function city(price: number, marketing: number) {
   const hotels: MarketInput[] = [
-    { companyId: "me", roomsCount: 14, reviews: 52, guests: 57, price, refPrice: 75, marketing, contractNights: 40 },
-    { companyId: "a", roomsCount: 16, reviews: 70, guests: 60, price: 80, refPrice: 80, marketing: 800, contractNights: 0 },
-    { companyId: "b", roomsCount: 12, reviews: 60, guests: 50, price: 70, refPrice: 72, marketing: 300, contractNights: 0 },
-    { companyId: "c", roomsCount: 14, reviews: 50, guests: 60, price: 78, refPrice: 78, marketing: 500, contractNights: 30 },
+    { companyId: "me", roomsCount: 14, reviews: 52, guests: 57, staff: 55, operations: 50, finance: 50, price, refPrice: 75, marketing, contractNights: 40 },
+    { companyId: "a", roomsCount: 16, reviews: 70, guests: 60, staff: 60, operations: 55, finance: 50, price: 80, refPrice: 80, marketing: 800, contractNights: 0 },
+    { companyId: "b", roomsCount: 12, reviews: 60, guests: 50, staff: 50, operations: 50, finance: 50, price: 70, refPrice: 72, marketing: 300, contractNights: 0 },
+    { companyId: "c", roomsCount: 14, reviews: 50, guests: 60, staff: 45, operations: 50, finance: 50, price: 78, refPrice: 78, marketing: 500, contractNights: 30 },
   ];
   const market = settleMarket(2, hotels);
   const finance = roundFinance(market[0], {

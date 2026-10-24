@@ -7,12 +7,14 @@ import {
   FINANCE_EFFECT_CAP,
   FINANCE_EFFECT_DIVISOR,
   FIXED_COST_PER_ROOM,
+  MARKET_QUALITY_WEIGHTS,
   MARKETING_MAX,
+  METRIC_LABELS,
   NIGHTS_PER_ROUND,
   ROUND_LABELS,
   SEASON_DEMAND_BP,
 } from "@/lib/rules";
-import type { ContractTemplate, RoundFinance } from "@/lib/types";
+import type { ContractTemplate, MetricKey, RoundFinance } from "@/lib/types";
 
 export type StepId = "start" | "ugled" | "plan" | "ugovori" | "privlacnost" | "trziste" | "nocenja" | "prihod" | "troskovi" | "dobit" | "financije" | "novac";
 export type FlowRow = { label: string; value: string; strong?: boolean };
@@ -45,6 +47,9 @@ export const eur = (n: number) => eurRaw(n).replace(/\s€$/, "\u00a0€");
 const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n));
 const signed = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${eur(Math.abs(n))}`;
 const factor = (bp: number) => (bp / 10000).toFixed(2).replace(".", ",");
+const qualityWeights = (Object.keys(MARKET_QUALITY_WEIGHTS) as MetricKey[])
+  .map((k) => `${METRIC_LABELS[k]} ${MARKET_QUALITY_WEIGHTS[k]} %`)
+  .join(", ");
 
 // The engine's own price factor (#162); reviews and guests are left out because they cancel in a ratio.
 export function priceBpOf(price: number, ref: number) {
@@ -156,9 +161,12 @@ export function buildMonthFlow(
       id: "ugled",
       title: "Ugled",
       small: "Nije spremljeno uz obračun",
-      inputs: [{ label: "Recenzije i zadovoljstvo gostiju", value: "nije spremljeno uz obračun" }],
-      rule: ["Ugled = pokazatelj Recenzije + pokazatelj Zadovoljstvo gostiju (u trenutku zatvaranja mjeseca)."],
-      note: "Točan zbroj nije spremljen uz obračun, pa ga ovdje ne izmišljamo. Što je veći, to si zanimljiviji turistima, a gradi se kroz mjesece.",
+      inputs: [{ label: "Svih pet pokazatelja", value: "nije spremljeno uz obračun" }],
+      rule: [
+        `Kvaliteta = ponderirani prosjek svih pet pokazatelja (${qualityWeights}), u trenutku zatvaranja mjeseca.`,
+        "Ugled = 1,00 kod kvalitete 50, raste do 2,00 kod 100; ispod 50 pada s kvadratom (36 → 0,52, 25 → 0,25).",
+      ],
+      note: "Točan iznos nije spremljen uz obračun, pa ga ovdje ne izmišljamo. Hotel koji ne rješava situacije brzo gubi goste, i u kolovozu. Gradi se kroz mjesece.",
       outputs: [{ label: "Ugled", value: "ulazi u sljedeći korak" }],
     },
     {
@@ -225,7 +233,7 @@ export function buildMonthFlow(
         { label: "Tvoja ugovorena noćenja", value: num(f.contractNights) },
       ],
       rule: [
-        `Turisti u gradu = ${demandBp / 100} % svih noćenja u gradu u ovom mjesecu.`,
+        `Turisti u gradu = ${demandBp / 100} % svih noćenja u gradu u ovom mjesecu; hotel s ugledom ispod 1,00 dovodi toliko manje turista.`,
         "Slobodni turisti = turisti − ugovorena noćenja svih hotela.",
         "Tvoj dio = slobodni turisti × tvoji bodovi ÷ zbroj bodova svih hotela.",
       ],
