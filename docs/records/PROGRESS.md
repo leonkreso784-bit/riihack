@@ -20,7 +20,8 @@ Vremena su lokalna (CEST).
   zadan na produkciji. Novo: napredak je negativan za sve hotele od prvog mjeseca
   ([BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), visok), javljeno graditelju.
 - **Sudari (javljeno graditelju):** Simonov #206 već popravlja BUG-020b; Simonov #205 radi botove cijele, i logiku
-  igre (bot po pravilima, težina Lako/Srednje/Teško), pa graditelj ne kreće na motor botova dok Leon ne odluči.
+  igre (bot po pravilima, težina Lako/Srednje/Teško), pa graditelj ne kreće na motor botova. Leon (~22:50): spaja se #205, graditelj ga pregledava
+  ([ADR-044](DECISIONS.md#adr-044)).
 - **Graditelj (22:30–22:40):** demo igra ponovno posijana nakon #194, smoke na produkciji 19/19 (22:30). Knjižnica
   demo računa dobila 4 situacije (#203; Leon: „knjižnica je prazna"). Drugo čišćenje starih testnih igara (#207):
   obrisano 47, ostale 33 (demo, igre na demo računu, testerove QA igre, „Smoke …", Simonove probe). Otvoreni PR-ovi:

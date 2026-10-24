@@ -32,7 +32,9 @@ popravka balansa.
 konkurencije i tvrtki, pa ekonomija grada ne radi.
 **Odluka.** Botovi su hoteli i dobavljači koje vodi računalo, da i igra s malo ljudi ima ekonomiju (Leon, ~22:20):
 - bot odlučuje **po pravilima motora** (npr. cijena oko referentne, mala promjena prema popunjenosti), ne AI;
-- **graditelj** radi dio u motoru (bot u obračunu tržišta), a **Simon** sučelje i opis botova;
+- ~~graditelj radi dio u motoru, Simon sučelje~~; izmjena (Leon, ~22:50): botove **cijele radi Simon** u
+  [#205](https://github.com/leonkreso784-bit/riihack/pull/205) (bot igra po pravilima, težina Lako/Srednje/Teško),
+  graditelj ga pregledava jer dira `src/lib/game/` i `types.ts`;
 - **profesor ih uključi** pri stvaranju igre (npr. „dopuni grad botovima"), ne dodaju se sami.
 
 **Posljedice.** Isti ishod za isto stanje, brojke računa samo motor (ADR-002). Demo igra ostaje kakva jest dok je
