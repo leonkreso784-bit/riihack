@@ -23,7 +23,7 @@ kasni ruši recenzije hotelima koje opskrbljuje.
 
 Poslovni model u [PREDAJA.md](../../PREDAJA.md) još je označen 🟨: licenca po kolegiju ili semestru za fakultete i
 srednje škole, besplatna proba za profesora, kasnije obuka novih zaposlenika (hotelski lanci, agencije). Prvi korisnik:
-FMTU Opatija, gdje je HotelixSim (isti pristup) pred pilotom.
+FMTU Opatija.
 
 ## Što se ne mijenja
 
