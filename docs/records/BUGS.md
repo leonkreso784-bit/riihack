@@ -10,15 +10,6 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-### BUG-011 · L16 bez `BETTER_AUTH_SECRET`: stvaranje igre vraća 500
-- **Status:** 🟡 graditelj popravio, integrator provjerava (sub ~19:50, PR [#147](https://github.com/leonkreso784-bit/riihack/pull/147),
-  nije spojen) · **Težina:** kritičan da je spojeno (profesor ne može napraviti igru)
-- **Opis:** u provjeri #147 `POST /api/worlds` bez varijable `BETTER_AUTH_SECRET` vraća 500.
-- **Uzrok:** Better Auth bez tajne baca grešku „default secret", iako igra s kodom računa ne treba.
-- **Rješenje:** 🟨 popravak u #147 (računi se isključuju bez tajne); zapisati kad integrator potvrdi.
-- **Lekcija:** nova ovisnost s tajnom mora raditi i kad tajne nema, ako je značajka neobavezna; provjeri glavni tok
-  bez nove env varijable prije spajanja.
-
 ### BUG-008 · Ime prijašnjeg projekta još je u repou
 - **Status:** 🟡 kod čist (#107, 19:58), plan još ne (provjera `git grep -i` na `main`-u, sub 20:00) · **Težina:** srednji (žiri čita repo;
   pravilo tima je da se ime nigdje ne piše)
@@ -44,6 +35,17 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-011 · L16 bez `BETTER_AUTH_SECRET`: stvaranje igre vraća 500
+- **Status:** ✅ riješen 24.10. 20:06 (uhvaćeno u provjeri prije spajanja [#147](https://github.com/leonkreso784-bit/riihack/pull/147)) ·
+  **Težina:** kritičan da je spojeno (profesor ne može napraviti igru)
+- **Opis:** u provjeri #147 (~19:50) `POST /api/worlds` bez varijable `BETTER_AUTH_SECRET` vraća 500.
+- **Uzrok:** Better Auth bez tajne baca grešku „default secret", iako igra s kodom računa ne treba.
+- **Rješenje:** bez tajne `getProfUser` vraća `null`, pa stvaranje igre radi (smoke korak 1 ✅); dopuštene domene
+  sužene na `riihack.vercel.app` i preview domene projekta. Ostaje: `/api/auth/*` vraća 500 dok varijable
+  `BETTER_AUTH_*` nisu postavljene na Vercelu (🟨 čeka Leona).
+- **Lekcija:** nova ovisnost s tajnom mora raditi i kad tajne nema, ako je značajka neobavezna; provjeri glavni tok
+  bez nove env varijable prije spajanja.
 
 ### BUG-009 · Presuda vlastitog odgovora pada na rezervu: kvaliteta 3, bez obrazloženja
 - **Status:** ✅ riješen 24.10. 18:07 ([#120](https://github.com/leonkreso784-bit/riihack/pull/120), Simon; 292 testa, smoke

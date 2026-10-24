@@ -7,6 +7,10 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#147](https://github.com/leonkreso784-bit/riihack/pull/147) | 20:06 | Leon | L16: profesorski računi (Better Auth), moje igre, vlasnik igre (BUG-011 riješen) |
+| [#154](https://github.com/leonkreso784-bit/riihack/pull/154) | 20:06 | Simon | S11: AI agent agencije piše odgovor na protuponudu, brojke iz motora, rezerva kad AI padne |
+| [#155](https://github.com/leonkreso784-bit/riihack/pull/155) | 20:06 | Leon | `scripts/lock-merge.py`: nova ovisnost bez kvarenja lock datoteke na Windowsu |
+| [#156](https://github.com/leonkreso784-bit/riihack/pull/156) | 20:06 | Leon | dokumentacija: obilazak 2, L15, karta grada |
 | [#107](https://github.com/leonkreso784-bit/riihack/pull/107) | 19:58 | Leon | kraći komentari u sučelju, bez imena prijašnjeg projekta (BUG-008) |
 | [#128](https://github.com/leonkreso784-bit/riihack/pull/128) | 19:58 | Simon | S10/R12: karta grada kao izometrijska društvena igra, kartica tvrtke (Rinov ok) |
 | [#152](https://github.com/leonkreso784-bit/riihack/pull/152) | 19:57 | Rino | R4: „Završi mjesec" za studenta |

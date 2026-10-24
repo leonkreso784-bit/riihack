@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 20:00–20:10 · profesorski računi i AI agent agencije na `main`-u
+
+- **Spojeno u 20:06 (sve na Leonovo izravno „spoji"):** L16 profesorski računi (#147) po
+  [ADR-036](DECISIONS.md#adr-036), S11 AI agent agencije (#154) po [ADR-033](DECISIONS.md#adr-033),
+  `scripts/lock-merge.py` (#155), dokumentacija #156. Zajedno 375 testova, smoke 14/14, CI zelen, produkcija READY.
+- **BUG-011 riješen:** igra s kodom radi i bez `BETTER_AUTH_SECRET`
+  ([BUG-011](BUGS.md#bug-011--l16-bez-better_auth_secret-stvaranje-igre-vraća-500)).
+- **Čeka Leona:** varijable `BETTER_AUTH_*` na Vercelu; dok ih nema, `/api/auth/*` vraća 500 i prijava računom ne radi.
+
 ## Sub 24.10. 19:50–20:00 · L15 i karta grada na `main`-u, predaja sesija
 
 - **Obilazak žirija 2 (~19:00):** 3 minute aplikacije uživo, odgovor pozitivan, bez primjedbi i bez novih zahtjeva.
