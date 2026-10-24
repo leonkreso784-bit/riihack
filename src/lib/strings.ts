@@ -9,4 +9,12 @@ export const t = {
     error: "Greška",
     back: "Natrag",
   },
+  nav: {
+    label: "Navigacija igre",
+    hotel: "Hotel",
+    rooms: "Sobe",
+    plan: "Plan",
+    finances: "Financije",
+    city: "Grad",
+  },
 };
