@@ -86,7 +86,7 @@ na koga čeka i što smo dogovorili.
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
 - **Sad radim (23:20):** čekam spajanje #221 (BUG-027 kasni ulaz, demo igra 15 mjesta), zatim završno čišćenje QA igara, seed demo igre i smoke na produkciji. Spojeno večeras: #194 balans cijene, #213 BUG-024 pokazatelji, #214 BUG-026 učinak odgovora, #203 knjižnica demo računa, #207 čišćenje starih testova, #208, #199
-- **Sljedeće:** od 00:00 samo popravci bugova od testera (zamrzavanje); #209 kalibracija ide nakon natjecanja (pitch: sljedeći korak)
+- **Sljedeće:** popravci bugova od testera i tima (bez zamrzavanja, ADR-031, Leon 23:40); #209 kalibracija ide nakon natjecanja (pitch: sljedeći korak)
 - **Čekam od drugih:** Leon: „spoji #217" (plan botova); Rino: ok za #212 (BUG-019 i BUG-021)
 - **Drugi čekaju od mene:** —
 - **Otvoreno:** #169 L16 ekrani računa (zelen)
