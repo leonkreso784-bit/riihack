@@ -73,13 +73,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim:** val 3 (plan u PR-u #134): L14 javni profil hotela za kartu (agent), L16 profesorski računi s Better Authom (agent, backend)
-- **Sljedeće:** L15 pošta i pregovaranje s agencijama, L17 knjižnica situacija, L18 poruke među hotelima, L19 suradnja; L8 demo igra i smoke za val 3
-- **Čekam od drugih:** Leon: „spoji #134" (plan), odgovor na 3 otvorena pitanja u planu
-- **Drugi čekaju od mene:** Simon: L14 (`/api/world/[worldId]/companies`) za kartu; Rino: #137 za stranicu odjela (ugovor #132 je na mainu)
-- **Otvoreno:** #137 L13 odjeli (CI zelen, kod integratora), #134 plan vala 3
-- **Spojeno:** L0–L12, #118 AI prijedlog situacije, #132 ugovor odjela; shema: `plans.investments`, `finances.investments`. **Pravila:** nitko ne pokreće `npm run db:push`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** sub 19:00
+- **Sad radim:** predaja na novu sesiju graditelja (prompt spreman, radna stabla raščišćena)
+- **Sljedeće:** L17 knjižnica situacija (nakon #147), L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3, čišćenje imena prijašnjeg projekta
+- **Čekam od drugih:** Leon: „spoji #147" i potvrda za `BETTER_AUTH_*` na Vercelu (integrator); odgovori na 3 otvorena pitanja u planu vala 3
+- **Drugi čekaju od mene:** —
+- **Otvoreno:** #147 L16 profesorski računi (zelen; bez tajne igra radi s kodom), #155 `scripts/lock-merge.py`
+- **Spojeno:** L0–L12; val 3: L13 odjeli (#132, #137), L14 javni profil (#143), raspodjela financija (#144), L15 pošta i pregovaranje (#148), uqr (#139), plan (#134). Shema ručno: ulaganja, raspodjela, Better Auth tablice + `worlds.owner_id`, `mail` + pregovaranje. **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** sub 20:05
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
