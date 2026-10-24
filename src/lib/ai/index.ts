@@ -5,3 +5,4 @@ export { mentorQuestion, mentorDebrief } from "./mentor";
 export { aiEnabled, MODELS, withAi } from "./client";
 export { CHARACTER_FALLBACK, fallbackDebrief, fallbackMentorQuestion, fallbackProposal } from "./fallbacks";
 export { proposeSituation } from "./propose";
+export { agencyReply } from "./agency";

@@ -110,3 +110,29 @@ export function fallbackProposal(input: SituationIdeaInput): SituationDraft {
     effects: { [key]: 3 },
   };
 }
+
+// S11: agency reply when the AI is off or twice invalid. Same text as `agencyFallback` in game/mail.ts, copied here
+// because game/mail.ts imports the AI module (a cycle otherwise). Keep both identical.
+export type AgencyFallbackInput = {
+  business: { name: string };
+  contract: { nights: number };
+  outcome: "accepted" | "countered" | "rejected";
+  agreed: { pricePerNight: number; monthlyCost: number };
+};
+
+export function agencyReplyFallback(i: AgencyFallbackInput): string {
+  const eur = (n: number) => `${n.toLocaleString("hr-HR")} €`;
+  const parts: string[] = [];
+  if (i.contract.nights > 0) parts.push(`${i.contract.nights} noćenja mjesečno po ${eur(i.agreed.pricePerNight)}`);
+  if (i.agreed.monthlyCost > 0) parts.push(`naknada ${eur(i.agreed.monthlyCost)} mjesečno`);
+  const terms = parts.join(", ");
+  const sign = `Srdačan pozdrav,\n${i.business.name}`;
+  switch (i.outcome) {
+    case "accepted":
+      return `Poštovani,\n\nprihvaćamo vaš prijedlog. Dogovoreno: ${terms}. Ugovor vrijedi od ovog mjeseca.\n\n${sign}`;
+    case "countered":
+      return `Poštovani,\n\ntoliko ne možemo, ali nađimo se na pola puta: ${terms}. Javite nam do kraja mjeseca prihvaćate li.\n\n${sign}`;
+    case "rejected":
+      return `Poštovani,\n\nnažalost, vaš je prijedlog predaleko od naše ponude, pa ovaj put odustajemo od suradnje.\n\n${sign}`;
+  }
+}
