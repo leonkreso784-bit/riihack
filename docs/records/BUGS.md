@@ -10,6 +10,28 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-039 · „Dodaj iz knjižnice" dodaje situaciju koja je već u igri
+- **Status:** 🔴 otvoren · **Težina:** nizak
+- **Opis:** tester (ned ~01:08, produkcija): profesor iz knjižnice može dodati situaciju koja je već u igri, pa je
+  igra ima dvaput.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-038 · Situacija na mobitelu sama skrola i skrije naslov
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (ned ~01:08, produkcija, 375 px): pri otvaranju situacije stranica sama skrola 178 px, a naslov
+  ostane pod zaglavljem.
+- **Uzrok:** `scrollIntoView` na kraj razgovora pri učitavanju (`src/components/chat-panel.tsx:50`).
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-037 · „Još 2 situacija čeka" u Tokovima odjela
+- **Status:** 🔴 otvoren (Simon) · **Težina:** nizak
+- **Opis:** tester (ned ~01:08, produkcija): množina uz broj je kriva.
+- **Uzrok:** obje grane uvjeta daju „situacija čeka" (`src/components/tokovi/departments-flow.tsx:478`).
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-036 · Sitnice sučelja: padež u pošti, prazan odgovor bez potvrde
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ); prazan odgovor na situaciju

@@ -13,6 +13,9 @@ Vremena su lokalna (CEST).
   se prenosi, protuponuda bez koristi je 400; BUG-029, [ADR-050](DECISIONS.md#adr-050)). Oba mijenjaju brojke: nakon
   spajanja ponovni seed demo igre i smoke.
 - **Još otvoreno:** Rinov #237, Simonov #235.
+- **Tester, profesor ✅** (~01:08: registracija, igra, bot, AI prijedlog, slanje, knjižnica, uvid, promjena ocjene,
+  kraj sezone) **i mobitel 375 i 768 px ✅** bez vodoravnog scrolla. Nalazi: BUG-037 do 039 (niski); AI prijedlog
+  situacije traje 16 s.
 
 ## Ned 25.10. ~00:50 · test sezone, provjera otvorenih PR-ova
 
