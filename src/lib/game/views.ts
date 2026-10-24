@@ -1,14 +1,24 @@
 // Čiste funkcije: retci iz baze → oblici odgovora iz src/lib/types.ts. Bez baze, da se mogu testirati.
-import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "@/db/schema";
+import type {
+  AnswerRow,
+  CompanyRow,
+  ContractRow,
+  FinanceRow,
+  PlanRow,
+  PlayerRow,
+  RoomRow,
+  RoundReportRow,
+  SituationRow,
+  WorldRow,
+} from "@/db/schema";
 import { SITUATIONS, getHotel } from "@/content";
-import { refPrice } from "@/lib/engine/economy";
 import { progress } from "@/lib/engine/round";
 import { renderSituationText } from "@/lib/engine/text";
 import { MAX_ROUNDS } from "@/lib/rules";
+import { buildNews, toCityLinks, toCityView, toContractView, toFinance, toPlan, type NewsEvent } from "./city";
 import type {
   AnswerMode,
   AnswerView,
-  CityView,
   CompanyDetailResponse,
   CompanyView,
   LeaderboardRow,
@@ -187,12 +197,16 @@ const companyReports = (reports: RoundReportRow[], companyId: string) =>
     .sort((a, b) => a.round - b.round)
     .map(toReportView);
 
-// L11: gradske tvrtke i aktivni ugovori.
-const toCityView = (leaderboard: LeaderboardRow[]): CityView => ({ businesses: [], hotels: leaderboard, links: [] });
+/** Grad iz redaka: `contracts` = svi ugovori igre (linije karte), `events` = događaji za vijesti (listNewsEvents). */
+type CityInput = { contracts?: ContractRow[]; events?: NewsEvent[] };
+
+const hotelNames = (all: CompanyWithPlayer[]) =>
+  Object.fromEntries(all.map(({ company }) => [company.id, company.name]));
 
 /**
  * `situations` = situacije tvrtke (u odgovor idu samo one tekućeg kruga); `reports` = izvještaji svih tvrtki igre
- * (tvrtka dobije svoje, ljestvica skok kruga).
+ * (tvrtka dobije svoje, ljestvica skok kruga); `plan` = spremljeni plan tekućeg kruga (bez njega zadani);
+ * `finances` = obračuni tvrtke.
  */
 export function toMeResponse(
   input: {
@@ -203,11 +217,14 @@ export function toMeResponse(
     all: CompanyWithPlayer[];
     situations?: SituationWithAnswer[];
     reports?: RoundReportRow[];
-  },
+    plan?: PlanRow | null;
+    finances?: FinanceRow[];
+  } & CityInput,
   now: Date = new Date(),
   pool?: SituationTemplate[],
 ): MeResponse {
   const { world, company, player, rooms, all, situations = [], reports = [] } = input;
+  const { plan = null, finances = [], contracts = [], events = [] } = input;
   const leaderboard = toLeaderboard(all, reports);
   const current = situations.filter((s) => s.situation.round === world.round);
   return {
@@ -216,25 +233,28 @@ export function toMeResponse(
     situations: toSituationViews(current, company.name, pool),
     leaderboard,
     reports: companyReports(reports, company.id),
-    plan: { round: world.round, price: refPrice(rooms), marketing: 0 }, // L11: spremljeni plan (getPlan)
-    contracts: [], // L11
-    finances: [], // L11
-    city: toCityView(leaderboard),
-    news: [], // L11
+    plan: toPlan(world.round, plan, rooms),
+    contracts: contracts
+      .filter((c) => c.companyId === company.id)
+      .sort((a, b) => b.roundOffered - a.roundOffered)
+      .map(toContractView),
+    finances: [...finances].sort((a, b) => a.round - b.round).map(toFinance),
+    city: toCityView(leaderboard, toCityLinks(contracts, world.round)),
+    news: buildNews(events, hotelNames(all)),
   };
 }
 
 export function toProfState(
-  input: { world: WorldRow; all: CompanyWithPlayer[]; reports?: RoundReportRow[] },
+  input: { world: WorldRow; all: CompanyWithPlayer[]; reports?: RoundReportRow[] } & CityInput,
   now: Date = new Date(),
 ): ProfStateResponse {
-  const { world, all, reports = [] } = input;
+  const { world, all, reports = [], contracts = [], events = [] } = input;
   const players = toLeaderboard(all, reports);
   return {
     world: { ...toWorldView(world, now), joinCode: world.joinCode, maxPlayers: world.maxPlayers },
     players,
-    city: toCityView(players),
-    news: [], // L11
+    city: toCityView(players, toCityLinks(contracts, world.round)),
+    news: buildNews(events, hotelNames(all)),
   };
 }
 

@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
-import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "@/db/schema";
-import { HOTELS } from "@/content";
+import type {
+  AnswerRow,
+  CompanyRow,
+  ContractRow,
+  FinanceRow,
+  PlayerRow,
+  RoomRow,
+  RoundReportRow,
+  SituationRow,
+  WorldRow,
+} from "@/db/schema";
+import { CITY, CONTRACTS, HOTELS } from "@/content";
 import { PRICE_MIN } from "@/lib/rules";
 import type { Metrics, SituationTemplate } from "@/lib/types";
 import {
@@ -132,7 +142,7 @@ describe("toMeResponse", () => {
     });
   });
 
-  it("plan s prosjekom cijene soba (zaokruženo), bez situacija i izvještaja prazno, prazni dijelovi do L11", () => {
+  it("bez podataka grada: zadani plan (prosjek cijena soba), prazni ugovori, obračuni, vijesti i linije", () => {
     expect(me.plan).toEqual({ round: 0, price: 85, marketing: 0 });
     expect(me.situations).toEqual([]);
     expect(me.reports).toEqual([]);
@@ -140,7 +150,7 @@ describe("toMeResponse", () => {
     expect(me.finances).toEqual([]);
     expect(me.news).toEqual([]);
     expect(me.leaderboard).toHaveLength(2);
-    expect(me.city).toEqual({ businesses: [], hotels: me.leaderboard, links: [] });
+    expect(me.city).toEqual({ businesses: CITY, hotels: me.leaderboard, links: [] });
   });
 
   it("prosjek se zaokružuje, bez soba najniža cijena", () => {
@@ -150,14 +160,111 @@ describe("toMeResponse", () => {
   });
 });
 
+// ---- L11: plan, ugovori, obračuni, karta i vijesti ----
+
+const agency = CONTRACTS.find((c) => c.nights > 0)!;
+const laundry = CONTRACTS.find((c) => c.nights === 0)!;
+const running: WorldRow = { ...world, status: "running", round: 2 };
+
+function contractRow(id: string, companyId: string, over: Partial<ContractRow>): ContractRow {
+  return { id, worldId: world.id, companyId, templateId: agency.id, roundOffered: 2, status: "offered", activeFrom: null, activeTo: null, ...over };
+}
+
+function financeRow(companyId: string, round: number, profit: number): FinanceRow {
+  return {
+    id: `f-${companyId}-${round}`,
+    companyId,
+    round,
+    nights: 300,
+    contractNights: 0,
+    capacityNights: 600,
+    occupancyPct: 50,
+    marketSharePct: 50,
+    revenue: 20000 + profit,
+    costs: 20000,
+    profit,
+    cashAfter: 20000 + profit,
+  };
+}
+
+describe("toMeResponse s gradom", () => {
+  const a = bundle("a", 1, 20000);
+  const b = bundle("b", 2, 20000);
+  const contracts = [
+    contractRow("k-old", "a", { roundOffered: 1, status: "accepted", activeFrom: 1, activeTo: 2, templateId: laundry.id }),
+    contractRow("k-new", "a", {}),
+    contractRow("k-b", "b", { status: "accepted", activeFrom: 2, activeTo: 2 }),
+  ];
+  const me = toMeResponse(
+    {
+      world: running,
+      ...a,
+      rooms: [room("101", 70), room("102", 90)],
+      all: [a, b],
+      plan: { id: "p", companyId: "a", round: 2, price: 60, marketing: 1000 },
+      contracts,
+      finances: [financeRow("a", 2, 500), financeRow("a", 1, 1000)],
+      events: [
+        { type: "player.joined", round: 0, companyId: "a", payload: { hotelName: "Staro ime", place: "Rijeka" }, at: new Date("2026-10-24T14:00:00Z") },
+        { type: "contract.accepted", round: 2, companyId: "b", payload: { businessName: "Agencija Adria" }, at: new Date("2026-10-24T14:10:00Z") },
+      ],
+    },
+    NOW,
+  );
+
+  it("spremljeni plan tekućeg kruga", () => expect(me.plan).toEqual({ round: 2, price: 60, marketing: 1000 }));
+
+  it("samo svoji ugovori, najnoviji prvo; prihvaćen ima rok", () => {
+    expect(me.contracts.map((c) => c.id)).toEqual(["k-new", "k-old"]);
+    expect(me.contracts[0]).toMatchObject({ status: "offered", title: agency.title, nights: agency.nights });
+    expect(me.contracts[0].activeUntilRound).toBeUndefined();
+    expect(me.contracts[1]).toMatchObject({ status: "accepted", activeUntilRound: 2 });
+  });
+
+  it("obračuni po krugu", () => {
+    expect(me.finances.map((f) => [f.round, f.profit])).toEqual([[1, 1000], [2, 500]]);
+    expect(me.finances[0]).not.toHaveProperty("id");
+  });
+
+  it("karta: tvrtke grada i linije aktivnih ugovora svih hotela u tekućem krugu", () => {
+    expect(me.city.businesses).toEqual(CITY);
+    expect(me.city.links).toEqual([
+      { companyId: "a", businessId: laundry.businessId },
+      { companyId: "b", businessId: agency.businessId },
+    ]);
+  });
+
+  it("vijesti s imenima hotela iz igre, najnovije prvo", () => {
+    expect(me.news.map((n) => n.text)).toEqual([
+      `Novi ugovor: Hotel b i Agencija Adria`,
+      `Novi hotel u gradu: Hotel a (Rijeka)`,
+    ]);
+  });
+});
+
 describe("toProfState", () => {
   it("kod igre i broj mjesta, igrači redom, bez profesorskog koda", () => {
     const s = toProfState({ world, all: [bundle("a", 1, 20000), bundle("b", 2, 20000)] }, NOW);
     expect(s.world).toMatchObject({ id: world.id, joinCode: "KVRN26", maxPlayers: 3, serverNow: NOW.toISOString() });
     expect(s.players.map((p) => p.companyId)).toEqual(["a", "b"]);
-    expect(s.city.hotels).toEqual(s.players);
+    expect(s.city).toEqual({ businesses: CITY, hotels: s.players, links: [] });
     expect(s.news).toEqual([]);
     expect(JSON.stringify(s)).not.toContain(world.profCodeHash);
+  });
+
+  it("karta s linijama i vijesti grada", () => {
+    const all = [bundle("a", 1, 20000), bundle("b", 2, 20000)];
+    const s = toProfState(
+      {
+        world: running,
+        all,
+        contracts: [contractRow("k-b", "b", { status: "accepted", activeFrom: 2, activeTo: 3 })],
+        events: [{ type: "round.settled", round: 1, companyId: null, payload: { topCompanyId: "b", occupancyPct: 91 }, at: NOW }],
+      },
+      NOW,
+    );
+    expect(s.city.links).toEqual([{ companyId: "b", businessId: agency.businessId }]);
+    expect(s.news).toEqual([{ at: NOW.toISOString(), text: "Lipanj: najpopunjeniji je Hotel b (91 %)" }]);
   });
 });
 

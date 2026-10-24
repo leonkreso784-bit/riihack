@@ -8,9 +8,9 @@ import { assignHotel } from "@/lib/engine/assign";
 import { hashCode, normalizeCode } from "@/lib/engine/codes";
 import { validateJoin } from "@/lib/engine/validate";
 import { HttpError } from "@/lib/http";
-import type { JoinRequest, JoinResponse, MeResponse, Room } from "@/lib/types";
+import type { JoinRequest, JoinResponse, Room } from "@/lib/types";
 import type { requirePlayer } from "@/lib/session";
-import { toMeResponse, toRoom } from "./views";
+import { toRoom } from "./views";
 
 type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
 
@@ -85,11 +85,6 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
     payload: { name, hotelName, templateId: hotel.id, place: hotel.place },
   });
   return { token, res: { companyId, hotelName, place: hotel.place, stars: hotel.stars } };
-}
-
-export async function loadMe(ctx: PlayerCtx): Promise<MeResponse> {
-  const [roomRows, all] = await Promise.all([listRooms(ctx.company.id), listCompanies(ctx.world.id)]);
-  return toMeResponse({ ...ctx, rooms: roomRows, all });
 }
 
 export async function loadRooms(ctx: PlayerCtx): Promise<Room[]> {

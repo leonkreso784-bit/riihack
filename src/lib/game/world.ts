@@ -5,12 +5,15 @@ import { companies, worlds } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
 import {
   getCompanyInWorld,
+  getPlanRow,
   getWorld,
   getWorldByProfCodeHash,
   listCompanies,
   listCompanyReports,
+  listFinanceRows,
   listRooms,
   listSituationsWithAnswers,
+  listWorldContracts,
   listWorldReports,
   logEvent,
 } from "@/db/queries";
@@ -28,6 +31,7 @@ import type {
   ProfLoginResponse,
   ProfStateResponse,
 } from "@/lib/types";
+import { createOffers, listNewsEvents, settleCityRound } from "./city";
 import { closeRoundForAll, openRound } from "./round";
 import { toCompanyDetail, toMeResponse, toProfState } from "./views";
 
@@ -83,8 +87,9 @@ export async function startWorld(worldId: string): Promise<WorldRow> {
     .returning();
   if (!rows[0]) throw new HttpError(409, "Igra je već krenula");
   await logEvent({ worldId, round: 1, type: "world.started", payload: { players: n } });
-  // L11: ovdje i ponude ugovora za krug 1 (createOffers), ako se ne stvaraju unutar openRound.
-  return openRound(rows[0], 1);
+  const opened = await openRound(rows[0], 1);
+  await createOffers(opened, 1);
+  return opened;
 }
 
 /** Rok u minutama iz OpenRoundRequest: bez roka null, inače cijeli broj 1–180. */
@@ -108,8 +113,9 @@ export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Pro
   const k = world.round;
 
   await closeRoundForAll(world, k);
-  // L11: ovdje settleCityRound(world, k): obračun mjeseca k za cijeli grad, nakon zatvaranja krugova i prije
-  // prelaska u k + 1. Ima vlastitu zaštitu (settled_round), pa smije biti pozvan i iz drugog istodobnog klika.
+  // Obračun mjeseca k za cijeli grad, nakon zatvaranja krugova i prije prelaska u k + 1. Ima vlastitu zaštitu
+  // (settled_round), pa smije biti pozvan i iz drugog istodobnog klika.
+  await settleCityRound(world, k);
 
   const [next] = await db
     .update(worlds)
@@ -118,8 +124,9 @@ export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Pro
     .returning();
   if (!next) return (await getWorld(world.id)) ?? world; // drugi istodobni klik: krug je već otvoren
 
-  // L11: ovdje ponude ugovora za krug k + 1 (createOffers(next, k + 1)), ili unutar openRound.
-  return openRound(next, k + 1, deadlineMinutes);
+  const opened = await openRound(next, k + 1, deadlineMinutes);
+  await createOffers(opened, k + 1);
+  return opened;
 }
 
 /** Kraj sezone: zatvori tekući krug svima, status finished, bez roka. Ponovni poziv vrati isto stanje. */
@@ -127,7 +134,7 @@ export async function finishWorld(world: WorldRow): Promise<WorldRow> {
   if (world.status === "lobby") throw new HttpError(409, "Igra još nije krenula");
   if (world.status === "finished") return world;
   await closeRoundForAll(world, world.round);
-  // L11: ovdje settleCityRound(world, world.round): obračun zadnjeg mjeseca.
+  await settleCityRound(world, world.round); // obračun zadnjeg mjeseca
   const [done] = await db
     .update(worlds)
     .set({ status: "finished", roundDeadline: null })
@@ -162,25 +169,34 @@ export async function expireRoundIfDue(
     .returning();
   if (!world) return false;
   await closeRoundForAll(world, world.round);
-  // L11: ovdje settleCityRound(world, world.round): rok je zatvorio mjesec.
+  await settleCityRound(world, world.round); // rok je zatvorio mjesec
   await logEvent({ worldId, round: world.round, type: "round.expired", payload: { round: world.round } });
   return true;
 }
 
 export async function loadProfState(world: WorldRow): Promise<ProfStateResponse> {
-  const [all, reports] = await Promise.all([listCompanies(world.id), listWorldReports(world.id)]);
-  return toProfState({ world, all, reports });
+  const [all, reports, contracts, events] = await Promise.all([
+    listCompanies(world.id),
+    listWorldReports(world.id),
+    listWorldContracts(world.id),
+    listNewsEvents(world.id),
+  ]);
+  return toProfState({ world, all, reports, contracts, events });
 }
 
-/** GET /api/me: tvrtka, situacije tekućeg kruga, izvještaji i ljestvica sa skokom kruga. */
+/** GET /api/me: tvrtka, situacije tekućeg kruga, izvještaji, ljestvica, plan, ugovori, obračuni, grad i vijesti. */
 export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
-  const [rooms, all, situations, reports] = await Promise.all([
+  const [rooms, all, situations, reports, plan, contracts, finances, events] = await Promise.all([
     listRooms(ctx.company.id),
     listCompanies(ctx.world.id),
     listSituationsWithAnswers(ctx.company.id, ctx.world.round),
     listWorldReports(ctx.world.id),
+    getPlanRow(ctx.company.id, ctx.world.round),
+    listWorldContracts(ctx.world.id),
+    listFinanceRows(ctx.company.id),
+    listNewsEvents(ctx.world.id),
   ]);
-  return toMeResponse({ ...ctx, rooms, all, situations, reports });
+  return toMeResponse({ ...ctx, rooms, all, situations, reports, plan, contracts, finances, events });
 }
 
 /** GET /api/prof/[worldId]/companies/[id]: uvid u jednu tvrtku; tvrtka iz druge igre → 404. */
