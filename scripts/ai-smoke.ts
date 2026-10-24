@@ -4,7 +4,8 @@ config({ path: ".env.local" });
 import { generateText, wrapLanguageModel } from "ai";
 import { judge } from "../src/lib/ai/judge";
 import { streamCharacterReply } from "../src/lib/ai/character";
-import type { JudgeInput } from "../src/lib/types";
+import { mentorDebrief, mentorQuestion } from "../src/lib/ai/mentor";
+import type { JudgeInput, MentorInput } from "../src/lib/types";
 import { aiEnabled, MODELS } from "../src/lib/ai/client";
 import { anthropic } from "@ai-sdk/anthropic";
 
@@ -72,6 +73,33 @@ async function smokeCharacter() {
   console.log(`lik Marko, poruka 1/6 (${Date.now() - started} ms): ${text}`);
 }
 
+async function smokeMentor() {
+  const input: MentorInput = {
+    hotelName: "Hotel Smoke",
+    round: 1,
+    metricsBefore: { guests: 58, reviews: 61, staff: 48, operations: 68, finance: 53 },
+    metricsAfter: { guests: 64, reviews: 58, staff: 41, operations: 70, finance: 52 },
+    items: [
+      {
+        title: "Gost u sobi 204 traži povrat novca", mode: "own", quality: 2,
+        answerText: "Ispričavam se zbog klime. Majstor dolazi sutra u 10 sati, a do tada vas mogu premjestiti u drugu sobu.",
+        criteriaMissed: ["Ponudi naknadu razmjernu šteti koja štiti i gosta i hotel"],
+      },
+      { title: "Recepcionerka traži slobodan vikend", mode: "click", quality: 4, answerText: "Odobriti uz zamjenu smjene s kolegicom.", criteriaMissed: [] },
+    ],
+  };
+  let started = Date.now();
+  const question = await mentorQuestion(input);
+  console.log(`mentor pitanje (${Date.now() - started} ms): ${question}`);
+  started = Date.now();
+  const debrief = await mentorDebrief({
+    ...input,
+    question,
+    reflection: "Mislim da sam se previše fokusirao na ispriku, a gostu je trebalo i nešto konkretno za dvije noći koje je izgubio.",
+  });
+  console.log(`mentor osvrt (${Date.now() - started} ms): ${debrief}`);
+}
+
 async function main() {
   if (!aiEnabled()) {
     console.error("ANTHROPIC_API_KEY nije postavljen (.env.local).");
@@ -86,6 +114,7 @@ async function main() {
   console.log(`${MODELS.character} (${Date.now() - started} ms): ${text}`);
   await smokeCharacter();
   await smokeJudge();
+  await smokeMentor();
 }
 
 main().catch((e) => {
