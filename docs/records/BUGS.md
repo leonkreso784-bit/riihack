@@ -26,15 +26,15 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-037 · „Još 2 situacija čeka" u Tokovima odjela
-- **Status:** 🔴 otvoren (Simon) · **Težina:** nizak
+- **Status:** 🟡 PR [#242](https://github.com/leonkreso784-bit/riihack/pull/242) (Simon) čeka spajanje · **Težina:** nizak
 - **Opis:** tester (ned ~01:08, produkcija): množina uz broj je kriva.
 - **Uzrok:** obje grane uvjeta daju „situacija čeka" (`src/components/tokovi/departments-flow.tsx:478`).
 - **Rješenje:** —
 - **Lekcija:** —
 
-### BUG-036 · Sitnice sučelja: padež u pošti, prazan odgovor bez potvrde
+### BUG-036 · Sitnice sučelja: padež u razgovoru, prazan odgovor bez potvrde
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
-- **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ); prazan odgovor na situaciju
+- **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ; `src/components/chat-panel.tsx:110`); prazan odgovor na situaciju
   šalje se bez pitanja „Sigurno?".
 - **Rješenje:** —
 - **Lekcija:** —
@@ -54,34 +54,22 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-033 · Mentor pita o „tvom odgovoru" kad je odgovor prazan
-- **Status:** 🔴 otvoren (Simon, AI) · **Težina:** nizak
+- **Status:** 🟡 PR [#242](https://github.com/leonkreso784-bit/riihack/pull/242) (Simon) čeka spajanje · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): na prazan odgovor mentor svejedno pita o „tvom odgovoru"
   (usp. [ADR-049](DECISIONS.md#adr-049): kod prazne refleksije mentor to prepozna).
 - **Rješenje:** —
 - **Lekcija:** —
 
-### BUG-032 · Izvještaj mjeseca, mentor i podij ne vide obračun grada
-- **Status:** 🟡 PR [#240](https://github.com/leonkreso784-bit/riihack/pull/240) čeka Leonovo „spoji" · **Težina:**
-  srednji (ista brojka na tri ekrana ima tri vrijednosti)
-- **Opis:** Simonov audit (#226), tester potvrdio na produkciji (ned ~00:55): podij +5,9 i +7,7, ljestvica +7,3 i
-  +9,9; izvještaj Financije ±0, Tokovi +5.
-- **Uzrok:** izvještaj (`roundReports.metricsAfter`) se upisuje pri zatvaranju tvrtke, a obračun grada
-  (`writeSettlement`, `src/lib/game/city.ts`) poslije mijenja samo `companies.metrics`; podij čita izvještaj
-  (opis u #226).
-- **Rješenje:** #240: obračun grada istom deltom ažurira i `round_reports.metrics_after`; smoke korak 12
-  provjerava da izvještaj i tvrtka kažu isto.
-- **Lekcija:** —
-
 ### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
-- **Status:** 🔴 otvoren (Rinova datoteka `src/components/prof-board.tsx`) · **Težina:** visok (žiri na obilasku 3
-  ulazi u `KVRNDM` kasnim ulazom i kod treba vidjeti s projektora)
+- **Status:** 🔴 otvoren, ne radi se prije predaje ([ADR-051](DECISIONS.md#adr-051)) · **Težina:** nizak (Leon
+  ~01:10; bilo visok)
 - **Opis:** tester (ned ~00:53, produkcija, 1280×720, QA igra): nakon „Pokreni" ploča nema ni kod igre ni QR; kod
   je samo na „Moje igre". Regresija [BUG-021](#bug-021--ploča-profesora-nema-puta-natrag-ni-koda-igre-nakon-početka).
 - **Uzrok:** Rinov `1efbe71` ([#216](https://github.com/leonkreso784-bit/riihack/pull/216), 23:08) maknuo je redak
   „Kasniš? Uđi na /ulaz s kodom …" s ploče, a kasni ulaz je proradio tek s #221 (23:26). Na `main`-u
   `prof-board.tsx` više ne prikazuje `joinCode`; ni otvoreni #237 ga ne vraća.
-- **Rješenje:** —
-- **Lekcija:** —
+- **Rješenje:** Leon (~01:10): kod i QR na ploči nakon pokretanja nisu potrebni, profesor vidi tko je ušao.
+- **Lekcija:** kad se nešto makne sa sučelja, provjeri oslanja li se na to drugi tok (ovdje kasni ulaz).
 
 ### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
 - **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku (brojke) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
@@ -132,6 +120,19 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-032 · Izvještaj mjeseca, mentor i podij ne vide obračun grada
+- **Status:** ✅ riješen 25.10. 01:12 ([#240](https://github.com/leonkreso784-bit/riihack/pull/240)) · **Težina:**
+  srednji (ista brojka na tri ekrana ima tri vrijednosti)
+- **Opis:** Simonov audit (#226), tester potvrdio na produkciji (ned ~00:55): podij +5,9 i +7,7, ljestvica +7,3 i
+  +9,9; izvještaj Financije ±0, Tokovi +5.
+- **Uzrok:** izvještaj (`roundReports.metricsAfter`) se upisuje pri zatvaranju tvrtke, a obračun grada
+  (`writeSettlement`, `src/lib/game/city.ts`) poslije mijenja samo `companies.metrics`; podij čita izvještaj
+  (opis u #226).
+- **Rješenje:** #240: obračun grada istom deltom ažurira i `round_reports.metrics_after`; smoke korak 12
+  provjerava da izvještaj i tvrtka kažu isto.
+- **Lekcija:** kad se ista brojka sprema na dva mjesta, svaki naknadni obračun mora mijenjati oba; test neka usporedi
+  ekrane koji je prikazuju.
 
 ### BUG-027 · Kasni student ne može ući u igru koja je počela
 - **Status:** ✅ riješen 24.10. 23:26 ([#221](https://github.com/leonkreso784-bit/riihack/pull/221), Leonovo „spoji") · **Težina:** visok (žiri na obilasku 3 ulazi u demo igru koja je u

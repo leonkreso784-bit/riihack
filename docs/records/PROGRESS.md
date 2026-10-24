@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~01:15 · obračun grada spojen, kod igre na ploči ne treba
+
+- **Spojeno:** Rinov #237 (mentor u izborniku, ocjena gumbom), Simonov #235 (botovi paralelno) i #240
+  ([BUG-032](BUGS.md#bug-032--izvještaj-mjeseca-mentor-i-podij-ne-vide-obračun-grada) riješen), sva tri 01:12.
+- **Odluka (Leon, ~01:10, preko testera):** kod igre i QR na ploči nakon pokretanja nisu potrebni
+  ([ADR-051](DECISIONS.md#adr-051)); BUG-031 spušten na nisko.
+- **Čeka Leonovo „spoji":** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)), Simonov #242 (BUG-033 i 037).
+
 ## Ned 25.10. ~01:05 · plan se prenosi, obračun grada
 
 - **Spojeno:** dokumentacija #238 i Rinov #233 (animacije čekanja), oba 01:05.

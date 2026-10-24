@@ -8,6 +8,16 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-051"></a>
+## ADR-051 · Kod igre na ploči nakon pokretanja nije potreban
+**Datum:** 25.10. ~01:10 · **Status:** ✅ (Leon, preneseno preko testera) · **Vezano:**
+[BUG-031](BUGS.md#bug-031--ploča-profesora-nakon-pokretanja-opet-nema-kod-igre), [ADR-048](#adr-048)
+
+**Kontekst.** Nakon „Pokreni" ploča profesora više ne pokazuje kod igre ni QR (Rinov #216), a kasni ulaz radi
+([ADR-048](#adr-048)).
+**Odluka.** Kod i QR na ploči nakon pokretanja nisu potrebni: profesor vidi tko je ušao, a kasni ulaz nije prioritet.
+**Posljedice.** BUG-031 je nizak i ne radi se prije predaje; kod igre ostaje na „Moje igre".
+
 <a id="adr-050"></a>
 ## ADR-050 · Plan mjeseca se prenosi; protuponuda bez koristi se odbija
 **Datum:** 25.10. ~01:05 · **Status:** 🟨 prijedlog graditelja, čeka Leonovo „spoji" za

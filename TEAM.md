@@ -74,6 +74,7 @@ na koga čeka i što smo dogovorili.
 | 24.10. ~23:05 | Kasni ulaz: student ulazi i u igru koja je počela, igra od trenutnog mjeseca ([ADR-048](docs/records/DECISIONS.md#adr-048)) | Leon |
 | 24.10. ~23:10 | Simonov #209 (kalibracija troškova) ne ide prije predaje; u pitchu je „sljedeći korak" ([ADR-047](docs/records/DECISIONS.md#adr-047)) | Leon |
 | 24.10. ~23:50 | Bez minimalne duljine odgovora i refleksije; prazan odgovor ocjenjuje motor s 1, bez AI-ja ([ADR-049](docs/records/DECISIONS.md#adr-049)) | Leon |
+| 25.10. ~01:10 | Kod igre i QR na ploči nakon pokretanja nisu potrebni; kasni ulaz nije prioritet ([ADR-051](docs/records/DECISIONS.md#adr-051)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
