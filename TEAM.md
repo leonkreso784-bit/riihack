@@ -94,16 +94,16 @@ na koga čeka i što smo dogovorili.
 
 ## Rino · sučelje (R0–R15)
 
-- **Sad radim:** R13 pošta (`/igra/posta`: popis, ponuda, protuponuda, odgovor agencije), na lažnim pa pravim podacima
-- **Sljedeće:** R8 uvid u studenta (#28, „Promijeni ocjenu"), R14 stil profesorskih računa (kad Leon napravi ekrane), R10 podij (#46) ako stignemo
-- **Čekam od drugih:** — (sve što trebam je na `main`-u)
-- **Drugi čekaju od mene:** —
-- **Odluke:** pošta na računalu u bočnoj navigaciji s brojem nepročitanih, na mobitelu omotnica u gornjoj traci (donja traka ostaje na 6). Studenti idu u sljedeći mjesec zajedno: student javi „Završi mjesec", profesor otvara sljedeći svima. Tjedni krug je u Leonovom backlogu
-- **Otvoreno:** #160 R7 izvještaj mjeseca i sokratski mentor (spremno za integratora)
-- **Spojeno (od 16:45):** #127 popravci M2, #135 odjeli s ulaganjem, #138 `/ulaz?kod=`, #142 detaljnije Financije, Plan i Odjeli, #151 QR na čekaonici, #152 R4 „Završi mjesec", #157 plan bez imena prijašnjeg projekta; pregled i ok za #128 (karta) i #107
-- **Provjereno na produkciji (20:00):** QR → student → Završi mjesec → profesor vidi i otvara srpanj → Financije, Plan, Odjeli, Grad; 0 grešaka
-- **Bilješke za nastavak:** grana `rino/dokumentacija`, `docs/rino/STANJE.md`
-- **Zadnje ažurirano:** sub 20:35 (popunio Claude, ispravi)
+- **Sad radim:** pauza; nastavak iz `docs/rino/STANJE.md` (grana `rino/dokumentacija`)
+- **Sljedeće:** provjera #164 (pošta) i #168 (R8) na produkciji kad se spoje; R14 stil profesorskih računa (Leone, javi PR s ekranima); R10 podij (#46) ako stignemo; R15 kad bude L18
+- **Čekam od drugih:** Leon: spajanje #168; ekrani profesorskih računa (L16) za R14
+- **Drugi čekaju od mene:** #166 (Leonov jedan redak u `prof-board.tsx`, `fromRound`): Rinov ok
+- **Odluke:** pošta na računalu u bočnoj navigaciji s brojem nepročitanih, na mobitelu omotnica u gornjoj traci. Studenti idu u sljedeći mjesec zajedno (student „Završi mjesec", profesor otvara svima). Radar vještina na R8 izostavljen dok ima samo pokazne podatke
+- **Otvoreno:** #168 R8 uvid u studenta i „Promijeni ocjenu" (spremno za integratora, bez konflikata)
+- **Spojeno (od 16:45):** #127, #135 odjeli, #138 `/ulaz?kod=`, #142 Financije/Plan/Odjeli, #151 QR, #152 R4 Završi mjesec, #157, #160 R7 mentor, #164 R13 pošta; pregled #128 i #107
+- **Provjereno na produkciji (20:00):** QR → student → Završi mjesec → profesor otvara srpanj → Financije, Plan, Odjeli, Grad; 0 grešaka
+- **Bilješke za nastavak:** `docs/rino/STANJE.md` na grani `rino/dokumentacija`
+- **Zadnje ažurirano:** sub 21:00 (popunio Claude, ispravi)
 ---
 
 ## Tko smo
