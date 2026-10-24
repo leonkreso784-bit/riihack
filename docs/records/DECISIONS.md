@@ -33,7 +33,7 @@ referentne cijene. Poslije popravka graditelj ponovno sije demo i pokreće smoke
 [#194](https://github.com/leonkreso784-bit/riihack/pull/194) (graditelj): kvadrat počinje **već iznad referentne
 cijene**, ne tek iznad 2×. Razlog: troškovi su fiksni, pa bi uz promjenu samo iznad 2× vrh dobiti ostao na ~2× ref.
 U primjeru iz PR-a vrh prihoda je na referentnoj cijeni (100 € → 57.000 €, 400 € → 0). Dira i Simonov
-`src/lib/tokovi/month-flow.ts` (procjena „Što ako?" zove isti motor). Leon je izmjenu prijedloga odobrio (~22:15).
+`src/lib/tokovi/month-flow.ts` (procjena „Što ako?" zove isti motor). Leon je izmjenu prijedloga odobrio; spojeno 22:14. 🟨 Ponovni seed demo igre i smoke na produkciji još nisu potvrđeni.
 
 <a id="adr-042"></a>
 ## ADR-042 · Skice „Tokovi" ipak idu u aplikaciju

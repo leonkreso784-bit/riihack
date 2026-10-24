@@ -41,20 +41,6 @@ Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, n
 - **Rješenje:** 🟨 čeka vlasnika.
 - **Lekcija:** ključ u podacima nije tekst za korisnika; naziv uvijek ide kroz isti popis oznaka.
 
-### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
-- **Status:** 🟡 PR [#194](https://github.com/leonkreso784-bit/riihack/pull/194) čeka Leonovo „spoji" · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
-- **Opis:** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162), provjeren pravim
-  `settleMarket` i `roundFinance`: uz 400 € hotel ima 48 % popunjenosti i 69.700 € dobiti u kolovozu, a uz
-  referentnu cijenu (~90 €) 91 % i ~23.000 €. Tester potvrdio na produkciji (22:00): hotel 4★ sa 17 soba uz 400 € i
-  5.000 € marketinga u lipnju ide s 20.000 € na 81.850 €, a susjed uz 70 € na 28.860 €.
-- **Uzrok:** u `attractiveness` (`src/lib/engine/economy.ts`) faktor cijene je ograničen na 0,5 do 1,5. Iznad 2×
-  referentne cijene više ne pada, pa hotel zadrži goste, a svaka noć donosi sve više.
-- **Rješenje:** [ADR-043](DECISIONS.md#adr-043), [#194](https://github.com/leonkreso784-bit/riihack/pull/194): iznad
-  referentne cijene faktor pada s kvadratom, iznad 2,5× je 0; test da je vrh prihoda između 80 i 150 € u sva 4
-  mjeseca (416 testova). Poslije spajanja ponovni seed demo igre i smoke.
-- **Lekcija:** granica koja štiti od ekstremnih vrijednosti može ukloniti kaznu baš ondje gdje treba. Uz motor drži
-  test koji traži najbolju odluku i provjerava da ona ima smisla u stvarnom svijetu.
-
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
@@ -67,6 +53,20 @@ Bugove BUG-015 do 017 prijavio je tester produkcije (sesija koja samo testira, n
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
+- **Status:** ✅ riješen 24.10. 22:14 ([#194](https://github.com/leonkreso784-bit/riihack/pull/194), Leonovo „spoji") · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
+- **Opis:** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162), provjeren pravim
+  `settleMarket` i `roundFinance`: uz 400 € hotel ima 48 % popunjenosti i 69.700 € dobiti u kolovozu, a uz
+  referentnu cijenu (~90 €) 91 % i ~23.000 €. Tester potvrdio na produkciji (22:00): hotel 4★ sa 17 soba uz 400 € i
+  5.000 € marketinga u lipnju ide s 20.000 € na 81.850 €, a susjed uz 70 € na 28.860 €.
+- **Uzrok:** u `attractiveness` (`src/lib/engine/economy.ts`) faktor cijene je ograničen na 0,5 do 1,5. Iznad 2×
+  referentne cijene više ne pada, pa hotel zadrži goste, a svaka noć donosi sve više.
+- **Rješenje:** [ADR-043](DECISIONS.md#adr-043), [#194](https://github.com/leonkreso784-bit/riihack/pull/194): iznad
+  referentne cijene faktor pada s kvadratom, iznad 2,5× je 0; test da je vrh prihoda između 80 i 150 € u sva 4
+  mjeseca (416 testova). Poslije spajanja ponovni seed demo igre i smoke.
+- **Lekcija:** granica koja štiti od ekstremnih vrijednosti može ukloniti kaznu baš ondje gdje treba. Uz motor drži
+  test koji traži najbolju odluku i provjerava da ona ima smisla u stvarnom svijetu.
 
 ### BUG-018 · Čišćenje baze obrisalo testerovu igru usred testa
 - **Status:** ✅ riješen pravilom ~22:05 (graditelj) · **Težina:** nizak (izgubljen testni napredak, ne demo)

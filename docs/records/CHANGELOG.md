@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#194](https://github.com/leonkreso784-bit/riihack/pull/194) | 22:14 | Leon | balans cijene: iznad referentne cijene privlačnost pada s kvadratom, iznad 2,5× je 0 (ADR-043, BUG-014 riješen) |
+| [#199](https://github.com/leonkreso784-bit/riihack/pull/199) | 22:13 | Leon | `/profesor/prijava` bez mrtve poveznice „Imaš samo profesorski kod?" |
+| [#197](https://github.com/leonkreso784-bit/riihack/pull/197) | 22:13 | Leon | dokumentacija: bugovi s testa produkcije, ADR-044 botovi |
 | [#193](https://github.com/leonkreso784-bit/riihack/pull/193) | 21:59 | Leon | dokumentacija: val 3 spojen, ADR-043 i BUG-014 |
 | [#184](https://github.com/leonkreso784-bit/riihack/pull/184) | 21:51 | Leon | L14: prihod i dobit zatvorenih mjeseci u javnom profilu tuđeg hotela (ADR-040, ugovor) |
 | [#190](https://github.com/leonkreso784-bit/riihack/pull/190) | 21:51 | Leon | `SituationView.rubric?` i `effects?` nakon odgovora (za Tokove skica 2, ugovor) |
