@@ -49,14 +49,16 @@ export type CompanyView = { id: string; hotelName: string; playerName: string; t
 export type RoundReportView = { round: number; metricsBefore: Metrics; metricsAfter: Metrics; mentorQuestion?: string; reflection?: string; mentorText?: string }; // pitanje stiže iz GET /api/me/report/[round]
 export type LeaderboardRow = { companyId: string; hotelName: string; playerName: string; place: string; progress: number; closedRound: number; cash: number; roundGain: number }; // roundGain = napredak u zadnjem zatvorenom krugu
 export type ContractView = { id: string; templateId: string; businessName: string; businessKind: BusinessKind; title: string; text: string; monthlyCost: number; nights: number; pricePerNight: number; durationRounds: number; roundOffered: number; status: ContractStatus; activeUntilRound?: number };
-export type RoundPlan = { round: number; price: number; marketing: number };
-export type RoundFinance = { round: number; nights: number; contractNights: number; capacityNights: number; occupancyPct: number; marketSharePct: number; revenue: number; costs: number; profit: number; cashAfter: number };
+export type DepartmentInvestments = Partial<Record<StaffDepartment, number>>; // € mjesečno po odjelu, 0–INVEST_MAX; bez ključa = 0
+export type RoundPlan = { round: number; price: number; marketing: number; investments?: DepartmentInvestments };
+export type RoundFinance = { round: number; nights: number; contractNights: number; capacityNights: number; occupancyPct: number; marketSharePct: number; revenue: number; costs: number; profit: number; cashAfter: number; investments?: number }; // investments = zbroj ulaganja u odjele (dio costs)
 export type NewsItem = { at: string; text: string };
 export type CityView = { businesses: CityBusiness[]; hotels: LeaderboardRow[]; links: { companyId: string; businessId: string }[] }; // links = aktivni ugovori
 export type WorldView = { id: string; name: string; round: number; maxRounds: number; status: WorldStatus; roundDeadline: string | null; serverNow: string }; // odbrojavanje = roundDeadline − serverNow
 export type DispatchView = { id: string; templateId: string; title: string; round: number; companyIds: string[] | null; status: "scheduled" | "sent" }; // companyIds null = svi studenti
 
-export type MeResponse = { world: WorldView; company: CompanyView; situations: SituationView[]; leaderboard: LeaderboardRow[]; reports: RoundReportView[]; plan: RoundPlan; contracts: ContractView[]; finances: RoundFinance[]; city: CityView; news: NewsItem[] };
+export type DepartmentView = { department: StaffDepartment; label: string; metric: MetricKey; metricValue: number; staffCount: number; alerts: string[]; investment: number }; // stanje odjela: pokazatelj, ljudi, upozorenja (hrvatski), ulaganje iz plana tekućeg mjeseca
+export type MeResponse = { world: WorldView; company: CompanyView; situations: SituationView[]; leaderboard: LeaderboardRow[]; reports: RoundReportView[]; plan: RoundPlan; contracts: ContractView[]; finances: RoundFinance[]; city: CityView; news: NewsItem[]; departments?: DepartmentView[] };
 export type ProfStateResponse = { world: WorldView & { joinCode: string; maxPlayers: number }; players: LeaderboardRow[]; city: CityView; news: NewsItem[]; bank?: SituationSummary[]; dispatches?: DispatchView[]; autoDraw?: boolean }; // bank = banka + profesorove situacije; autoDraw = slučajno izvlačenje po krugu
 export type CompanyDetailResponse = { company: CompanyView; situations: SituationView[]; reports: RoundReportView[] };
 
@@ -71,7 +73,7 @@ export type JoinResponse = { companyId: string; hotelName: string; place: string
 export type AnswerRequest = { optionId: string } | { text: string; pastedChars: number };
 export type ChatRequest = { message: string; pastedChars: number };
 export type ReflectionRequest = { round: number; text: string };
-export type PlanRequest = { price: number; marketing: number };
+export type PlanRequest = { price: number; marketing: number; investments?: DepartmentInvestments }; // bez investments = ulaganja ostaju kakva jesu
 export type ContractDecisionRequest = { accept: boolean };
 export type CreateSituationRequest = SituationDraft;
 export type DispatchRequest = { templateId: string; companyIds?: string[]; round?: number; roomNumber?: string }; // bez companyIds = svi; bez round = odmah u tekući krug
