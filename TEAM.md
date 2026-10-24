@@ -65,10 +65,11 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen (284 testa) · produkcija https://riihack.vercel.app na **pravim podacima** od sub 17:52: `/`, `/ulaz`, `/igra`, `/profesor` 200; `/api/me` 401 bez kolačića; `/api/join` s krivim kodom 404
-- **Zadnja spajanja (sub 16:50–17:52):** #88, #89, #75, #96, #95, #100, #103, #104, #105, #106, #108, #109, #111, #112, #113, #114, #115 (demo kod samo iz `.env.local`), #116 dokumentacija
-- **Red čekanja:** #107 kraći komentari (nacrt, čeka Rinov ok)
-- **Zadnje ažurirano:** sub 17:55
+- **CI na `main`-u:** ✅ zelen (292 testa, smoke 14/14) · produkcija https://riihack.vercel.app na **pravim podacima** od sub 17:52: `/`, `/ulaz`, `/igra`, `/profesor` 200; `/api/me` 401 bez kolačića; `/api/join` s krivim kodom 404
+- **Zadnja spajanja (sub 17:50–18:27):** #115 demo kod samo iz `.env.local`, #118 L12 AI prijedlog situacije (`POST /api/prof/[worldId]/situations/generate`), #120 BUG-009 presuda zadržava kriterije (Simon), dokumentacija #116, #117, #119, #121–#124
+- **Red čekanja:** #107 kraći komentari i čišćenje imena prijašnjeg projekta (BUG-008; nacrt, čeka Rina)
+- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917
+- **Zadnje ažurirano:** sub 18:28
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
 
