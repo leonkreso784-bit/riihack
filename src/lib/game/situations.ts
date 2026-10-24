@@ -1,13 +1,13 @@
 // Profesorove situacije (L12): banka + profesorove, spremanje nacrta, slanje odabranim studentima (odmah ili u krug k)
 // i prekidač slučajnog izvlačenja. Brojke i dalje računa samo motor; ovdje se samo upisuje tko što dobiva.
-import { and, asc, eq, inArray } from "drizzle-orm";
+// Ne uvozi iz "@/db/queries": queries.ts uvozi getTemplate odavde (getSituationForCompany).
+import { and, asc, eq, inArray, lt } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import { db } from "@/db";
 import { companies, customSituations, dispatches, events, rooms, situations, worlds } from "@/db/schema";
 import type { CustomSituationRow, DispatchRow, WorldRow } from "@/db/schema";
-import { isUuid } from "@/db/queries";
 import { SITUATIONS } from "@/content";
-import { toTemplate, validateDraft } from "@/lib/engine/draft";
+import { customSituationId, toTemplate, validateDraft } from "@/lib/engine/draft";
 import { pickRoom } from "@/lib/engine/rooms";
 import { HttpError } from "@/lib/http";
 import { MAX_ROUNDS } from "@/lib/rules";
@@ -121,10 +121,32 @@ export function planImmediateRows(
 
 // ---------- Baza ----------
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const isUuid = (id: string) => UUID.test(id); // Postgres baca grešku na uuid stupac s nečim drugim
+
 /** db.batch traži nepraznu n-torku; jedna transakcija (neon-http nema db.transaction()). */
 function runBatch(items: BatchItem<"pg">[]) {
   if (items.length === 0) return Promise.resolve([]);
   return db.batch([items[0], ...items.slice(1)]);
+}
+
+/** Zakazana slanja za krug `round` (izvršava ih openRound pa ih označi "sent"). */
+export async function listScheduledDispatches(worldId: string, round: number): Promise<DispatchRow[]> {
+  return db
+    .select()
+    .from(dispatches)
+    .where(and(eq(dispatches.worldId, worldId), eq(dispatches.round, round), eq(dispatches.status, "scheduled")))
+    .orderBy(asc(dispatches.createdAt));
+}
+
+/** Predlošci koje je igra već dala u krugovima prije `round` (slučajno izvlačenje ih ne ponavlja). */
+export async function listUsedTemplateIds(worldId: string, round: number): Promise<Set<string>> {
+  const rows = await db
+    .selectDistinct({ templateId: situations.templateId })
+    .from(situations)
+    .innerJoin(companies, eq(companies.id, situations.companyId))
+    .where(and(eq(companies.worldId, worldId), lt(situations.round, round)));
+  return new Set(rows.map((r) => r.templateId));
 }
 
 async function listCustomRows(worldId: string): Promise<CustomSituationRow[]> {
@@ -186,7 +208,7 @@ export async function createCustomSituation(
   const error = validateDraft(draft);
   if (error) throw new HttpError(400, error);
   const kind: SituationSource = source === "ai" ? "ai" : "custom"; // "bank" je samo sadržaj iz repoa
-  const id = `custom-${crypto.randomUUID().replaceAll("-", "").slice(0, 12)}`;
+  const id = customSituationId(kind);
   const template = toTemplate(id, draft);
   await runBatch([
     db.insert(customSituations).values({ id, worldId: world.id, source: kind, template }),

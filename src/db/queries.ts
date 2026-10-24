@@ -4,7 +4,7 @@ import { db } from "./index";
 import { answers, companies, contracts, events, finances, players, plans, rooms, roundReports, situations, worlds } from "./schema";
 import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
 import type { ContractRow, EventRow, FinanceRow, PlanRow } from "./schema";
-import { getSituation } from "@/content";
+import { getTemplate } from "@/lib/game/situations";
 import type { ChatTurn, SituationTemplate } from "@/lib/types";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -45,20 +45,24 @@ export async function listRooms(companyId: string): Promise<RoomRow[]> {
     .orderBy(asc(rooms.floor), asc(rooms.number));
 }
 
-/** Situacija samo ako pripada toj tvrtki (inače null, i za id koji nije uuid). */
+/**
+ * Situacija samo ako pripada toj tvrtki (inače null, i za id koji nije uuid). Predložak iz banke ili profesorov iz
+ * igre te tvrtke (L12, getTemplate), pa odgovor i razgovor rade i s profesorovim likom i rubrikom.
+ */
 export async function getSituationForCompany(
   situationId: string,
   companyId: string,
 ): Promise<{ situation: SituationRow; template: SituationTemplate } | null> {
   if (!isUuid(situationId)) return null;
   const rows = await db
-    .select()
+    .select({ situation: situations, worldId: companies.worldId })
     .from(situations)
+    .innerJoin(companies, eq(companies.id, situations.companyId))
     .where(and(eq(situations.id, situationId), eq(situations.companyId, companyId)))
     .limit(1);
-  const situation = rows[0];
-  if (!situation) return null;
-  return { situation, template: getSituation(situation.templateId) };
+  const found = rows[0];
+  if (!found) return null;
+  return { situation: found.situation, template: await getTemplate(found.worldId, found.situation.templateId) };
 }
 
 /** Atomično dopisuje poruke u transkript (jedan UPDATE, bez čitanja prije pisanja). */

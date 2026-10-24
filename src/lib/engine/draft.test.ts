@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import type { SituationDraft } from "@/lib/types";
-import { validateDraft } from "./draft";
+import { customSituationId, sourceOfTemplateId, validateDraft } from "./draft";
+
+describe("id i izvor profesorove situacije", () => {
+  it("custom i ai dobiju svoj prefiks, banka nema prefiks", () => {
+    const random = "0123abcd-4567-89ef-0123-456789abcdef";
+    expect(customSituationId("custom", random)).toBe("custom-0123abcd4567");
+    expect(customSituationId("ai", random)).toBe("custom-ai-0123abcd4567");
+    expect(sourceOfTemplateId("custom-0123abcd4567")).toBe("custom");
+    expect(sourceOfTemplateId("custom-ai-0123abcd4567")).toBe("ai");
+    expect(sourceOfTemplateId("kvar-klime")).toBe("bank");
+  });
+});
 
 const valid = (): SituationDraft => ({
   title: "Gost traži kasnu odjavu",

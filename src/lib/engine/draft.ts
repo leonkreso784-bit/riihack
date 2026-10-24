@@ -1,6 +1,14 @@
 // Provjera profesorovog nacrta situacije (L12). Čista funkcija: tijelo zahtjeva je nepouzdan JSON, pa se provjeravaju
 // i tipovi. Vraća poruku na hrvatskom ili null; toTemplate iz ispravnog nacrta uzme samo poznata polja.
-import type { MetricKey, RoomStatus, RoomType, Skill, SituationDraft, SituationTemplate } from "@/lib/types";
+import type {
+  MetricKey,
+  RoomStatus,
+  RoomType,
+  Skill,
+  SituationDraft,
+  SituationSource,
+  SituationTemplate,
+} from "@/lib/types";
 
 const METRIC_KEYS: readonly MetricKey[] = ["guests", "reviews", "staff", "operations", "finance"];
 const SKILLS: readonly Skill[] = ["empathy", "communication", "finance", "problemSolving", "ethics"];
@@ -66,6 +74,18 @@ export function validateDraft(d: SituationDraft): string | null {
     }
   }
   return null;
+}
+
+/** Id profesorove situacije: "custom-…", a AI prijedlog koji je profesor spremio "custom-ai-…" (izvor se vidi iz id-a). */
+export function customSituationId(source: SituationSource, random: string = crypto.randomUUID()): string {
+  const short = random.replaceAll("-", "").slice(0, 12);
+  return source === "ai" ? `custom-ai-${short}` : `custom-${short}`;
+}
+
+/** Izvor predloška iz njegova id-a (za SituationView.source): banka iz sadržaja nema prefiks "custom-". */
+export function sourceOfTemplateId(id: string): SituationSource {
+  if (id.startsWith("custom-ai-")) return "ai";
+  return id.startsWith("custom-") ? "custom" : "bank";
 }
 
 /** Predložak iz nacrta koji je prošao validateDraft: samo poznata polja, tekstovi bez razmaka na rubovima. */
