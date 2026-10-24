@@ -25,7 +25,6 @@ Leon ([@leonkreso784-bit](https://github.com/leonkreso784-bit)), Simon ([@simons
 
 ## Dokumenti
 
-- **[docs/README.md](docs/README.md)**: ulaz u dokumentaciju (PRD, odluke, dnevnik, bugovi, testiranje)
 - [TEAM.md](TEAM.md): tko smo i u čemu je tko jak
 - [CLAUDE.md](CLAUDE.md): kako radimo u repou (i upute za Claude Code)
 - [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md): uloge, stack, git pravila
