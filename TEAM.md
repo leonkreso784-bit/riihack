@@ -74,7 +74,7 @@ na koga čeka i što smo dogovorili.
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
 - **Sad radim:** predaja na novu sesiju graditelja (prompt spreman, radna stabla raščišćena)
-- **Sljedeće:** L17 knjižnica situacija (nakon #147), L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3, čišćenje imena prijašnjeg projekta
+- **Sljedeće:** L17 knjižnica situacija (nakon #147), L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3 (čišćenje imena prijašnjeg projekta radi Rino)
 - **Čekam od drugih:** Leon: „spoji #147" i potvrda za `BETTER_AUTH_*` na Vercelu (integrator); odgovori na 3 otvorena pitanja u planu vala 3
 - **Drugi čekaju od mene:** —
 - **Otvoreno:** #147 L16 profesorski računi (zelen; bez tajne igra radi s kodom), #155 `scripts/lock-merge.py`
