@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#168](https://github.com/leonkreso784-bit/riihack/pull/168) | 20:52 | Rino | R8: uvid profesora u razmišljanje studenta (`/profesor/[worldId]/tvrtka/[id]`) i „Promijeni ocjenu" |
+| [#171](https://github.com/leonkreso784-bit/riihack/pull/171) | 20:51 | Leon | dokumentacija: BUG-012 riješen, L17 knjižnica |
 | [#165](https://github.com/leonkreso784-bit/riihack/pull/165) | 20:44 | Leon | L17: knjižnica situacija na računu profesora |
 | [#166](https://github.com/leonkreso784-bit/riihack/pull/166) | 20:44 | Leon | dvoklik na zatvaranju mjeseca ne preskače mjesec (`fromRound`, BUG-012) |
 | [#167](https://github.com/leonkreso784-bit/riihack/pull/167) | 20:43 | Leon | dokumentacija: R7, R13, shema knjižnice |
