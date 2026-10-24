@@ -5,15 +5,13 @@ import { useParams } from "next/navigation";
 import { Play, Users } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import type { LeaderboardRow, ProfStateResponse } from "@/lib/types";
-import { Panel } from "@/components/panel";
-import { RoundBanner } from "@/components/round-banner";
-import { Leaderboard } from "@/components/leaderboard";
+import { ProfBoard } from "@/components/prof-board";
 import { FormError } from "@/components/form";
 
 const noop = () => () => {};
 const useHost = () => useSyncExternalStore(noop, () => location.host, () => "");
 
-// R2 lobby for the projector (huge join code, students appear live); while the game runs R6 takes over this page.
+// R2 lobby for the projector (huge join code, students appear live); while the game runs (and after it ends) the live board (R6).
 export default function ProfWorld() {
   const { worldId } = useParams<{ worldId: string }>();
   const { data, error, syncedAt, refresh } = usePoll(() => api.profState(worldId));
@@ -22,7 +20,7 @@ export default function ProfWorld() {
   return data.world.status === "lobby" ? (
     <Lobby state={data} onStarted={refresh} />
   ) : (
-    <Running state={data} syncedAt={syncedAt} />
+    <ProfBoard state={data} syncedAt={syncedAt} onChange={refresh} />
   );
 }
 
@@ -104,17 +102,5 @@ function PlayerCard({ p }: { p: LeaderboardRow }) {
         </span>
       </span>
     </li>
-  );
-}
-
-// ponytail: minimal running view (round + class ranking) until R6 builds the full live board.
-function Running({ state, syncedAt }: { state: ProfStateResponse; syncedAt: number }) {
-  return (
-    <div className="space-y-6">
-      <RoundBanner world={state.world} syncedAt={syncedAt} size="xl" />
-      <Panel title="Razred" action={<span className="text-sm text-muted-foreground">po napretku</span>}>
-        <Leaderboard rows={state.players} limit={state.players.length} />
-      </Panel>
-    </div>
   );
 }

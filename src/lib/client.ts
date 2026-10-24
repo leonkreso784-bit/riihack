@@ -105,11 +105,19 @@ const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
 let mockLobbyUntil = 0;
 
 // Mock professor game: lobby until "Pokreni", students drop in one every 2.5 s so the projector view comes alive.
+// After the start the board moves too: "Zatvori mjesec" opens the next month with its deadline, "Završi" ends it.
 let mockProfOpenedAt = Date.now();
 let mockProfStarted = false;
+let mockProf = { round: MOCK_PROF.world.round, deadline: MOCK_DEADLINE as string | null, finished: false };
 function mockProfState(): ProfStateResponse {
   const world = { ...MOCK_PROF.world, serverNow: new Date().toISOString() };
-  if (mockProfStarted) return { ...MOCK_PROF, world: { ...world, roundDeadline: MOCK_DEADLINE } };
+  if (mockProfStarted)
+    return {
+      ...MOCK_PROF,
+      world: { ...world, round: mockProf.round, roundDeadline: mockProf.deadline, status: mockProf.finished ? "finished" : "running" },
+      // Everyone has closed the months before the current one.
+      players: MOCK_PROF.players.map((p) => ({ ...p, closedRound: Math.max(p.closedRound, mockProf.round - 1) })),
+    };
   const joined = Math.min(MOCK_PROF.players.length, Math.floor((Date.now() - mockProfOpenedAt) / 2500));
   return { ...MOCK_PROF, world: { ...world, status: "lobby", round: 0, roundDeadline: null }, players: MOCK_PROF.players.slice(0, joined) };
 }
@@ -124,10 +132,20 @@ const mockApi: Api = {
   profState: () => wait(mockProfState()),
   start: () => {
     mockProfStarted = true;
+    mockProf = { round: 1, deadline: MOCK_DEADLINE, finished: false };
     return wait(mockProfState());
   },
-  openRound: () => wait(MOCK_PROF),
-  finish: () => wait({ ...MOCK_PROF, world: { ...MOCK_PROF.world, status: "finished" } }),
+  openRound: (_id, req = {}) => {
+    mockProfStarted = true;
+    const deadline = req.deadlineMinutes ? new Date(Date.now() + req.deadlineMinutes * 60_000).toISOString() : null;
+    mockProf = { round: Math.min(mockProf.round + 1, MOCK_PROF.world.maxRounds), deadline, finished: false };
+    return wait(mockProfState());
+  },
+  finish: () => {
+    mockProfStarted = true;
+    mockProf = { ...mockProf, deadline: null, finished: true };
+    return wait(mockProfState());
+  },
   companyDetail: () => wait(MOCK_DETAIL),
   join: () => {
     mockLobbyUntil = Date.now() + 8000;
