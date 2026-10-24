@@ -65,6 +65,7 @@ ne kad je test zelen. Rokovi prekretnica su u [planu izvedbe](../superpowers/pla
 - [ ] Demo igra se pokrene jednom naredbom i krene od odigranog prvog kruga, ne od prazne igre.
 - [ ] Radar vještina se vidi (lažni podaci s oznakom „primjer").
 - [ ] Profesor može promijeniti ocjenu mentora za odgovor studenta (gumb „Promijeni ocjenu" u uvidu).
+- [ ] Profesor može izvesti svoj playbook (situacije i postavke) i uvesti ga u novu igru.
 - [ ] Profesor može zatražiti od AI-ja prijedlog situacije iz stanja hotela, pregledati ga i spremiti; bez njegova spremanja nijedan student ga ne dobije.
 - [ ] Mentor iz brojki jezgre objašnjava što se dogodilo u krugu i kako svijet radi.
 - [ ] Podij kruga i ljestvica čitljivi su na projektoru.

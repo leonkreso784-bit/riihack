@@ -16,6 +16,8 @@ Vremena su lokalna (CEST).
 - **~16:25:** `db:push` predložio pražnjenje tablica, uhvaćeno prije upisa
   ([BUG-006](BUGS.md#bug-006--dbpush-predlaže-pražnjenje-tablica-situations-i-contracts)); od sada samo ručni aditivni
   SQL ([ADR-026](DECISIONS.md#adr-026)).
+- **~16:35, playbook:** lagana verzija za M3, izvoz i uvoz bez mijenjanja mehanike ([ADR-027](DECISIONS.md#adr-027)).
+  Krenuli M3 zadaci: L8 demo igra, L12 promjena ocjene mentora (`answers.overridden` ručnim SQL-om), L12 playbook.
 - **~16:35:** Rino dao „ok" za S8 u `client.ts` i `mock.ts`; ugovor za profesorove situacije je #89 (čeka Leona);
   Rinov prijedlog „playbooka" čeka odluku ([BACKLOG.md](BACKLOG.md)); `docs/ROADMAP.md` ažurira Simon.
 - **Stanje gradnje:** na `main`-u L0–L5, L7, L8 smoke 1–10, L9, L10, L11 faza A, S3, S4. U izradi L11 faza B. Čeka
