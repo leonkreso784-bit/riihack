@@ -54,6 +54,7 @@ export type RoundPlan = { round: number; price: number; marketing: number; inves
 export type RoundFinance = { round: number; nights: number; contractNights: number; capacityNights: number; occupancyPct: number; marketSharePct: number; revenue: number; costs: number; profit: number; cashAfter: number; investments?: number }; // investments = zbroj ulaganja u odjele (dio costs)
 export type NewsItem = { at: string; text: string };
 export type CityView = { businesses: CityBusiness[]; hotels: LeaderboardRow[]; links: { companyId: string; businessId: string }[] }; // links = aktivni ugovori
+export type CompanyPublicView = { companyId: string; hotelName: string; playerName: string; place: string; stars: number; roomsCount: number; price: number; reviews: number; guests: number; occupancyPct?: number; staffByDepartment: Record<StaffDepartment, number>; contracts: { businessId: string; businessName: string; title: string }[] }; // javni podaci hotela (karta, tuđi hotel): bez novca, odgovora i ocjena; occupancyPct = zadnji obračunati mjesec
 export type WorldView = { id: string; name: string; round: number; maxRounds: number; status: WorldStatus; roundDeadline: string | null; serverNow: string }; // odbrojavanje = roundDeadline − serverNow
 export type DispatchView = { id: string; templateId: string; title: string; round: number; companyIds: string[] | null; status: "scheduled" | "sent" }; // companyIds null = svi studenti
 
