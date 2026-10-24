@@ -7,6 +7,15 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#184](https://github.com/leonkreso784-bit/riihack/pull/184) | 21:51 | Leon | L14: prihod i dobit zatvorenih mjeseci u javnom profilu tuđeg hotela (ADR-040, ugovor) |
+| [#190](https://github.com/leonkreso784-bit/riihack/pull/190) | 21:51 | Leon | `SituationView.rubric?` i `effects?` nakon odgovora (za Tokove skica 2, ugovor) |
+| [#189](https://github.com/leonkreso784-bit/riihack/pull/189) | 21:51 | Leon | knjižnica situacija: stranica `/profesor/knjiznica` |
+| [#186](https://github.com/leonkreso784-bit/riihack/pull/186) | 21:51 | Rino | profesor ulazi preko računa; `/ulaz` bez „Ja sam profesor" (ADR-041) |
+| [#191](https://github.com/leonkreso784-bit/riihack/pull/191) | 21:51 | Leon | L8: demo igra za val 3 (demo račun, hoteli po mjestu, pregovor, poruke) i smoke 19 koraka |
+| [#188](https://github.com/leonkreso784-bit/riihack/pull/188) | 21:51 | Leon | skripta za čišćenje testnih podataka (zadano suhi prolaz, `--apply` briše) |
+| [#179](https://github.com/leonkreso784-bit/riihack/pull/179) | 21:44 | Simon | Tokovi skica 2: „Kako je tvoj odgovor prošao kroz hotel" |
+| [#174](https://github.com/leonkreso784-bit/riihack/pull/174) | 21:44 | Simon | Tokovi skica 1: „Kako je izračunat mjesec", sa „Što ako?" u pregledniku |
+| [#185](https://github.com/leonkreso784-bit/riihack/pull/185) | 21:41 | Leon | dokumentacija: ADR-042 |
 | [#183](https://github.com/leonkreso784-bit/riihack/pull/183) | 21:33 | Leon | dokumentacija: ADR-031 zatvoren |
 | [#176](https://github.com/leonkreso784-bit/riihack/pull/176) | 21:31 | Simon | popravci iz revizije: sudac čuva kriterije kad drugi pokušaj padne, AI nacrt zaključava obrazac, skraćeno ime hotela na karti |
 | [#180](https://github.com/leonkreso784-bit/riihack/pull/180) | 21:22 | Rino | dokumenti: nema zamrzavanja koda (`CLAUDE.md`, `PLAN-24H.md`, glavni plan; ADR-031) |

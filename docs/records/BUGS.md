@@ -10,6 +10,18 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
+- **Status:** 🟡 u radu (graditelj, od ~22:00) · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)
+- **Opis:** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162), provjeren pravim
+  `settleMarket` i `roundFinance`: uz 400 € hotel ima 48 % popunjenosti i 69.700 € dobiti u kolovozu, a uz
+  referentnu cijenu (~90 €) 91 % i ~23.000 €.
+- **Uzrok:** u `attractiveness` (`src/lib/engine/economy.ts`) faktor cijene je ograničen na 0,5 do 1,5. Iznad 2×
+  referentne cijene više ne pada, pa hotel zadrži goste, a svaka noć donosi sve više.
+- **Rješenje:** [ADR-043](DECISIONS.md#adr-043): faktor iznad 2× referentne cijene pada dalje, iznad 2,5× je 0;
+  test da je vrh dobiti blizu referentne cijene. 🟨 PR još nije otvoren.
+- **Lekcija:** granica koja štiti od ekstremnih vrijednosti može ukloniti kaznu baš ondje gdje treba. Uz motor drži
+  test koji traži najbolju odluku i provjerava da ona ima smisla u stvarnom svijetu.
+
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti

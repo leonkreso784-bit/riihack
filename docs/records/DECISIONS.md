@@ -8,6 +8,19 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-043"></a>
+## ADR-043 · Balans cijene: kazna za visoku cijenu raste do nule
+**Datum:** 24.10. ~22:00 · **Status:** ✅ (Leon; dokumentarist prenio graditelju) · **Vezano:** [BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija), [ADR-002](#adr-002)
+
+**Kontekst.** Simonov issue [#162](https://github.com/leonkreso784-bit/riihack/issues/162): cijena od 400 € je gotovo
+uvijek najisplativija (kolovoz: 48 % popunjenosti i 69.700 € dobiti, uz normalnu cijenu 91 % i ~23.000 €). Žiri na
+obilasku 3 sam igra i lako nađe taj trik.
+**Odluka.** Simonov prijedlog 1, samo u motoru (`economy.ts`): iznad 2× referentne cijene privlačnost hotela i dalje
+pada (npr. `(ref/cijena)²`), a iznad 2,5× je 0. `PRICE_MAX` (400 €) i stranica Plan ostaju. Test: dobit ima vrh blizu
+referentne cijene. Poslije popravka graditelj ponovno sije demo i pokreće smoke; spaja integrator na Leonovo „spoji"
+(mijenjaju se brojke, [ADR-037](#adr-037)).
+**Posljedice.** Igra uči da se cijena bira prema tržištu, a ne da je najviša uvijek najbolja. 🟨 PR još nije otvoren.
+
 <a id="adr-042"></a>
 ## ADR-042 · Skice „Tokovi" ipak idu u aplikaciju
 **Datum:** 24.10. ~21:40 · **Status:** ✅ (Leon; graditelj prenio porukom [ODLUKA]) · **Vezano:** zamjenjuje [ADR-038](#adr-038), [ADR-002](#adr-002)
@@ -20,6 +33,8 @@ odgovor prošao kroz hotel") idu u `main` preko integratora, uz Rinov ok za pove
 `effects?` (Simonov issue [#178](https://github.com/leonkreso784-bit/riihack/issues/178)) dodaje graditelj. Ruta
 „Što ako?" na poslužitelju se i dalje ne radi.
 **Posljedice.** Procjena „Što ako?" je samo prikaz u pregledniku; brojke mjeseca i dalje računa samo motor (ADR-002).
+Spojeno: #174 i #179 (21:44, Leonovo „spoji"; Rinov pregled poveznica naknadno) te polja
+[#190](https://github.com/leonkreso784-bit/riihack/pull/190) (21:51).
 
 Odluke ADR-037 do 041 donio je Leon u sub ~21:15 (graditelj ih je prenio dokumentaristu porukom [ODLUKA]).
 
@@ -29,8 +44,11 @@ Odluke ADR-037 do 041 donio je Leon u sub ~21:15 (graditelj ih je prenio dokumen
 
 **Kontekst.** Na obilasku 3 žiri sam isprobava aplikaciju. Profesorski računi rade na produkciji od ~20:25.
 **Odluka.** Demo na žiriju obavezno ide s profesorskim računom, ne samo s profesorskim kodom.
-**Posljedice.** Demo pokazuje „moje igre" i knjižnicu situacija. 🟨 Tehnički detalji (koji račun, koja igra, kako
-žiri dobiva pristup) dogovaraju se s Leonom.
+**Posljedice.** Demo pokazuje „moje igre" i knjižnicu situacija. Demo igra `KVRNDM` pripada Leonovom demo
+profesorskom računu (seed iz [#191](https://github.com/leonkreso784-bit/riihack/pull/191), 21:51; prijava i „Moje igre"
+na produkciji provjereni). Od [#186](https://github.com/leonkreso784-bit/riihack/pull/186) (Rino, 21:51) `/profesor`
+nudi samo prijavu i registraciju računom; ruta za prijavu profesorskim kodom ostaje, ali se ne nudi na ekranu, a s
+`/ulaz` je maknut gumb „Ja sam profesor".
 
 <a id="adr-040"></a>
 ## ADR-040 · Tuđi hotel: prihod i dobit zatvorenih mjeseci su javni
@@ -40,7 +58,7 @@ Odluke ADR-037 do 041 donio je Leon u sub ~21:15 (graditelj ih je prenio dokumen
 **Odluka.** Prihod i dobit zatvorenih mjeseci tuđeg hotela vide se kao javni podaci. Ostalo o novcu ostaje skriveno,
 kao i odgovori i ocjene.
 **Posljedice.** Djelomično mijenja ADR-035. Student uspoređuje poslovanje s konkurencijom, a učenje drugih ostaje
-privatno.
+privatno. Kod je [#184](https://github.com/leonkreso784-bit/riihack/pull/184) (21:51, Leonovo „spoji" jer dira ugovor).
 
 <a id="adr-039"></a>
 ## ADR-039 · Redoslijed do predaje: demo i smoke prvo
@@ -53,7 +71,12 @@ privatno.
 - Stranicu knjižnice situacija za profesora radi graditelj (Leonov agent), a Rino je stilski pregleda.
 - Skriptu za čišćenje testnih podataka iz baze graditelj piše i isproba večeras, ne u nedjelju ujutro.
 
-**Posljedice.** Demo za obilazak 3 ne ovisi o L19. Čišćenje baze nije posao za zadnji sat.
+**Posljedice.** Demo za obilazak 3 ne ovisi o L19. Čišćenje baze nije posao za zadnji sat. Spojeno u 21:51: L8
+[#191](https://github.com/leonkreso784-bit/riihack/pull/191) (hoteli po mjestu: Rijeka, Opatija, Omišalj, Mali
+Lošinj, Crikvenica; smoke 19 koraka), stranica `/profesor/knjiznica`
+[#189](https://github.com/leonkreso784-bit/riihack/pull/189) i skripta za čišćenje
+[#188](https://github.com/leonkreso784-bit/riihack/pull/188) (zadano suhi prolaz; na produkciji je našla 166 testnih
+od 216 igara). 🟨 Brisanje (`--apply`) još nije pokrenuto.
 
 <a id="adr-038"></a>
 ## ADR-038 · Skice „Tokovi" samo za prezentaciju; „Što ako?" se ne radi

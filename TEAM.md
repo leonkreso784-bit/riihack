@@ -67,6 +67,7 @@ na koga čeka i što smo dogovorili.
 | 24.10. ~21:15 | Tuđi hoteli: prihod i dobit zatvorenih mjeseci su javni (kao kod FINA-e), ostali novac skriven ([ADR-040](docs/records/DECISIONS.md#adr-040)) | Leon |
 | 24.10. ~21:15 | Demo na žiriju obavezno s profesorskim računom; tehnički detalji s Leonom ([ADR-041](docs/records/DECISIONS.md#adr-041)) | Leon |
 | 24.10. ~21:15 | Nakon svakog povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci` ([BUG-013](docs/records/BUGS.md#bug-013--provjera-pada-u-mapi-bez-npm-ci-nakon-promjene-package-lockjson)) | Leon |
+| 24.10. ~22:00 | Balans cijene (#162): u motoru privlačnost iznad 2× referentne cijene pada dalje, iznad 2,5× je 0; `PRICE_MAX` i Plan ostaju; poslije ponovno demo i smoke ([ADR-043](docs/records/DECISIONS.md#adr-043)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
