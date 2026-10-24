@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 22:25–22:35 · Rino i Simon popravljaju, graditelj preuzima ostalo
+
+- **Spojeno:** Rino #200 (22:28, BUG-015 i 016 riješeni) i R10 podij za projektor #196 (22:29); Simon #195 (22:29,
+  BUG-017 riješen) i karta s javnim podacima tuđih hotela #192 (22:29, ADR-040); dokumentacija #202 (22:23) i #204
+  (22:30). Integrator: 419 testova, smoke 18/18, CI zelen, produkcija READY 22:30.
+- **Graditelj s agentima** preuzima ostalo ([ADR-045](DECISIONS.md#adr-045)): BUG-024, ponovni seed i smoke, BUG-019,
+  020, 021, 023, botovi. Javljeno mu da preskoči ono što su Rino i Simon već popravili.
+- **Novi bug:** zadani rok „10 min" sam zatvara mjesec
+  ([BUG-025](BUGS.md#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec)), popravlja Rino.
+- **🟨 Provjera:** tester ponovno gleda podij na 1280×720 (širina i crveni ▼ kod pobjednika, BUG-022).
+
 ## Sub 24.10. ~22:15 · balans cijene na `main`-u, botovi za male igre
 
 - **Odluke (Leon):** formula iz #194 (kvadrat već iznad referentne cijene) je u redu. Simon dodaje botove, hotele i

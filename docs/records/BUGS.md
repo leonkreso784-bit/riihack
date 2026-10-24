@@ -10,37 +10,15 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
+Bugove BUG-015 do 017 i 019 do 025 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
 ~22:05, ~22:20 i ~22:25.
 
-### BUG-015 · Uvid u studenta: propuštena situacija piše „klik"
-- **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (profesor misli da je student odabrao odgovor)
-- **Opis:** student ostavi situaciju bez odgovora i završi mjesec; u uvidu (`/profesor/[worldId]/tvrtka/[id]`) ta
-  situacija piše „klik · 1/5" umjesto „bez odgovora".
-- **Uzrok:** `src/app/profesor/[worldId]/tvrtka/[id]/page.tsx:21`: sve što nije `mode === "own"` prikazuje se kao
-  „klik".
-- **Rješenje:** 🟨 čeka Rina (R8).
-- **Lekcija:** kad stanje ima više od dvije vrijednosti, prikaži svaku izričito; „sve ostalo" pretvori rubni slučaj u
-  laž na ekranu.
-
-### BUG-016 · Krivi hrvatski u brojevima i rodu
-- **Status:** 🔴 otvoren (Rinove datoteke) · **Težina:** nizak (žiri čita sučelje)
-- **Opis:** (a) `/igra`, „Ponude grada": „1 nova ponuda i 0 aktivan ugovor", „0 nova ponuda i 1 aktivan ugovor"
-  (`src/app/igra/page.tsx:87-88`); (b) uvid u studenta: „Razgovor s likom (2 poruka)" umjesto „2 poruke"
-  (`tvrtka/[id]/page.tsx:129`); (c) „Završi mjesec" s jednom situacijom: „One vrijede 1 od 5" umjesto „Ona vrijedi"
-  (`src/components/close-round.tsx:78`).
-- **Uzrok:** broj se lijepi uz imenicu bez sklonidbe po broju (1, 2–4, 5+).
+### BUG-025 · Zadani rok „10 min" na ploči profesora sam zatvara mjesec
+- **Status:** 🔴 otvoren (Rino popravlja, Leon) · **Težina:** srednji (u demou mjesec se zatvori sam usred izlaganja)
+- **Opis:** tester (~22:30): rok mjeseca na ploči profesora je zadano „10 min" (`prof-board.tsx:83`), pa se mjesec
+  zatvori nakon 10 minuta i kad profesor to ne želi. 🟨 Očekivano ponašanje potvrđuje tester.
 - **Rješenje:** 🟨 čeka Rina.
-- **Lekcija:** tekst s brojem u hrvatskom treba oblike za 1, 2–4 i 5+ (0 ide kao 5+); provjeri ga s 0, 1, 2 i 5.
-
-### BUG-017 · AI prijedlog situacije: područje kao sirovi ključ
-- **Status:** 🔴 otvoren · **Težina:** nizak
-- **Opis:** nakon spremanja AI prijedloga (`/profesor/[id]/situacije` → Nova situacija → Predloži AI-jem → Spremi) popis
-  piše „recepcija · težina 3 od 5", a situacije iz banke „Recepcija i smještaj".
-- **Uzrok:** 🟨 potvrditi: prikazuje se ključ područja umjesto naziva (stranica situacija je Simonova, AI nacrt
-  graditeljev).
-- **Rješenje:** 🟨 čeka vlasnika.
-- **Lekcija:** ključ u podacima nije tekst za korisnika; naziv uvijek ide kroz isti popis oznaka.
+- **Lekcija:** zadana vrijednost koja sama pokreće radnju mora biti „isključeno"; profesor je uključuje svjesno.
 
 ### BUG-019 · Situacija nakon isteka roka piše „Ponuđeni odgovor"
 - **Status:** 🔴 otvoren (Rinova datoteka) · **Težina:** srednji (student misli da je nešto odabrao) · ista obitelj
@@ -71,7 +49,7 @@ Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja sa
   prijave do svake stranice.
 
 ### BUG-022 · Kraj sezone na projektoru: nema podija, pobjednik izgleda kao gubitnik
-- **Status:** 🔴 otvoren (Rino, R10 podij, issue [#46](https://github.com/leonkreso784-bit/riihack/issues/46)) · **Težina:** visok (završni trenutak demoa)
+- **Status:** 🟡 podij spojen 22:29 (Rino, [#196](https://github.com/leonkreso784-bit/riihack/pull/196)); tester ponovno provjerava širinu i crveni ▼ · **Težina:** visok (završni trenutak demoa)
 - **Opis:** ploča profesora na 1280×720 nakon „Završi sezonu": nema podija, ljestvica zauzima pola širine, desna
   polovica je prazna; pobjednik ima crveno „▼ −19.3", drugi „▼ −36.9". Koraci: igra s 2 studenta, zatvoriti 2
   mjeseca, „Završi sezonu".
@@ -108,6 +86,35 @@ Bugove BUG-015 do 017 i 019 do 024 prijavio je tester produkcije (sesija koja sa
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-017 · AI prijedlog situacije: područje kao sirovi ključ
+- **Status:** ✅ riješen 24.10. 22:29 (Simon, [#195](https://github.com/leonkreso784-bit/riihack/pull/195)) · **Težina:** nizak
+- **Opis:** nakon spremanja AI prijedloga (`/profesor/[id]/situacije` → Nova situacija → Predloži AI-jem → Spremi) popis
+  piše „recepcija · težina 3 od 5", a situacije iz banke „Recepcija i smještaj".
+- **Uzrok:** prompt je tražio područje kao „jednu ili dvije riječi, npr. recepcija".
+- **Rješenje:** AI bira područje s popisa iz banke; `normalizeDraft` piše veliko početno slovo (i za stare nacrte).
+- **Lekcija:** ključ u podacima nije tekst za korisnika; naziv uvijek ide kroz isti popis oznaka.
+
+### BUG-016 · Krivi hrvatski u brojevima i rodu
+- **Status:** ✅ riješen 24.10. 22:28 (Rino, [#200](https://github.com/leonkreso784-bit/riihack/pull/200)) · **Težina:** nizak (žiri čita sučelje)
+- **Opis:** (a) `/igra`, „Ponude grada": „1 nova ponuda i 0 aktivan ugovor", „0 nova ponuda i 1 aktivan ugovor"
+  (`src/app/igra/page.tsx:87-88`); (b) uvid u studenta: „Razgovor s likom (2 poruka)" umjesto „2 poruke"
+  (`tvrtka/[id]/page.tsx:129`); (c) „Završi mjesec" s jednom situacijom: „One vrijede 1 od 5" umjesto „Ona vrijedi"
+  (`src/components/close-round.tsx:78`).
+- **Uzrok:** broj se lijepi uz imenicu bez sklonidbe po broju (1, 2–4, 5+).
+- **Rješenje:** nova funkcija `plural(n, jedan, dva–četiri, pet+)` u `src/lib/format.ts` (11–14 uvijek „pet+"); svi
+  navedeni tekstovi idu kroz nju.
+- **Lekcija:** tekst s brojem u hrvatskom treba oblike za 1, 2–4 i 5+ (0 ide kao 5+); provjeri ga s 0, 1, 2 i 5.
+
+### BUG-015 · Uvid u studenta: propuštena situacija piše „klik"
+- **Status:** ✅ riješen 24.10. 22:28 (Rino, [#200](https://github.com/leonkreso784-bit/riihack/pull/200)) · **Težina:** srednji (profesor misli da je student odabrao odgovor)
+- **Opis:** student ostavi situaciju bez odgovora i završi mjesec; u uvidu (`/profesor/[worldId]/tvrtka/[id]`) ta
+  situacija piše „klik · 1/5" umjesto „bez odgovora".
+- **Uzrok:** `src/app/profesor/[worldId]/tvrtka/[id]/page.tsx:21`: sve što nije `mode === "own"` prikazuje se kao
+  „klik".
+- **Rješenje:** situacija s `mode: "none"` piše „bez odgovora" (crvena oznaka).
+- **Lekcija:** kad stanje ima više od dvije vrijednosti, prikaži svaku izričito; „sve ostalo" pretvori rubni slučaj u
+  laž na ekranu.
 
 ### BUG-014 · Najviša cijena (400 €) je gotovo uvijek najisplativija
 - **Status:** ✅ riješen 24.10. 22:14 ([#194](https://github.com/leonkreso784-bit/riihack/pull/194), Leonovo „spoji") · **Težina:** visok (žiri na obilasku 3 sam igra; igra bi učila krivo)

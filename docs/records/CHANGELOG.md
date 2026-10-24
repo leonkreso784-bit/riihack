@@ -7,6 +7,12 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#204](https://github.com/leonkreso784-bit/riihack/pull/204) | 22:30 | Leon | dokumentacija: ADR-045 |
+| [#192](https://github.com/leonkreso784-bit/riihack/pull/192) | 22:29 | Simon | grad: tuđi hoteli bez stanja računa, javni prihod i dobit, visina zgrade po napretku (ADR-040) |
+| [#196](https://github.com/leonkreso784-bit/riihack/pull/196) | 22:29 | Rino | R10: podij mjeseca i sezone za projektor, „Pokaži podij", anonimna ljestvica |
+| [#195](https://github.com/leonkreso784-bit/riihack/pull/195) | 22:29 | Simon | AI prijedlog situacije: područje kao u banci (BUG-017) |
+| [#200](https://github.com/leonkreso784-bit/riihack/pull/200) | 22:28 | Rino | „bez odgovora" na uvidu i hrvatska množina uz brojeve (BUG-015, BUG-016) |
+| [#202](https://github.com/leonkreso784-bit/riihack/pull/202) | 22:23 | Leon | dokumentacija: ADR-044 botovi, BUG-019 do 024 |
 | [#194](https://github.com/leonkreso784-bit/riihack/pull/194) | 22:14 | Leon | balans cijene: iznad referentne cijene privlačnost pada s kvadratom, iznad 2,5× je 0 (ADR-043, BUG-014 riješen) |
 | [#199](https://github.com/leonkreso784-bit/riihack/pull/199) | 22:13 | Leon | `/profesor/prijava` bez mrtve poveznice „Imaš samo profesorski kod?" |
 | [#197](https://github.com/leonkreso784-bit/riihack/pull/197) | 22:13 | Leon | dokumentacija: bugovi s testa produkcije, ADR-044 botovi |
