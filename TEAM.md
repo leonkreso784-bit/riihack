@@ -71,15 +71,15 @@ na koga čeka i što smo dogovorili.
 - **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917
 - **Zadnje ažurirano:** sub 18:28
 
-## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
+## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim:** popravci iz probe M2 (čekam Leonovu odluku koje)
-- **Sljedeće:** M3 samo popravci i poliranje; demo igra svježa prije svakog obilaska (`npm run seed:demo`)
-- **Čekam od drugih:** Simon: BUG-009 (presuda vlastitog odgovora pada na rezervu, `ai/judge.ts` i `prompts.ts`); Rino: zatvaranje kruga i izvještaj u sučelju (R4/R7), R8 uvid u studenta s „Promijeni ocjenu"
-- **Drugi čekaju od mene:** —
-- **Otvoreno:** —
-- **Spojeno:** L0–L12, **L12 M3 ruta `situations/generate` (#118)**, L8 smoke 14/14 i demo igra, odjava. Proba M2 na pravim podacima (sub 18:05): ulaz, sobe, osoblje, plan, financije, grad, lik iz profesorove situacije, slanje odabranom studentu, promjena ocjene (API), zatvaranje kruga i pitanje mentora (API), obračun mjeseca rade; produkcija na pravom API-ju. **Pravila:** nitko ne pokreće `npm run db:push`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** sub 18:05
+- **Sad radim:** val 3 (plan u PR-u #134): L14 javni profil hotela za kartu (agent), L16 profesorski računi s Better Authom (agent, backend)
+- **Sljedeće:** L15 pošta i pregovaranje s agencijama, L17 knjižnica situacija, L18 poruke među hotelima, L19 suradnja; L8 demo igra i smoke za val 3
+- **Čekam od drugih:** Leon: „spoji #134" (plan), odgovor na 3 otvorena pitanja u planu
+- **Drugi čekaju od mene:** Simon: L14 (`/api/world/[worldId]/companies`) za kartu; Rino: #137 za stranicu odjela (ugovor #132 je na mainu)
+- **Otvoreno:** #137 L13 odjeli (CI zelen, kod integratora), #134 plan vala 3
+- **Spojeno:** L0–L12, #118 AI prijedlog situacije, #132 ugovor odjela; shema: `plans.investments`, `finances.investments`. **Pravila:** nitko ne pokreće `npm run db:push`; ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** sub 19:00
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
 
