@@ -7,6 +7,11 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#206](https://github.com/leonkreso784-bit/riihack/pull/206) | 23:27 | Simon | Tokovi: „Kako odjeli utječu na hotel" (`/igra/osoblje/tok`), BUG-020b |
+| [#221](https://github.com/leonkreso784-bit/riihack/pull/221) | 23:26 | Leon | BUG-027: kasni ulaz dok igra traje, demo igra 15 mjesta, smoke korak 20 (ADR-048) |
+| [#215](https://github.com/leonkreso784-bit/riihack/pull/215) | 23:22 | Simon | grad: karta se prilagođava broju hotela |
+| [#220](https://github.com/leonkreso784-bit/riihack/pull/220) | 23:17 | Leon | dokumentacija: vremena odluka ispravljena |
+| [#212](https://github.com/leonkreso784-bit/riihack/pull/212) | 23:15 | Leon | BUG-019 i 021 ostatak: „rok je istekao", Knjižnica u zaglavlju profesora |
 | [#217](https://github.com/leonkreso784-bit/riihack/pull/217) | 23:14 | Leon | plan: ugovor za botove (`isBot?`, `BotsRequest`) iz #205 |
 | [#219](https://github.com/leonkreso784-bit/riihack/pull/219) | 23:13 | Leon | dokumentacija: ADR-047 i 048, kasni ulaz |
 | [#216](https://github.com/leonkreso784-bit/riihack/pull/216) | 23:08 | Rino | `/profesor` bez bljeska prijave, ploča bez dvostrukog „Moje igre" |
