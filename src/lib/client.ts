@@ -1,7 +1,7 @@
 // Browser-side API calls. Until the backend is live every call answers from mock.ts; NEXT_PUBLIC_USE_MOCK=0 switches to the server.
 import { useEffect, useEffectEvent, useState } from "react";
 import { PASTE_SHARE, POLL_MS } from "./rules";
-import { MOCK_DETAIL, MOCK_ME, MOCK_PROF, MOCK_ROOMS } from "./mock";
+import { MOCK_DETAIL, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
 import type {
   AnswerRequest,
   AnswerView,
@@ -27,6 +27,7 @@ import type {
   RoundReportView,
   SituationDraft,
   SituationSummary,
+  StaffMember,
   WorldSettingsRequest,
 } from "./types";
 
@@ -62,6 +63,7 @@ const realApi = {
   join: (req: JoinRequest) => post<JoinResponse>("/api/join", req),
   me: () => get<MeResponse>("/api/me"),
   rooms: () => get<Room[]>("/api/me/rooms"),
+  staff: () => get<StaffMember[]>("/api/me/staff"),
   answer: (situationId: string, req: AnswerRequest) => post<AnswerView>(`/api/situations/${situationId}/answer`, req),
   // Character reply arrives as a text stream; read it chunk by chunk.
   chat: async (situationId: string, req: ChatRequest): Promise<ReadableStream<string>> => {
@@ -196,6 +198,7 @@ const mockApi: Api = {
     });
   },
   rooms: () => wait(MOCK_ROOMS),
+  staff: () => wait(MOCK_STAFF),
   answer: (_id, req) =>
     wait(
       "optionId" in req

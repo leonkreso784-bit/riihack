@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BedDouble, Building2, Map, SlidersHorizontal, Wallet } from "lucide-react";
+import { BedDouble, Building2, Map, SlidersHorizontal, Users, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { t } from "@/lib/strings";
 import { Wordmark } from "./site-header";
@@ -14,6 +14,7 @@ import { LogoutButton } from "./logout-button";
 const ITEMS = [
   { href: "/igra", label: t.nav.hotel, icon: Building2 },
   { href: "/igra/sobe", label: t.nav.rooms, icon: BedDouble },
+  { href: "/igra/osoblje", label: t.nav.staff, icon: Users },
   { href: "/igra/plan", label: t.nav.plan, icon: SlidersHorizontal },
   { href: "/igra/financije", label: t.nav.finances, icon: Wallet },
   { href: "/igra/grad", label: t.nav.city, icon: Map },
@@ -71,7 +72,7 @@ export function GameNav() {
 function NavList({ pathname, variant }: { pathname: string; variant: "side" | "bottom" }) {
   const side = variant === "side";
   return (
-    <ul className={side ? "space-y-1" : "mx-auto grid max-w-md grid-cols-5"}>
+    <ul className={side ? "space-y-1" : "mx-auto grid max-w-md grid-cols-6"}>
       {ITEMS.map(({ href, label, icon: Icon }) => {
         const active = isActive(pathname, href);
         return (
