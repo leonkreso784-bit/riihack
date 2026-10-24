@@ -252,15 +252,6 @@ export async function listWorldContracts(worldId: string): Promise<ContractRow[]
   return db.select().from(contracts).where(eq(contracts.worldId, worldId));
 }
 
-/** Ugovori i ponude tvrtke, najnovije prvo. */
-export async function listCompanyContracts(companyId: string): Promise<ContractRow[]> {
-  return db
-    .select()
-    .from(contracts)
-    .where(eq(contracts.companyId, companyId))
-    .orderBy(desc(contracts.roundOffered));
-}
-
 /** Ugovor samo ako pripada toj tvrtki (inače null, i za id koji nije uuid). */
 export async function getContractForCompany(contractId: string, companyId: string): Promise<ContractRow | null> {
   if (!isUuid(contractId)) return null;

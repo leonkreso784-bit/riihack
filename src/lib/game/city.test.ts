@@ -4,7 +4,7 @@ import { CITY, CONTRACTS, getBusiness } from "@/content";
 import { HttpError } from "@/lib/http";
 import { MARKETING_MAX, PRICE_MAX, PRICE_MIN } from "@/lib/rules";
 import type { LeaderboardRow } from "@/lib/types";
-import { buildNews, parsePlan, sumEffects, toCityLinks, toCityView, toContractView, type NewsEvent } from "./city";
+import { buildNews, parsePlan, sumEffects, toCityLinks, toCityView, toContractView, toPlan, type NewsEvent } from "./city";
 
 const agency = CONTRACTS.find((c) => c.nights > 0)!;
 const laundry = CONTRACTS.find((c) => c.businessId === "praonica-kvarner")!;
@@ -135,9 +135,9 @@ describe("buildNews", () => {
     );
     expect(news).toEqual([
       { at: at(28).toISOString(), text: "Kolovoz: najpopunjeniji je Hotel Lungomare (94 %)" },
-      { at: at(12).toISOString(), text: "Hotel Lungomare potpisao ugovor s Agencija Adria" },
+      { at: at(12).toISOString(), text: "Novi ugovor: Hotel Lungomare i Agencija Adria" },
       { at: at(5).toISOString(), text: "Počinje lipanj" },
-      { at: at(1).toISOString(), text: "Vila Ana otvara vrata u Rijeka" },
+      { at: at(1).toISOString(), text: "Novi hotel u gradu: Vila Ana (Rijeka)" },
     ]);
   });
 
@@ -151,7 +151,7 @@ describe("buildNews", () => {
       ],
       {},
     );
-    expect(news.map((n) => n.text)).toEqual(["Lipanj: najpopunjeniji je Hotel Novi (60 %)", "Hotel Novi otvara vrata u Opatija"]);
+    expect(news.map((n) => n.text)).toEqual(["Lipanj: najpopunjeniji je Hotel Novi (60 %)", "Novi hotel u gradu: Hotel Novi (Opatija)"]);
   });
 
   it("najviše 10 vijesti", () => {
@@ -171,5 +171,14 @@ describe("sumEffects", () => {
     });
     expect(sumEffects({ guests: 2 }, { guests: -2 })).toEqual({});
     expect(sumEffects({ bogus: 5 } as never)).toEqual({});
+  });
+});
+
+describe("toPlan", () => {
+  it("spremljeni plan, inače referentna cijena soba i marketing 0", () => {
+    const row = { id: "p", companyId: "ana", round: 2, price: 60, marketing: 500 };
+    expect(toPlan(2, row, [])).toEqual({ round: 2, price: 60, marketing: 500 });
+    expect(toPlan(2, null, [{ basePrice: 70 }, { basePrice: 90 }, { basePrice: 95 }])).toEqual({ round: 2, price: 85, marketing: 0 });
+    expect(toPlan(1, null, [])).toEqual({ round: 1, price: PRICE_MIN, marketing: 0 });
   });
 });

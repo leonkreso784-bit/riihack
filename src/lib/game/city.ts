@@ -4,14 +4,12 @@ import { and, eq, lt, sql, type SQL } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import { db } from "@/db";
 import { companies, contracts, events, finances, worlds } from "@/db/schema";
-import type { ContractRow, EventRow, FinanceRow, WorldRow } from "@/db/schema";
+import type { ContractRow, EventRow, FinanceRow, PlanRow, WorldRow } from "@/db/schema";
 import {
   getContractForCompany,
   getPlanRow,
   listCompanies,
-  listCompanyContracts,
   listEvents,
-  listFinanceRows,
   listPlans,
   listRoomPrices,
   listRooms,
@@ -135,13 +133,13 @@ function newsText(e: NewsEvent, names: Record<string, string>): string | undefin
   switch (e.type) {
     case "player.joined": {
       const place = text(p.place);
-      return hotel && place ? `${hotel} otvara vrata u ${place}` : undefined;
+      return hotel && place ? `Novi hotel u gradu: ${hotel} (${place})` : undefined;
     }
     case "round.opened":
       return `Počinje ${monthName(e.round).toLocaleLowerCase("hr")}`;
     case "contract.accepted": {
       const business = text(p.businessName);
-      return hotel && business ? `${hotel} potpisao ugovor s ${business}` : undefined;
+      return hotel && business ? `Novi ugovor: ${hotel} i ${business}` : undefined;
     }
     case "round.settled": {
       const topId = text(p.topCompanyId);
@@ -193,11 +191,16 @@ function metricsPlus(delta: Partial<Record<MetricKey, number>>): SQL {
 
 // ---------- Plan kruga ----------
 
-/** Plan tvrtke za krug; bez spremljenog plana cijena je referentna cijena soba, a marketing 0. */
+/** Plan za krug iz spremljenog retka; bez njega cijena je referentna cijena soba, a marketing 0. */
+export function toPlan(round: number, row: PlanRow | null, rooms: { basePrice: number }[]): RoundPlan {
+  if (row) return { round, price: row.price, marketing: row.marketing };
+  return { round, price: refPrice(rooms), marketing: 0 };
+}
+
+/** Plan tvrtke za krug (spremljeni ili zadani). */
 export async function getPlan(companyId: string, round: number): Promise<RoundPlan> {
   const row = await getPlanRow(companyId, round);
-  if (row) return { round, price: row.price, marketing: row.marketing };
-  return { round, price: refPrice(await listRooms(companyId)), marketing: 0 };
+  return toPlan(round, row, row ? [] : await listRooms(companyId));
 }
 
 /** Spremi plan tekućeg kruga (samo dok igra traje, a tvrtka krug nije zatvorila ni grad ga nije obračunao). */
@@ -277,6 +280,7 @@ export async function decideContract(ctx: PlayerCtx, contractId: string, accept:
 /**
  * Obračun kruga za cijeli grad, točno jednom: prvo zauzme `settled_round` (bez retka → netko je već obračunao),
  * zatim tržište, novac, pokazatelji, retci u `finances`, istek neprihvaćenih ponuda i događaj u jednom `db.batch`.
+ * Ako upis padne, vrati `settled_round`, da sljedeći poziv (profesorov klik) mjesec ponovno obračuna.
  */
 export async function settleCityRound(world: WorldRow, round: number): Promise<void> {
   if (!Number.isInteger(round) || round < 1) return;
@@ -287,6 +291,18 @@ export async function settleCityRound(world: WorldRow, round: number): Promise<v
     .returning({ id: worlds.id });
   if (!claimed[0]) return;
 
+  try {
+    await writeSettlement(world, round);
+  } catch (err) {
+    await db
+      .update(worlds)
+      .set({ settledRound: round - 1 })
+      .where(and(eq(worlds.id, world.id), eq(worlds.settledRound, round)));
+    throw err;
+  }
+}
+
+async function writeSettlement(world: WorldRow, round: number): Promise<void> {
   const [all, planRows, roomPrices, contractRows] = await Promise.all([
     listCompanies(world.id),
     listPlans(world.id, round),
@@ -347,50 +363,28 @@ export async function settleCityRound(world: WorldRow, round: number): Promise<v
     db.insert(finances).values({ companyId: company.id, ...finance }),
   ]);
 
-  await db.batch([
-    db.insert(events).values({
-      worldId: world.id,
-      round,
-      type: "round.settled",
-      payload: {
-        hotels: settled.length,
-        topCompanyId: top?.company.id ?? null,
-        topHotelName: top?.company.name ?? null,
-        occupancyPct: top?.finance.occupancyPct ?? null,
-      },
-    }),
-    db
-      .update(contracts)
-      .set({ status: "expired" })
-      .where(and(eq(contracts.worldId, world.id), eq(contracts.roundOffered, round), eq(contracts.status, "offered"))),
-    ...perHotel,
-  ]);
+  const settledEvent = db.insert(events).values({
+    worldId: world.id,
+    round,
+    type: "round.settled",
+    payload: {
+      hotels: settled.length,
+      topCompanyId: top?.company.id ?? null,
+      topHotelName: top?.company.name ?? null,
+      occupancyPct: top?.finance.occupancyPct ?? null,
+    },
+  });
+  const expireOffers = db
+    .update(contracts)
+    .set({ status: "expired" })
+    .where(and(eq(contracts.worldId, world.id), eq(contracts.roundOffered, round), eq(contracts.status, "offered")));
+
+  await db.batch([settledEvent, expireOffers, ...perHotel]);
 }
 
-// ---------- Podaci za poglede (faza B: views.ts / loadMe / loadProfState) ----------
+// ---------- Podaci za poglede (views.ts gradi plan, ugovore, obračune, kartu i vijesti iz redaka) ----------
 
-/** Ponude i ugovori tvrtke, najnoviji prvo. */
-export async function listContractViews(companyId: string): Promise<ContractView[]> {
-  return (await listCompanyContracts(companyId)).map(toContractView);
-}
-
-/** Obračuni tvrtke po mjesecima, redom. */
-export async function listFinances(companyId: string): Promise<RoundFinance[]> {
-  return (await listFinanceRows(companyId)).map(toFinance);
-}
-
-/** Vijesti grada; `names` (id tvrtke → ime hotela) ako ih pozivatelj već ima, inače se pročitaju. */
-export async function loadNews(worldId: string, names?: Record<string, string>): Promise<NewsItem[]> {
-  const [rows, known] = await Promise.all([
-    listEvents(worldId, NEWS_TYPES, NEWS_LIMIT),
-    names
-      ? Promise.resolve(names)
-      : listCompanies(worldId).then((all) => Object.fromEntries(all.map(({ company }) => [company.id, company.name]))),
-  ]);
-  return buildNews(rows, known);
-}
-
-/** Linije karte za krug: aktivni ugovori igre. */
-export async function loadCityLinks(worldId: string, round: number): Promise<CityLink[]> {
-  return toCityLinks(await listWorldContracts(worldId), round);
+/** Događaji iz kojih se pišu vijesti grada (buildNews), najnoviji prvo. */
+export async function listNewsEvents(worldId: string): Promise<EventRow[]> {
+  return listEvents(worldId, NEWS_TYPES, NEWS_LIMIT);
 }

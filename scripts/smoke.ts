@@ -1,5 +1,5 @@
 // Smoke provjera toka igre preko HTTP-a. Pokretanje: npm run smoke (BASE_URL, zadano http://localhost:3000).
-// SMOKE_CITY=1 uključuje korake 11–14 (grad, čeka L11). Izlazni kod 1 ako ijedan korak padne.
+// SMOKE_CITY=1 uključuje korake 11–14 (grad: plan, obračun mjeseca, ugovori). Izlazni kod 1 ako ijedan korak padne.
 import type {
   AnswerView, CreateWorldResponse, JoinResponse, MeResponse, ProfStateResponse, RoundReportView, SituationView,
 } from "../src/lib/types";
@@ -47,7 +47,7 @@ async function step(n: number, name: string, needs: number[], fn: () => Promise<
   try { await fn(); done.add(n); console.log(`✓ ${n} ${name}`); }
   catch (e) { failed++; console.log(`✗ ${n} ${name}: ${e instanceof Error ? e.message : String(e)}`); }
 }
-function skipped(n: number, name: string) { console.log(`– ${n} ${name}: preskočeno (čeka L11)`); }
+function skipped(n: number, name: string) { console.log(`– ${n} ${name}: preskočeno (uključi SMOKE_CITY=1)`); }
 
 async function main() {
   const prof = new User("profesor"), ivan = new User("Ivan"), treci = new User("Treći");
@@ -141,14 +141,14 @@ async function main() {
     expectStatus(r, 409);
   });
 
-  // Grad (nakon L11): koraci 11–14 samo uz SMOKE_CITY=1.
+  // Grad: koraci 11–14 samo uz SMOKE_CITY=1.
   const cityStep = async (n: number, name: string, needs: number[], fn: () => Promise<void>) =>
     CITY ? step(n, name, needs, fn) : skipped(n, name);
   const finances = async (u: User) => ((await u.call("GET", "/api/me")).data as MeResponse).finances;
 
-  await cityStep(11, "cijena 60 € daje Ani više noćenja nego Ivanu po 150 €", [10], async () => {
+  await cityStep(11, "cijena 60 € daje Ani više noćenja nego Ivanu po 300 €", [10], async () => {
     expectStatus(await ana.call("POST", "/api/me/plan", { price: 60, marketing: 0 }), 200);
-    expectStatus(await ivan.call("POST", "/api/me/plan", { price: 150, marketing: 0 }), 200);
+    expectStatus(await ivan.call("POST", "/api/me/plan", { price: 300, marketing: 0 }), 200);
     expectStatus(await prof.call("POST", `/api/prof/${world.worldId}/round`, {}), 200);
     const a = (await finances(ana)).find((f) => f.round === 2), i = (await finances(ivan)).find((f) => f.round === 2);
     expect(a && i, "nema finances za krug 2");
@@ -161,24 +161,42 @@ async function main() {
     expect(me.company.cash === me.company.startCash + profit, `cash ${me.company.cash} ≠ ${me.company.startCash} + ${profit}`);
   });
 
-  await cityStep(13, "prihvaćen ugovor agencije → contractNights > 0", [11], async () => {
-    const me = (await ana.call("GET", "/api/me")).data as MeResponse;
-    const offer = me.contracts.find((c) => c.status === "offered");
-    expect(offer, "nema ponuđenog ugovora");
-    expectStatus(await ana.call("POST", `/api/contracts/${offer.id}/decide`, { accept: true }), 200);
-    expectStatus(await prof.call("POST", `/api/prof/${world.worldId}/round`, {}), 200);
-    const f = (await finances(ana)).at(-1);
-    expect(f && f.contractNights > 0, `contractNights ${f?.contractNights}`);
+  // Ponuda kruga je slučajna (iz sjemena igre), pa korak 13 ima svoju malu igru za jednog studenta: nova igra
+  // dok ponuda kruga 1 nije agencijska (vjerojatnost 3/8 po igri), a Anina igra čuva krugove za korak 14.
+  await cityStep(13, "prihvaćen ugovor agencije → contractNights > 0", [], async () => {
+    for (let attempt = 1; attempt <= 20; attempt++) {
+      const p = new User("profesor (ugovor)"), s = new User("Marta");
+      const w = await p.call("POST", "/api/worlds", { name: `${worldName} ugovor`, maxPlayers: 1 });
+      expectStatus(w, 200);
+      expectStatus(await s.call("POST", "/api/join", joinBody(w.data.joinCode, "Marta", "Hotel Marta")), 200);
+      expectStatus(await p.call("POST", `/api/prof/${w.data.worldId}/start`), 200);
+      const me = (await s.call("GET", "/api/me")).data as MeResponse;
+      const offer = me.contracts.find((c) => c.status === "offered" && c.businessKind === "agency");
+      if (!offer) continue;
+      const d = await s.call("POST", `/api/contracts/${offer.id}/decide`, { accept: true });
+      expectStatus(d, 200);
+      expect(d.data.status === "accepted", `status ${d.data.status}`);
+      expectStatus(await s.call("POST", `/api/contracts/${offer.id}/decide`, { accept: true }), 409);
+      expectStatus(await p.call("POST", `/api/prof/${w.data.worldId}/round`, {}), 200);
+      const f = (await finances(s)).find((x) => x.round === 1);
+      expect(f && f.contractNights > 0, `contractNights ${f?.contractNights}`);
+      return;
+    }
+    throw new Error("ni u 20 igara nema agencijske ponude u krugu 1");
   });
 
-  await cityStep(14, "dvostruki obračun: dva istovremena zatvaranja mjeseca", [13], async () => {
+  await cityStep(14, "dvostruki obračun: dva istovremena zatvaranja mjeseca", [11], async () => {
     const roundOf = async () => ((await prof.call("GET", `/api/prof/${world.worldId}`)).data as ProfStateResponse).world.round;
     const before = await roundOf();
-    await Promise.all([prof.call("POST", `/api/prof/${world.worldId}/round`, {}), prof.call("POST", `/api/prof/${world.worldId}/round`, {})]);
+    const both = await Promise.all([prof.call("POST", `/api/prof/${world.worldId}/round`, {}), prof.call("POST", `/api/prof/${world.worldId}/round`, {})]);
+    both.forEach((r) => expectStatus(r, 200));
     const after = await roundOf();
     expect(after === before + 1, `krug ${before} → ${after}`);
-    const rounds = (await finances(ana)).map((f) => f.round);
-    expect(new Set(rounds).size === rounds.length, `dupli retci u finances: ${rounds.join(",")}`);
+    for (const u of [ana, ivan]) {
+      const rounds = (await finances(u)).map((f) => f.round);
+      expect(new Set(rounds).size === rounds.length, `${u.label}: dupli retci u finances: ${rounds.join(",")}`);
+      expect(rounds.length === after - 1, `${u.label}: obračunati krugovi ${rounds.join(",")}, očekivano 1–${after - 1}`);
+    }
   });
 
   console.log(failed ? `\n${failed} korak(a) palo` : "\nSve prošlo");
