@@ -105,6 +105,7 @@ export const answers = pgTable("answers", {
   verdict: jsonb("verdict").$type<Verdict>(),
   quality: integer("quality").notNull(),
   copied: boolean("copied").notNull(),
+  overridden: boolean("overridden").notNull().default(false), // L12 (M3): profesor je promijenio kvalitetu
   createdAt: createdAt(),
 });
 
