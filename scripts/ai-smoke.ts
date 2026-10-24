@@ -3,6 +3,7 @@ import { config } from "dotenv";
 config({ path: ".env.local" });
 import { generateText, wrapLanguageModel } from "ai";
 import { judge } from "../src/lib/ai/judge";
+import { streamCharacterReply } from "../src/lib/ai/character";
 import type { JudgeInput } from "../src/lib/types";
 import { aiEnabled, MODELS } from "../src/lib/ai/client";
 import { anthropic } from "@ai-sdk/anthropic";
@@ -55,6 +56,22 @@ async function smokeJudge() {
   }
 }
 
+async function smokeCharacter() {
+  const started = Date.now();
+  const res = streamCharacterReply({
+    template: sample.template,
+    hotelName: sample.hotelName,
+    roomNumber: "204",
+    transcript: sample.transcript.slice(0, 1),
+    message: sample.transcript[1].text,
+    pasted: false,
+    messageNo: 1,
+    maxMessages: 6,
+  });
+  const text = await res.text();
+  console.log(`lik Marko, poruka 1/6 (${Date.now() - started} ms): ${text}`);
+}
+
 async function main() {
   if (!aiEnabled()) {
     console.error("ANTHROPIC_API_KEY nije postavljen (.env.local).");
@@ -67,6 +84,7 @@ async function main() {
     prompt: "Pozdrav",
   });
   console.log(`${MODELS.character} (${Date.now() - started} ms): ${text}`);
+  await smokeCharacter();
   await smokeJudge();
 }
 
