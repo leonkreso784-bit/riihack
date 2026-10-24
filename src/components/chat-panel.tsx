@@ -41,13 +41,15 @@ export function ChatPanel({
   const [streaming, setStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const busy = useRef(false); // a double click sends one message
-  const end = useRef<HTMLDivElement>(null);
+  const list = useRef<HTMLOListElement>(null);
 
   const left = MAX_STUDENT_MESSAGES - turns.filter((t) => t.role === "student").length;
   const closed = disabled || left <= 0;
 
+  // BUG-038: scroll only the conversation box to its last message; scrollIntoView also moved the page on phones.
   useEffect(() => {
-    end.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    const el = list.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [turns]);
 
   async function send(e: React.FormEvent) {
@@ -80,7 +82,7 @@ export function ChatPanel({
 
   return (
     <div className="space-y-4">
-      <ol className="max-h-[28rem] space-y-3 overflow-y-auto" aria-live="polite">
+      <ol ref={list} className="max-h-[28rem] space-y-3 overflow-y-auto" aria-live="polite">
         {turns.map((t, i) =>
           t.role === "character" ? (
             <li key={i} className="flex items-end gap-2">
@@ -95,7 +97,6 @@ export function ChatPanel({
             </li>
           ),
         )}
-        <div ref={end} />
       </ol>
 
       {error && <FormError key={error}>{error}</FormError>}
@@ -107,7 +108,7 @@ export function ChatPanel({
       ) : (
         <form onSubmit={send} className="space-y-2">
           <div className="flex gap-2">
-            <label htmlFor="chat-message" className="sr-only">Poruka za {character.name}</label>
+            <label htmlFor="chat-message" className="sr-only">Tvoja poruka ({character.name})</label>
             <input
               id="chat-message"
               value={message}

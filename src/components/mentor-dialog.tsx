@@ -31,6 +31,7 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
   async function send(e: React.FormEvent) {
     e.preventDefault();
     if (sending.current) return;
+    if (length === 0 && !confirm("Poslati mentoru prazan odgovor?")) return; // BUG-036
     // The server also wants MIN_OWN_ANSWER_CHARS, so say why instead of a silent grey button.
     if (short) return setError(`Mentoru napiši barem ${MIN_OWN_ANSWER_CHARS} znakova, on odgovara na tvoje razmišljanje. ${charsLeft(MIN_OWN_ANSWER_CHARS - length)}.`);
     sending.current = true;

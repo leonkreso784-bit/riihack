@@ -44,6 +44,7 @@ export function OwnAnswerForm({ situationId, firstName, onAnswered }: { situatio
       onSubmit={(e) => {
         e.preventDefault();
         setTried(short);
+        if (length === 0 && !confirm("Poslati prazan odgovor? Prazan odgovor dobiva 1 od 5.")) return; // BUG-036
         if (!short) submit({ text: text.trim(), pastedChars: Math.min(pastedChars, length) });
       }}
       className="space-y-3"
