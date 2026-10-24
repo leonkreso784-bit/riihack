@@ -42,7 +42,11 @@ Iskreno reći: **sučelje radi na primjer-podacima** (piše „primjer" na ekran
 | 4:40–5:00 | svi | pitanje žiriju, pa slušamo |
 
 **Simon (1:15), problem i obećanja**
-> Mi smo Pojedinci, radimo **Simpolis**. AI studentu napiše savršen esej o vođenju hotela, ali ga ne nauči što
+> Mi smo Pojedinci, radimo **Simpolis**. Zamislite igru vođenja tvrtke, kao Sims ili Tycoon, ali za pravi posao:
+> vodiš hotel, određuješ cijenu i marketing, sklapaš ugovore s pekarom i praonicom, rješavaš probleme s gostima i
+> osobljem, i **svaka loša odluka se osjeti** u gostima, recenzijama i blagajni, a onda ti netko objasni zašto.
+>
+> Zašto to treba? AI studentu napiše savršen esej o vođenju hotela, ali ga ne nauči što
 > reći ljutom gostu u sobi 204. Studenti hotelijerstva prvu pravu odluku s gostom donose tek na praksi, u zadnjem
 > semestru: 420 sati, ocjena prošao ili pao. Do tada uče uz AI, kao 40 do 50 % srednjoškolaca u Hrvatskoj. A tko
 > vježba s AI-jem koji mu daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat** (Bastani i sur.,
@@ -82,14 +86,23 @@ Pokazati: **https://simpolis-sudac-share.vercel.app** (stvarni izlaz suca, jedna
 **Dok žiri govori:** Simon zapisuje svaku rečenicu; ne prekidamo i ne branimo se; na kraju „hvala, što biste vi
 prvo promijenili?". Odmah nakon: odgovor u `PROMISE.md`, izmjene u roadmap.
 
+## Jednostavan jezik (svi)
+
+- Govorimo **„igra vođenja tvrtke za pravi posao"**, ne „simulacija s rubrikom i motorom".
+- Primjeri koje svi znaju: **Sims / Tycoon** (vodiš nešto i vidiš posljedice), **Kahoot** (razred ulazi kodom).
+- Poluge koje **stvarno postoje** u igri: cijena noćenja, marketing, ugovori s gradskim tvrtkama (pekara za doručak,
+  praonica, zaštitar, agencija), osoblje hotela, razgovori s gostima i zaposlenicima. **Ne spominjemo** renovaciju,
+  opremu ni zapošljavanje boljeg ili lošijeg osoblja: to danas nije u igri.
+
 ## Pitanja koja žiri uvijek pita (kratki odgovori)
 
 - **Zašto ne ChatGPT ili Cesim?** „Cesim te uči brojke hotela. ChatGPT ti glumi gosta, ali sutra sve zaboravi. Kod
   nas ono što kažeš gostu u lipnju vidiš u recenzijama u srpnju i u blagajni u kolovozu."
 - **Kako spriječiti prepisivanje?** Vlastite riječi vrijede više od klika (klik najviše 4/5), prepisan ponuđeni
   odgovor broji se kao klik, a bodove ne daje AI nego pravila.
-- **Tko plaća?** Licenca po kolegiju; prvi korisnik je kolegij na FMTU u Opatiji (Leonov HotelixSim je tamo pred
-  pilotom). AI trošak je ispod eura za razred od 30 studenata.
+- **Tko plaća?** Fakultet licencom po kolegiju (prvi korisnik: kolegij na FMTU u Opatiji, gdje je Leonov HotelixSim
+  pred pilotom). Kasnije **tvrtke**: hotelske kuće već plaćaju vlastite akademije za nove ljude, pa im je jeftinije
+  da studenti vježbaju na njihovim situacijama prije prvog dana. AI trošak je ispod eura za razred od 30 studenata.
 - **Je li ovo demo ili mock-up?** Sučelje je na primjer-podacima i to piše na ekranu; AI sudac radi na pravom modelu;
   baza i grad stižu do 18:45. Reći što je pripremljeno prije (istraživanje, starter) i što je AI.
 - **Privatnost?** U demou samo nadimci, AI ključ samo na poslužitelju, na ekranu piše što radi AI.
