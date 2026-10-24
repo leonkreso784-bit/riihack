@@ -74,13 +74,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim:** predaja na novu sesiju graditelja (prompt spreman, radna stabla raščišćena)
-- **Sljedeće:** L17 knjižnica situacija (nakon #147), L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3 (čišćenje imena prijašnjeg projekta radi Rino)
-- **Čekam od drugih:** Leon: „spoji #147" i potvrda za `BETTER_AUTH_*` na Vercelu (integrator); odgovori na 3 otvorena pitanja u planu vala 3
+- **Sad radim:** predaja na novu sesiju graditelja (`Simpolis-prompt-graditelj-2.md`)
+- **Sljedeće:** L18 poruke među hotelima, L19 suradnja, L8 demo i smoke za val 3, ruta „Što ako?" ako Leon odabere Simonovu skicu 1, čišćenje testnih podataka prije predaje
+- **Čekam od drugih:** Leon: „spoji #169"; odluka o Simonovim skicama „Tokovi"
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #147 L16 profesorski računi (zelen; bez tajne igra radi s kodom), #155 `scripts/lock-merge.py`
-- **Spojeno:** L0–L12; val 3: L13 odjeli (#132, #137), L14 javni profil (#143), raspodjela financija (#144), L15 pošta i pregovaranje (#148), uqr (#139), plan (#134). Shema ručno: ulaganja, raspodjela, Better Auth tablice + `worlds.owner_id`, `mail` + pregovaranje. **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** sub 20:05
+- **Otvoreno:** #169 L16 ekrani računa (zelen)
+- **Spojeno:** L0–L12; val 3: L13 odjeli, L14 javni profil, raspodjela financija, L15 pošta i pregovaranje, L16 računi (#147, Better Auth na produkciji od ~20:25), L17 knjižnica (#165), dvoklik na zatvaranje mjeseca (#166). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** sub 20:50
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S12)
 
