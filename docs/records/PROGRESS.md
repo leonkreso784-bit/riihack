@@ -12,7 +12,9 @@ Vremena su lokalna (CEST).
   popravak dvoklika na zatvaranju mjeseca (#166,
   [BUG-012](BUGS.md#bug-012--dva-istodobna-post-round-drugi-vraća-409-sezona-je-gotova) riješen); dokumentacija #167.
   384 testa, smoke na produkciji 14/14.
-- **Čeka:** #169 L16 ekrani računa (mijenja tri Rinove datoteke; Rinov ok ili Leonovo „spoji").
+- **Čeka:** #169 L16 ekrani računa: registracija, prijava, „Moje igre" (mijenja tri Rinove datoteke; Rinov ok ili
+  Leonovo „spoji"). Leonova odluka koje Simonove skice „Tokovi" idu u aplikaciju.
+- **Prije predaje:** počistiti testne podatke iz baze (graditelj).
 
 ## Sub 24.10. 20:30–20:45 · izvještaj mjeseca i pošta u sučelju
 
