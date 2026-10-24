@@ -14,11 +14,11 @@ export function Field({ id, label, className, ...props }: React.ComponentProps<"
   );
 }
 
-export function SubmitButton({ busy, busyText, children }: { busy: boolean; busyText: string; children: React.ReactNode }) {
+export function SubmitButton({ busy, busyText, disabled = false, children }: { busy: boolean; busyText: string; disabled?: boolean; children: React.ReactNode }) {
   return (
     <button
       type="submit"
-      disabled={busy}
+      disabled={busy || disabled}
       className="min-h-12 w-full rounded-xl bg-primary px-4 text-base font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
     >
       {busy ? busyText : children}

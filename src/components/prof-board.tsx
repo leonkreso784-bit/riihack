@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward, Trophy } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward, Trophy } from "lucide-react";
 import { api } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { LeaderboardRow, ProfStateResponse } from "@/lib/types";
@@ -12,7 +12,7 @@ import { Pill } from "./pill";
 import { FormError } from "./form";
 import { RoundBanner } from "./round-banner";
 import { Leaderboard } from "./leaderboard";
-import { RoundPodium } from "./round-podium";
+import { RoundPodium, SeasonPodium } from "./round-podium";
 
 const DEADLINES = [
   { label: "Ručno", minutes: undefined },
@@ -42,13 +42,19 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
 
   return (
     <div className="space-y-6">
-      {finished ? (
-        <section className="gloss anim-shine rounded-[var(--radius)] px-8 py-6">
-          <p className="flex items-center gap-3 text-4xl font-extrabold tracking-tight">
-            <Flag className="size-8" aria-hidden /> Sezona je gotova
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link href="/profesor/igre" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
+          <ArrowLeft className="size-4" aria-hidden /> Moje igre
+        </Link>
+        {!finished && (
+          <p className="text-sm text-muted-foreground">
+            Kasniš? Uđi na /ulaz s kodom <strong className="font-mono text-base tracking-widest text-foreground">{world.joinCode}</strong>
           </p>
-          <p className="mt-1 text-lg opacity-90">{world.name} · ljestvica ispod je konačna</p>
-        </section>
+        )}
+      </div>
+
+      {finished ? (
+        <SeasonPodium rows={players} name={world.name} anonymous={anonymous} />
       ) : (
         <>
           <RoundBanner world={world} syncedAt={syncedAt} size="xl" />
@@ -56,7 +62,7 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
         </>
       )}
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-2">
+      <div className={cn("grid grid-cols-[minmax(0,1fr)] gap-6", !finished && "lg:grid-cols-2")}>
         {!finished && (
           <Panel
             title={`${ROUND_LABELS[world.round - 1]}: zatvorilo ${done.length} od ${players.length}`}
@@ -107,7 +113,7 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
 }
 
 function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: string; round: number; last: boolean; onChange: () => void; onClosed: (s: ProfStateResponse) => void }) {
-  const [minutes, setMinutes] = useState<number | undefined>(10);
+  const [minutes, setMinutes] = useState<number | undefined>(undefined); // "Ručno": a running deadline locks unanswered situations at 1/5
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

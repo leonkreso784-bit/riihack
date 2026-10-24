@@ -62,7 +62,7 @@ export function OwnAnswerForm({ situationId, firstName, onAnswered }: { situatio
         {short ? charsLeft(MIN_OWN_ANSWER_CHARS - length) : `${length} / ${MAX_OWN_ANSWER_CHARS} znakova`}
       </p>
       {error && <FormError key={error}>{error}</FormError>}
-      <SubmitButton busy={busy} busyText={`${firstName} razmišlja o tvom odgovoru…`}>
+      <SubmitButton busy={busy} disabled={short} busyText={`${firstName} razmišlja o tvom odgovoru…`}>
         Pošalji odgovor
       </SubmitButton>
     </form>

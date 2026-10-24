@@ -1,6 +1,7 @@
 import { Coins, MessageSquare, Settings, User, Users, type LucideIcon } from "lucide-react";
 import type { MetricKey } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { num } from "@/lib/format";
 
 export const METRIC_ICONS: Record<MetricKey, LucideIcon> = {
   guests: User,
@@ -12,7 +13,7 @@ export const METRIC_ICONS: Record<MetricKey, LucideIcon> = {
 
 export function Delta({ value, className }: { value: number; className?: string }) {
   const tone = value > 0 ? "text-up" : value < 0 ? "text-down" : "text-muted-foreground";
-  const text = value > 0 ? `▲ +${value}` : value < 0 ? `▼ −${-value}` : "±0";
+  const text = value > 0 ? `▲ +${num(value)}` : value < 0 ? `▼ −${num(-value)}` : "±0"; // hr-HR: 19,3
   return <span className={cn("font-bold whitespace-nowrap tabular-nums", tone, className)}>{text}</span>;
 }
 

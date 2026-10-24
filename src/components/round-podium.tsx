@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Trophy, X } from "lucide-react";
 import type { LeaderboardRow } from "@/lib/types";
+import { num } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Delta } from "./metric-bar";
 import { MEDALS } from "./leaderboard";
@@ -15,12 +16,11 @@ const SLOTS = [
   { rank: 3, height: "h-24 md:h-32" },
 ];
 
-export const podiumTop = (rows: LeaderboardRow[]) => [...rows].sort((a, b) => b.roundGain - a.roundGain).slice(0, 3);
+type By = "roundGain" | "progress";
+export const podiumTop = (rows: LeaderboardRow[], by: By = "roundGain") => [...rows].sort((a, b) => b[by] - a[by]).slice(0, 3);
 
 // R10: "Skok mjeseca" for the projector: top 3 by roundGain, full screen for 5 s, then back to the board.
 export function RoundPodium({ rows, month, anonymous, onClose }: { rows: LeaderboardRow[]; month: string; anonymous: boolean; onClose: () => void }) {
-  const top = podiumTop(rows);
-
   useEffect(() => {
     const timer = setTimeout(onClose, SHOW_MS);
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -41,12 +41,30 @@ export function RoundPodium({ rows, month, anonymous, onClose }: { rows: Leaderb
       >
         <X className="size-5" aria-hidden /> Nastavi
       </button>
+      <Podium rows={rows} by="roundGain" anonymous={anonymous} title="Skok mjeseca" subtitle={`${month}: tko je najviše napredovao`} />
+    </div>
+  );
+}
 
+// BUG-022: the season's final podium stays on the board (the last thing the jury sees), ranked by total progress.
+// The whole economy can drift down, so the score is shown plainly, not as a red "loss" next to the winner.
+export function SeasonPodium({ rows, name, anonymous }: { rows: LeaderboardRow[]; name: string; anonymous: boolean }) {
+  return (
+    <section aria-label="Pobjednici sezone" className="gloss anim-shine relative overflow-hidden rounded-[var(--radius)] px-4 py-8 text-white md:px-8 md:py-10">
+      <Podium rows={rows} by="progress" anonymous={anonymous} title="Sezona je gotova" subtitle={`${name} · pobjednici po napretku`} />
+    </section>
+  );
+}
+
+function Podium({ rows, by, anonymous, title, subtitle }: { rows: LeaderboardRow[]; by: By; anonymous: boolean; title: string; subtitle: string }) {
+  const top = podiumTop(rows, by);
+  return (
+    <div className="flex w-full flex-col items-center gap-8 md:gap-12">
       <div className="anim-pop text-center">
         <p className="flex items-center justify-center gap-3 text-4xl font-extrabold tracking-tight md:text-6xl">
-          <Trophy className="size-9 md:size-14" aria-hidden /> Skok mjeseca
+          <Trophy className="size-9 md:size-14" aria-hidden /> {title}
         </p>
-        <p className="mt-2 text-xl opacity-90 md:text-2xl">{month}: tko je najviše napredovao</p>
+        <p className="mt-2 text-xl opacity-90 md:text-2xl">{subtitle}</p>
       </div>
 
       <ol className="flex w-full max-w-4xl items-end justify-center gap-3 md:gap-6">
@@ -58,7 +76,15 @@ export function RoundPodium({ rows, month, anonymous, onClose }: { rows: Leaderb
               <div className="anim-rise min-w-0 max-w-full">
                 <p className="line-clamp-2 text-lg font-extrabold break-words md:text-3xl">{r.hotelName}</p>
                 {!anonymous && <p className="truncate text-sm opacity-80 md:text-lg">{r.playerName}</p>}
-                <Delta value={r.roundGain} className="mt-1 inline-block rounded-full bg-white px-3 py-0.5 text-base md:text-2xl" />
+                {by === "roundGain" ? (
+                  <Delta value={r.roundGain} className="mt-1 inline-block rounded-full bg-white px-3 py-0.5 text-base md:text-2xl" />
+                ) : (
+                  <span className="mt-1 inline-block rounded-full bg-white px-3 py-0.5 text-base font-bold text-foreground tabular-nums md:text-2xl">
+                    napredak{" "}
+                    {r.progress > 0 ? "+" : r.progress < 0 ? "−" : ""}
+                    {num(Math.abs(r.progress))}
+                  </span>
+                )}
               </div>
               <div className={cn("anim-rise flex w-full items-start justify-center rounded-t-2xl bg-white/15 pt-4 ring-1 ring-white/25", height)}>
                 <span className={cn("grid size-12 place-items-center rounded-full text-2xl font-extrabold md:size-16 md:text-3xl", MEDALS[rank - 1])}>{rank}</span>

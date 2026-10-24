@@ -20,7 +20,7 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
   const base = byPrice ? c.pricePerNight : c.monthlyCost;
   const total = byPrice ? c.nights * c.pricePerNight : c.monthlyCost;
   const [counter, setCounter] = useState(false);
-  const [value, setValue] = useState(base);
+  const [text, setText] = useState(String(base)); // a string, so the field can be emptied and retyped (no "085")
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,9 +63,13 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
   // The agency's counter (after our counter-offer): only accept or decline, at the agency's numbers.
   const theirs = byPrice ? c.counterPricePerNight : c.counterMonthlyCost;
   const shown = theirs ?? base;
+  const value = Math.round(Number(text)) || 0;
   const gain = byPrice ? value - base : base - value; // in the hotel's favour
   const pct = base ? Math.round((gain / base) * 100) : 0;
-  const bucket = gain <= 0 || pct <= NEGOTIATE_OK_PCT ? 0 : pct <= NEGOTIATE_COUNTER_PCT ? 1 : 2;
+  const bucket = value <= 0 ? -1 : gain <= 0 || pct <= NEGOTIATE_OK_PCT ? 0 : pct <= NEGOTIATE_COUNTER_PCT ? 1 : 2;
+  // Each box is also a shortcut: it fills in a price at the edge of that range.
+  // Rounded towards the agency, so the price stays inside its range (70 € +15 % → 80 €, not 81 € = 16 %).
+  const presetFor = (p: number) => String(Math.max(1, byPrice ? Math.floor(base * (1 + p / 100)) : Math.ceil(base * (1 - p / 100))));
   const invalid = counterError(c, byPrice ? { pricePerNight: value, message: message || undefined } : { monthlyCost: value, message: message || undefined });
 
   return (
@@ -100,31 +104,42 @@ export function OfferCard({ contract: c, onChange }: { contract: ContractView; o
               <span className="block text-sm font-semibold">{byPrice ? "Tvoja cijena po noći" : "Tvoja mjesečna naknada"}</span>
               <span className="flex items-center gap-2">
                 <input
-                  type="number"
-                  min={1}
-                  value={value}
-                  onChange={(e) => setValue(Math.round(Number(e.target.value)))}
+                  type="text" // not "number": no useless ±1 arrows; digits only, numeric keypad on phones
+                  inputMode="numeric"
+                  value={text}
+                  onChange={(e) => setText(e.target.value.replace(/\D/g, "").replace(/^0+(?=\d)/, ""))}
                   className="h-12 w-32 rounded-xl border bg-card px-3 text-xl font-extrabold tabular-nums outline-none focus-visible:ring-2 focus-visible:ring-primary"
                 />
                 <span className="text-lg font-bold">€</span>
               </span>
             </label>
-            <p className={cn("pb-3 text-sm font-semibold tabular-nums", gain > 0 ? "text-up" : "text-muted-foreground")}>
-              {gain > 0 ? `+${pct} % u tvoju korist` : "nije u tvoju korist"}
+            <p className={cn("pb-3 text-sm font-semibold tabular-nums", value > 0 && gain > 0 ? "text-up" : "text-muted-foreground")}>
+              {value <= 0 ? "Upiši iznos veći od 0 €" : gain > 0 ? `+${pct} % u tvoju korist` : "nije u tvoju korist"}
             </p>
           </div>
-          <ol className="grid grid-cols-3 gap-2 text-xs" aria-label="Kako agencija odlučuje">
-            {[
-              [`do ${NEGOTIATE_OK_PCT} %`, "prihvaća"],
-              [`${NEGOTIATE_OK_PCT}–${NEGOTIATE_COUNTER_PCT} %`, "nudi sredinu"],
-              [`više od ${NEGOTIATE_COUNTER_PCT} %`, "odbija"],
-            ].map(([range, what], i) => (
-              <li key={range} className={cn("rounded-xl bg-card p-2", i === bucket && "ring-2 ring-primary")}>
-                <strong className="block">{range}</strong>
-                {what}
-              </li>
-            ))}
-          </ol>
+          <div className="space-y-1">
+            <p className="text-xs font-semibold text-muted-foreground">Kako agencija odlučuje (klikni za prijedlog cijene)</p>
+            <div className="grid grid-cols-3 gap-2 text-xs">
+              {(
+                [
+                  [`do ${NEGOTIATE_OK_PCT} %`, "prihvaća", NEGOTIATE_OK_PCT],
+                  [`${NEGOTIATE_OK_PCT}–${NEGOTIATE_COUNTER_PCT} %`, "nudi sredinu", NEGOTIATE_COUNTER_PCT],
+                  [`više od ${NEGOTIATE_COUNTER_PCT} %`, "odbija", NEGOTIATE_COUNTER_PCT + 10],
+                ] as const
+              ).map(([range, what, p], i) => (
+                <button
+                  key={range}
+                  type="button"
+                  aria-pressed={i === bucket}
+                  onClick={() => setText(presetFor(p))}
+                  className={cn("min-h-11 rounded-xl bg-card p-2 text-left transition-colors hover:bg-secondary focus-visible:outline-2 focus-visible:outline-primary", i === bucket && "ring-2 ring-primary")}
+                >
+                  <strong className="block">{range}</strong>
+                  {what}
+                </button>
+              ))}
+            </div>
+          </div>
           <label className="block space-y-1">
             <span className="text-sm font-semibold">Poruka (neobavezno)</span>
             <textarea
