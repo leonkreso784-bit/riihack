@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Flag, Hourglass, SkipForward } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward } from "lucide-react";
 import { api } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { ProfStateResponse } from "@/lib/types";
@@ -134,11 +135,18 @@ function RoundControls({ worldId, round, last, onChange }: { worldId: string; ro
             </button>
           </>
         )}
+        {/* Professor's own situations (S8, Simon's page). */}
+        <Link
+          href={`/profesor/${worldId}/situacije`}
+          className={cn(button, "ml-auto bg-muted text-foreground hover:bg-secondary")}
+        >
+          <MessageSquarePlus className="size-5" aria-hidden /> Situacije
+        </Link>
         <button
           type="button"
           disabled={busy}
           onClick={finish}
-          className={cn(button, last ? "bg-primary text-primary-foreground hover:bg-[#1f5fe0]" : "ml-auto bg-muted text-foreground hover:bg-secondary")}
+          className={cn(button, last ? "bg-primary text-primary-foreground hover:bg-[#1f5fe0]" : "bg-muted text-foreground hover:bg-secondary")}
         >
           <Flag className="size-5" aria-hidden /> {busy && last ? "Završavam…" : "Završi sezonu"}
         </button>

@@ -1,4 +1,5 @@
 // Fake data for the UI while API routes are not ready (default; NEXT_PUBLIC_USE_MOCK=0 turns it off). Shapes follow src/lib/types.ts.
+import { HOTELS } from "@/content";
 import type {
   CityView,
   CompanyDetailResponse,
@@ -269,3 +270,6 @@ export const MOCK_PROF: ProfStateResponse = {
 };
 
 export const MOCK_DETAIL: CompanyDetailResponse = { company: COMPANY, situations: SITUATIONS, reports: REPORTS };
+
+// Staff of the first content hotel (same data the API serves for a real game).
+export const MOCK_STAFF = HOTELS[0].staff;
