@@ -14,7 +14,7 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 **Kontekst.** Simonov S3 (lik i razgovor) treba znati koja je ovo poruka studenta i koliko ih smije biti (#42).
 **Odluka.** Polja ulaze u ugovor kao **neobavezna** (pravilo iz ADR-011); #63 mijenja `types.ts` i blok „Ugovor" u
-planu zajedno; Simon zatvara #42.
+planu zajedno; Simon zatvara #42 kao duplikat. #63 spojen u 14:58.
 **Posljedice.** Postojeći kod koji ne puni polja i dalje prolazi build.
 
 <a id="adr-015"></a>
