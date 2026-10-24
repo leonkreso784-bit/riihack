@@ -31,7 +31,7 @@ na koga čeka i što smo dogovorili.
 | Leon L1, Simon S3 | Neon baza (`DATABASE_URL`) | Leon (prihvatiti uvjete na Vercelu) | ✅ sub 14:35, `simpolis-db` (Frankfurt), env na Vercelu |
 | Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | L1 ✅ (#62); L4 čeka |
 | Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | do tada lažni podaci |
-| Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | ✅ da, kao neobavezna (`?`): PR #63; Simon zatvara #42 |
+| Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | ✅ spojeno kao #63 (neobavezna polja) |
 | Simon S5, S6 | „Update branch" na #48 i #47 | Simon | ✅ spojeno |
 | Leon L7 | `judge` (S2) | Simon | ✅ spojeno (#44) |
 
@@ -65,10 +65,9 @@ na koga čeka i što smo dogovorili.
 ## Stanje main-a (vodi integrator)
 
 - **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200
-- **Zadnja spajanja (sub 14:38–14:50):** #54 R1, #56 R2, #57 R3, #65 logo, #62 L1, #59 L2, #64 L3, #55 i #61 obilazak, #66 pitch; #58 vraćen s #60
-- **Red čekanja:** #63 ugovor lika (čeka Leonovo „spoji"); #42 duplikat #63 (Simon zatvara)
-- **Napomena:** Rinova pozivnica u Vercel tim nije prihvaćena, pa mu `vercel link` i deploy iz terminala ne rade
-- **Zadnje ažurirano:** sub 14:50
+- **Zadnja spajanja (sub 14:38–15:00):** #54 R1, #56 R2, #57 R3, #65 logo, #62 L1, #59 L2, #64 L3, #55 i #61 obilazak, #66 pitch, #63 ugovor lika; #58 vraćen s #60
+- **Red čekanja:** #67 pitch i obilazak (čeka CI); #42 duplikat #63 (Simon zatvara)
+- **Zadnje ažurirano:** sub 15:00
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
