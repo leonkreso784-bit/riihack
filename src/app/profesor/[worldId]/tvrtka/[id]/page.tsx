@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ArrowLeft, GraduationCap } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
-import { eur } from "@/lib/format";
+import { eur, plural } from "@/lib/format";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { AnswerView, Quality, SituationView } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ const QUALITIES: Quality[] = [1, 2, 3, 4, 5];
 function how(a: AnswerView | undefined, state: SituationView["state"]): { label: string; tone: Tone } {
   if (!a) return state === "open" ? { label: "još otvorena", tone: "accent" } : { label: "bez odgovora", tone: "down" };
   if (a.copied) return { label: "prepisano", tone: "warn" };
+  if (a.mode === "none") return { label: "bez odgovora", tone: "down" }; // BUG-015: closed without answering
   return a.mode === "own" ? { label: "vlastite riječi", tone: "up" } : { label: "klik", tone: "neutral" };
 }
 
@@ -126,7 +127,7 @@ function Situation({ s, worldId, onChange }: { s: SituationView; worldId: string
         )}
         {s.transcript.length > 0 && (
           <details className="rounded-xl border px-4 py-2">
-            <summary className="min-h-11 cursor-pointer content-center text-sm font-semibold">Razgovor s likom ({s.transcript.length} poruka)</summary>
+            <summary className="min-h-11 cursor-pointer content-center text-sm font-semibold">Razgovor s likom ({s.transcript.length} {plural(s.transcript.length, "poruka", "poruke", "poruka")})</summary>
             <ol className="space-y-2 pb-2">
               {s.transcript.map((t, i) => (
                 <li key={i} className={cn("text-sm", t.role === "student" && "text-right")}>

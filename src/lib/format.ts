@@ -4,15 +4,14 @@ const nf = new Intl.NumberFormat("hr-HR");
 export const num = (n: number) => nf.format(n);
 export const eur = (n: number) => `${nf.format(n)} €`;
 
-// Croatian plural for the chat counter: 1 poruka, 2–4 poruke, 5+ poruka (11–14 always "poruka").
-export function messagesLeft(n: number) {
-  const few = [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100);
-  return `Još ${n} ${few ? "poruke" : "poruka"}`;
+// Croatian plural: 1, 21, 31… → one; 2–4, 22–24… → few; 0, 5–20, 25… → many (11–14 always many).
+export function plural(n: number, one: string, few: string, many: string) {
+  const a = Math.abs(n);
+  if (a % 10 === 1 && a % 100 !== 11) return one;
+  return [2, 3, 4].includes(a % 10) && ![12, 13, 14].includes(a % 100) ? few : many;
 }
 
-// "1 nepročitana", "2–4 nepročitane", "5+ nepročitanih" (11–14 always "nepročitanih").
-export function unreadLabel(n: number) {
-  const one = n % 10 === 1 && n % 100 !== 11;
-  const few = [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100);
-  return `${n} nepročitan${one ? "a" : few ? "e" : "ih"}`;
-}
+export const messagesLeft = (n: number) => `Još ${n} ${plural(n, "poruka", "poruke", "poruka")}`;
+export const unreadLabel = (n: number) => `${n} ${plural(n, "nepročitana", "nepročitane", "nepročitanih")}`;
+export const charsLeft = (n: number) => `Još najmanje ${n} ${plural(n, "znak", "znaka", "znakova")}`;
+export const starsLabel = (n: number) => `${n} ${plural(n, "zvjezdica", "zvjezdice", "zvjezdica")}`;

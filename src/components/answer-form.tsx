@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { api } from "@/lib/client";
 import { CLICK_QUALITY_CAP, MAX_OWN_ANSWER_CHARS, MIN_OWN_ANSWER_CHARS } from "@/lib/rules";
 import { cn } from "@/lib/utils";
+import { charsLeft } from "@/lib/format";
 import type { AnswerRequest, AnswerView } from "@/lib/types";
 import { FormError, SubmitButton } from "./form";
 
@@ -58,7 +59,7 @@ export function OwnAnswerForm({ situationId, firstName, onAnswered }: { situatio
         className="w-full resize-y rounded-xl border bg-card px-4 py-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-60"
       />
       <p className={cn("text-xs font-semibold tabular-nums", short ? "text-muted-foreground" : "text-up")}>
-        {short ? `Još najmanje ${MIN_OWN_ANSWER_CHARS - length} znakova` : `${length} / ${MAX_OWN_ANSWER_CHARS} znakova`}
+        {short ? charsLeft(MIN_OWN_ANSWER_CHARS - length) : `${length} / ${MAX_OWN_ANSWER_CHARS} znakova`}
       </p>
       {error && <FormError key={error}>{error}</FormError>}
       <SubmitButton busy={busy} busyText={`${firstName} razmišlja o tvom odgovoru…`}>
