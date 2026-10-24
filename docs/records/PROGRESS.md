@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 19:30–19:40 · raspodjela troškova, shema pošte
+
+- **Spojeno:** raspodjela prihoda i troškova u obračunu mjeseca (#144, 19:39, Leonovo „spoji"; zbrojevi motora
+  nepromijenjeni, 308 testova, smoke 14/14), dokumentacija #146. Rinov #142 tako može prikazati pravu raspodjelu
+  umjesto marketinga kao ostatka.
+- **Shema L15 (graditelj, ~19:31):** tablica `mail` (prazna) i u `contracts` stupci za protuponudu i dogovorenu cijenu
+  te `negotiated` (zadano `false`); `contracts` 271 redak prije i poslije ([ADR-033](DECISIONS.md#adr-033)).
+
 ## Sub 24.10. 19:20–19:30 · javni profil hotela, shema računa
 
 - **Spojeno:** L14 javni profil hotela (#143, 19:27; testni podaci popravljeni, 307 testova, smoke 14/14) po
