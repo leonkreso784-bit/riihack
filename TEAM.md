@@ -73,6 +73,7 @@ na koga čeka i što smo dogovorili.
 | 24.10. ~22:50 | Učinak situacije po ocjeni: 1 (loše ili propušteno) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3× (BUG-026); radi graditelj s BUG-024 ([ADR-046](docs/records/DECISIONS.md#adr-046)) | Leon |
 | 24.10. ~23:05 | Kasni ulaz: student ulazi i u igru koja je počela, igra od trenutnog mjeseca ([ADR-048](docs/records/DECISIONS.md#adr-048)) | Leon |
 | 24.10. ~23:10 | Simonov #209 (kalibracija troškova) ne ide prije predaje; u pitchu je „sljedeći korak" ([ADR-047](docs/records/DECISIONS.md#adr-047)) | Leon |
+| 24.10. ~23:50 | Bez minimalne duljine odgovora i refleksije; prazan odgovor ocjenjuje motor s 1, bez AI-ja ([ADR-049](docs/records/DECISIONS.md#adr-049)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 

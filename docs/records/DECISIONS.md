@@ -8,6 +8,17 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-049"></a>
+## ADR-049 · Bez minimalne duljine odgovora; prazan odgovor ocjenjuje motor
+**Datum:** 24.10. ~23:50 · **Status:** ✅ (Leon, Rinov zahtjev) · **Vezano:** [ADR-002](#adr-002), [ADR-046](#adr-046)
+
+**Kontekst.** Odgovor vlastitim riječima morao je imati barem 20 znakova (`MIN_OWN_ANSWER_CHARS`), pa student nije
+mogao poslati kratak ili prazan odgovor ni refleksiju.
+**Odluka.** Donje granice nema (`MIN_OWN_ANSWER_CHARS` 0). Prazan odgovor na situaciju dobiva kvalitetu 1 bez AI-ja
+(„Odgovor je prazan"); kod prazne refleksije mentor to prepozna i objasni što vidi u brojkama.
+**Posljedice.** Prazan odgovor ne troši AI i ocjenjuje se kao propuštena situacija (ADR-046). Kod je
+[#225](https://github.com/leonkreso784-bit/riihack/pull/225) (00:01, Leonovo „spoji"; smoke korak 8 provjerava gornju granicu s 2001 znakom).
+
 <a id="adr-048"></a>
 ## ADR-048 · Kasni ulaz: student ulazi i u igru koja je već počela
 **Datum:** 24.10. ~23:05 · **Status:** ✅ (Leon) · **Vezano:** [BUG-027](BUGS.md#bug-027--kasni-student-ne-može-ući-u-igru-koja-je-počela), [ADR-041](#adr-041)
