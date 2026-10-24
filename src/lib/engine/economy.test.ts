@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ContractTemplate } from "@/lib/types";
-import { attractiveness, capacityNights, financeEffect, refPrice, roundFinance, settleMarket } from "./economy";
+import { SEASON_DEMAND_BP } from "@/lib/rules";
+import { attractiveness, capacityNights, financeEffect, priceBp, refPrice, roundFinance, settleMarket } from "./economy";
 import type { MarketInput } from "./economy";
 
 const hotel = (companyId: string, price: number, extra: Partial<MarketInput> = {}): MarketInput => ({
@@ -25,9 +26,36 @@ describe("economy", () => {
     const base = { reviews: 50, guests: 50, price: 80, refPrice: 100, marketing: 0 };
     expect(attractiveness(base)).toBe(125);
     expect(attractiveness({ ...base, price: 100 })).toBe(100);
-    expect(attractiveness({ ...base, price: 300 })).toBe(50);
+    expect(attractiveness({ ...base, price: 200 })).toBe(25);
+    expect(attractiveness({ ...base, price: 250 })).toBe(16);
+    expect(attractiveness({ ...base, price: 300 })).toBe(0);
     expect(attractiveness({ ...base, price: 100, marketing: 5000 })).toBe(150);
     expect(Number.isFinite(attractiveness({ ...base, price: 0 }))).toBe(true);
+  });
+
+  it("priceBp: ispod ref najviše ×1,5, iznad ref pada s kvadratom, iznad 2,5× ref nitko ne dolazi (#162)", () => {
+    expect(priceBp(50, 100)).toBe(15000);
+    expect(priceBp(80, 100)).toBe(12500);
+    expect(priceBp(100, 100)).toBe(10000);
+    expect(priceBp(150, 100)).toBe(4444);
+    expect(priceBp(250, 100)).toBe(1600);
+    expect(priceBp(251, 100)).toBe(0);
+    expect(priceBp(0, 100)).toBe(15000);
+  });
+
+  it("dobit ima vrh blizu referentne cijene, ne na najvišoj cijeni (#162)", () => {
+    const others = ["B", "C", "D", "E"].map((id) => hotel(id, 100));
+    for (let round = 1; round <= SEASON_DEMAND_BP.length; round++) {
+      let best = 0;
+      let bestRevenue = -1;
+      for (let price = 30; price <= 400; price += 5) {
+        const [a] = settleMarket(round, [hotel("A", price), ...others]);
+        const revenue = a.nights * price; // troškovi su fiksni, pa vrh prihoda = vrh dobiti
+        if (revenue > bestRevenue) [best, bestRevenue] = [price, revenue];
+      }
+      expect(best, `mjesec ${round}`).toBeGreaterThanOrEqual(80);
+      expect(best, `mjesec ${round}`).toBeLessThanOrEqual(150);
+    }
   });
 
   it("svi utječu na sve", () => {

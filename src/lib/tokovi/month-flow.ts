@@ -1,7 +1,7 @@
 // Tokovi: how a month was settled, as a chain of steps built ONLY from numbers the client already has
 // (RoundFinance + breakdown, room prices, hotel count, the season table). Nothing is invented: other hotels'
 // reviews and guests are not known here, so the market step shows only the player's own result.
-import { financeEffect, refPrice, roundFinance, type MarketResult } from "@/lib/engine/economy";
+import { financeEffect, priceBp, refPrice, roundFinance, type MarketResult } from "@/lib/engine/economy";
 import { eur as eurRaw, num } from "@/lib/format";
 import {
   FINANCE_EFFECT_CAP,
@@ -9,7 +9,6 @@ import {
   FIXED_COST_PER_ROOM,
   MARKETING_MAX,
   NIGHTS_PER_ROUND,
-  PRICE_MIN,
   ROUND_LABELS,
   SEASON_DEMAND_BP,
 } from "@/lib/rules";
@@ -47,9 +46,9 @@ const clamp = (n: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, n
 const signed = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${eur(Math.abs(n))}`;
 const factor = (bp: number) => (bp / 10000).toFixed(2).replace(".", ",");
 
-// Same clamps as attractiveness() in the engine; reviews and guests are left out because they cancel in a ratio.
+// The engine's own price factor (#162); reviews and guests are left out because they cancel in a ratio.
 export function priceBpOf(price: number, ref: number) {
-  return clamp(Math.floor((10000 * ref) / (price > 0 ? price : PRICE_MIN)), 5000, 15000);
+  return priceBp(price, ref);
 }
 export function marketingBpOf(marketing: number) {
   return 10000 + Math.floor((clamp(marketing, 0, MARKETING_MAX) * 10000) / (2 * MARKETING_MAX));
@@ -174,7 +173,7 @@ export function buildMonthFlow(
         { label: "Ulaganja u odjele", value: eur(b.costInvestments) },
       ],
       rule: [
-        "Faktor cijene = prosječna cijena soba ÷ tvoja cijena (najmanje 0,50, najviše 1,50).",
+        "Faktor cijene: do prosječne cijene soba = prosječna ÷ tvoja (najviše 1,50); iznad nje (prosječna ÷ tvoja)², a iznad 2,5× prosječne nitko ne dolazi.",
         `Faktor marketinga = 1 + marketing ÷ ${num(2 * MARKETING_MAX)} (najviše 1,50).`,
       ],
       calc: price > 0 ? `${num(base.ref)} ÷ ${num(price)} → ${factor(pBp)} · 1 + ${num(marketing)} ÷ ${num(2 * MARKETING_MAX)} → ${factor(mBp)}` : undefined,

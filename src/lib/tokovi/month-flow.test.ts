@@ -86,29 +86,28 @@ describe("estimateWhatIf", () => {
     expect(est.finance.nights).toBeLessThanOrEqual(real.capacityNights - real.contractNights);
   });
 
-  it("treats prices at the clamps like the engine: below half the reference and above 1.5 times add nothing", () => {
+  it("treats prices like the engine: below 2/3 of the reference adds nothing, above 2.5 times nobody comes (#162)", () => {
     const real = realWith(75, 1000);
     const nights = (p: number) => {
       const e = estimateWhatIf(real, MY_ROOMS, { price: p, marketing: 1000 });
       if (!e.ok) throw new Error("expected an estimate");
       return e.finance.nights;
     };
-    // priceBp is clamped to 5000..15000: ref 75 means <= 50 EUR is the top (x1.5), >= 150 EUR the bottom (x0.5).
+    // priceBp: ref 75 means <= 50 EUR is the top (x1.5), above ref it falls with the square, above 187.5 EUR it is 0.
     expect(nights(PRICE_MIN)).toBe(nights(50));
-    expect(nights(PRICE_MAX)).toBe(nights(150));
-    expect(nights(200)).toBe(nights(PRICE_MAX));
+    expect(nights(150)).toBeLessThan(nights(100));
+    expect(nights(190)).toBe(0);
+    expect(nights(PRICE_MAX)).toBe(0);
   });
 
-  // KNOWN EXPLOIT (issue #162, engine left as is on purpose): priceBp floors at 0.5, so a very high price loses
-  // at most half of the attractiveness while revenue per night keeps growing. The estimate mirrors the engine,
-  // so it shows the same thing: at 400 EUR the profit is higher than at the real 75 EUR.
-  it("shows the #162 exploit the same way the engine does (very high price is over-profitable)", () => {
+  // #162 fixed in the engine: a very high price is no longer over-profitable, and the estimate shows the same.
+  it("a very high price earns less than the real price, in the engine and in the estimate (#162)", () => {
     const real = realWith(75, 1000);
-    const high = estimateWhatIf(real, MY_ROOMS, { price: 400, marketing: 1000 });
-    const truth = realWith(400, 1000);
+    const high = estimateWhatIf(real, MY_ROOMS, { price: 150, marketing: 1000 });
+    const truth = realWith(150, 1000);
     if (!high.ok) throw new Error("expected an estimate");
-    expect(truth.profit).toBeGreaterThan(real.profit);
-    expect(high.finance.profit).toBeGreaterThan(real.profit);
+    expect(truth.profit).toBeLessThan(real.profit);
+    expect(high.finance.profit).toBeLessThan(real.profit);
   });
 
   it("is disabled with a reason when there are no market nights or no share", () => {
