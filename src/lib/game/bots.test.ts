@@ -33,6 +33,10 @@ describe("botPlan", () => {
     expect(botPlan(2, 100).price).toBe(105);
     expect(botPlan(3, 100).price).toBe(95);
     expect(botPlan(0, 100).investments).toBeUndefined();
+    // ADR-044: popunjenost prošlog mjeseca malo pomakne cijenu
+    expect(botPlan(1, 100, 90).price).toBe(105);
+    expect(botPlan(1, 100, 40).price).toBe(95);
+    expect(botPlan(1, 100, 70).price).toBe(100);
   });
   it("cijena ostaje u dozvoljenom rasponu", () => {
     expect(botPlan(0, 1).price).toBe(PRICE_MIN);
@@ -41,21 +45,17 @@ describe("botPlan", () => {
 });
 
 describe("botOptionIndex", () => {
-  it("determinirano i unutar raspona", () => {
-    for (let b = 0; b < 6; b++) {
-      const i = botOptionIndex(b, "sit-" + b, 4);
-      expect(i).toBe(botOptionIndex(b, "sit-" + b, 4));
-      expect(i).toBeGreaterThanOrEqual(0);
-      expect(i).toBeLessThan(4);
-    }
-    expect(botOptionIndex(0, "x", 1)).toBe(0);
-    expect(botOptionIndex(0, "x", 0)).toBe(0);
+  it("solidan bot uzme drugu najbolju opciju, svaki četvrti najbolju", () => {
+    const crit = [1, 3, 0, 2]; // opcija 1 je najbolja, opcija 3 druga
+    expect(botOptionIndex(0, "s", crit)).toBe(1);
+    expect(botOptionIndex(4, "s", crit)).toBe(1);
+    for (const b of [1, 2, 3, 5]) expect(botOptionIndex(b, "s", crit)).toBe(3);
   });
-  it("različiti botovi ne biraju svi isto", () => {
-    const picks = new Set(Array.from({ length: 8 }, (_, b) => botOptionIndex(b, "ista-situacija", 4)));
-    expect(picks.size).toBeGreaterThan(1);
+  it("isti ulaz daje isti izbor i radi s malo opcija", () => {
+    expect(botOptionIndex(2, "x", [2, 2, 2])).toBe(botOptionIndex(2, "x", [2, 2, 2]));
+    expect(botOptionIndex(1, "x", [4])).toBe(0);
+    expect(botOptionIndex(1, "x", [])).toBe(0);
   });
-  it("hash32 je stabilan", () => expect(hash32("a")).toBe(hash32("a")));
 });
 
 describe("botAcceptsContract", () => {

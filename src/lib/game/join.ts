@@ -38,6 +38,10 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
 
   // Izgubljen kolačić (osvježavanje, drugi preglednik): isti hotel i novi token, i kad je igra krenula ili puna.
   // ADR-044: botovi se ne mogu preuzeti upisom njihovih imena
+  // ADR-044: ime hotela računala nije za studente (ni oznaka „(bot)" ni ime postojećeg bota).
+  if (/\(bot\)\s*$/i.test(hotelName) || all.some((c) => c.company.kind === "bot" && sameName(c.company.name, hotelName))) {
+    throw new HttpError(400, "To ime ima hotel računala. Izaberi drugo ime hotela.");
+  }
   const back = all.find((c) => c.company.kind !== "bot" && sameName(c.company.name, hotelName) && sameName(c.player.displayName, name));
   if (back) {
     await db.update(players).set({ tokenHash }).where(eq(players.id, back.player.id));

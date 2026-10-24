@@ -5,7 +5,7 @@ import { and, eq, inArray, or } from "drizzle-orm";
 import { db } from "@/db";
 import { answers, companies, contracts, events, finances, mail, plans, players, roundReports, rooms, situations } from "@/db/schema";
 import type { CompanyRow, ContractRow, PlayerRow, WorldRow } from "@/db/schema";
-import { isUuid, listCompanies, listRooms, listSituationsWithAnswers, getSituationForCompany, getPlanRow, listWorldContracts, logEvent } from "@/db/queries";
+import { isUuid, listCompanies, listFinanceRows, listRooms, listSituationsWithAnswers, getSituationForCompany, getPlanRow, listWorldContracts, logEvent } from "@/db/queries";
 import { HOTELS } from "@/content";
 import { assignHotel } from "@/lib/engine/assign";
 import { refPrice } from "@/lib/engine/economy";
@@ -46,8 +46,10 @@ export const BOT_NAMES = [
 // ---------- Čisti dijelovi (bez baze, testirani u bots.test.ts) ----------
 
 /** Plan bota: cijena je referentna × 0,95 / 1,00 / 1,05 po indeksu bota, marketing 1.000 €, bez ulaganja. */
-export function botPlan(botIndex: number, ref: number): PlanRequest {
-  const raw = Math.round(ref * (0.95 + 0.05 * (botIndex % 3)));
+export function botPlan(botIndex: number, ref: number, lastOccupancyPct?: number): PlanRequest {
+  // ADR-044 (Leon): mala promjena prema popunjenosti prošlog mjeseca: puno (> 85 %) +5 %, malo (< 50 %) −5 %.
+  const nudge = lastOccupancyPct === undefined ? 1 : lastOccupancyPct > 85 ? 1.05 : lastOccupancyPct < 50 ? 0.95 : 1;
+  const raw = Math.round(ref * (0.95 + 0.05 * (botIndex % 3)) * nudge);
   return { price: Math.min(PRICE_MAX, Math.max(PRICE_MIN, raw)), marketing: BOT_MARKETING };
 }
 
@@ -62,9 +64,19 @@ export function hash32(text: string): number {
 }
 
 /** Indeks ponuđene opcije koju bot klikne: isti bot i ista situacija uvijek daju isti izbor. */
-export function botOptionIndex(botIndex: number, situationId: string, optionsCount: number): number {
-  if (!Number.isInteger(optionsCount) || optionsCount <= 0) return 0;
-  return hash32(`${botIndex}:${situationId}`) % optionsCount;
+/**
+ * Koju ponuđenu opciju bot klikne: opcije se poslože po broju kriterija koje pokrivaju (to je kvaliteta klika);
+ * bot je „solidan" i uzme drugu najbolju, a svaki četvrti bot je „jak" i uzme najbolju. Isti ulaz, isti izbor.
+ * Kod jednakih opcija odlučuje hash bota i situacije, da svi botovi ne kliknu isto.
+ */
+export function botOptionIndex(botIndex: number, situationId: string, optionCriteria: number[]): number {
+  if (optionCriteria.length === 0) return 0;
+  const tie = hash32(`${botIndex}:${situationId}`);
+  const ranked = optionCriteria
+    .map((n, i) => ({ i, n, t: hash32(`${tie}:${i}`) }))
+    .sort((a, b) => b.n - a.n || a.t - b.t);
+  const rank = botIndex % 4 === 0 ? 0 : 1;
+  return ranked[Math.min(rank, ranked.length - 1)].i;
 }
 
 /** Bot prihvaća ugovor samo ako mu je dobit pozitivna: prihod od noćenja minus mjesečni trošak. */
@@ -207,8 +219,9 @@ async function playOneBot(world: WorldRow, round: number, entry: Entry, botIndex
   const { company } = entry;
 
   if (!(await getPlanRow(company.id, round))) {
-    const ref = refPrice(await listRooms(company.id));
-    await savePlan(ctx, botPlan(botIndex, ref));
+    const [roomRows, financeRows] = await Promise.all([listRooms(company.id), listFinanceRows(company.id)]);
+    const last = financeRows.filter((f) => f.round < round).sort((a, b) => b.round - a.round)[0];
+    await savePlan(ctx, botPlan(botIndex, refPrice(roomRows), last?.occupancyPct));
   }
 
   for (const { situation, answer } of await listSituationsWithAnswers(company.id, round)) {
@@ -217,7 +230,7 @@ async function playOneBot(world: WorldRow, round: number, entry: Entry, botIndex
       const found = await getSituationForCompany(situation.id, company.id);
       const options = found?.template.options ?? [];
       if (options.length === 0) continue;
-      const option = options[botOptionIndex(botIndex, situation.id, options.length)];
+      const option = options[botOptionIndex(botIndex, situation.id, options.map((o) => o.criteria.length))];
       await submitAnswer(ctx, situation.id, { optionId: option.id });
     } catch (err) {
       console.error(`bot ${company.id}: situacija ${situation.id} nije odgovorena`, err);
