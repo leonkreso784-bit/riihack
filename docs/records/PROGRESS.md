@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. 00:15–00:25 · popravci iz Simonovog audita
+
+- **Spojeno:** Simonov #228 (00:17: lik odgovara, mentorov osvrt stiže, karta bez vodoravnog scrolla), dokumentacija
+  #230 (00:17), Rinov #229 (00:22, Leonovo „spoji": protuponuda s istom cijenom, tekstovi, `/igra` bez kolačića). CI
+  zelen, produkcija READY 00:22.
+- **Otvoreno:** Simonovi #231 (mentorov osvrt ne pada na fiksni tekst) i #232 (Tokovi: odjeli kao staze); nova sesija
+  graditelja radi #226 i #227.
+- **🟨 Čeka Leonovu odluku:** sigurnosna zaglavlja.
+
 ## Ned 25.10. 00:00 · prazan odgovor, poveznice
 
 - **Spojeno:** dokumentacija #223 (sub 23:35); Rinov #224 (00:00, dira i Simonove Financije, Leonovo „spoji"); bez
