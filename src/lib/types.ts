@@ -48,7 +48,7 @@ export type SituationView = {
 };
 export type CompanyView = { id: string; hotelName: string; playerName: string; templateId: string; place: string; stars: number; roomsCount: number; startMetrics: Metrics; metrics: Metrics; progress: number; closedRound: number; cash: number; startCash: number };
 export type RoundReportView = { round: number; metricsBefore: Metrics; metricsAfter: Metrics; mentorQuestion?: string; reflection?: string; mentorText?: string }; // pitanje stiže iz GET /api/me/report/[round]
-export type LeaderboardRow = { companyId: string; hotelName: string; playerName: string; place: string; progress: number; closedRound: number; cash: number; roundGain: number }; // roundGain = napredak u zadnjem zatvorenom krugu
+export type LeaderboardRow = { companyId: string; hotelName: string; playerName: string; place: string; progress: number; closedRound: number; cash: number; roundGain: number; isBot?: boolean }; // roundGain = napredak u zadnjem zatvorenom krugu; isBot = hotel vodi računalo (ADR-044)
 export type ContractView = { id: string; templateId: string; businessName: string; businessKind: BusinessKind; title: string; text: string; monthlyCost: number; nights: number; pricePerNight: number; durationRounds: number; roundOffered: number; status: ContractStatus; activeUntilRound?: number; negotiated?: boolean; counterPricePerNight?: number; counterMonthlyCost?: number }; // L15: pricePerNight/monthlyCost = dogovorene vrijednosti kad postoje; counter* = protuponuda agencije
 export type DepartmentInvestments = Partial<Record<StaffDepartment, number>>; // € mjesečno po odjelu, 0–INVEST_MAX; bez ključa = 0
 export type RoundPlan = { round: number; price: number; marketing: number; investments?: DepartmentInvestments };
@@ -79,6 +79,7 @@ export type SendMailRequest = { toCompanyId: string; subject: string; body: stri
 export type CompanyDetailResponse = { company: CompanyView; situations: SituationView[]; reports: RoundReportView[] };
 
 // Zahtjevi
+export type BotsRequest = { action: "add" | "fill" | "remove"; companyId?: string; difficulty?: "lako" | "srednje" | "tesko" }; // ADR-044: botovi u čekaonici
 export type CreateWorldRequest = { name: string; maxPlayers: number };
 export type CreateWorldResponse = { worldId: string; joinCode: string; profCode: string };
 export type ProfLoginRequest = { profCode: string };

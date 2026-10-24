@@ -31,6 +31,7 @@ export function CompanyCard({ profile: p, district, onClose }: { profile: Public
           {p.stars ? `${"★".repeat(p.stars)} · ` : ""}Hotel · {district} · {p.student}{" "}
           <span className={cn("ml-1 rounded-full px-2 py-0.5 text-[11px] font-bold", blocked ? "bg-down-soft text-down" : "bg-mint text-up")}>{blocked ? "U blokadi" : "Aktivan"}</span>
         </p>
+        {p.isBot && <p className="mt-1 text-[13px] font-semibold text-muted-foreground">Hotel vodi računalo</p>}
       </div>
       <div role="tablist" className="flex border-b px-2">
         {TABS.map((t, i) => (

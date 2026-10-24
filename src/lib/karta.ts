@@ -40,6 +40,7 @@ export type PublicProfile = {
   partners: { name: string; kind: BusinessKind }[];
   simId: string;
   isYou: boolean;
+  isBot?: boolean; // ADR-044: hotel vodi računalo
   detail: ProfileDetail | null;
 };
 
@@ -248,6 +249,7 @@ function otherProfile(row: LeaderboardRow, index: number, partners: PublicProfil
     partners,
     simId: simId(index),
     isYou: false,
+    isBot: row.isBot,
     detail: pub ? { price: pub.price, reviews: pub.reviews, guests: pub.guests, occupancyPct: pub.occupancyPct ?? null, metrics: null, share: null, months: null, publicFinances: pub.finances ?? [] } : null,
   };
 }

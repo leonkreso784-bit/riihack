@@ -92,6 +92,13 @@ describe("toRoom", () => {
 });
 
 describe("toLeaderboard", () => {
+  it("isBot samo za tvrtke kind bot (ADR-044)", () => {
+    const bot = bundle("bot", 1, 20000);
+    bot.company.kind = "bot";
+    const rows = toLeaderboard([bot, bundle("h", 2, 20000)]);
+    expect(rows.find((r) => r.companyId === "bot")?.isBot).toBe(true);
+    expect(rows.find((r) => r.companyId === "h")).not.toHaveProperty("isBot");
+  });
   it("sortira po napretku, pa novcu, pa redoslijedu ulaska", () => {
     const rows = toLeaderboard([bundle("c", 3, 20000), bundle("a", 1, 20000), bundle("b", 2, 25000)]);
     expect(rows.map((r) => r.companyId)).toEqual(["b", "a", "c"]);
