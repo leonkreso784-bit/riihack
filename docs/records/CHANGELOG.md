@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#234](https://github.com/leonkreso784-bit/riihack/pull/234) | 00:28 | Leon | dokumentacija: popravci iz audita |
+| [#231](https://github.com/leonkreso784-bit/riihack/pull/231) | 00:28 | Simon | mentorov osvrt ne pada na fiksni tekst (BUG-028, dio) |
 | [#229](https://github.com/leonkreso784-bit/riihack/pull/229) | 00:22 | Rino | sitnice iz audita: protuponuda s istom cijenom, tekstovi, `/igra` bez kolačića (Leonovo „spoji", jedan redak na Simonovim Financijama) |
 | [#228](https://github.com/leonkreso784-bit/riihack/pull/228) | 00:17 | Simon | audit: lik odgovara, mentorov osvrt stiže, karta bez vodoravnog scrolla |
 | [#230](https://github.com/leonkreso784-bit/riihack/pull/230) | 00:17 | Leon | dokumentacija: ADR-049, audit, predaja graditelja |

@@ -6,6 +6,12 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~00:30 · mentor spor
+
+- **Spojeno:** Simonov #231 (00:28, mentorov osvrt ne pada na fiksni tekst), dokumentacija #234 (00:28).
+- **Bug (Leon):** mentor je spor ili ne odgovori ([BUG-028](BUGS.md#bug-028--mentor-je-spor-ili-ne-odgovori));
+  tester mjeri vrijeme do pitanja i osvrta na produkciji.
+
 ## Ned 25.10. 00:15–00:25 · popravci iz Simonovog audita
 
 - **Spojeno:** Simonov #228 (00:17: lik odgovara, mentorov osvrt stiže, karta bez vodoravnog scrolla), dokumentacija
