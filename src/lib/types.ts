@@ -44,6 +44,7 @@ export type SituationView = {
   id: string; templateId: string; round: number; title: string; text: string; area: string; difficulty: number;
   roomNumber?: string; character: { name: string; role: string }; options: { id: string; text: string }[];
   state: SituationState; transcript: ChatTurn[]; answer?: AnswerView; source?: SituationSource;
+  rubric?: { id: string; text: string }[]; effects?: Partial<Record<MetricKey, number>>; // samo nakon odgovora (Tokovi skica 2, #178)
 };
 export type CompanyView = { id: string; hotelName: string; playerName: string; templateId: string; place: string; stars: number; roomsCount: number; startMetrics: Metrics; metrics: Metrics; progress: number; closedRound: number; cash: number; startCash: number };
 export type RoundReportView = { round: number; metricsBefore: Metrics; metricsAfter: Metrics; mentorQuestion?: string; reflection?: string; mentorText?: string }; // pitanje stiže iz GET /api/me/report/[round]
