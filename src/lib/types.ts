@@ -69,6 +69,6 @@ export type ApiError = { error: string }; // poruka na hrvatskom
 
 // AI ulazi (Simon implementira, Leon poziva)
 export type JudgeInput = { template: SituationTemplate; hotelName: string; text: string; transcript: ChatTurn[] };
-export type CharacterInput = { template: SituationTemplate; hotelName: string; roomNumber?: string; transcript: ChatTurn[]; message: string; pasted: boolean };
+export type CharacterInput = { template: SituationTemplate; hotelName: string; roomNumber?: string; transcript: ChatTurn[]; message: string; pasted: boolean; messageNo: number; maxMessages: number }; // messageNo = koja je ovo studentova poruka (1..maxMessages), da lik zna kad zaključiti razgovor
 export type MentorItem = { title: string; mode: AnswerMode; quality: Quality; answerText?: string; criteriaMissed: string[] };
 export type MentorInput = { hotelName: string; round: number; items: MentorItem[]; metricsBefore: Metrics; metricsAfter: Metrics };
