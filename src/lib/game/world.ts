@@ -1,14 +1,39 @@
-// Igra (svijet) na poslužitelju: stvaranje, prijava profesora, pokretanje i stanje za profesora.
-import { and, count, eq } from "drizzle-orm";
+// Igra (svijet) na poslužitelju: stvaranje, prijava profesora, pokretanje, krugovi, kraj sezone i stanja za ekrane.
+import { and, count, eq, isNotNull, lte } from "drizzle-orm";
 import { db } from "@/db";
 import { companies, worlds } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
-import { getWorldByProfCodeHash, listCompanies, logEvent } from "@/db/queries";
+import {
+  getCompanyInWorld,
+  getWorld,
+  getWorldByProfCodeHash,
+  listCompanies,
+  listCompanyReports,
+  listRooms,
+  listSituationsWithAnswers,
+  listWorldReports,
+  logEvent,
+} from "@/db/queries";
 import { generateCode, hashCode, normalizeCode } from "@/lib/engine/codes";
 import { HttpError } from "@/lib/http";
-import { JOIN_CODE_LENGTH, PROF_CODE_LENGTH } from "@/lib/rules";
-import type { CreateWorldRequest, CreateWorldResponse, ProfLoginRequest, ProfLoginResponse, ProfStateResponse } from "@/lib/types";
-import { toProfState } from "./views";
+import { JOIN_CODE_LENGTH, MAX_ROUNDS, PROF_CODE_LENGTH } from "@/lib/rules";
+import type { requirePlayer } from "@/lib/session";
+import type {
+  CompanyDetailResponse,
+  CreateWorldRequest,
+  CreateWorldResponse,
+  MeResponse,
+  OpenRoundRequest,
+  ProfLoginRequest,
+  ProfLoginResponse,
+  ProfStateResponse,
+} from "@/lib/types";
+import { closeRoundForAll, openRound } from "./round";
+import { toCompanyDetail, toMeResponse, toProfState } from "./views";
+
+type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
+
+const MAX_DEADLINE_MINUTES = 180;
 
 const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0] & 0x7fffffff; // stane u Postgres integer
 
@@ -46,21 +71,126 @@ export async function loginProf(req: ProfLoginRequest): Promise<{ profCode: stri
   return { profCode, res: { worldId: world.id } };
 }
 
-/** Lobby → krug 1. Za M1 samo status i krug; L7 ovdje izvlači situacije kruga 1. */
+/** Lobby → krug 1 sa situacijama. Prijelaz je atomičan (WHERE status = 'lobby'), pa drugi klik dobije 409. */
 export async function startWorld(worldId: string): Promise<WorldRow> {
   const [{ n }] = await db.select({ n: count() }).from(companies).where(eq(companies.worldId, worldId));
   // Studenti samo ulaze, nikad ne izlaze, pa provjera prije UPDATE-a ne može zastarjeti.
   if (n === 0) throw new HttpError(409, "Nema studenata u igri");
   const rows = await db
     .update(worlds)
-    .set({ status: "running", round: 1 })
+    .set({ status: "running", round: 1, roundDeadline: null })
     .where(and(eq(worlds.id, worldId), eq(worlds.status, "lobby")))
     .returning();
   if (!rows[0]) throw new HttpError(409, "Igra je već krenula");
   await logEvent({ worldId, round: 1, type: "world.started", payload: { players: n } });
-  return rows[0];
+  // L11: ovdje i ponude ugovora za krug 1 (createOffers), ako se ne stvaraju unutar openRound.
+  return openRound(rows[0], 1);
+}
+
+/** Rok u minutama iz OpenRoundRequest: bez roka null, inače cijeli broj 1–180. */
+export function parseDeadlineMinutes(value: unknown): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > MAX_DEADLINE_MINUTES) {
+    throw new HttpError(400, `Rok kruga mora biti cijeli broj minuta od 1 do ${MAX_DEADLINE_MINUTES}`);
+  }
+  return value;
+}
+
+/**
+ * Profesor zatvara mjesec k i otvara k + 1: prvo zatvori krug k svima, zatim prijelaz kruga sa zaštitom
+ * (UPDATE … WHERE round = k), pa openRound. Dva istodobna klika: oba zatvaraju (zaštita po tvrtki), krug poraste
+ * točno jednom, a drugi klik dobije trenutno stanje.
+ */
+export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Promise<WorldRow> {
+  const deadlineMinutes = parseDeadlineMinutes(req.deadlineMinutes);
+  if (world.status === "lobby") throw new HttpError(409, "Igra još nije krenula");
+  if (world.status === "finished" || world.round >= MAX_ROUNDS) throw new HttpError(409, "Sezona je gotova");
+  const k = world.round;
+
+  await closeRoundForAll(world, k);
+  // L11: ovdje settleCityRound(world, k): obračun mjeseca k za cijeli grad, nakon zatvaranja krugova i prije
+  // prelaska u k + 1. Ima vlastitu zaštitu (settled_round), pa smije biti pozvan i iz drugog istodobnog klika.
+
+  const [next] = await db
+    .update(worlds)
+    .set({ round: k + 1, roundDeadline: null })
+    .where(and(eq(worlds.id, world.id), eq(worlds.round, k), eq(worlds.status, "running")))
+    .returning();
+  if (!next) return (await getWorld(world.id)) ?? world; // drugi istodobni klik: krug je već otvoren
+
+  // L11: ovdje ponude ugovora za krug k + 1 (createOffers(next, k + 1)), ili unutar openRound.
+  return openRound(next, k + 1, deadlineMinutes);
+}
+
+/** Kraj sezone: zatvori tekući krug svima, status finished, bez roka. Ponovni poziv vrati isto stanje. */
+export async function finishWorld(world: WorldRow): Promise<WorldRow> {
+  if (world.status === "lobby") throw new HttpError(409, "Igra još nije krenula");
+  if (world.status === "finished") return world;
+  await closeRoundForAll(world, world.round);
+  // L11: ovdje settleCityRound(world, world.round): obračun zadnjeg mjeseca.
+  const [done] = await db
+    .update(worlds)
+    .set({ status: "finished", roundDeadline: null })
+    .where(and(eq(worlds.id, world.id), eq(worlds.status, "running")))
+    .returning();
+  return done ?? (await getWorld(world.id)) ?? world;
+}
+
+/**
+ * Istekao rok kruga: zatvori krug svima; sljedeći krug otvara profesor. GET /api/me i GET /api/prof/[worldId] ovo
+ * zovu prije čitanja. Rok uzme samo jedan poziv (polling 30 studenata u istoj sekundi): atomičan UPDATE briše rok samo
+ * ako je igra running i rok u bazi stvarno prošao, pa ostali pozivi ne rade ništa. `known` (već pročitana igra)
+ * preskoči upit kad rok sigurno nije prošao. Vraća true ako je ovaj poziv zatvorio krug.
+ */
+export async function expireRoundIfDue(
+  worldId: string,
+  known?: Pick<WorldRow, "status" | "roundDeadline">,
+): Promise<boolean> {
+  const now = new Date();
+  if (known && !(known.status === "running" && known.roundDeadline && known.roundDeadline <= now)) return false;
+  const [world] = await db
+    .update(worlds)
+    .set({ roundDeadline: null })
+    .where(
+      and(
+        eq(worlds.id, worldId),
+        eq(worlds.status, "running"),
+        isNotNull(worlds.roundDeadline),
+        lte(worlds.roundDeadline, now),
+      ),
+    )
+    .returning();
+  if (!world) return false;
+  await closeRoundForAll(world, world.round);
+  // L11: ovdje settleCityRound(world, world.round): rok je zatvorio mjesec.
+  await logEvent({ worldId, round: world.round, type: "round.expired", payload: { round: world.round } });
+  return true;
 }
 
 export async function loadProfState(world: WorldRow): Promise<ProfStateResponse> {
-  return toProfState({ world, all: await listCompanies(world.id) });
+  const [all, reports] = await Promise.all([listCompanies(world.id), listWorldReports(world.id)]);
+  return toProfState({ world, all, reports });
+}
+
+/** GET /api/me: tvrtka, situacije tekućeg kruga, izvještaji i ljestvica sa skokom kruga. */
+export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
+  const [rooms, all, situations, reports] = await Promise.all([
+    listRooms(ctx.company.id),
+    listCompanies(ctx.world.id),
+    listSituationsWithAnswers(ctx.company.id, ctx.world.round),
+    listWorldReports(ctx.world.id),
+  ]);
+  return toMeResponse({ ...ctx, rooms, all, situations, reports });
+}
+
+/** GET /api/prof/[worldId]/companies/[id]: uvid u jednu tvrtku; tvrtka iz druge igre → 404. */
+export async function loadCompanyDetail(world: WorldRow, companyId: string): Promise<CompanyDetailResponse> {
+  const found = await getCompanyInWorld(companyId, world.id);
+  if (!found) throw new HttpError(404, "Ta tvrtka nije u ovoj igri");
+  const [rooms, situations, reports] = await Promise.all([
+    listRooms(found.company.id),
+    listSituationsWithAnswers(found.company.id),
+    listCompanyReports(found.company.id),
+  ]);
+  return toCompanyDetail({ ...found, roomsCount: rooms.length, situations, reports });
 }
