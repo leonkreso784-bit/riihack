@@ -10,6 +10,19 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-028 · Mentor je spor ili ne odgovori
+- **Status:** 🟡 dio popravljen ([#231](https://github.com/leonkreso784-bit/riihack/pull/231), 00:28); tester mjeri na produkciji · **Težina:** visok (žiri u izvještaju mjeseca
+  čeka mentora)
+- **Opis:** Leon (~00:30): u izvještaju mjeseca i kod odgovora mentoru mentor je jako spor ili uopće ne odgovori.
+- **Uzrok (graditelj iz koda):** mentor je Sonnet 5.5; svaki AI poziv ima rok 20 s (`AI_TIMEOUT_MS`,
+  `src/lib/ai/client.ts:13`) i jedan ponovni pokušaj, a `POST /api/me/reflection` redom zove pitanje mentora (ako ga
+  još nema) pa osvrt, pa student u najgorem slučaju čeka 40+ s. Osvrt je uz to u 9 od 15 pokušaja bio odbijen zbog
+  broja rečenica i padao na fiksni tekst (Simon).
+- **Rješenje:** #231 (Simon): osvrt više ne pada na fiksni tekst (15/15, 3–4,5 s po pokušaju). 🟨 Ako je na
+  produkciji i dalje sporije od ~10 s ili bez odgovora: Simon (AI), uz graditelja za rutu.
+- **Lekcija:** AI poziv na putu korisnika treba mjeriti na produkciji (vrijeme i udio rezervnih odgovora); stroga
+  provjera izlaza bez mjerenja tiho pretvori pravi odgovor u fiksni tekst.
+
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
