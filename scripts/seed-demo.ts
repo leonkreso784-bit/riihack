@@ -26,8 +26,11 @@ import type { SituationDraft } from "../src/lib/types";
 
 type Ctx = Parameters<typeof savePlan>[0];
 
-function code(envName: string, fallback: string, length: number): string {
-  const value = normalizeCode(process.env[envName] || fallback);
+// Profesorski kod je lozinka demo igre: nema zadane vrijednosti u (javnom) repou, mora biti u .env.local.
+function code(envName: string, fallback: string | null, length: number): string {
+  const raw = process.env[envName] || fallback;
+  if (!raw) throw new Error(`Postavi ${envName} u .env.local (${length} znakova iz abecede ${CODE_ALPHABET})`);
+  const value = normalizeCode(raw);
   if (value.length !== length || [...value].some((c) => !CODE_ALPHABET.includes(c))) {
     throw new Error(`${envName} mora imati ${length} znakova iz abecede ${CODE_ALPHABET}`);
   }
@@ -35,7 +38,7 @@ function code(envName: string, fallback: string, length: number): string {
 }
 
 const DEMO_JOIN_CODE = code("DEMO_JOIN_CODE", "KVRNDM", JOIN_CODE_LENGTH);
-const DEMO_PROF_CODE = code("DEMO_PROF_CODE", "SMPDEMK26PRF", PROF_CODE_LENGTH);
+const DEMO_PROF_CODE = code("DEMO_PROF_CODE", null, PROF_CODE_LENGTH);
 
 // price = množitelj referentne cijene hotela (rezultat se drži u rasponu 55–140 €).
 const STUDENTS = [
