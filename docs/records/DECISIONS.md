@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-046"></a>
+## ADR-046 · Odgovorena situacija donosi plus već od ocjene 3
+**Datum:** 24.10. ~22:55 · **Status:** ✅ (Leon; prijedlog graditelja) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
+
+**Kontekst.** Učinak situacije na pokazatelje bio je (kvaliteta − 3) × učinak: ocjena 3 nije donosila ništa, a
+propuštena (kvaliteta 1) oduzimala je dvostruko. Financije vraćaju najviše +5 mjesečno, pa je napredak bio negativan
+za sve hotele, i uz dobre odgovore.
+**Odluka.** Učinak po kvaliteti: 1 (loš ili propušten odgovor) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×. Radi graditelj
+zajedno s BUG-024, pa jedan ponovni seed demo igre i smoke.
+**Posljedice.** Odgovoriti i potruditi se uvijek je bolje nego ne odgovoriti. Mijenjaju se brojke, pa se spaja na
+Leonovo „spoji".
+
 <a id="adr-045"></a>
 ## ADR-045 · Graditelj preuzima otvorene bugove; pokazatelji jače utječu na goste
 **Datum:** 24.10. ~22:35 · **Status:** ✅ (Leon) · **Vezano:** [BUG-024](BUGS.md#bug-024--loši-pokazatelji-jedva-utječu-na-goste-u-vrhu-sezone), [ADR-002](#adr-002)
