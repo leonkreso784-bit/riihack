@@ -3,7 +3,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronRight, LogOut, Plus, Users } from "lucide-react";
+import { ChevronRight, Library, LogOut, Plus, Users } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { api, USE_MOCK } from "@/lib/client";
 import type { ProfGameSummary } from "@/lib/types";
@@ -78,6 +78,12 @@ export default function MyGames() {
         <div className="flex gap-2">
           <Link href="/profesor/novi" className={`${PRIMARY_LINK} flex-1 sm:flex-none`}>
             <Plus className="size-5" aria-hidden /> Nova igra
+          </Link>
+          <Link
+            href="/profesor/knjiznica"
+            className="flex min-h-12 items-center gap-2 rounded-xl px-4 text-sm font-semibold text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-primary"
+          >
+            <Library className="size-5" aria-hidden /> Knjižnica situacija
           </Link>
           <button
             type="button"
