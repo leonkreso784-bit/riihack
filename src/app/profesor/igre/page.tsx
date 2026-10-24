@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Library, LogOut, Plus, Users } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
-import { api, USE_MOCK } from "@/lib/client";
+import { api, isUnauthorized, USE_MOCK } from "@/lib/client";
 import { plural } from "@/lib/format";
 import type { ProfGameSummary } from "@/lib/types";
 import { Panel } from "@/components/panel";
@@ -36,24 +36,33 @@ export default function MyGames() {
   const [leaving, setLeaving] = useState(false);
   const leavingRef = useRef(false); // odjava sama vodi na /profesor, bez preusmjeravanja na prijavu
 
+  // #227.6: igre se traže odmah, usporedno sa sesijom (prije: sesija, pa getSession, pa igre, a nakon refetch još
+  // jednom). Ruta sama provjeri račun: 401 znači da prijave nema.
+  useEffect(() => {
+    let alive = true;
+    api.profGames().then(
+      (g) => alive && setGames(g),
+      (e) => {
+        if (!alive || leavingRef.current) return;
+        if (isUnauthorized(e)) router.replace("/profesor/prijava");
+        else setError((e as Error).message);
+      },
+    );
+    return () => {
+      alive = false;
+    };
+  }, [router]);
+
+  // Nakon odjave pa prijave u istoj kartici useSession zna još držati staru (praznu) sesiju: provjeri na serveru.
   const refetch = useEffectEvent(() => session.refetch());
   useEffect(() => {
-    if (pending || leavingRef.current) return;
+    if (pending || signedIn || leavingRef.current) return;
     let alive = true;
     (async () => {
-      // Nakon odjave pa prijave u istoj kartici useSession zna još držati staru (praznu) sesiju: provjeri na serveru.
-      if (!signedIn) {
-        const { data } = await authClient.getSession().catch(() => ({ data: null }));
-        if (!alive || leavingRef.current) return;
-        if (!data) return router.replace("/profesor/prijava");
-        refetch();
-      }
-      try {
-        const g = await api.profGames();
-        if (alive) setGames(g);
-      } catch (e) {
-        if (alive) setError((e as Error).message);
-      }
+      const { data } = await authClient.getSession().catch(() => ({ data: null }));
+      if (!alive || leavingRef.current) return;
+      if (!data) return router.replace("/profesor/prijava");
+      refetch();
     })();
     return () => {
       alive = false;
