@@ -16,7 +16,11 @@ Vremena su lokalna (CEST).
 - **Novi bug:** zadani rok „10 min" sam zatvara mjesec
   ([BUG-025](BUGS.md#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec), kritičan za demo), popravlja
   Rino; Rino radi i BUG-023 i ostatak BUG-022 (Leon na Discordu, 22:35).
-- **🟨 Provjera:** tester ponovno gleda podij na 1280×720 (širina i crveni ▼ kod pobjednika, BUG-022).
+- **Ponovna provjera (tester, 22:45):** BUG-015, 016 i 017 ✅; podij (BUG-022) djelomično; rok „10 min" i dalje
+  zadan na produkciji. Novo: napredak je negativan za sve hotele od prvog mjeseca
+  ([BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), visok), javljeno graditelju.
+- **Sudari (javljeno graditelju):** Simonov #206 već popravlja BUG-020b; Simonov #205 radi botove cijele, i logiku
+  igre (bot po pravilima, težina Lako/Srednje/Teško), pa graditelj ne kreće na motor botova dok Leon ne odluči.
 - **Graditelj (22:30–22:40):** demo igra ponovno posijana nakon #194, smoke na produkciji 19/19 (22:30). Knjižnica
   demo računa dobila 4 situacije (#203; Leon: „knjižnica je prazna"). Drugo čišćenje starih testnih igara (#207):
   obrisano 47, ostale 33 (demo, igre na demo računu, testerove QA igre, „Smoke …", Simonove probe). Otvoreni PR-ovi:
