@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 20:15–20:30 · profesorski računi na produkciji
+
+- **Odluka (Leon, ~20:20):** prijava profesorskim računom radi i na produkciji. Integrator je na Leonovo izravno „da"
+  postavio `BETTER_AUTH_*` na Vercelu; produkcija READY ~20:25, a registracija, prijava, odjava, „moje igre", ulaz
+  kodom i smoke 14/14 provjereni ([ADR-036](DECISIONS.md#adr-036)).
+- **Smoke na produkciji** jednom pao na koraku 14 zbog dva istodobna zatvaranja kruga
+  ([BUG-012](BUGS.md#bug-012--dva-istodobna-post-round-drugi-vraća-409-sezona-je-gotova), nije hitno).
+- **Spojeno:** dokumentacija #159 (20:17).
+
 ## Sub 24.10. 20:10–20:15 · repo bez imena prijašnjeg projekta
 
 - **Spojeno:** Simonov zapis obilaska 2 i dopuna opsega u `PROMISE.md` (#150, 20:11), Rinovo čišćenje plana (#157,
