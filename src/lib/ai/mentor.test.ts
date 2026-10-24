@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { MockLanguageModelV4 } from "ai/test";
-import { factsBlock, mentorDebrief, mentorQuestion } from "./mentor";
+import { debriefProblem, factsBlock, mentorDebrief, mentorQuestion, repairDebrief, splitSentences } from "./mentor";
 import { fallbackDebrief, fallbackMentorQuestion } from "./fallbacks";
 import type { MentorInput } from "@/lib/types";
 
@@ -104,5 +104,67 @@ describe("factsBlock with finance", () => {
     expect(facts).toContain("popunjenost 25 %");
     expect(facts).toMatch(/dobit: 2\D?500 €/);
     expect(factsBlock(input)).not.toContain("Obračun mjeseca");
+  });
+});
+
+describe("splitSentences", () => {
+  it("does not split on abbreviations, thousands separators, ordinals or lowercase continuations", () => {
+    const text = "Dobit je 8.400 € u 3. kvartalu, npr. kod agencije. Popunjenost je 54 %. Što bi sada učinio?";
+    expect(splitSentences(text)).toHaveLength(3);
+    expect(splitSentences("Prvo, tj. glavno. Drugo, itd. i sl. ostalo. Treće.")).toHaveLength(3);
+  });
+  it("keeps a closing quote with its sentence", () => {
+    expect(splitSentences("Rekao je „da“. Zatim je otišao.")).toHaveLength(2);
+  });
+});
+
+describe("repairDebrief", () => {
+  const s = (n: number) => Array.from({ length: n }, (_, i) => `Rečenica broj ${i + 1} ima dovoljno riječi.`);
+  it("keeps the first four and the closing question when there are too many sentences", () => {
+    const text = [...s(6), "Što bi ti sada napravio?"].join(" ");
+    const out = repairDebrief(text);
+    expect(splitSentences(out)).toHaveLength(5);
+    expect(out.endsWith("Što bi ti sada napravio?")).toBe(true);
+    expect(out.startsWith("Rečenica broj 1")).toBe(true);
+    expect(debriefProblem(out)).toBeNull();
+  });
+  it("keeps the first five when the text does not end with a question", () => {
+    const out = repairDebrief(s(8).join(" "));
+    expect(splitSentences(out)).toHaveLength(5);
+    expect(out).toContain("broj 5");
+    expect(out).not.toContain("broj 6");
+  });
+  it("strips markdown, bullets and newlines", () => {
+    const out = repairDebrief("## Osvrt\n- **Dobro** si uočio problem.\n- Gostu je nedostajala naknada.\n- Zadovoljstvo je poraslo.");
+    expect(out).toBe("Osvrt Dobro si uočio problem. Gostu je nedostajala naknada. Zadovoljstvo je poraslo.");
+  });
+  it("drops middle sentences when over the character cap", () => {
+    const long = Array.from({ length: 5 }, (_, i) => `Početak ${i} ${"riječ ".repeat(50)}završava.`);
+    const out = repairDebrief(long.join(" "));
+    expect(out.length).toBeLessThanOrEqual(1200);
+    expect(out.startsWith("Početak 0")).toBe(true);
+  });
+  it("does not repair safety violations", () => {
+    expect(debriefProblem("Bio/la si dobar. Gost je zadovoljan. Nastavi tako.")).toBe("slash-gender");
+    expect(debriefProblem("Kriterij 3 nije ispunjen. Gost je zadovoljan. Nastavi tako.")).toBe("leaked-id");
+    expect(debriefProblem("Pokazatelj staff je pao. Gost je zadovoljan. Nastavi tako.")).toBe("raw-key");
+  });
+});
+
+describe("mentorDebrief repair", () => {
+  const full = { ...input, question: "Što bi gostu još trebalo?", reflection: "Trebao sam ponuditi nešto više od isprike." };
+  it("accepts a 7 sentence answer on the first attempt by trimming it", async () => {
+    const text = Array.from({ length: 6 }, (_, i) => `Dobro je uočeno pod brojem ${i + 1}.`).join(" ") + " Što bi ti sada ponudio?";
+    const model = new MockLanguageModelV4({ doGenerate: reply(text) });
+    const out = await mentorDebrief(full, model);
+    expect(out).not.toBe(fallbackDebrief(full));
+    expect(out.endsWith("Što bi ti sada ponudio?")).toBe(true);
+    expect(model.doGenerateCalls).toHaveLength(1);
+  });
+  it("logs the rejection reason", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const model = new MockLanguageModelV4({ doGenerate: reply("Bio/la si dobar. Gost je zadovoljan. Nastavi tako.") });
+    await mentorDebrief(full, model);
+    expect(warn).toHaveBeenCalledWith("[ai] mentor debrief rejected:", "slash-gender");
   });
 });

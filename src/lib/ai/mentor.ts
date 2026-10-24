@@ -109,11 +109,56 @@ export function mentorQuestion(input: MentorInput, model?: LanguageModel): Promi
   }, fallbackMentorQuestion(input));
 }
 
-const sentenceCount = (text: string) => text.split(/(?<=[.!?])\s+/).filter((s) => /\p{L}/u.test(s)).length;
+const ABBREVIATIONS = /(?:^|\s)(?:npr|tj|itd|itp|tzv|sl|dr|br|ul|mr|sv|pr|tel|vl|ok|cca)\.$/i;
+const MAX_SENTENCES = 5;
 
-function debriefOk(text: string): boolean {
-  const n = sentenceCount(text);
-  return n >= 3 && n <= 5 && text.length <= MAX_DEBRIEF_CHARS && noSlashGender(text) && !LEAKED_ID.test(text) && noRawKeys(text);
+/** Splits on sentence ends; "npr.", "itd.", "3. kvartal" and "8.400 €" do not end a sentence. */
+export function splitSentences(text: string): string[] {
+  const parts = text.split(/(?<=[.!?]["”“»]?)\s+/);
+  const out: string[] = [];
+  for (const part of parts) {
+    const prev = out[out.length - 1];
+    const glue = prev !== undefined && (ABBREVIATIONS.test(prev) || /^[\p{Ll}\d(]/u.test(part));
+    if (glue) out[out.length - 1] = `${prev} ${part}`;
+    else out.push(part);
+  }
+  return out.filter((s) => /\p{L}/u.test(s));
+}
+
+/** Removes markdown the model sometimes adds (headings, bullets, bold, numbering) and joins everything into one paragraph. */
+export function stripMarkdown(text: string): string {
+  return text
+    .replace(/^\s*(#{1,6}\s+|[-*•]\s+|\d+[.)]\s+)/gm, "")
+    .replace(/\*\*|__|`/g, "")
+    .replace(/\s*\n+\s*/g, " ")
+    .trim();
+}
+
+/** Too long is repaired, not rejected: keeps the opening and, when it is a question, the closing sentence. */
+export function repairDebrief(raw: string): string {
+  const text = stripMarkdown(raw);
+  let sentences = splitSentences(text);
+  const closing = sentences[sentences.length - 1];
+  if (sentences.length > MAX_SENTENCES) {
+    const keepQuestion = closing.endsWith("?");
+    sentences = keepQuestion ? [...sentences.slice(0, MAX_SENTENCES - 1), closing] : sentences.slice(0, MAX_SENTENCES);
+  }
+  // Still over the character cap: drop middle sentences (never the first, never a closing question) down to 3.
+  while (sentences.join(" ").length > MAX_DEBRIEF_CHARS && sentences.length > 3) {
+    sentences.splice(sentences.length - 2, 1);
+  }
+  return sentences.join(" ");
+}
+
+/** Why a debrief is rejected, or null when it passes. */
+export function debriefProblem(text: string): string | null {
+  const n = splitSentences(text).length;
+  if (n < 3 || n > 5) return `sentences:${n}`;
+  if (text.length > MAX_DEBRIEF_CHARS) return `length:${text.length}`;
+  if (!noSlashGender(text)) return "slash-gender";
+  if (LEAKED_ID.test(text)) return "leaked-id";
+  if (!noRawKeys(text)) return "raw-key";
+  return null;
 }
 
 /** 3 to 5 sentences building on the reflection. Any failure gives the debrief built from the numbers. */
@@ -124,8 +169,10 @@ export function mentorDebrief(
   return withAi(async () => {
     const prompt = `${factsBlock(input)}\n\n<pitanje_mentora>${clean(input.question)}</pitanje_mentora>\n\n<refleksija>${clean(input.reflection)}</refleksija>`;
     for (let attempt = 0; attempt < 2; attempt++) {
-      const text = (await ask(MENTOR_DEBRIEF_SYSTEM, prompt, model)).replace(/\s*\n+\s*/g, " ");
-      if (debriefOk(text)) return text;
+      const text = repairDebrief(await ask(MENTOR_DEBRIEF_SYSTEM, prompt, model));
+      const problem = debriefProblem(text);
+      if (problem === null) return text;
+      console.warn("[ai] mentor debrief rejected:", problem);
     }
     return fallbackDebrief(input);
   }, fallbackDebrief(input), DEBRIEF_TIMEOUT_MS);
