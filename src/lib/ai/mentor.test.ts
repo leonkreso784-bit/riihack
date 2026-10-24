@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { MockLanguageModelV4 } from "ai/test";
-import { debriefProblem, factsBlock, mentorDebrief, mentorQuestion, repairDebrief, splitSentences } from "./mentor";
+import { debriefProblem, factsBlock, firstQuestion, mentorDebrief, mentorQuestion, repairDebrief, splitSentences } from "./mentor";
 import { fallbackDebrief, fallbackMentorQuestion } from "./fallbacks";
+import { MENTOR_DEBRIEF_SYSTEM, MENTOR_QUESTION_SYSTEM } from "./prompts";
 import type { MentorInput } from "@/lib/types";
 
 const usage = {
@@ -55,6 +56,73 @@ describe("mentorQuestion", () => {
     const long = `${"riječ ".repeat(30).trim()}?`;
     const model = new MockLanguageModelV4({ doGenerate: reply(long) });
     await expect(mentorQuestion(input, model)).resolves.toBe(fallbackMentorQuestion(input));
+  });
+});
+
+describe("firstQuestion", () => {
+  it("keeps a thousands separator inside the question", () => {
+    expect(firstQuestion("Zašto je dobit pala na 2.300 € u srpnju?")).toBe("Zašto je dobit pala na 2.300 € u srpnju?");
+    expect(firstQuestion("Što je dobit od 15.500 € rekla o popustu agenciji?")).toBe("Što je dobit od 15.500 € rekla o popustu agenciji?");
+  });
+
+  it("keeps 'npr.' and a numbered round inside the question", () => {
+    const q = "Što bi se, npr. kod agencije, promijenilo u 3. kvartalu da je popust manji?";
+    expect(firstQuestion(q)).toBe(q);
+  });
+
+  it("skips a preamble sentence before the question, also one with a thousands separator", () => {
+    expect(firstQuestion("Najslabija je odluka o agenciji. Zašto je dobit pala na 2.300 € u srpnju?")).toBe("Zašto je dobit pala na 2.300 € u srpnju?");
+    expect(firstQuestion("Dobit je 8.400 €.\nKoja bi ti bila prva rečenica gostu?")).toBe("Koja bi ti bila prva rečenica gostu?");
+  });
+
+  it("strips leading quotes and dashes, and a closing quote", () => {
+    expect(firstQuestion("„Što te navelo na ovu odluku?“")).toBe("Što te navelo na ovu odluku?");
+    expect(firstQuestion("- Što te navelo na ovu odluku?")).toBe("Što te navelo na ovu odluku?");
+  });
+
+  it("returns null when there is no question", () => {
+    expect(firstQuestion("Razmisli o odluci. Hvala.")).toBeNull();
+    expect(firstQuestion("")).toBeNull();
+  });
+});
+
+describe("mentorQuestion with numbers and short output", () => {
+  it("ships the whole question when it contains a thousands separator", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: reply("Zašto je dobit pala na 2.300 € u srpnju?") });
+    await expect(mentorQuestion(input, model)).resolves.toBe("Zašto je dobit pala na 2.300 € u srpnju?");
+    expect(model.doGenerateCalls).toHaveLength(1);
+  });
+
+  it("accepts 'npr.' inside the question", async () => {
+    const q = "Što bi se, npr. kod agencije, promijenilo da je popust manji?";
+    const model = new MockLanguageModelV4({ doGenerate: reply(q) });
+    await expect(mentorQuestion(input, model)).resolves.toBe(q);
+  });
+
+  it("takes the question after a preamble sentence", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: reply("Odluka o agenciji je najslabija. Zašto je dobit pala na 2.300 € u srpnju?") });
+    await expect(mentorQuestion(input, model)).resolves.toBe("Zašto je dobit pala na 2.300 € u srpnju?");
+  });
+
+  it("rejects a bare '300 €?' and falls back after the retry", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: reply("300 €?") });
+    await expect(mentorQuestion(input, model)).resolves.toBe(fallbackMentorQuestion(input));
+    expect(model.doGenerateCalls).toHaveLength(2);
+  });
+
+  it("requires at least 4 words", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: [reply("Zašto je tako?"), reply("Zašto si to odabrao u sobi?")] });
+    await expect(mentorQuestion(input, model)).resolves.toBe("Zašto si to odabrao u sobi?");
+    expect(model.doGenerateCalls).toHaveLength(2);
+  });
+});
+
+describe("mentor prompts", () => {
+  it("both forbid the masculine past participle toward the student", () => {
+    for (const prompt of [MENTOR_QUESTION_SYSTEM, MENTOR_DEBRIEF_SYSTEM]) {
+      expect(prompt).toContain("Ne koristi glagolski pridjev radni u obraćanju studentu");
+      expect(prompt).toContain("uočio si");
+    }
   });
 });
 
