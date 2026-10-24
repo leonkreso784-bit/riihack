@@ -2,6 +2,8 @@
 
 Upute za Claude Code (i za ljude) u ovom repou.
 
+> **Nova sesija počinje čitanjem [docs/SLJEDECA_SESIJA.md](docs/SLJEDECA_SESIJA.md)** (gdje smo, što je prvo, što je otvoreno).
+
 ## Što je ovo
 
 Radni repo tima Leon, Simon i Rino za **Ri-Hack 4.0**, hackathon RITEH Web Teama u STEP RI-ju u Rijeci. Imamo 24 sata da napravimo rješenje na zadanu temu i predamo dokumentaciju preko Discorda. Natjecanje je isključivo programersko, ali žiri cijeni jasnu viziju i poslovni model.
