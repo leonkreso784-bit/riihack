@@ -13,7 +13,7 @@ export const t = {
     label: "Navigacija igre",
     hotel: "Hotel",
     rooms: "Sobe",
-    staff: "Osoblje",
+    staff: "Odjeli",
     plan: "Plan",
     finances: "Financije",
     city: "Grad",
