@@ -66,9 +66,9 @@ na koga čeka i što smo dogovorili.
 ## Stanje main-a (vodi integrator)
 
 - **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200; `/api/me` 401 bez kolačića (L4 živ)
-- **Zadnja spajanja (sub 15:15–15:30):** #76 S3 lik i chat, #77 i #80 dokumentacija, #78 logo i odjava, #79 S4 mentor (156 testova zeleno)
-- **Red čekanja:** #75 L6 situacije (nacrt, čeka Leonov pregled struke i „spoji"); #42 duplikat #63 (Simon zatvara)
-- **Zadnje ažurirano:** sub 15:30
+- **Zadnja spajanja (sub 15:30–16:00):** #81 L8 smoke, #82 L11 faza A, #83 L7 (188 testova zeleno)
+- **Red čekanja:** #75 L6 situacije: **blokira tok igre** (bez njega `situations.json` je prazan, smoke pada na koraku 5; s njim lokalno prolaze koraci 1–10). Čeka Leonov pregled struke i „spoji". #42 duplikat #63 (Simon zatvara)
+- **Zadnje ažurirano:** sub 16:00
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
@@ -90,7 +90,7 @@ na koga čeka i što smo dogovorili.
 - **Drugi čekaju od mene:** — (`judge`, `streamCharacterReply`, `mentorQuestion`, `mentorDebrief` su na `main`-u)
 - **Otvoreno:** —
 - **Spojeno:** S0 (#35), pitch (#38, #66, #67, #72), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S6 (#47), S5 (#48), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu
-- **Zadnje ažurirano:** sub 15:30
+- **Zadnje ažurirano:** sub 16:00
 
 ## Rino · sučelje (R0–R10)
 
