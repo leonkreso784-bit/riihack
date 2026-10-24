@@ -264,7 +264,7 @@ async function main() {
     for (const draft of LIBRARY_DRAFTS) await saveToLibrary(ownerId, draft);
     console.log(`Knjižnica:       ${LIBRARY_DRAFTS.length} situacije na demo računu`);
   }
-  const created = await createWorld({ name: "Demo Simpolis", maxPlayers: 6 }, ownerId);
+  const created = await createWorld({ name: "Demo Simpolis", maxPlayers: 15 }, ownerId); // 5 hotela + mjesta za žiri (kasni ulaz, BUG-027)
   const worldId = created.worldId;
   await db
     .update(worlds)

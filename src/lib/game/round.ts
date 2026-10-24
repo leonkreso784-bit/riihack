@@ -5,7 +5,7 @@ import type { BatchItem } from "drizzle-orm/batch";
 import { db } from "@/db";
 import { answers, companies, dispatches, events, roundReports, rooms, situations, worlds } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
-import { countSituations, getWorld, listSituationsWithAnswers, listWorldRooms } from "@/db/queries";
+import { countSituations, getWorld, listRooms, listSituationsWithAnswers, listWorldRooms } from "@/db/queries";
 import { SITUATIONS } from "@/content";
 import { drawSituations } from "@/lib/engine/draw";
 import { pickRoom } from "@/lib/engine/rooms";
@@ -51,6 +51,52 @@ export function addMetricsSql(delta: Partial<Record<MetricKey, number>>) {
  * round, templateId) + onConflictDoNothing, sobe se kvare samo za nove situacije, slanje se izvrši samo dok je
  * "scheduled", a rok se upisuje samo dok ga nema.
  */
+/**
+ * Kasni ulaz (BUG-027): situacije koje u tekućem mjesecu ima SVAKA tvrtka (izvučene i poslane svima), bez ciljanih
+ * slanja pojedinim studentima. Redoslijed prvog pojavljivanja.
+ */
+export function lateJoinTemplateIds(rows: { companyId: string; templateId: string }[]): string[] {
+  const companiesWith = new Map<string, Set<string>>();
+  for (const r of rows) {
+    if (!companiesWith.has(r.templateId)) companiesWith.set(r.templateId, new Set());
+    companiesWith.get(r.templateId)!.add(r.companyId);
+  }
+  const total = new Set(rows.map((r) => r.companyId)).size;
+  return [...companiesWith].filter(([, ids]) => ids.size === total).map(([id]) => id);
+}
+
+/**
+ * Kasni ulaz (BUG-027): tvrtka koja uđe dok igra traje dobije situacije tekućeg mjeseca kao i ostali (isti predlošci,
+ * sobe iz svog hotela). Ponovni poziv ne radi ništa (unique company, round, template).
+ */
+export async function openRoundForLateJoin(world: WorldRow, companyId: string): Promise<void> {
+  const [current, own, pool] = await Promise.all([
+    db
+      .select({ companyId: situations.companyId, templateId: situations.templateId })
+      .from(situations)
+      .innerJoin(companies, eq(companies.id, situations.companyId))
+      .where(and(eq(companies.worldId, world.id), eq(situations.round, world.round))),
+    listRooms(companyId),
+    loadTemplates(world.id),
+  ]);
+  const others = current.filter((r) => r.companyId !== companyId);
+  const byId = new Map(pool.map((t) => [t.id, t]));
+  const ownRooms = own.map((r) => ({ number: r.number, type: r.type as RoomType }));
+  const used = new Set<string>();
+  const rows: SituationInsert[] = lateJoinTemplateIds(others).flatMap((templateId) => {
+    const t = byId.get(templateId);
+    if (!t) return [];
+    let roomNumber: string | null = null;
+    if (t.room) {
+      const free = ownRooms.filter((r) => !used.has(r.number));
+      roomNumber = pickRoom(free.length ? free : ownRooms, t.room.type);
+      if (roomNumber) used.add(roomNumber);
+    }
+    return [{ companyId, round: world.round, templateId, roomNumber }];
+  });
+  if (rows.length) await db.insert(situations).values(rows).onConflictDoNothing();
+}
+
 export async function openRound(world: WorldRow, round: number, deadlineMinutes?: number): Promise<WorldRow> {
   const [all, worldRooms, pool, usedBefore, scheduled] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(eq(companies.worldId, world.id)),
