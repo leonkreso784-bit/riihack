@@ -1,7 +1,7 @@
 # Tim
 
 **Zajednička ploča tima.** Svatko uređuje **samo svoje polje** (Leon, Simon, Rino). Zajedničke dijelove (Prekretnice,
-Tko na koga čeka, Pravila, Odluke) smije mijenjati svatko, uz poruku na Discordu. Zadaci u detalje su u
+Tko na koga čeka, Pravila, Odluke, Stanje main-a) smije mijenjati svatko, uz poruku na Discordu. Zadaci u detalje su u
 [planu izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md) i u issueovima. Ovdje je samo tko što radi **sada**, tko
 na koga čeka i što smo dogovorili.
 
@@ -41,9 +41,8 @@ na koga čeka i što smo dogovorili.
    isto (#36 i #37, #49 i #50).
 2. **Ugovor** (`types.ts`, `rules.ts`, `package.json`) mijenja samo Leon, uvijek zajedno s blokom u planu. **Novo polje
    je neobavezno (`?`)** dok ga svi ne pune. Najava pod „Odluke" i na Discordu **prije** spajanja.
-3. **Spaja vlasnik PR-a**, i to tek kad je CI zelen **na svježem `main`-u**: neposredno prije spajanja klikni
-   „Update branch" (ili rebase) i pričekaj CI. Zeleni CI od prije sat vremena ne vrijedi ako se `main` u međuvremenu
-   promijenio.
+3. **Spaja integrator (Leonova sesija)**, a autor PR-a javlja da je spreman (Discord ili komentar na PR-u). Integrator
+   prije spajanja provjeri PR na svježem `main`-u (typecheck, lint, test, build). Ne spajaš sam.
 4. **Nakon spajanja pogledaj CI na `main`-u.** Kad je `main` crven, nitko ne spaja dok ga ne popravi onaj čiji je
    zadnji merge. Javi na Discordu.
 5. **Zajednička Neon baza:** `npm run db:push` radi samo onaj tko mijenja shemu (Leon).
@@ -60,6 +59,15 @@ na koga čeka i što smo dogovorili.
 | 24.10. | Osoblje hotela vidi se uz sobe (`/igra/osoblje`, sadržaj bez baze, `GET /api/me/staff`); karta pokazuje cijelu ekonomiju grada | Leon s timom |
 | 24.10. | Simon i Rino su u Vercel timu; env dobivate s `vercel link` i `vercel env pull .env.local` | Leon |
 | 24.10. | Ploča tima u `TEAM.md`, svatko svoje polje, izravno na `main` | Leon |
+| 24.10. | Tri Leonove sesije: graditelj, integrator (jedini spaja), dokumentacija | Leon |
+| 24.10. | Na `main` od dokumentacije ide samo `TEAM.md`; ostala dokumentacija ostaje na granama (#58 vraćen s #60) | Leon |
+
+## Stanje main-a (vodi integrator)
+
+- **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica` 200
+- **Zadnja spajanja:** #54 R1 ulaz i čekaonica, #55 slajdovi obilaska, #58 dokumentacija (vraća se s #60)
+- **Red čekanja:** #60 revert #58 (čeka CI); #42 tipovi lika (promjena ugovora, čeka Leonovu odluku)
+- **Zadnje ažurirano:** sub 14:45
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L11)
 
