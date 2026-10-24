@@ -4,7 +4,18 @@ import { CITY, CONTRACTS, getBusiness } from "@/content";
 import { HttpError } from "@/lib/http";
 import { MARKETING_MAX, PRICE_MAX, PRICE_MIN } from "@/lib/rules";
 import type { LeaderboardRow } from "@/lib/types";
-import { buildNews, parsePlan, sumEffects, toCityLinks, toCityView, toContractView, toPlan, type NewsEvent } from "./city";
+import {
+  activeTemplates,
+  buildNews,
+  contractTerms,
+  parsePlan,
+  sumEffects,
+  toCityLinks,
+  toCityView,
+  toContractView,
+  toPlan,
+  type NewsEvent,
+} from "./city";
 
 const agency = CONTRACTS.find((c) => c.nights > 0)!;
 const laundry = CONTRACTS.find((c) => c.businessId === "praonica-kvarner")!;
@@ -19,6 +30,11 @@ function contract(over: Partial<ContractRow>): ContractRow {
     status: "offered",
     activeFrom: null,
     activeTo: null,
+    counterPricePerNight: null,
+    counterMonthlyCost: null,
+    agreedPricePerNight: null,
+    agreedMonthlyCost: null,
+    negotiated: false,
     ...over,
   };
 }
@@ -93,6 +109,29 @@ describe("toContractView", () => {
     const v = toContractView(contract({ status: "accepted", activeFrom: 2, activeTo: 3 }));
     expect(v.status).toBe("accepted");
     expect(v.activeUntilRound).toBe(3);
+  });
+});
+
+describe("pregovaranje u pogledu i obračunu (L15)", () => {
+  it("protuponuda agencije: vidljiva uz ponudu, cijena ostaje iz ponude", () => {
+    const v = toContractView(contract({ negotiated: true, counterPricePerNight: 80, counterMonthlyCost: 0 }));
+    expect(v).toMatchObject({ negotiated: true, counterPricePerNight: 80, counterMonthlyCost: 0, pricePerNight: agency.pricePerNight });
+  });
+
+  it("dogovorene vrijednosti zamjenjuju predložak u pogledu i u obračunu", () => {
+    const row = contract({ status: "accepted", activeFrom: 2, activeTo: 3, negotiated: true, agreedPricePerNight: 80, agreedMonthlyCost: 0 });
+    expect(toContractView(row).pricePerNight).toBe(80);
+    expect(contractTerms(row)).toMatchObject({ id: agency.id, nights: agency.nights, pricePerNight: 80 });
+    expect(activeTemplates([row], 2)[0].pricePerNight).toBe(80);
+    const cheap = contract({ templateId: laundry.id, status: "accepted", activeFrom: 2, activeTo: 3, agreedMonthlyCost: 1300, agreedPricePerNight: 0 });
+    expect(activeTemplates([cheap], 3)[0].monthlyCost).toBe(1300);
+  });
+
+  it("bez pregovaranja nema novih polja", () => {
+    const v = toContractView(contract({}));
+    expect(v.negotiated).toBeUndefined();
+    expect(v.counterPricePerNight).toBeUndefined();
+    expect(contractTerms(contract({}))).toEqual(agency);
   });
 });
 

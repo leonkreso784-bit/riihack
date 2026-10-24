@@ -1,6 +1,7 @@
 // Drizzle shema. Tablice igre i grada piše L1 (plan izvedbe, „L1 · Baza").
 import {
   boolean,
+  index,
   integer,
   jsonb,
   pgTable,
@@ -191,6 +192,12 @@ export const contracts = pgTable(
     status: text("status").notNull().default("offered"),
     activeFrom: integer("active_from"),
     activeTo: integer("active_to"),
+    // L15 pregovaranje: protuponuda agencije, dogovorene vrijednosti (obračun ih koristi kad postoje), jednom po ponudi
+    counterPricePerNight: integer("counter_price_per_night"),
+    counterMonthlyCost: integer("counter_monthly_cost"),
+    agreedPricePerNight: integer("agreed_price_per_night"),
+    agreedMonthlyCost: integer("agreed_monthly_cost"),
+    negotiated: boolean("negotiated").notNull().default(false),
   },
   (t) => [unique().on(t.companyId, t.roundOffered)],
 );
@@ -220,6 +227,29 @@ export const dispatches = pgTable("dispatches", {
   createdAt: createdAt(),
 });
 
+// L15: pošta. Agencija (business_id) piše hotelu ili hotel agenciji; poruke među hotelima (L18) idu hotel → hotel.
+export const mail = pgTable(
+  "mail",
+  {
+    id: id(),
+    worldId: uuid("world_id")
+      .notNull()
+      .references(() => worlds.id),
+    threadId: uuid("thread_id").notNull(),
+    kind: text("kind").notNull(), // MailKind
+    fromCompanyId: uuid("from_company_id").references(() => companies.id),
+    toCompanyId: uuid("to_company_id").references(() => companies.id),
+    businessId: text("business_id"), // gradska tvrtka s druge strane, ako je ima
+    subject: text("subject").notNull(),
+    body: text("body").notNull(),
+    contractId: uuid("contract_id").references(() => contracts.id),
+    referralId: uuid("referral_id"),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: createdAt(),
+  },
+  (t) => [index("mail_to_company_created_idx").on(t.toCompanyId, t.createdAt)],
+);
+
 export type WorldRow = typeof worlds.$inferSelect;
 export type CompanyRow = typeof companies.$inferSelect;
 export type PlayerRow = typeof players.$inferSelect;
@@ -233,3 +263,4 @@ export type FinanceRow = typeof finances.$inferSelect;
 export type ContractRow = typeof contracts.$inferSelect;
 export type CustomSituationRow = typeof customSituations.$inferSelect;
 export type DispatchRow = typeof dispatches.$inferSelect;
+export type MailRow = typeof mail.$inferSelect;

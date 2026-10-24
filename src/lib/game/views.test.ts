@@ -169,7 +169,7 @@ const laundry = CONTRACTS.find((c) => c.nights === 0)!;
 const running: WorldRow = { ...world, status: "running", round: 2 };
 
 function contractRow(id: string, companyId: string, over: Partial<ContractRow>): ContractRow {
-  return { id, worldId: world.id, companyId, templateId: agency.id, roundOffered: 2, status: "offered", activeFrom: null, activeTo: null, ...over };
+  return { id, worldId: world.id, companyId, templateId: agency.id, roundOffered: 2, status: "offered", activeFrom: null, activeTo: null, counterPricePerNight: null, counterMonthlyCost: null, agreedPricePerNight: null, agreedMonthlyCost: null, negotiated: false, ...over };
 }
 
 function financeRow(companyId: string, round: number, profit: number): FinanceRow {

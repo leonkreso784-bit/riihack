@@ -32,6 +32,7 @@ import type {
   ProfStateResponse,
 } from "@/lib/types";
 import { createOffers, listNewsEvents, settleCityRound } from "./city";
+import { MAIL_LIMIT, countUnreadMail, listMailRows } from "./mail";
 import { closeRoundForAll, openRound } from "./round";
 import { listBank, listDispatches, loadTemplates } from "./situations";
 import { toCompanyDetail, toMeResponse, toProfState } from "./views";
@@ -189,7 +190,7 @@ export async function loadProfState(world: WorldRow): Promise<ProfStateResponse>
 
 /** GET /api/me: tvrtka, situacije tekućeg kruga, izvještaji, ljestvica, plan, ugovori, obračuni, grad i vijesti. */
 export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
-  const [rooms, all, situations, reports, plan, contracts, finances, events, pool] = await Promise.all([
+  const [rooms, all, situations, reports, plan, contracts, finances, events, pool, mail, unreadMail] = await Promise.all([
     listRooms(ctx.company.id),
     listCompanies(ctx.world.id),
     listSituationsWithAnswers(ctx.company.id, ctx.world.round),
@@ -199,8 +200,14 @@ export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
     listFinanceRows(ctx.company.id),
     listNewsEvents(ctx.world.id),
     loadTemplates(ctx.world.id), // L12: i profesorove situacije
+    listMailRows(ctx.company.id, MAIL_LIMIT), // L15: pošta
+    countUnreadMail(ctx.company.id),
   ]);
-  return toMeResponse({ ...ctx, rooms, all, situations, reports, plan, contracts, finances, events }, new Date(), pool);
+  return toMeResponse(
+    { ...ctx, rooms, all, situations, reports, plan, contracts, finances, events, mail, unreadMail },
+    new Date(),
+    pool,
+  );
 }
 
 /** GET /api/prof/[worldId]/companies/[id]: uvid u jednu tvrtku; tvrtka iz druge igre → 404. */

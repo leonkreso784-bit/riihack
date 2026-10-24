@@ -19,19 +19,33 @@ import {
 } from "@/db/queries";
 import { CITY, CONTRACTS, getBusiness, getContract, getHotel } from "@/content";
 import { contractEffects, contractNightsTotal, drawOffer, isActive } from "@/lib/engine/contracts";
+import { counterError, negotiate } from "@/lib/engine/negotiate";
 import { INVESTMENT_ERROR, investmentEffects, investmentTotal, parseInvestments } from "@/lib/engine/departments";
 import { financeEffect, refPrice, roundFinance, settleMarket } from "@/lib/engine/economy";
 import { eur } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import { MARKETING_MAX, METRIC_LABELS, PRICE_MAX, PRICE_MIN, ROUND_LABELS } from "@/lib/rules";
 import type { requirePlayer } from "@/lib/session";
+import {
+  agencyText,
+  counterBody,
+  getOfferMail,
+  insertMail,
+  offerBody,
+  offerMailInsert,
+  offerSubject,
+  replySubject,
+  toMailMessage,
+} from "./mail";
 import type {
   CityView,
   ContractStatus,
   ContractTemplate,
   ContractView,
+  CounterOfferRequest,
   LeaderboardRow,
   MetricKey,
+  NegotiationResult,
   NewsItem,
   PlanRequest,
   RoundFinance,
@@ -46,6 +60,7 @@ const NEWS_LIMIT = 10;
 const NEWS_TYPES = ["player.joined", "round.opened", "contract.accepted", "round.settled"];
 const PLAN_CLOSED = "Plan se može mijenjati samo dok je krug otvoren";
 const OFFER_GONE = "Ova ponuda više ne vrijedi";
+const NEGOTIATED = "Već ste pregovarali";
 
 // ---------- Čisti dijelovi (bez baze, testirani u city.test.ts) ----------
 
@@ -64,8 +79,18 @@ export function parsePlan(body: { price?: unknown; marketing?: unknown; investme
   return { price, marketing, investments };
 }
 
-export function toContractView(row: ContractRow): ContractView {
+/** Predložak ugovora s dogovorenim vrijednostima iz pregovaranja (L15), ako ih ima; obračun računa s njim. */
+export function contractTerms(row: ContractRow): ContractTemplate {
   const t = getContract(row.templateId);
+  return {
+    ...t,
+    pricePerNight: row.agreedPricePerNight ?? t.pricePerNight,
+    monthlyCost: row.agreedMonthlyCost ?? t.monthlyCost,
+  };
+}
+
+export function toContractView(row: ContractRow): ContractView {
+  const t = contractTerms(row);
   const business = getBusiness(t.businessId);
   return {
     id: row.id,
@@ -81,6 +106,9 @@ export function toContractView(row: ContractRow): ContractView {
     roundOffered: row.roundOffered,
     status: row.status as ContractStatus,
     ...(row.status === "accepted" && row.activeTo !== null && { activeUntilRound: row.activeTo }),
+    ...(row.negotiated && { negotiated: true }),
+    ...(row.counterPricePerNight !== null && { counterPricePerNight: row.counterPricePerNight }),
+    ...(row.counterMonthlyCost !== null && { counterMonthlyCost: row.counterMonthlyCost }),
   };
 }
 
@@ -106,9 +134,9 @@ const activeRows = (rows: ContractRow[], round: number) =>
     isActive({ status: r.status as ContractStatus, activeFrom: r.activeFrom, activeTo: r.activeTo }, round),
   );
 
-/** Predlošci ugovora koji vrijede u tom krugu. */
+/** Predlošci ugovora koji vrijede u tom krugu, s dogovorenim vrijednostima (L15). */
 export function activeTemplates(rows: ContractRow[], round: number): ContractTemplate[] {
-  return activeRows(rows, round).map((r) => getContract(r.templateId));
+  return activeRows(rows, round).map(contractTerms);
 }
 
 /** Linije karte: hotel–tvrtka za svaki ugovor koji vrijedi u tom krugu (bez ponavljanja). */
@@ -222,25 +250,44 @@ export async function savePlan(ctx: PlayerCtx, req: PlanRequest): Promise<RoundP
 
 // ---------- Ugovori ----------
 
-/** Po jedna ponuda po hotelu za krug (deterministički iz sjemena igre); ponovni poziv ne radi ništa. */
+/**
+ * Po jedna ponuda po hotelu za krug (deterministički iz sjemena igre) i uz nju e-mail agencije (L15), u jednom
+ * `db.batch`; ponovni poziv ne radi ništa (ni ponudu ni e-mail).
+ */
 export async function createOffers(world: WorldRow, round: number): Promise<void> {
   const all = await listCompanies(world.id);
   if (all.length === 0) return;
-  await db
+  const offers = all.map(({ company }) => ({
+    company,
+    id: crypto.randomUUID(),
+    template: drawOffer(world.seed, round, company.joinIndex, CONTRACTS),
+  }));
+  const insertOffers = db
     .insert(contracts)
     .values(
-      all.map(({ company }) => ({
+      offers.map(({ company, id, template }) => ({
+        id,
         worldId: world.id,
         companyId: company.id,
-        templateId: drawOffer(world.seed, round, company.joinIndex, CONTRACTS).id,
+        templateId: template.id,
         roundOffered: round,
       })),
     )
     .onConflictDoNothing();
+  const offerMails = offers.map(({ company, id, template }) =>
+    offerMailInsert({
+      contractId: id,
+      threadId: crypto.randomUUID(),
+      businessId: template.businessId,
+      subject: offerSubject(template),
+      body: offerBody(template, getBusiness(template.businessId), company.name),
+    }),
+  );
+  await db.batch([insertOffers, ...offerMails]);
 }
 
-/** Prihvati ili odbij ponudu tekućeg kruga. Jedan uvjetni UPDATE: druga odluka ili zakašnjeli klik dobije 409. */
-export async function decideContract(ctx: PlayerCtx, contractId: string, accept: boolean): Promise<ContractView> {
+/** Ponuda tekućeg kruga koja još vrijedi; inače 404 ili 409. */
+async function openOffer(ctx: PlayerCtx, contractId: string): Promise<ContractRow> {
   const { world, company } = ctx;
   const row = await getContractForCompany(contractId, company.id);
   if (!row) throw new HttpError(404, "Ponuda nije pronađena");
@@ -252,33 +299,132 @@ export async function decideContract(ctx: PlayerCtx, contractId: string, accept:
   ) {
     throw new HttpError(409, OFFER_GONE);
   }
+  return row;
+}
+
+// krug ponude je još otvoren i grad ga nije obračunao (obračun prvo zauzme settled_round)
+const roundStillOpen = () =>
+  sql`exists (select 1 from ${worlds} where ${worlds.id} = ${contracts.worldId} and ${worlds.status} = 'running' and ${worlds.round} = ${contracts.roundOffered} and ${worlds.settledRound} < ${contracts.roundOffered})`;
+
+async function logAccepted(world: WorldRow, companyId: string, row: ContractRow, template: ContractTemplate) {
+  const business = getBusiness(template.businessId);
+  await logEvent({
+    worldId: world.id,
+    companyId,
+    round: row.roundOffered,
+    type: "contract.accepted",
+    payload: { contractId: row.id, templateId: template.id, businessId: business.id, businessName: business.name },
+  });
+}
+
+/** Prihvati ili odbij ponudu tekućeg kruga. Jedan uvjetni UPDATE: druga odluka ili zakašnjeli klik dobije 409. */
+export async function decideContract(ctx: PlayerCtx, contractId: string, accept: boolean): Promise<ContractView> {
+  const { world, company } = ctx;
+  const row = await openOffer(ctx, contractId);
   const template = getContract(row.templateId);
+  // nakon protuponude agencije (countered) prihvaćanje vrijedi po njezinim brojkama
+  const countered = row.counterPricePerNight !== null || row.counterMonthlyCost !== null;
   const decided = await db
     .update(contracts)
     .set(
       accept
-        ? { status: "accepted", activeFrom: row.roundOffered, activeTo: row.roundOffered + template.durationRounds - 1 }
+        ? {
+            status: "accepted",
+            activeFrom: row.roundOffered,
+            activeTo: row.roundOffered + template.durationRounds - 1,
+            ...(countered && { agreedPricePerNight: row.counterPricePerNight, agreedMonthlyCost: row.counterMonthlyCost }),
+          }
         : { status: "rejected" },
     )
-    .where(
-      and(
-        eq(contracts.id, row.id),
-        eq(contracts.status, "offered"),
-        // krug ponude je još otvoren i grad ga nije obračunao (obračun prvo zauzme settled_round)
-        sql`exists (select 1 from ${worlds} where ${worlds.id} = ${contracts.worldId} and ${worlds.status} = 'running' and ${worlds.round} = ${contracts.roundOffered} and ${worlds.settledRound} < ${contracts.roundOffered})`,
-      ),
-    )
+    .where(and(eq(contracts.id, row.id), eq(contracts.status, "offered"), roundStillOpen()))
     .returning();
   if (!decided[0]) throw new HttpError(409, OFFER_GONE);
+  if (accept) {
+    await logAccepted(world, company.id, row, template);
+    return toContractView(decided[0]);
+  }
   const business = getBusiness(template.businessId);
   await logEvent({
     worldId: world.id,
     companyId: company.id,
     round: row.roundOffered,
-    type: accept ? "contract.accepted" : "contract.rejected",
+    type: "contract.rejected",
     payload: { contractId: row.id, templateId: template.id, businessId: business.id, businessName: business.name },
   });
   return toContractView(decided[0]);
+}
+
+/**
+ * Protuponuda na ponudu tekućeg kruga (L15), jednom po ponudi. Motor odlučuje (negotiate): accepted → ugovor vrijedi
+ * po dogovorenim brojkama; countered → agencija nudi sredinu, student je zatim prihvaća ili odbija (decideContract);
+ * rejected → ponuda propada. Svaki ishod upiše protuponudu hotela i odgovor agencije u nit e-maila ponude.
+ */
+export async function counterOffer(
+  ctx: PlayerCtx,
+  contractId: string,
+  req: CounterOfferRequest,
+): Promise<NegotiationResult> {
+  const { world, company } = ctx;
+  const row = await openOffer(ctx, contractId);
+  if (row.negotiated) throw new HttpError(409, NEGOTIATED);
+  const template = getContract(row.templateId);
+  const error = counterError(template, req);
+  if (error) throw new HttpError(400, error);
+  const deal = negotiate(template, req);
+  const agreed = { pricePerNight: deal.pricePerNight, monthlyCost: deal.monthlyCost };
+
+  const updated = await db
+    .update(contracts)
+    .set(
+      deal.outcome === "accepted"
+        ? {
+            status: "accepted",
+            activeFrom: row.roundOffered,
+            activeTo: row.roundOffered + template.durationRounds - 1,
+            agreedPricePerNight: agreed.pricePerNight,
+            agreedMonthlyCost: agreed.monthlyCost,
+            negotiated: true,
+          }
+        : deal.outcome === "countered"
+          ? { counterPricePerNight: agreed.pricePerNight, counterMonthlyCost: agreed.monthlyCost, negotiated: true }
+          : { status: "expired", negotiated: true },
+    )
+    .where(
+      and(eq(contracts.id, row.id), eq(contracts.status, "offered"), eq(contracts.negotiated, false), roundStillOpen()),
+    )
+    .returning();
+  if (!updated[0]) throw new HttpError(409, OFFER_GONE);
+
+  const business = getBusiness(template.businessId);
+  const offerMail = await getOfferMail(row.id);
+  const threadId = offerMail?.threadId ?? crypto.randomUUID();
+  const subject = replySubject(offerMail?.subject ?? offerSubject(template));
+  const proposal = {
+    nights: template.nights,
+    pricePerNight: req.pricePerNight ?? template.pricePerNight,
+    monthlyCost: req.monthlyCost ?? template.monthlyCost,
+  };
+  const sentAt = new Date();
+  const replyBody = await agencyText({
+    business,
+    contract: template,
+    outcome: deal.outcome,
+    studentMessage: req.message,
+    agreed,
+  });
+  const repliedAt = new Date(Math.max(Date.now(), sentAt.getTime() + 1));
+  const common = { worldId: world.id, threadId, kind: "agency", businessId: business.id, subject, contractId: row.id };
+  const written = await insertMail([
+    { ...common, fromCompanyId: company.id, body: counterBody(proposal, company.name, req.message), createdAt: sentAt },
+    { ...common, toCompanyId: company.id, body: replyBody, createdAt: repliedAt },
+  ]);
+  const reply = written.find((m) => m.toCompanyId === company.id) ?? written[written.length - 1];
+  if (deal.outcome === "accepted") await logAccepted(world, company.id, row, template);
+  return {
+    outcome: deal.outcome,
+    contract: toContractView(updated[0]),
+    reply: toMailMessage(reply, company.id, { [company.id]: company.name }),
+  };
 }
 
 // ---------- Obračun mjeseca ----------
