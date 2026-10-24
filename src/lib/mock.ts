@@ -1,4 +1,4 @@
-// Fake data for the UI while API routes are not ready (NEXT_PUBLIC_USE_MOCK=1). Shapes follow src/lib/types.ts.
+// Fake data for the UI while API routes are not ready (default; NEXT_PUBLIC_USE_MOCK=0 turns it off). Shapes follow src/lib/types.ts.
 import type {
   CityView,
   CompanyDetailResponse,
