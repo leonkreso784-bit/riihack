@@ -86,13 +86,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim (00:15):** predaja na novu sesiju graditelja (`Simpolis-prompt-graditelj-3.md`). Večeras spojeno: #177, #191, #194, #213, #214, #221, #225, #184, #189, #190, #203, #188, #207, #212, #217; demo KVRNDM posijan završno (15 mjesta), smoke na produkciji 20/20
-- **Sljedeće (nova sesija):** #226 izvještaj i podij vide obračun grada (hitno), #227.1 plan se prenosi, #227.3 protuponuda bez dobitka → 400, #227.6 brže „Moje igre", pa seed i smoke; prije predaje čišćenje baze i provjera imena
-- **Čekam od drugih:** Leon: odluka o sigurnim zaglavljima (iframe, nosniff); igra za žiri (#187)
+- **Sad radim (01:05):** sesija graditelja 5. Gotovo: #240 (#226 izvještaj, mentor i podij vide obračun grada) i #241 (#227.1 plan se prenosi, #227.3 protuponuda bez koristi → 400); oba zelena, čekaju Leonovo „spoji"
+- **Sljedeće:** nakon spajanja jedan seed demo igre KVRNDM i smoke na produkciji (uz najavu testeru); #227.6 brže „Moje igre"; prije predaje čišćenje baze (i 2 igre „Smoke …" integratora) i provjera imena
+- **Čekam od drugih:** Leon: „spoji" za #240 i #241; odluka o balansu općenitog odgovora (q=1 = kao propuštena situacija) i o stanju računa tuđih hotela na ljestvici; sigurna zaglavlja
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #169 L16 ekrani računa (zelen)
-- **Spojeno:** L0–L12; val 3: L13 odjeli, L14 javni profil, raspodjela financija, L15 pošta i pregovaranje, L16 računi (#147, Better Auth na produkciji od ~20:25), L17 knjižnica (#165), dvoklik na zatvaranje mjeseca (#166). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** sub 20:50
+- **Otvoreno:** #240, #241
+- **Spojeno:** L0–L18, L8 demo, kasni ulaz (#221), balans cijene i kvalitete (#194, #213, #214), bez donje granice odgovora (#225). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
+- **Zadnje ažurirano:** ned 01:05
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S12)
 
