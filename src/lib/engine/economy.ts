@@ -41,6 +41,17 @@ export function refPrice(rooms: { basePrice: number }[]): number {
   return Math.round(rooms.reduce((s, r) => s + r.basePrice, 0) / rooms.length);
 }
 
+/**
+ * Faktor cijene u baznim bodovima (#162). Ispod referentne cijene raste do ×1,5; iznad nje pada s kvadratom
+ * (ref/cijena)², pa se previsoka cijena ne isplati; iznad 2,5× ref nitko ne dolazi (0).
+ */
+export function priceBp(price: number, refPrice: number): number {
+  const p = price > 0 ? price : PRICE_MIN;
+  if (p <= refPrice) return clamp(Math.floor((10000 * refPrice) / p), 10000, 15000);
+  if (2 * p > 5 * refPrice) return 0;
+  return Math.floor((10000 * refPrice * refPrice) / (p * p));
+}
+
 export function attractiveness(i: {
   reviews: number;
   guests: number;
@@ -48,11 +59,9 @@ export function attractiveness(i: {
   refPrice: number;
   marketing: number;
 }): number {
-  const price = i.price > 0 ? i.price : PRICE_MIN;
-  const priceBp = clamp(Math.floor((10000 * i.refPrice) / price), 5000, 15000);
   const marketing = clamp(i.marketing, 0, MARKETING_MAX);
   const marketingBp = 10000 + Math.floor((marketing * 10000) / (2 * MARKETING_MAX));
-  return Math.max(0, Math.floor(((i.reviews + i.guests) * priceBp * marketingBp) / 1e8));
+  return Math.max(0, Math.floor(((i.reviews + i.guests) * priceBp(i.price, i.refPrice) * marketingBp) / 1e8));
 }
 
 // Zajedničko tržište: svi hoteli grada dijele istu potražnju.
