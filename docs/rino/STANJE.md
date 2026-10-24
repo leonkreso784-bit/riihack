@@ -1,6 +1,6 @@
 # Rino · sučelje: gdje smo stali
 
-> Zapisano **sub 24.10.2026. u 21:05**. Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
+> Zapisano **sub 24.10.2026. u 21:05**, dopunjeno u **21:16**. Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
 > grani `rino/dokumentacija`; na `main` ide samo Rinovo polje u `TEAM.md`.
 
 ## Prvo pročitaj
@@ -60,9 +60,12 @@
 Provjereno na produkciji (20:00): QR → student → Završi mjesec → profesor vidi i otvara srpanj → Financije, Plan, Odjeli,
 Grad; 0 grešaka.
 
-## Otvoreno (sub 21:05)
+## Otvoreno (sub 21:16)
 
-Rinovih otvorenih PR-ova nema. Čeka se Leonovo spajanje tuđih PR-ova s Rinovim ok-om:
+- **#180** (Rino) dokumenti: nema zamrzavanja koda (ADR-031) u `CLAUDE.md`, `PLAN-24H.md`, `TEAM.md` i glavnom planu.
+  Samo dokumentacija. U ADR-031 „Posljedice“ ostaje 🟨 napomena, može je zatvoriti vlasnik zapisa.
+
+Ostalo: Čeka se Leonovo spajanje tuđih PR-ova s Rinovim ok-om:
 
 - **#169** (Leon) L16 ekrani: registracija, prijava, Moje igre. **Ovo je bio R14:** Rino je pregledao izgled (375 i
   1440 px, slaže se s aplikacijom) i odobrio. R14 je time gotov.
@@ -77,9 +80,8 @@ Poruka Leonu (21:05) poslana: spremni #169, #170, #174 (nakon poveznica); pitanj
 
 ## Sljedeće (redom)
 
-1. **Provjeri na produkciji #168 i #173** (jedna prava igra): profesorova ploča → klik na hotel → stranica studenta →
-   promijeni ocjenu (oznaka „· profesor"); profesorova situacija (S8 „Situacije" → pošalji) → kod studenta oznaka
-   „od profesora"; `/igra` kartice pokazuju mjesec zadnjeg obračuna; nema bljeska čekaonice.
+1. ~~Provjeri na produkciji #168 i #173~~ ✅ 21:15 (igra `GE4FMD`): ocjena 1 → 5 s oznakom „· profesor“ i nakon osvježavanja;
+   „od profesora“ samo na profesorovim vlastitim situacijama (iz banke ne, tako je zamišljeno); bez bljeska; „lipanj“ na karticama; 0 grešaka.
 2. Kad Leon spoji #169, #170, #174: kratka provjera na produkciji (registracija → Moje igre → nova igra; poveznica
    „Kako je izračunat mjesec" s izvještaja).
 3. Pogledaj odgovor Leona na Discordu: ima li prioritet prije M3.
@@ -89,5 +91,4 @@ Poruka Leonu (21:05) poslana: spremni #169, #170, #174 (nakon poveznica); pitanj
 
 ## Rokovi
 
-M3 obilazak 3: **ned 07:45**. Zamrzavanje koda: ned 06:30 (Leon je rekao da nema strogog zamrzavanja, ali poslije
-samo popravci). Predaja: **ned 10:15** (rok 10:30).
+M3 obilazak 3: **ned 07:45**. **Nema zamrzavanja koda** (ADR-031), gradi se do predaje. Predaja: **ned 10:15** (rok 10:30).
