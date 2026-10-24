@@ -23,6 +23,18 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-007 · Profesorski kod demo igre bio je zadana vrijednost u javnom kodu
+- **Status:** ✅ rizik uklonjen 24.10. ~17:25 (kod zamijenjen); popravak skripte u [#115](https://github.com/leonkreso784-bit/riihack/pull/115) · **Težina:**
+  visok (tko pročita javni repo mogao je upravljati demo igrom pred žirijem)
+- **Opis:** `scripts/seed-demo.ts` je za `DEMO_PROF_CODE` imao zadanu vrijednost u čistom tekstu, koja se koristi
+  kad varijabla nije postavljena. Našao dokumentarist pri provjeri `TESTING.md`.
+- **Uzrok:** tajna je dobila zadanu vrijednost da skripta radi i bez `.env.local`.
+- **Rješenje:** demo igra ponovno napravljena s novim tajnim kodom koji je samo u Leonovom `.env.local`; stari kod
+  na produkciji vraća 404. #115 uklanja zadanu vrijednost, pa skripta bez `DEMO_PROF_CODE` pada. Kod igre ostaje javan
+  po namjeni (njime se samo ulazi, [ADR-004](DECISIONS.md#adr-004)).
+- **Lekcija:** zadana vrijednost tajne u javnom repou je javna tajna. Tajne se čitaju samo iz env-a, bez rezerve, a
+  skripta bez njih staje.
+
 ### BUG-004 · Smoke korak 5 na `main`-u pada: „Ana ima 0 situacija"
 - **Status:** ✅ riješen 24.10. 16:55 ([#75](https://github.com/leonkreso784-bit/riihack/pull/75)); smoke na `main`-u 14/14 · **Težina:** srednji (smoke na
   `main`-u crven; korisnik nije vidio jer je produkcija bila na lažnim podacima, [ADR-018](DECISIONS.md#adr-018))

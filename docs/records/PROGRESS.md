@@ -6,6 +6,12 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~17:25 · tajni kod demo igre
+
+- Profesorski kod demo igre bio je zadana vrijednost u javnom kodu; demo igra ponovno napravljena s novim tajnim
+  kodom, stari vraća 404, skripta više nema zadanu vrijednost (#115)
+  ([BUG-007](BUGS.md#bug-007--profesorski-kod-demo-igre-bio-je-zadana-vrijednost-u-javnom-kodu)).
+
 ## Sub 24.10. 16:50–17:10 · val M2 spojen
 
 - **Val M2** ([ADR-028](DECISIONS.md#adr-028)), na Leonovo izravno „da": #88 L11 faza B (16:50) → #89 ugovor (16:52)
