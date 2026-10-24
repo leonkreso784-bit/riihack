@@ -12,6 +12,7 @@ import type {
   ContractView,
   CreateWorldRequest,
   CreateWorldResponse,
+  DispatchRequest,
   JoinRequest,
   JoinResponse,
   MeResponse,
@@ -24,6 +25,9 @@ import type {
   Room,
   RoundPlan,
   RoundReportView,
+  SituationDraft,
+  SituationSummary,
+  WorldSettingsRequest,
 } from "./types";
 
 async function send(path: string, method: "GET" | "POST", body?: unknown): Promise<Response> {
@@ -51,6 +55,10 @@ const realApi = {
   finish: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/finish`),
   companyDetail: (worldId: string, companyId: string) =>
     get<CompanyDetailResponse>(`/api/prof/${worldId}/companies/${companyId}`),
+  // S8: professor's own situations, sending, settings
+  createSituation: (worldId: string, req: SituationDraft) => post<SituationSummary>(`/api/prof/${worldId}/situations`, req),
+  dispatch: (worldId: string, req: DispatchRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/dispatch`, req),
+  worldSettings: (worldId: string, req: WorldSettingsRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/settings`, req),
   join: (req: JoinRequest) => post<JoinResponse>("/api/join", req),
   me: () => get<MeResponse>("/api/me"),
   rooms: () => get<Room[]>("/api/me/rooms"),
@@ -147,6 +155,33 @@ const mockApi: Api = {
     return wait(mockProfState());
   },
   companyDetail: () => wait(MOCK_DETAIL),
+  // S8: these change MOCK_PROF in memory so the situation list updates in the demo.
+  createSituation: (_worldId, draft) => {
+    const summary: SituationSummary = {
+      id: `custom-${Date.now()}`,
+      title: draft.title,
+      area: draft.area,
+      difficulty: draft.difficulty,
+      source: "custom",
+    };
+    MOCK_PROF.bank = [...(MOCK_PROF.bank ?? []), summary];
+    return wait(summary);
+  },
+  dispatch: (_worldId, req) => {
+    const title = MOCK_PROF.bank?.find((s) => s.id === req.templateId)?.title ?? req.templateId;
+    // Sending now leaves no trace in the list (students get it at once); a later round is scheduled.
+    if (req.round !== undefined) {
+      MOCK_PROF.dispatches = [
+        ...(MOCK_PROF.dispatches ?? []),
+        { id: `d-${Date.now()}`, templateId: req.templateId, title, round: req.round, companyIds: req.companyIds ?? null, status: "scheduled" },
+      ];
+    }
+    return wait(mockProfState());
+  },
+  worldSettings: (_worldId, req) => {
+    MOCK_PROF.autoDraw = req.autoDraw;
+    return wait(mockProfState());
+  },
   join: () => {
     mockLobbyUntil = Date.now() + 8000;
     const c = MOCK_ME.company;
