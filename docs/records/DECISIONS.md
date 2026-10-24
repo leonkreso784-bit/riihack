@@ -8,6 +8,27 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-029"></a>
+## ADR-029 · Produkcija prelazi na prave podatke nakon probe M2
+**Datum:** 24.10. ~16:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-018](#adr-018), [ADR-013](#adr-013), [ADR-028](#adr-028)
+
+**Kontekst.** Prave podatke do sada je imao samo Preview (ADR-018); produkcija je pokazivala lažne podatke.
+**Odluka.** Nakon vala M2 slijedi proba M2 na pravim podacima, a zatim se `NEXT_PUBLIC_USE_MOCK=0` postavlja i na
+produkciji.
+**Posljedice.** Mijenja ADR-018 nakon probe. Oznaka „primjer" ostaje samo na ekranima koji su po planu samo sučelje
+(radar vještina).
+
+<a id="adr-028"></a>
+## ADR-028 · Val spajanja M2: redom, uz smoke i provjeru produkcije između koraka
+**Datum:** 24.10. ~16:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-017](#adr-017), [ADR-025](#adr-025), [ADR-019](#adr-019)
+
+**Kontekst.** Pet PR-ova za M2 međusobno ovisi: ugovor, obračun grada, situacije i profesorove situacije.
+**Odluka.** Integrator spaja na Leonovo izravno „da", ovim redom: [#88](https://github.com/leonkreso784-bit/riihack/pull/88) L11 faza B → [#89](https://github.com/leonkreso784-bit/riihack/pull/89) ugovor
+(profesorove situacije i playbook) → [#75](https://github.com/leonkreso784-bit/riihack/pull/75) L6 (Leon pregledao struku, 3 jezične ispravke) → [#95](https://github.com/leonkreso784-bit/riihack/pull/95) L12
+→ [#96](https://github.com/leonkreso784-bit/riihack/pull/96) odjava. Između koraka smoke 14/14 i provjera produkcije; **ako išta pukne, lanac staje.**
+**Posljedice.** M3 PR-ovi koji su gotovi ([#100](https://github.com/leonkreso784-bit/riihack/pull/100) playbook, [#103](https://github.com/leonkreso784-bit/riihack/pull/103) demo igra, [#104](https://github.com/leonkreso784-bit/riihack/pull/104) promjena
+ocjene mentora) čekaju iza vala.
+
 <a id="adr-027"></a>
 ## ADR-027 · Playbook kao izvoz i uvoz, bez mijenjanja mehanike
 **Datum:** 24.10. ~16:35 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** [ADR-024](#adr-024), [ADR-004](#adr-004), [#89](https://github.com/leonkreso784-bit/riihack/pull/89)

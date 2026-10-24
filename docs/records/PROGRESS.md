@@ -6,6 +6,20 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 16:15–16:50 · M2 val spreman, M3 gotov iza njega
+
+- **Spojeno:** R5 situacija s likom (#97), predstavljanje na `/` i ulaz na `/ulaz` (#93), logo (#91), jednostavniji
+  pitch (#99).
+- **Val M2 čeka Leonovo „da"** ([ADR-028](DECISIONS.md#adr-028)): #88 L11 faza B (smoke 14/14) → #89 ugovor → #75
+  L6 → #95 L12 (smoke 14/14) → #96 odjava.
+- **M3 gotovo, čeka iza vala:** playbook (#100; neispravan uvoz → 400 bez upisa), demo igra (#103,
+  `npm run seed:demo`: 5 hotela, lipanj obračunat, 2 ugovora, profesorova situacija zakazana za srpanj, krug 2
+  otvoren), promjena ocjene mentora (#104; pomak pokazatelja točno jednom, i na izvještaju).
+- **Shema** samo ručnim aditivnim SQL-om ([ADR-026](DECISIONS.md#adr-026)): `custom_situations`, `dispatches`,
+  `worlds.auto_draw`, `answers.overridden`; broj redaka nepromijenjen nakon svake izmjene.
+- **Slijedi:** proba M2 na pravim podacima, pa prave podatke i na produkciji ([ADR-029](DECISIONS.md#adr-029)).
+  Simon: S8 sučelje, `getTemplate` u `mentor-input.ts`. Rino: R6, R4, poveznica „Situacije", R5 bez opcija.
+
 ## Sub 24.10. 15:45–16:15 · obilazak žirija 1 i profesor kao glavni
 
 - **Žiri 1 (~15:45):** prošli smo. Borna Sila: temelj neka bude stabilna softverska mehanika, ne AI agenti; pohvala
