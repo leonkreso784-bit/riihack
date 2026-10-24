@@ -11,15 +11,15 @@ opis · uzrok · rješenje · **lekcija**.
 ## Aktivni
 
 ### BUG-008 · Ime prijašnjeg projekta još je u repou
-- **Status:** 🟡 u radu (provjera `git grep -i` na `main`-u, sub ~17:40) · **Težina:** srednji (žiri čita repo;
+- **Status:** 🟡 kod čist (#107, 19:58), plan još ne (provjera `git grep -i` na `main`-u, sub 20:00) · **Težina:** srednji (žiri čita repo;
   pravilo tima je da se ime nigdje ne piše)
-- **Opis:** ime je još u planu (`docs/superpowers/plans/2026-10-24-simpolis.md`, 9 redaka) i u komentarima koda
+- **Opis:** ime je bilo u planu (`docs/superpowers/plans/2026-10-24-simpolis.md`, 9 redaka) i u komentarima koda
   (`src/app/globals.css` 2, `src/components/bottom-nav.tsx` 1, `src/components/panel.tsx` 1), te u porukama starih
   commitova. Ostali dokumenti u `docs/` su čisti.
 - **Uzrok:** ime se koristilo kao kratica za izgled i bodovanje prije nego što je pravilo uvedeno.
-- **Rješenje:** čisti Rino (Leonova odluka, sub ~18:25): kod već čisti 
-  PR [#107](https://github.com/leonkreso784-bit/riihack/pull/107), plan slijedi;
-  povijest commitova se ne prepisuje (nema force pusha na `main`).
+- **Rješenje:** kod očišćen u [#107](https://github.com/leonkreso784-bit/riihack/pull/107) (spojen 19:58). Plan: 🟨 Leon je dodijelio Rinu
+  (~18:25), a graditelj ga predaje sljedećem graditelju; još 9 redaka. Povijest commitova se ne prepisuje
+  (nema force pusha na `main`).
 - **Lekcija:** ime koje ne smije u predaju ne smije ni u komentare i commitove od prvog dana; kad se pravilo uvede,
   odmah `git grep -i` po cijelom repou, ne samo po dokumentima.
 
