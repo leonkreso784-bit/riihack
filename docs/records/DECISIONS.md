@@ -8,6 +8,20 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-050"></a>
+## ADR-050 · Plan mjeseca se prenosi; protuponuda bez koristi se odbija
+**Datum:** 25.10. ~01:05 · **Status:** 🟨 prijedlog graditelja, čeka Leonovo „spoji" za
+[#241](https://github.com/leonkreso784-bit/riihack/pull/241) · **Vezano:**
+[BUG-029](BUGS.md#bug-029--plan-se-ne-prenosi-u-sljedeći-mjesec), [ADR-033](#adr-033), issue
+[#227](https://github.com/leonkreso784-bit/riihack/issues/227) (točke 1 i 3)
+
+**Kontekst.** Novi mjesec počinje sa zadanim planom (referentna cijena, marketing 0), pa student svaki mjesec unosi
+plan iznova (Simonov audit, tester na produkciji). Protuponuda s istom ili lošijom cijenom prolazila je kao pregovor.
+**Odluka.** Pri otvaranju sljedećeg mjeseca plan (cijena, marketing) prenosi se kao zadani; ulaganja ne, jer su
+jednokratna. Plan koji je student već spremio za novi mjesec ostaje. Protuponuda koja nije u korist hotela je greška
+motora (400), a pregovor ostaje neiskorišten.
+**Posljedice.** Mijenja brojke, pa se spaja na Leonovo „spoji" i nakon toga ide ponovni seed demo igre i smoke.
+
 <a id="adr-049"></a>
 ## ADR-049 · Bez minimalne duljine odgovora; prazan odgovor ocjenjuje motor
 **Datum:** 24.10. ~23:50 · **Status:** ✅ (Leon, Rinov zahtjev) · **Vezano:** [ADR-002](#adr-002), [ADR-046](#adr-046)

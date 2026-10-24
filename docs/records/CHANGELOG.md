@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#233](https://github.com/leonkreso784-bit/riihack/pull/233) | 01:05 | Rino | animacije čekanja: učitavanje, mentor i lik „pišu", točkice u gumbima |
+| [#238](https://github.com/leonkreso784-bit/riihack/pull/238) | 01:05 | Leon | dokumentacija: BUG-028 mjerenje, BUG-029 do 036, test sezone i put žirija |
 | [#236](https://github.com/leonkreso784-bit/riihack/pull/236) | 00:32 | Leon | dokumentacija: BUG-028 mentor spor |
 | [#234](https://github.com/leonkreso784-bit/riihack/pull/234) | 00:28 | Leon | dokumentacija: popravci iz audita |
 | [#232](https://github.com/leonkreso784-bit/riihack/pull/232) | 00:28 | Simon | Tokovi: odjeli kao staze (skica 3 v2) |

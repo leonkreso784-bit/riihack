@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~01:05 · plan se prenosi, obračun grada
+
+- **Spojeno:** dokumentacija #238 i Rinov #233 (animacije čekanja), oba 01:05.
+- **Graditelj, čeka Leonovo „spoji":** #240 (izvještaj, mentor i podij vide obračun grada; BUG-032, #226) i #241 (plan
+  se prenosi, protuponuda bez koristi je 400; BUG-029, [ADR-050](DECISIONS.md#adr-050)). Oba mijenjaju brojke: nakon
+  spajanja ponovni seed demo igre i smoke.
+- **Još otvoreno:** Rinov #237, Simonov #235.
+
 ## Ned 25.10. ~00:50 · test sezone, provjera otvorenih PR-ova
 
 - **Tester, cijela sezona na produkciji ✅:** dobar student +90 (popunjenost do 100 %), loš −54,6 (do 5 %);

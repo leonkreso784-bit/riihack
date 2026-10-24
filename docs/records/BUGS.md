@@ -39,14 +39,15 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-032 · Izvještaj mjeseca, mentor i podij ne vide obračun grada
-- **Status:** 🟡 u radu (graditelj, [#226](https://github.com/leonkreso784-bit/riihack/issues/226)) · **Težina:**
+- **Status:** 🟡 PR [#240](https://github.com/leonkreso784-bit/riihack/pull/240) čeka Leonovo „spoji" · **Težina:**
   srednji (ista brojka na tri ekrana ima tri vrijednosti)
 - **Opis:** Simonov audit (#226), tester potvrdio na produkciji (ned ~00:55): podij +5,9 i +7,7, ljestvica +7,3 i
   +9,9; izvještaj Financije ±0, Tokovi +5.
 - **Uzrok:** izvještaj (`roundReports.metricsAfter`) se upisuje pri zatvaranju tvrtke, a obračun grada
   (`writeSettlement`, `src/lib/game/city.ts`) poslije mijenja samo `companies.metrics`; podij čita izvještaj
   (opis u #226).
-- **Rješenje:** —
+- **Rješenje:** #240: obračun grada istom deltom ažurira i `round_reports.metrics_after`; smoke korak 12
+  provjerava da izvještaj i tvrtka kažu isto.
 - **Lekcija:** —
 
 ### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
@@ -72,13 +73,14 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-029 · Plan se ne prenosi u sljedeći mjesec
-- **Status:** 🟡 u radu (graditelj, [#227](https://github.com/leonkreso784-bit/riihack/issues/227) točka 1) ·
+- **Status:** 🟡 PR [#241](https://github.com/leonkreso784-bit/riihack/pull/241) čeka Leonovo „spoji"
+  ([ADR-050](DECISIONS.md#adr-050)) ·
   **Težina:** srednji
 - **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
   plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
   Potvrđeno i u sučelju (~00:55): plan 150/1000 u sljedećem mjesecu postane 172/0.
 - **Uzrok:** `toPlan` bez retka plana za novi mjesec vraća zadani plan (`src/lib/game/city.ts:229-238`).
-- **Rješenje:** —
+- **Rješenje:** #241: pri otvaranju mjeseca plan prethodnog (cijena, marketing) kopira se u novi; ulaganja ne.
 - **Lekcija:** —
 
 ### BUG-028 · Mentor je spor ili ne odgovori
