@@ -80,11 +80,11 @@ const COMPANY: CompanyView = {
 };
 
 const LEADERBOARD: LeaderboardRow[] = [
-  { companyId: "c-marko", hotelName: "Hotel Lungomare", playerName: "Marko Babić", place: "Opatija", progress: 14, closedRound: 1, cash: 41200 },
-  { companyId: "c-ana", hotelName: COMPANY.hotelName, playerName: COMPANY.playerName, place: COMPANY.place, progress: COMPANY.progress, closedRound: 1, cash: COMPANY.cash },
-  { companyId: "c-lucija", hotelName: "Kuća Lucija", playerName: "Lucija Perić", place: "Omišalj", progress: 6, closedRound: 1, cash: 29400 },
-  { companyId: "c-ivan", hotelName: "Hotel Kvarner", playerName: "Ivan Jurić", place: "Crikvenica", progress: 2, closedRound: 1, cash: 24100 },
-  { companyId: "c-petra", hotelName: "Villa Petra", playerName: "Petra Novak", place: "Mali Lošinj", progress: -3, closedRound: 0, cash: 17800 },
+  { companyId: "c-marko", hotelName: "Hotel Lungomare", playerName: "Marko Babić", place: "Opatija", progress: 14, closedRound: 1, cash: 41200, roundGain: 5 },
+  { companyId: "c-ana", hotelName: COMPANY.hotelName, playerName: COMPANY.playerName, place: COMPANY.place, progress: COMPANY.progress, closedRound: 1, cash: COMPANY.cash, roundGain: 4 },
+  { companyId: "c-lucija", hotelName: "Kuća Lucija", playerName: "Lucija Perić", place: "Omišalj", progress: 6, closedRound: 1, cash: 29400, roundGain: 2 },
+  { companyId: "c-ivan", hotelName: "Hotel Kvarner", playerName: "Ivan Jurić", place: "Crikvenica", progress: 2, closedRound: 1, cash: 24100, roundGain: -1 },
+  { companyId: "c-petra", hotelName: "Villa Petra", playerName: "Petra Novak", place: "Mali Lošinj", progress: -3, closedRound: 0, cash: 17800, roundGain: -3 },
 ];
 
 const SITUATIONS: SituationView[] = [
