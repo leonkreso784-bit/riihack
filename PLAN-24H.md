@@ -7,8 +7,8 @@ redoslijed po ljudima: [plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis
 | --- | --- | --- |
 | M0 Temelj | sub 13:15 | kostur na javnom linku, CI zelen |
 | M1 Obilazak 1 | sub 14:30 (žiri ~14:45) | 3 obećanja; profesor napravi igru, student uđe kodom i vidi hotel i sobe |
-| M2 Obilazak 2 | sub 18:45 (žiri 19:00) | 3 obećanja rade na javnom linku |
-| M3 Obilazak 3 | ned 07:45 (žiri 08:00) | cijeli demo, demo igra, responsive |
+| M2 Obilazak 2 | sub 18:45 (žiri 19:00) | 3 obećanja rade: Kahoot ulaz sa sobama, **grad** (tržište turista, novac, karta), situacija s likom |
+| M3 Obilazak 3 | ned 07:45 (žiri 08:00) | cijeli demo: ugovori s gradskim tvrtkama, vijesti grada, mentor, demo igra, responsive |
 | **Zamrzavanje** | **ned 06:30** | poslije samo popravci |
 | M4 Predaja | ned 10:15 | prezentacija, video, PREDAJA.md, link |
 
@@ -29,6 +29,6 @@ Napomena: zamrzavanje u 20. satu (ned 06:30) je prije 3. obilaska; nakon obilask
 ## Pravila
 
 - Nakon zamrzavanja (ned 06:30) nema novih značajki, samo popravci.
-- Agencija i ugovori su plan za pitch, ne kod.
+- **Grad je srž:** tržište turista, novac i ugovori s gradskim tvrtkama rade stvarno; studenti koji vode druge vrste tvrtki su plan za pitch.
 - Snimiti video demoa čim radi, za slučaj da live demo zakaže.
 - Ako je netko zapeo dulje od 30 minuta, javlja timu.
