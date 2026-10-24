@@ -71,14 +71,20 @@ kod**: kod se piše tijekom hackathona. Ime **ne smije biti HotelixSim** ni sli�
 
 ### Profesorov dio
 
-1. **Profesor stvara igru** (naziv, scenarij) i dobije **profesorski kod** (upravljanje, bez računa) i **kod za
-   ulaz** od 6 znakova za studente.
-2. **Studenti ulaze kodom** i upišu ime; svi kreću s istim zbrojem i dobiju iste situacije u istom krugu.
-3. **Profesor vodi tempo:** gumb „Otvori sljedeći krug" ili krug s odbrojavanjem (X minuta). Tko ne odgovori,
+1. **Profesor stvara igru** i upiše **koliko studenata igra**. Dobije **kod igre** od 6 znakova koji pokaže na
+   projektoru (kao Kahoot) i **profesorski kod** za upravljanje (bez računa).
+2. **Studenti ulaze kodom**, upišu **svoje ime i ime hotela** koji vode. Svaki dobije **drukčiji hotel** iz banke
+   hotela, sa svim sobama koje se mogu pregledati (kao HotelixSim). Svi kreću s istim zbrojem pokazatelja i dobiju
+   iste situacije u istom krugu.
+3. Profesor vidi kako se mjesta pune („7 / 24") i pokrene igru.
+4. **Profesor vodi tempo:** gumb „Otvori sljedeći krug" ili krug s odbrojavanjem (X minuta). Tko ne odgovori,
    dobije najnižu ocjenu i mentor ga upozori.
-4. **Ploča uživo:** tko je zatvorio krug, tko još igra, napredak svakog studenta i ljestvica.
-5. **Uvid u razmišljanje:** profesor otvori studenta i vidi odgovore, razgovor s likom i AI ocjenu po rubrici.
-6. *Ako ostane vremena:* profesor ubaci „šok" situaciju svima odjednom.
+5. **Ploča uživo:** tko je zatvorio krug, tko još igra, napredak svakog studenta i ljestvica.
+6. **Uvid u razmišljanje:** profesor otvori studenta i vidi odgovore, razgovor s likom i AI ocjenu po rubrici.
+7. *Ako ostane vremena:* profesor ubaci „šok" situaciju svima odjednom.
+
+**Opseg:** ne gradimo proizvod koji radi do kraja. Najbitnije iz HotelixSima ide u bazu i backend, ostalo je
+sučelje na lažnim podacima ili samo plan ([ARHITEKTURA.md](ARHITEKTURA.md) §1a).
 
 ### Otvoreno
 

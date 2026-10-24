@@ -16,6 +16,29 @@ Za demo su dvije vrste tvrtki:
 2. **Turistička agencija** 🟨 (drugi korak, samo ako glavni tok radi): manje situacija, i **ugovor s hotelom**
    (agencija ponudi zakup soba za grupu, hotel prihvati, odbije ili da protuponudu). To pokazuje „isti svijet".
 
+**Ulazak u igru, kao Kahoot** (Leon, 24.10.):
+
+1. Profesor napravi igru i upiše **koliko studenata igra**.
+2. Profesor dobije **kod igre** (6 znakova) i pokaže ga razredu na projektoru, kao na Kahootu. Uz to dobije
+   profesorski kod kojim kasnije upravlja igrom.
+3. Svaki student na svom uređaju upiše kod, **svoje ime i ime hotela** koji će voditi.
+4. Na profesorovu ekranu uživo se pune mjesta („7 / 24 studenta"). Kad su svi unutra, ili kad profesor odluči,
+   on pokrene igru.
+5. **Svaki student dobije drukčiji hotel** iz banke hotela (§5): drugo mjesto, broj i vrste soba, drukčije
+   raspoređene snage. Ime hotela je studentovo, a hotel ima **sve svoje sobe koje se mogu pregledati** (§5b),
+   slično kao u HotelixSimu.
+
+### 1a · Što je stvarno, što je sučelje, što je plan
+
+Ne gradimo proizvod koji radi do kraja. Iz HotelixSima u bazu i backend ulazi samo ono najbitnije, a ostalo je
+sučelje na lažnim podacima ili samo plan za pitch.
+
+| Razina | Što | Kako |
+| --- | --- | --- |
+| **Radi** (baza + backend) | profesor stvara igru s brojem studenata, kod igre, ulaz s imenom i imenom hotela, dodjela hotela iz banke, sobe hotela, krugovi, situacije, klik i vlastiti odgovor s AI presudom, razgovor s likom, zatvaranje kruga i pokazatelji, profesorova ploča uživo | prave tablice, API rute i AI pozivi |
+| **Samo sučelje** (lažni podaci iz `lib/mock.ts`) | plan kruga (cijena, zaposlenici, marketing), financije, simulator unaprijed, radar vještina, stanje soba kroz sezonu, agencija i ugovor | ekrani izgledaju gotovo, ali čitaju pripremljene podatke; spajaju se na backend samo ako ostane vremena |
+| **Planirano** (dokumentacija i pitch) | više vrsta tvrtki u istom svijetu (agencija, dobavljač, zaštitarska firma), ugovori među tvrtkama, zajedničko tržište gostiju, šok gumb, novine, glas, replay sezone, profesor sam dodaje situacije | opisano u ovom dokumentu i na slajdu „Što dalje" |
+
 **Oblik:** web platforma, **responsive za sve uređaje** (mobitel, tablet, računalo, projektor). Izgled i osjećaj
 kao današnji HotelixSim, opsegom malo veći (svijet, više vrsta tvrtki, profesor), ali **pojednostavljen** (vidi §5a).
 
@@ -51,9 +74,10 @@ Sve tablice u jednoj Supabase shemi. Identifikatori su `uuid`, vremena `timestam
 
 | Tablica | Polja (bitna) | Napomena |
 | --- | --- | --- |
-| `worlds` | `id`, `name`, `join_code` (6 znakova), `prof_code_hash`, `round` (int, 0 = čekaonica), `round_deadline` (null = ručno), `status` (`lobby`/`running`/`finished`), `seed` | jedan svijet = jedna igra razreda |
-| `companies` | `id`, `world_id`, `kind` (`hotel`/`agency`), `name`, `profile` (koji početni profil), `start_metrics` (jsonb), `metrics` (jsonb), `closed_round` (int) | tvrtka jednog studenta |
-| `players` | `id`, `company_id`, `display_name`, `token_hash` | ulaz bez računa; token u httpOnly kolačiću |
+| `worlds` | `id`, `name`, `max_players` (koliko studenata igra), `join_code` (6 znakova), `prof_code_hash`, `round` (int, 0 = čekaonica), `round_deadline` (null = ručno), `status` (`lobby`/`running`/`finished`), `seed` | jedan svijet = jedna igra razreda |
+| `companies` | `id`, `world_id`, `kind` (`hotel`/`agency`), `name` (ime hotela koje je student upisao), `template_id` (koji hotel iz banke), `start_metrics` (jsonb), `metrics` (jsonb), `closed_round` (int) | tvrtka jednog studenta |
+| `players` | `id`, `company_id`, `display_name` (ime studenta), `token_hash` | ulaz bez računa; token u httpOnly kolačiću |
+| `rooms` | `id`, `company_id`, `number` (npr. „204"), `floor`, `type` (`single`/`double`/`suite`/`family`), `beds`, `view` (`more`/`park`/`ulica`), `base_price` (€), `status` (`free`/`occupied`/`cleaning`/`broken`), `note` | sobe hotela, kopiraju se iz predloška pri ulasku |
 | `situations` | `id`, `company_id`, `round`, `template_id`, `state` (`open`/`answered`/`expired`) | instanca predloška u krugu |
 | `events` | `id`, `world_id`, `company_id`, `round`, `type`, `payload` (jsonb), `at` | dnevnik svijeta, samo dodavanje (§9a) |
 | `answers` | `situation_id`, `mode` (`click`/`own`/`none`), `option_id`, `text`, `transcript` (jsonb), `verdict` (jsonb: ispunjeni kriteriji, obrazloženje), `quality` (1–5), `effects` (jsonb) | jedan odgovor po situaciji |
@@ -69,7 +93,10 @@ Svaka vrsta tvrtke je **paket** u `content/<kind>/` (JSON u repou, ne u bazi):
 
 - `metrics.json`: pet pokazatelja (hotel: zadovoljstvo gostiju, recenzije, zaposlenici, operativa, financije),
   raspon 0–100.
-- `profiles.json`: 3 početna profila s **istim zbrojem** (npr. 250), drukčije raspoređenim.
+- `hotels.json`: **banka hotela**, 6–8 gotovih hotela 🟨 (npr. gradski hotel u Rijeci, obiteljski na Krku,
+  wellness u Opatiji, mali boutique na Lošinju). Svaki ima: `id`, mjesto, zvjezdice, opis, **popis soba** (broj,
+  kat, vrsta, kreveti, pogled, osnovna cijena) i **početne pokazatelje s istim zbrojem** (npr. 250), drukčije
+  raspoređene. Veličine su male zbog pregleda: 12–30 soba po hotelu.
 - `situations.json`: predlošci situacija. Predložak ima: `id`, `title`, `text`, `area`, `difficulty` (1–5),
   `character` (ime, uloga, osobnost, cilj; ako ga nema, nema razgovora ni vlastitog odgovora), `rubric` (5 kriterija),
   `options` (3–4 ponuđena odgovora, svaki s popisom kriterija koje ispunjava), `effects` (koji pokazatelj i koliko po
@@ -82,8 +109,9 @@ Za demo: **hotel 8–10 situacija** (Leon piše iz HotelixSim iskustva), **agenc
 motor iz `seed` svijeta i broja kruga (ne iz stanja tvrtke), pa **svi u istom svijetu dobiju iste situacije u
 istom krugu** (moja odluka; usporedivo za profesora).
 
-**Početni profil** (moja odluka): tri profila s istim zbrojem dodjeljuju se redom ulaska (1., 2., 3., pa opet 1.).
-„Isti početak" znači isti zbroj, ne iste brojke. **Vrsta tvrtke**: profesor pri stvaranju bira vrste; ako ih je
+**Dodjela hotela** (Leon, 24.10.): svaki student dobije **drukčiji hotel** iz banke, redom ulaska. Hotel se ne
+ponavlja dok se banka ne potroši; ako je studenata više nego hotela, kreće ispočetka. Student mu upiše svoje ime,
+a sobe se pri ulasku kopiraju u `rooms`. „Isti početak" znači isti zbroj pokazatelja, ne isti hotel. **Vrsta tvrtke**: profesor pri stvaranju bira vrste; ako ih je
 više, dodjeljuju se naizmjence redom ulaska. Kod i ekrani od početka nose `kind`, i kad postoji samo hotel.
 
 ## 5a · Pojednostavljeni HotelixSim (što ostaje, što otpada)
@@ -103,11 +131,24 @@ više, dodjeljuju se naizmjence redom ulaska. Kod i ekrani od početka nose `kin
 plaća + marketing + fiksni. Broj zaposlenika utječe na pokazatelje *zaposlenici* i *operativa*. Ugovor s agencijom
 (§1) daje zajamčene noćenja po nižoj cijeni, pa se uklapa u istu formulu. Točne formule i brojke piše Leon.
 
+## 5b · Sobe hotela
+
+Sobe su prvi ekran koji student vidi i ono što hotel čini „njegovim". Rade **stvarno** (iz tablice `rooms`):
+
+- **Pregled po katovima**: mreža soba, svaka pločica pokazuje broj, vrstu i stanje bojom (slobodna, zauzeta,
+  čišćenje, kvar). Na vrhu je zbroj: „18 soba · 12 zauzeto · 1 u kvaru".
+- **Detalj sobe**: vrsta, kreveti, pogled, osnovna cijena po noći, stanje i bilješka („klima ne hladi").
+- **Veza sa situacijama**: situacija smije navesti sobu („Gost u sobi 204 žali se na klimu"). Kad student
+  odgovori, motor sobi promijeni stanje (kvar → popravljena), pa se igra vidi i na sobama.
+
+Samo sučelje 🟨: popunjenost sobe kroz sezonu, cijena po sobi u planu kruga, raspored čišćenja.
+
 ## 6 · Motor (čiste funkcije, `lib/engine/`)
 
 Bez baze, mreže i AI-ja; testira se jediničnim testovima.
 
-- `createCompany(kind, profileIndex)` → početni pokazatelji.
+- `assignHotel(bank, takenIds)` → sljedeći hotel iz banke koji još nitko nema.
+- `createCompany(template, hotelName)` → početni pokazatelji i sobe.
 - `drawSituations(seed, round, kind)` → 2–3 predloška po krugu.
 - `qualityFromClick(option)` → broj kriterija opcije, **najviše 4**.
 - `qualityFromVerdict(criteriaMet)` → 0–1 kriterij = 1 … 5 kriterija = 5.
@@ -142,8 +183,9 @@ Svi odgovori su JSON. Student se prepoznaje po kolačiću, profesor po kodu u pu
 
 | Metoda i putanja | Što radi |
 | --- | --- |
-| `POST /api/worlds` `{name, kinds}` | stvori svijet → `{joinCode, profCode}` |
-| `GET /api/prof/[profCode]` | stanje svijeta: krug, rok, tvrtke s napretkom i tko je zatvorio krug |
+| `POST /api/worlds` `{name, maxPlayers}` | stvori igru → `{joinCode, profCode}` |
+| `GET /api/prof/[profCode]` | stanje: čekaonica (tko je ušao, „7 / 24"), krug, rok, tvrtke s napretkom i tko je zatvorio krug |
+| `POST /api/prof/[profCode]/start` | pokreni igru i otvori prvi krug |
 | `POST /api/prof/[profCode]/round` `{deadlineMinutes?}` | otvori sljedeći krug (ručno ili s odbrojavanjem) |
 | `GET /api/prof/[profCode]/companies/[id]` | uvid u razmišljanje: odgovori, razgovori, presude, mentor |
 | `POST /api/prof/[profCode]/finish` | završi igru, konačna ljestvica |
@@ -152,8 +194,9 @@ Svi odgovori su JSON. Student se prepoznaje po kolačiću, profesor po kodu u pu
 
 | Metoda i putanja | Što radi |
 | --- | --- |
-| `POST /api/join` `{joinCode, name}` | uđi u svijet, dobij tvrtku → kolačić |
-| `GET /api/me` | moja tvrtka, pokazatelji, krug, rok, situacije, ljestvica |
+| `POST /api/join` `{joinCode, name, hotelName}` | uđi u igru, dobij hotel iz banke → kolačić; odbija ako je igra puna ili već krenula |
+| `GET /api/me` | moja tvrtka, pokazatelji, krug, rok, situacije, ljestvica (u čekaonici: „čekamo profesora") |
+| `GET /api/me/rooms` | sve sobe mog hotela sa stanjem |
 | `POST /api/situations/[id]/chat` `{message}` | razgovor s likom (stream) |
 | `POST /api/situations/[id]/answer` `{optionId}` ili `{text}` | odgovor → kvaliteta i presuda |
 | `POST /api/me/close-round` | zatvori svoj krug → izvještaj i mentor |
@@ -167,11 +210,14 @@ sljedećem čitanju zatvori sve otvorene krugove (neodgovoreno = kvaliteta 1). N
 
 | Putanja | Tko | Što |
 | --- | --- | --- |
-| `/` | svi | ulaz kodom i imenom; poveznica „Ja sam profesor" |
-| `/profesor/novi` | profesor | naziv svijeta, vrste tvrtki → prikaz oba koda |
-| `/profesor/[profCode]` | profesor | ploča uživo: krug, odbrojavanje, gumb „Otvori krug", popis tvrtki (status, napredak), ljestvica |
+| `/` | student | veliko polje za kod igre, zatim ime i ime hotela (kao Kahoot); poveznica „Ja sam profesor" |
+| `/cekaonica` | student | „Tvoj hotel je … u …", čeka da profesor pokrene igru |
+| `/profesor/novi` | profesor | naziv igre, broj studenata → kod igre |
+| `/profesor/[profCode]` | profesor | prije početka: **kod golemim slovima** za projektor i mjesta koja se pune („7 / 24", imena i hoteli); gumb „Pokreni". Za vrijeme igre: ploča uživo, krug, odbrojavanje, „Otvori krug", popis tvrtki, ljestvica |
 | `/profesor/[profCode]/tvrtka/[id]` | profesor | uvid u razmišljanje jednog studenta |
 | `/igra` | student | moja tvrtka: pokazatelji (početak prema sada), popunjenost/ADR/RevPAR, situacije kruga, „Zatvori krug", ljestvica |
+| `/igra/sobe` | student | sobe po katovima, stanje bojom (§5b) |
+| `/igra/sobe/[broj]` | student | detalj sobe |
 | `/igra/plan` 🟨 | student | plan kruga: cijena sobe, zaposlenici, marketing, uz procjenu troška |
 | `/igra/financije` 🟨 | student | prihod, troškovi i dobit po krugu |
 | `/igra/situacija/[id]` | student | situacija, ponuđeni odgovori, vlastiti odgovor, razgovor s likom |
