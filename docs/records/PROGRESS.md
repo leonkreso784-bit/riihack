@@ -6,6 +6,22 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 21:45–22:00 · val 3 skoro gotov, balans cijene
+
+- **Spojeno:** Simonovi Tokovi skica 1 i 2 (#174, #179, 21:44, Leonovo „spoji"; Rinov pregled poveznica naknadno);
+  u 21:51 L8 demo i smoke za val 3 (#191), skripta za čišćenje (#188), `/profesor/knjiznica` (#189), polja
+  `rubric?`/`effects?` (#190), javni prihod i dobit tuđih hotela (#184) i Rinov ulaz profesora samo preko računa
+  (#186); dokumentacija #185 (21:41).
+- **Provjereno (integrator):** svih 6 zajedno 414 testova, build, smoke 18/18 lokalno; CI zelen; produkcija READY,
+  smoke na produkciji 19/19.
+- **Demo igra (graditelj, 21:50):** `KVRNDM`, 2. krug, vlasnik Leonov demo profesorski račun, pet hotela po mjestu,
+  prihvaćen pregovor s agencijom, dvije poruke među hotelima ([ADR-041](DECISIONS.md#adr-041)).
+- **Odluka (Leon, ~22:00):** balans cijene ([ADR-043](DECISIONS.md#adr-043),
+  [BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija)); graditelj radi, poslije popravka
+  ponovno sije demo.
+- **Baza:** suhi prolaz skripte našao je 166 testnih od 216 igara; smoke je dodao igru „Smoke …" i testne račune.
+  🟨 Brisanje još nije pokrenuto.
+
 ## Sub 24.10. 21:30–21:45 · popravci iz revizije, „Tokovi" ipak u aplikaciji
 
 - **Spojeno:** Simonov #176 (21:31): sudac čuva kriterije kad drugi pokušaj padne, AI nacrt zaključava obrazac,
