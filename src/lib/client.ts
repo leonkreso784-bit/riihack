@@ -28,6 +28,7 @@ import type {
   PlanRequest,
   Quality,
   ProfLoginRequest,
+  ProfGameSummary,
   ProfLoginResponse,
   ProfStateResponse,
   ReflectionRequest,
@@ -62,6 +63,8 @@ const post = async <T>(path: string, body: unknown = {}) => (await send(path, "P
 const realApi = {
   createWorld: (req: CreateWorldRequest) => post<CreateWorldResponse>("/api/worlds", req),
   profLogin: (req: ProfLoginRequest) => post<ProfLoginResponse>("/api/prof/login", req),
+  // L16 Moje igre: igre prijavljenog profesorskog računa (401 bez sesije).
+  profGames: () => get<ProfGameSummary[]>("/api/prof/games"),
   profState: (worldId: string) => get<ProfStateResponse>(`/api/prof/${worldId}`),
   start: (worldId: string) => post<ProfStateResponse>(`/api/prof/${worldId}/start`),
   openRound: (worldId: string, req: OpenRoundRequest = {}) => post<ProfStateResponse>(`/api/prof/${worldId}/round`, req),
@@ -183,6 +186,11 @@ const mockApi: Api = {
     return wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" });
   },
   profLogin: () => wait({ worldId: MOCK_PROF.world.id }),
+  profGames: () =>
+    wait<ProfGameSummary[]>([
+      { worldId: MOCK_PROF.world.id, name: MOCK_PROF.world.name, joinCode: MOCK_PROF.world.joinCode, status: "running", round: 2, maxRounds: MOCK_PROF.world.maxRounds, players: MOCK_PROF.players.length, createdAt: new Date().toISOString() },
+      { worldId: "mock-old", name: "Hotelijerstvo 3B, zima", joinCode: "ZIMA42", status: "finished", round: 6, maxRounds: 6, players: 18, createdAt: new Date(Date.now() - 30 * 86_400_000).toISOString() },
+    ]),
   profState: () => wait(mockProfState()),
   worldCompanies: () => wait<CompanyPublicView[]>([]),
   start: () => {

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { SiteHeader } from "./site-header";
 
 // Waiting room and the professor's game page show "Odjava"; the student game has it in its own nav.
-const IN_GAME = /^\/(cekaonica|profesor\/(?!novi$)[^/]+)$/;
+const IN_GAME = /^\/(cekaonica|profesor\/(?!(?:novi|igre|prijava|registracija)$)[^/]+)$/; // L16: ekrani računa nisu u igri
 
 // Public pages get the top header and a centred column; the game (/igra) brings its own shell with sidebar.
 export function AppFrame({ children }: { children: React.ReactNode }) {

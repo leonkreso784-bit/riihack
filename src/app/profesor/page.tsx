@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { api } from "@/lib/client";
+import { authClient } from "@/lib/auth-client";
 import { PROF_CODE_LENGTH } from "@/lib/rules";
 import { Field, FormError, SubmitButton } from "@/components/form";
 
@@ -14,6 +15,7 @@ export default function ProfLogin() {
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const session = authClient.useSession(); // L16: prijavljeni profesor vidi poveznicu na svoje igre
 
   async function login(e: React.FormEvent) {
     e.preventDefault();
@@ -59,6 +61,25 @@ export default function ProfLogin() {
           Otvori igru
         </SubmitButton>
       </form>
+
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        {session.data ? (
+          <Link href="/profesor/igre" className="font-semibold text-secondary-foreground hover:underline">
+            Moje igre
+          </Link>
+        ) : (
+          <>
+            Imaš račun?{" "}
+            <Link href="/profesor/prijava" className="font-semibold text-secondary-foreground hover:underline">
+              Prijavi se
+            </Link>{" "}
+            ili{" "}
+            <Link href="/profesor/registracija" className="font-semibold text-secondary-foreground hover:underline">
+              napravi račun
+            </Link>
+          </>
+        )}
+      </p>
     </div>
   );
 }
