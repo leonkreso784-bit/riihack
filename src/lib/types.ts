@@ -78,6 +78,7 @@ export type DispatchRequest = { templateId: string; companyIds?: string[]; round
 export type WorldSettingsRequest = { autoDraw: boolean };
 export type QualityOverrideRequest = { quality: Quality };
 export type GenerateSituationRequest = { companyId?: string; hint?: string }; // AI predloži SituationDraft iz stanja hotela, profesor ga uredi i spremi
+export type Playbook = { version: 1; name: string; settings: WorldSettingsRequest; situations: SituationDraft[] }; // profesorov playbook: izvoz i uvoz situacija i postavki među igrama
 export type ApiError = { error: string }; // poruka na hrvatskom
 
 // AI ulazi (Simon implementira, Leon poziva)
