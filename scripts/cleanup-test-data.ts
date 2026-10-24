@@ -16,11 +16,11 @@ import {
 
 // ── Uzorci testnih podataka (uredi po potrebi) ──────────────────────────────────────────────
 /** Igra je testna ako joj ime POČINJE jednim od ovih (jednako se računa kao početak). Velika/mala slova se razlikuju. */
-const TEST_WORLD_NAME_PREFIXES = ["Smoke ", "L16 test", "L17 test", "L18 test", "Integrator test"] as const;
+const TEST_WORLD_NAME_PREFIXES = ["Smoke ", "QA ", "L16 test", "L17 test", "L18 test", "Integrator test"] as const;
 /** Račun je testni ako mu e-mail završava ovim (bez obzira na velika/mala slova). */
 const TEST_EMAIL_SUFFIXES = ["@example.test"] as const;
 /** Račun je testni ako mu e-mail počinje ovim (bez obzira na velika/mala slova). */
-const TEST_EMAIL_PREFIXES = ["integrator-test-", "smoke-"] as const;
+const TEST_EMAIL_PREFIXES = ["integrator-test-", "smoke-", "qa-"] as const;
 // ─────────────────────────────────────────────────────────────────────────────────────────────
 
 const APPLY = process.argv.includes("--apply");
