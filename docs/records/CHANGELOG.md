@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#165](https://github.com/leonkreso784-bit/riihack/pull/165) | 20:44 | Leon | L17: knjižnica situacija na računu profesora |
+| [#166](https://github.com/leonkreso784-bit/riihack/pull/166) | 20:44 | Leon | dvoklik na zatvaranju mjeseca ne preskače mjesec (`fromRound`, BUG-012) |
+| [#167](https://github.com/leonkreso784-bit/riihack/pull/167) | 20:43 | Leon | dokumentacija: R7, R13, shema knjižnice |
 | [#164](https://github.com/leonkreso784-bit/riihack/pull/164) | 20:40 | Rino | R13: pošta na `/igra/posta`, ponude s protuponudom, broj nepročitanih u navigaciji |
 | [#163](https://github.com/leonkreso784-bit/riihack/pull/163) | 20:35 | Leon | dokumentacija: obilazak 2 po Leonovom opisu |
 | [#160](https://github.com/leonkreso784-bit/riihack/pull/160) | 20:35 | Rino | R7: izvještaj mjeseca (`/igra/izvjestaj/[krug]`) i sokratski mentor |

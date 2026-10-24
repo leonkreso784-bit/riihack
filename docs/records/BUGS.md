@@ -10,14 +10,6 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-### BUG-012 · Dva istodobna `POST /round`: drugi vraća 409 „Sezona je gotova"
-- **Status:** 🔴 otvoren (integrator, smoke na produkciji ~20:25; javljeno graditelju) · **Težina:** nizak (jednom
-  pao smoke korak 14, ponovljeno 14/14)
-- **Opis:** kad dva zahtjeva za zatvaranje kruga stignu istodobno, drugi dobije 409 „Sezona je gotova" umjesto 200.
-- **Uzrok:** 🟨 utrka dvaju zatvaranja istog kruga; potvrđuje graditelj.
-- **Rješenje:** 🟨 čeka graditelja.
-- **Lekcija:** 🟨 upisati kad je uzrok potvrđen.
-
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
@@ -30,6 +22,19 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-012 · Dva istodobna `POST /round`: drugi vraća 409 „Sezona je gotova"
+- **Status:** ✅ riješen 24.10. 20:44 ([#166](https://github.com/leonkreso784-bit/riihack/pull/166); smoke na produkciji
+  14/14) · **Težina:** srednji (dvoklik profesora mogao je preskočiti mjesec; dvostrukog obračuna nije bilo)
+- **Opis:** smoke na produkciji (~20:25) jednom je pao na koraku 14: od dva istodobna zahtjeva za zatvaranje mjeseca
+  drugi je dobio 409 „Sezona je gotova" umjesto 200.
+- **Uzrok:** na Vercelu dva istodobna `POST /round` idu u dvije funkcije. Ako drugi pročita igru nakon prvog, vidi već
+  otvoren sljedeći mjesec i otvori još jedan (preskočen mjesec); u zadnjem mjesecu dobije 409. Dvostruki obračun je
+  spriječen (`settled_round`).
+- **Rješenje:** novo neobavezno polje `OpenRoundRequest.fromRound`: ploča profesora šalje mjesec koji zatvara, a ako
+  je igra taj mjesec već prešla, ruta vraća trenutno stanje bez prelaska. Smoke korak 14 provjerava i zakašnjeli klik.
+- **Lekcija:** radnja koja pomiče stanje igre mora reći od kojeg stanja kreće; bez toga dvoklik ili ponovljeni zahtjev
+  napravi dva koraka umjesto jednog.
 
 ### BUG-008 · Ime prijašnjeg projekta još je u repou
 - **Status:** ✅ riješen 24.10. 20:13 (`git grep -i` po cijelom `main`-u: 0 pogodaka; provjerili integrator i

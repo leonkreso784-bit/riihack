@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 20:44 · knjižnica situacija, popravak dvoklika
+
+- **Spojeno (Leonovo izravno „spoji"):** L17 knjižnica situacija (#165; tri rute, samo vlasnik, bez prijave 401) i
+  popravak dvoklika na zatvaranju mjeseca (#166,
+  [BUG-012](BUGS.md#bug-012--dva-istodobna-post-round-drugi-vraća-409-sezona-je-gotova) riješen); dokumentacija #167.
+  384 testa, smoke na produkciji 14/14.
+- **Čeka:** #169 L16 ekrani računa (mijenja tri Rinove datoteke; Rinov ok ili Leonovo „spoji").
+
 ## Sub 24.10. 20:30–20:45 · izvještaj mjeseca i pošta u sučelju
 
 - **Spojeno:** Rinov R7 izvještaj mjeseca i sokratski mentor (#160, 20:35) i R13 pošta s protuponudom (#164, 20:40;
