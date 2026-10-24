@@ -94,14 +94,17 @@ export function roundFinance(
     roomsCount: number;
     cashBefore: number;
     contracts: ContractTemplate[];
+    investments?: number; // zbroj ulaganja u odjele
   },
 ): RoundFinance {
+  const investments = i.investments ?? 0;
   const revenue = m.nights * i.price + i.contracts.reduce((s, c) => s + c.nights * c.pricePerNight, 0);
   const costs =
     i.staffCost +
     i.roomsCount * FIXED_COST_PER_ROOM +
     i.marketing +
-    i.contracts.reduce((s, c) => s + c.monthlyCost, 0);
+    i.contracts.reduce((s, c) => s + c.monthlyCost, 0) +
+    investments;
   const profit = revenue - costs;
   return {
     round: i.round,
@@ -114,6 +117,7 @@ export function roundFinance(
     costs,
     profit,
     cashAfter: i.cashBefore + profit,
+    investments,
   };
 }
 

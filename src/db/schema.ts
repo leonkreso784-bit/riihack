@@ -9,7 +9,7 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
-import type { ChatTurn, Metrics, SituationTemplate, Verdict } from "@/lib/types";
+import type { ChatTurn, DepartmentInvestments, Metrics, SituationTemplate, Verdict } from "@/lib/types";
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () =>
@@ -148,6 +148,7 @@ export const plans = pgTable(
     round: integer("round").notNull(),
     price: integer("price").notNull(),
     marketing: integer("marketing").notNull(),
+    investments: jsonb("investments").$type<DepartmentInvestments>().notNull().default({}), // € po odjelu
   },
   (t) => [unique().on(t.companyId, t.round)],
 );
@@ -169,6 +170,7 @@ export const finances = pgTable(
     costs: integer("costs").notNull(),
     profit: integer("profit").notNull(),
     cashAfter: integer("cash_after").notNull(),
+    investments: integer("investments").notNull().default(0), // zbroj ulaganja u odjele (dio costs)
   },
   (t) => [unique().on(t.companyId, t.round)],
 );
