@@ -6,6 +6,27 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 22:25–22:35 · Rino i Simon popravljaju, graditelj preuzima ostalo
+
+- **Spojeno:** Rino #200 (22:28, BUG-015 i 016 riješeni) i R10 podij za projektor #196 (22:29); Simon #195 (22:29,
+  BUG-017 riješen) i karta s javnim podacima tuđih hotela #192 (22:29, ADR-040); dokumentacija #202 (22:23) i #204
+  (22:30). Integrator: 419 testova, smoke 18/18, CI zelen, produkcija READY 22:30.
+- **Graditelj s agentima** preuzima ostalo ([ADR-045](DECISIONS.md#adr-045)): BUG-024, ponovni seed i smoke, BUG-019,
+  020, 021, 023, botovi. Javljeno mu da preskoči ono što su Rino i Simon već popravili.
+- **Novi bug:** zadani rok „10 min" sam zatvara mjesec
+  ([BUG-025](BUGS.md#bug-025--zadani-rok-10-min-na-ploči-profesora-sam-zatvara-mjesec), kritičan za demo), popravlja
+  Rino; Rino radi i BUG-023 i ostatak BUG-022 (Leon na Discordu, 22:35).
+- **Ponovna provjera (tester, 22:45):** BUG-015, 016 i 017 ✅; podij (BUG-022) djelomično; rok „10 min" i dalje
+  zadan na produkciji. Novo: napredak je negativan za sve hotele od prvog mjeseca
+  ([BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), visok), javljeno graditelju.
+- **Sudari (javljeno graditelju):** Simonov #206 već popravlja BUG-020b; Simonov #205 radi botove cijele, i logiku
+  igre (bot po pravilima, težina Lako/Srednje/Teško), pa graditelj ne kreće na motor botova. Leon (~22:50): spaja se #205, graditelj ga pregledava
+  ([ADR-044](DECISIONS.md#adr-044)).
+- **Graditelj (22:30–22:40):** demo igra ponovno posijana nakon #194, smoke na produkciji 19/19 (22:30). Knjižnica
+  demo računa dobila 4 situacije (#203; Leon: „knjižnica je prazna"). Drugo čišćenje starih testnih igara (#207):
+  obrisano 47, ostale 33 (demo, igre na demo računu, testerove QA igre, „Smoke …", Simonove probe). Otvoreni PR-ovi:
+  #208 (BUG-020a), a agenti rade BUG-024 te BUG-019, 020b i 021 u jednom PR-u.
+
 ## Sub 24.10. ~22:15 · balans cijene na `main`-u, botovi za male igre
 
 - **Odluke (Leon):** formula iz #194 (kvadrat već iznad referentne cijene) je u redu. Simon dodaje botove, hotele i
@@ -19,7 +40,7 @@ Vremena su lokalna (CEST).
   [BUG-014](BUGS.md#bug-014--najviša-cijena-400--je-gotovo-uvijek-najisplativija) riješen), `/profesor/prijava` bez
   mrtve poveznice #199 (22:13), dokumentacija #197 (22:13). 416 testova, smoke 18/18 lokalno, CI zelen, produkcija
   READY 22:14.
-- **🟨 Čeka:** ponovni seed demo igre i smoke na produkciji (integrator ga nije pokrenuo jer je baza očišćena).
+- **Čekalo:** ponovni seed demo igre i smoke na produkciji; napravljeno u 22:30 (vidi gore).
 - **Tester, treći krug (~22:25):** kraj sezone na projektoru bez podija, pobjednik u crvenom
   ([BUG-022](BUGS.md#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik), visok), `/igra`
   nakon kraja sezone čeka obračun ([BUG-023](BUGS.md#bug-023--igra-nakon-kraja-sezone-i-dalje-čeka-obračun)), loši
