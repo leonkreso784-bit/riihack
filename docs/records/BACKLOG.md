@@ -11,7 +11,6 @@ Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-1
 - Banka i krediti; porezi i općina.
 - Više gradova i država.
 - Šok gumb, novine, glas, replay sezone.
-- Profesor sam dodaje situacije.
 - Značke iz kriterija rubrike (npr. „Smirivač gostiju"), [plan › Gamifikacija](../superpowers/plans/2026-10-24-simpolis.md#gamifikacija-bodovanje-iz-hotelixsima-l5-odlučeno-2410).
 
 ## Samo sučelje u demou (lažni podaci, oznaka „primjer")
@@ -23,6 +22,6 @@ Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-1
 
 - Računi i lozinke ([ADR-004](DECISIONS.md#adr-004)).
 - Više jezika.
-- AI generiranje situacija.
+- AI koji sam šalje situacije studentima (AI samo predlaže, profesor sprema, [ADR-024](DECISIONS.md#adr-024)).
 - Mobilna aplikacija (web je responsive).
 - Merlin.

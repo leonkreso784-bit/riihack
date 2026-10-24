@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 15:45–16:15 · obilazak žirija 1 i profesor kao glavni
+
+- **Žiri 1 (~15:45):** prošli smo. Borna Sila: temelj neka bude stabilna softverska mehanika, ne AI agenti; pohvala
+  partnerstvu tvrtki i fakulteta. Simon je upisao komentare i odgovor u pitch (#86).
+- **Odluke (Leon s timom, ~16:15):** jezgra odvojena od AI-ja, profesor je glavni ([ADR-023](DECISIONS.md#adr-023));
+  novi zadaci L12, S8 i S9 za profesorove situacije ([ADR-024](DECISIONS.md#adr-024)); ugovor i redoslijed spajanja
+  ([ADR-025](DECISIONS.md#adr-025)). PRD dopunjen kriterijima za M2 i M3.
+- **Stanje gradnje:** na `main`-u L0–L5, L7, L8 smoke 1–10, L9, L10, L11 faza A, S3, S4. U izradi L11 faza B. Čeka
+  Leona: L6 (#75).
+
 ## Sub 24.10. 15:10–16:00 · L7, L8, L11, S3, S4
 
 - **Leon:** L8 smoke koraci 1–10 (#81, 15:23), L11 faza A, logika grada i rute za plan, ugovore,

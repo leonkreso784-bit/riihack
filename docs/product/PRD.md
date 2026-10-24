@@ -17,7 +17,7 @@ donosi tek na praksi. Brojke koje bole i izvori su u [PROMISE.md](../../PROMISE.
 | Tko | Što želi | Uloga u demou |
 | --- | --- | --- |
 | **Student** (Ana, 2. godina Hospitality Managementa, FMTU) | naučiti voditi hotel prije prave prakse | uđe kodom, vodi svoj hotel, rješava situacije, planira cijenu i marketing |
-| **Profesor** (kupac) | vidjeti **kako** studenti odlučuju, ne samo kako pišu | napravi grad, vodi mjesece, gleda ploču i uvid u studenta |
+| **Profesor** (kupac, **glavni u igri**, [ADR-023](../records/DECISIONS.md#adr-023)) | vidjeti **kako** studenti odlučuju, ne samo kako pišu | napravi grad, vodi mjesece, piše i šalje situacije, gleda ploču i uvid u studenta |
 
 ## 3. Tri obećanja
 
@@ -52,6 +52,9 @@ ne kad je test zelen. Rokovi prekretnica su u [planu izvedbe](../superpowers/pla
 - [ ] Svi vide kartu grada s hotelima i gradskim tvrtkama.
 - [ ] Profesor vidi ploču uživo (krug, tvrtke, tko je zatvorio krug, ljestvica) i može otvoriti sljedeći krug.
 - [ ] Student vidi osoblje svog hotela (`/igra/osoblje`).
+- [ ] Profesor može napisati svoju situaciju (lik, 3–5 kriterija, opcije neobavezne, učinci) ili izabrati jednu iz banke (`/profesor/[worldId]/situacije`).
+- [ ] Profesor može poslati situaciju odabranim studentima, odmah ili u krug k, i uključiti ili isključiti slučajno izvlačenje.
+- [ ] Student može odgovoriti i na situaciju bez ponuđenih odgovora (samo vlastitim tekstom).
 
 ### M3 · Obilazak 3 (cijeli demo)
 
@@ -61,6 +64,9 @@ ne kad je test zelen. Rokovi prekretnica su u [planu izvedbe](../superpowers/pla
 - [ ] Profesor može otvoriti uvid u razmišljanje jednog studenta: odgovori, razgovori, presude (`/profesor/[worldId]/tvrtka/[id]`).
 - [ ] Demo igra se pokrene jednom naredbom i krene od odigranog prvog kruga, ne od prazne igre.
 - [ ] Radar vještina se vidi (lažni podaci s oznakom „primjer").
+- [ ] Profesor može promijeniti ocjenu mentora za odgovor studenta (gumb „Promijeni ocjenu" u uvidu).
+- [ ] Profesor može zatražiti od AI-ja prijedlog situacije iz stanja hotela, pregledati ga i spremiti; bez njegova spremanja nijedan student ga ne dobije.
+- [ ] Mentor iz brojki jezgre objašnjava što se dogodilo u krugu i kako svijet radi.
 - [ ] Podij kruga i ljestvica čitljivi su na projektoru.
 - [ ] Svaki ekran radi na 375 px, 768 px i 1440 px širine.
 
