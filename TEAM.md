@@ -21,7 +21,6 @@ na koga čeka i što smo dogovorili.
 | M1 Obilazak 1 | sub 14:30 (žiri ~14:45) | 🔶 obećanja ✅, ljuska ✅; ulaz, profesor i sobe čekaju L1–L4 i R1–R3 |
 | M2 Obilazak 2 | sub 18:45 | — |
 | M3 Obilazak 3 | ned 07:45 | — |
-| Zamrzavanje koda | ned 06:30 | poslije samo popravci |
 | M4 Predaja | ned 10:15 (rok 10:30) | — |
 
 ## Tko na koga čeka
