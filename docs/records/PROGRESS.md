@@ -13,6 +13,8 @@ Vremena su lokalna (CEST).
 - **Bugovi (tester):** [BUG-029](BUGS.md#bug-029--plan-se-ne-prenosi-u-sljedeći-mjesec) plan se ne prenosi (radi
   graditelj, #227.1); [BUG-030](BUGS.md#bug-030--odgovor-koji-promaši-temu-kažnjava-se-kao-propušten-pa-je-gori-od-šutnje)
   općeniti odgovori gori od šutnje (čeka Leonovu odluku).
+  [BUG-031](BUGS.md#bug-031--ploča-profesora-nakon-pokretanja-opet-nema-kod-igre) ploča profesora nakon pokretanja
+  nema kod igre (regresija BUG-021 iz #216; Rinova datoteka, visok za obilazak 3).
 - **Integrator:** #233, #235 i #237 zajedno zeleni (typecheck, lint, 519 testova, build, smoke 1–18 i 20); ništa nije
   spojeno, čeka Leonovo odobrenje.
 

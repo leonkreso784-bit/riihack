@@ -10,6 +10,17 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
+- **Status:** 🔴 otvoren (Rinova datoteka `src/components/prof-board.tsx`) · **Težina:** visok (žiri na obilasku 3
+  ulazi u `KVRNDM` kasnim ulazom i kod treba vidjeti s projektora)
+- **Opis:** tester (ned ~00:55, produkcija, 1280×720, QA igra): nakon „Pokreni" ploča nema ni kod igre ni QR; kod
+  je samo na „Moje igre". Regresija [BUG-021](#bug-021--ploča-profesora-nema-puta-natrag-ni-koda-igre-nakon-početka).
+- **Uzrok:** Rinov `1efbe71` ([#216](https://github.com/leonkreso784-bit/riihack/pull/216), 23:08) maknuo je redak
+  „Kasniš? Uđi na /ulaz s kodom …" s ploče, a kasni ulaz je proradio tek s #221 (23:26). Na `main`-u
+  `prof-board.tsx` više ne prikazuje `joinCode`; ni otvoreni #237 ga ne vraća.
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
 - **Status:** 🔴 otvoren, 🟨 čeka Leonovu odluku (brojke) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
   za općenite odgovore)
