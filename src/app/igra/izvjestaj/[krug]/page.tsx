@@ -67,7 +67,7 @@ export default function ReportPage() {
           )}
         </Panel>
 
-        <Panel title="Razgovor s mentorom" tone="mint">
+        <Panel id="mentor" title="Razgovor s mentorom" tone="mint" className="scroll-mt-20">
           {report ? <MentorDialog report={report} onAnswered={setAnswered} /> : <p className="text-muted-foreground">Mentor razmišlja…</p>}
         </Panel>
       </div>
