@@ -34,6 +34,7 @@ na koga čeka i što smo dogovorili.
 | Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | ✅ spojeno kao #63 (neobavezna polja) |
 | Simon S5, S6 | „Update branch" na #48 i #47 | Simon | ✅ spojeno |
 | Leon L7 | `judge` (S2) | Simon | ✅ spojeno (#44) |
+| Rino (gumb Odjava) | ruta `POST /api/logout` koja briše `sp_player` i `sp_prof` | Leon | čeka; gumb do tada samo vodi na `/` |
 
 ## Pravila suradnje (naučeno 24.10.)
 
