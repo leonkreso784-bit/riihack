@@ -1,6 +1,6 @@
 # Rino · sučelje: gdje smo stali
 
-> Zapisano **sub 24.10.2026. oko 21:00**, dopunjeno u 21:00 (#166, #173, pošta na produkciji). Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
+> Zapisano **sub 24.10.2026. u 21:05**. Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
 > grani `rino/dokumentacija`; na `main` ide samo Rinovo polje u `TEAM.md`.
 
 ## Prvo pročitaj
@@ -52,32 +52,40 @@
 | #157 | plan bez imena prijašnjeg projekta |
 | #160 | R7 **izvještaj mjeseca i sokratski mentor** (`/igra/izvjestaj/[krug]`) |
 | #164 | R13 **Pošta** (`/igra/posta`): ponude agencija, protuponuda, odgovor agencije (motor + Simonov AI), omotnica na mobitelu |
+| #166 | Leonov `fromRound` u `prof-board.tsx` (dvoklik ne preskače mjesec), uz Rinov ok |
+| #168 | R8 **uvid u studenta** (`/profesor/[worldId]/tvrtka/[id]`): situacije, odgovori, presude, razgovor, mentor, **„Promijeni ocjenu" 1–5**; imena na ploči vode tamo. Radar vještina namjerno izostavljen (pokazni podaci) |
+| #173 | sitnice: oznaka „od profesora" (R5), mjesec zadnjeg obračuna na `/igra`, bez bljeska `/cekaonica`, komentar u `logout-button.tsx` |
 | pregled | ok i odobrenje za #128 (Simonova karta, smjer D) i #107 (komentari) |
 
 Provjereno na produkciji (20:00): QR → student → Završi mjesec → profesor vidi i otvara srpanj → Financije, Plan, Odjeli,
 Grad; 0 grešaka.
 
-## Otvoreno (sub 21:00)
+## Otvoreno (sub 21:05)
 
-- **#168 R8 uvid u studenta** (`/profesor/[worldId]/tvrtka/[id]`): po mjesecu situacije, odgovori, presude, razgovor,
-  mentor; **„Promijeni ocjenu" 1–5**; imena na ploči vode na stranicu. Spojen s `main`-om, bez konflikata, spremno za
-  integratora. Radar vještina namjerno izostavljen (pokazni podaci).
-- **#173 sitnice:** oznaka „od profesora" (R5), mjesec zadnjeg obračuna na `/igra` umjesto fiksnog „lipanj", bez bljeska
-  `/cekaonica` kad igra već traje, zastarjeli komentar u `logout-button.tsx`. Spremno za integratora.
-- #166 (Leonov `fromRound` u `prof-board.tsx`): Rinov ok dan, spojeno.
-- **Pošta (#164) provjerena na produkciji (20:52):** ponuda Praonice 1.500 € → protuponuda 1.125 € → AI odgovor agencije
-  „na pola puta 1.313 €" → Prihvati → ugovor 1.313 € na serveru, 0 nepročitanih.
-- **Nakon spajanja #168 i #173:** na produkciji ploča → klik na hotel → stranica studenta → promijeni ocjenu; oznaka
-  „od profesora" s profesorovom situacijom.
+Rinovih otvorenih PR-ova nema. Čeka se Leonovo spajanje tuđih PR-ova s Rinovim ok-om:
+
+- **#169** (Leon) L16 ekrani: registracija, prijava, Moje igre. **Ovo je bio R14:** Rino je pregledao izgled (375 i
+  1440 px, slaže se s aplikacijom) i odobrio. R14 je time gotov.
+- **#170** (Simon) knjižnica situacija: Rinov ok za `client.ts` (tri poziva, `isUnauthorized`, `status` u grešci).
+- **#174** (Simon) „Kako je izračunat mjesec" (`/igra/izvjestaj/[krug]/tok`, tok obračuna i „Što ako?"): Rino dao ok da
+  **Simon sam doda poveznice** na izvještaj mjeseca i na Financije u tom PR-u.
+
+Provjereno na produkciji: **pošta (#164)** u 20:52: ponuda Praonice 1.500 € → protuponuda 1.125 € → AI odgovor agencije
+„na pola puta 1.313 €" → Prihvati → ugovor 1.313 € na serveru, 0 nepročitanih.
+
+Poruka Leonu (21:05) poslana: spremni #169, #170, #174 (nakon poveznica); pitanje ima li prioritet prije M3.
 
 ## Sljedeće (redom)
 
-1. Provjera #168 (R8) i #173 na produkciji čim se spoje.
-2. **R14** stil i pregled profesorskih ekrana (prijava, registracija, moje igre) kad ih Leon napravi (L16 backend je
-   spojen, ekrani još nisu). Pitati Leona u kojem su PR-u.
-3. **R10** podij kruga i ljestvica za projektor (#46), ako ima vremena.
-4. **R15** poruke među hotelima i suradnja, kad Leon napravi L18 (backend).
-5. Tjedni umjesto mjesečnog kruga: u Leonovom backlogu (traži ugovor i motor); sučelje tek kad ugovor bude na `main`-u.
+1. **Provjeri na produkciji #168 i #173** (jedna prava igra): profesorova ploča → klik na hotel → stranica studenta →
+   promijeni ocjenu (oznaka „· profesor"); profesorova situacija (S8 „Situacije" → pošalji) → kod studenta oznaka
+   „od profesora"; `/igra` kartice pokazuju mjesec zadnjeg obračuna; nema bljeska čekaonice.
+2. Kad Leon spoji #169, #170, #174: kratka provjera na produkciji (registracija → Moje igre → nova igra; poveznica
+   „Kako je izračunat mjesec" s izvještaja).
+3. Pogledaj odgovor Leona na Discordu: ima li prioritet prije M3.
+4. **R10** podij kruga i ljestvica za projektor (#46), ako nema ništa važnije.
+5. **R15** poruke među hotelima i suradnja, kad Leon napravi L18 (backend).
+6. Tjedni umjesto mjesečnog kruga: u Leonovom backlogu (traži ugovor i motor); sučelje tek kad ugovor bude na `main`-u.
 
 ## Rokovi
 
