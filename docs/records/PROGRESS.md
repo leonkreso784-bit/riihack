@@ -6,6 +6,14 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 18:10–18:30 · pred obilazak 2
+
+- **Ime prijašnjeg projekta:** čisti Rino; kod u #107, plan slijedi
+  ([BUG-008](BUGS.md#bug-008--ime-prijašnjeg-projekta-još-je-u-repou)).
+- **Playbook u S8:** Leon dao Simonu ok za `exportPlaybook` i `importPlaybook` u `client.ts`
+  ([ADR-027](DECISIONS.md#adr-027)).
+- **Spojeno:** dokumentacija #123, #124.
+
 ## Sub 24.10. 17:55–18:10 · proba M2, AI prijedlog za profesora
 
 - **Proba M2 (graditelj):** sudac odbija obrazloženja s „/la", vlastiti odgovor pada na kvalitetu 3

@@ -53,6 +53,8 @@ konstante u `rules.ts` koje motor čita izravno.
 SituationDraft[] }` u ugovoru (#89) i rute `GET` (izvoz) i `POST` (uvoz) `/api/prof/[worldId]/playbook`. Simon u S8
 dodaje gumbe „Izvezi" i „Uvezi". **Profesor ne mijenja mehaniku motora**; to je vizija.
 **Posljedice.** Ponovna upotreba radi bez računa, preko datoteke. Mehanika po igri ide u [VISION.md](../product/VISION.md).
+**Dopuna (sub 18:28, Leon):** Simon smije u Rinov `src/lib/client.ts` dodati `exportPlaybook` i `importPlaybook` (samo
+dodavanje, lažna verzija u `mock.ts`) za gumbe u S8 ([ok na #108](https://github.com/leonkreso784-bit/riihack/pull/108)).
 
 <a id="adr-026"></a>
 ## ADR-026 · Nitko ne pokreće `db:push`; shema se mijenja ručnim aditivnim SQL-om
