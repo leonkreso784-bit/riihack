@@ -30,11 +30,11 @@ na koga čeka i što smo dogovorili.
 | --- | --- | --- | --- |
 | Leon L1, Simon S3 | Neon baza (`DATABASE_URL`) | Leon (prihvatiti uvjete na Vercelu) | ✅ sub 14:35, `simpolis-db` (Frankfurt), env na Vercelu |
 | Simon S3 (ruta chat) | L1 (`appendTranscript`, `route`, `HttpError`), L4 (`requirePlayer`, `getSituationForCompany`) | Leon | ✅ L1 (#62) i L4 (#74) spojeni |
-| Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | ✅ L4 spojen (#74); `NEXT_PUBLIC_USE_MOCK=0` je na Vercelu samo za Preview (PR pregledi idu na pravi API), produkcija ostaje na lažnim podacima |
+| Rino R1–R3 (pravi podaci) | L4: ulaz, profesor, sobe, osoblje | Leon | ✅ L4 spojen (#74); `NEXT_PUBLIC_USE_MOCK=0` i na Previewu i na produkciji (od sub 17:52, build s #115) |
 | Simon S3 | odluka o #42 (`CharacterInput.messageNo`, `maxMessages`) | Leon | ✅ spojeno kao #63 (neobavezna polja) |
 | Simon S5, S6 | „Update branch" na #48 i #47 | Simon | ✅ spojeno |
 | Leon L7 | `judge` (S2) | Simon | ✅ spojeno (#44) |
-| Rino (gumb Odjava) | ruta `POST /api/logout` koja briše `sp_player` i `sp_prof` | Leon | čeka; gumb do tada samo vodi na `/` |
+| Rino (gumb Odjava) | ruta `POST /api/logout` koja briše `sp_player` i `sp_prof` | Leon | ✅ spojeno (#96) |
 
 ## Pravila suradnje (naučeno 24.10.)
 
@@ -65,10 +65,10 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen · https://riihack.vercel.app, `/igra`, `/cekaonica`, `/profesor`, `/igra/sobe` 200; `/api/me` 401 bez kolačića (L4 živ)
-- **Zadnja spajanja (sub 16:00–16:50):** #84, #85, #87, #90 dokumentacija, #86 žiri 1, #91 logo
-- **Red čekanja (čeka Leonovo „spoji"):** #75 L6 situacije (blokira tok igre), #88 L11 B (mijenja plan), #89 ugovor L12 (types.ts + plan); zatim L12 faza B. #42 duplikat #63 (Simon zatvara)
-- **Zadnje ažurirano:** sub 16:50
+- **CI na `main`-u:** ✅ zelen (284 testa) · produkcija https://riihack.vercel.app na **pravim podacima** od sub 17:52: `/`, `/ulaz`, `/igra`, `/profesor` 200; `/api/me` 401 bez kolačića; `/api/join` s krivim kodom 404
+- **Zadnja spajanja (sub 16:50–17:52):** #88, #89, #75, #96, #95, #100, #103, #104, #105, #106, #108, #109, #111, #112, #113, #114, #115 (demo kod samo iz `.env.local`), #116 dokumentacija
+- **Red čekanja:** #107 kraći komentari (nacrt, čeka Rinov ok)
+- **Zadnje ažurirano:** sub 17:55
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L12)
 
