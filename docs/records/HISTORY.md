@@ -5,6 +5,8 @@ prekretnica: [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md#prekretn
 
 | Kad | Prekretnica | Ref |
 | --- | --- | --- |
+| sub 24.10. 17:09–17:15 | **Kod za M3 na `main`-u:** playbook, demo igra, promjena ocjene mentora, AI prijedlog situacije; 272 testa | #100, #103, #104, #111 |
+| sub 24.10. 16:50–17:06 | **Val M2 spojen** redom uz smoke 14/14 i provjeru produkcije ([ADR-028](DECISIONS.md#adr-028)); čeka obilazak 2 u 18:45 | #88, #89, #75, #96, #95 |
 | sub 24.10. ~15:45 | **Obilazak žirija 1 prošao.** Žiri: jezgra bez oslanjanja na AI; nakon toga profesor postaje glavni ([ADR-023](DECISIONS.md#adr-023)) | #86 |
 | sub 24.10. 13:30 | **M0 Temelj ✅:** kostur na https://riihack.vercel.app, CI zelen | #37 |
 | sub 24.10. 11:52 | **Start:** prvi commit, dokumentacija Simpolisa | `7e53b43` |

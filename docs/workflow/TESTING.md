@@ -42,7 +42,7 @@ korak padne. AI se zasebno provjerava s `npm run ai:smoke`.
 ## Demo igra (L8, od M3)
 
 ```bash
-npm run seed:demo      # treba DEMO_JOIN_CODE i DEMO_PROF_CODE u env
+npm run seed:demo      # treba DEMO_PROF_CODE u .env.local (bez njega skripta staje); nikad ga ne upisuj u repo
 ```
 
 Prije svakog obilaska žirija: demo igra svježa, krug 2 otvoren.

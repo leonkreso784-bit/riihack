@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#111](https://github.com/leonkreso784-bit/riihack/pull/111) | 17:15 | Simon | S9: AI prijedlog situacije iz stanja hotela, mentor s obračunom mjeseca |
 | [#104](https://github.com/leonkreso784-bit/riihack/pull/104) | 17:12 | Leon | L12: profesor mijenja ocjenu mentora |
 | [#103](https://github.com/leonkreso784-bit/riihack/pull/103) | 17:10 | Leon | L8: demo igra (`npm run seed:demo`) |
 | [#100](https://github.com/leonkreso784-bit/riihack/pull/100) | 17:09 | Leon | L12: playbook, izvoz i uvoz profesorovih situacija |
@@ -16,6 +17,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#113](https://github.com/leonkreso784-bit/riihack/pull/113) | 17:18 | Rino | osoblje hotela po odjelima, poveznica „Situacije" na ploči |
+| [#114](https://github.com/leonkreso784-bit/riihack/pull/114) | 17:17 | Leon | dokumentacija: M3 spojen iza vala |
 | [#112](https://github.com/leonkreso784-bit/riihack/pull/112) | 17:14 | Leon | dokumentacija: val M2, uvod za novu sesiju |
 | [#95](https://github.com/leonkreso784-bit/riihack/pull/95) | 17:06 | Leon | L12: profesorove situacije, slanje odabranima, izbor iz banke |
 | [#109](https://github.com/leonkreso784-bit/riihack/pull/109) | 17:04 | Simon | S8: sučelje za profesorove situacije i slanje |
@@ -49,7 +52,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 | [#69](https://github.com/leonkreso784-bit/riihack/pull/69) | 15:07 | Leon | L10: gradske tvrtke i ugovori (sadržaj) |
 | [#68](https://github.com/leonkreso784-bit/riihack/pull/68) | 15:02 | Leon | L9: motor C, ekonomija grada i ugovori |
 
-## M1 · Obilazak 1 (u tijeku, rok sub 14:30)
+## M1 · Obilazak 1 (✅ žiri ~15:45, rok bio sub 14:30)
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |

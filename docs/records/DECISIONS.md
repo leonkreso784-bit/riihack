@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-030"></a>
+## ADR-030 · Integrator dobiva dozvole i sam prebacuje produkciju na prave podatke
+**Datum:** 24.10. ~17:35 · **Status:** ✅ (Leon) · **Vezano:** [ADR-029](#adr-029), [ADR-015](#adr-015)
+
+**Kontekst.** Prelazak produkcije na prave podatke (ADR-029) traži promjenu env varijable na Vercelu, a integrator
+je dotad samo spajao PR-ove.
+**Odluka.** Integrator smije `gh pr merge/diff/view/checks` i `vercel env add/ls`; **bez ručnog deploya i bez
+pristupa Neonu**. Sam postavlja `NEXT_PUBLIC_USE_MOCK=0` za Production (učinjeno ~17:40); novi build nastaje
+spajanjem [#115](https://github.com/leonkreso784-bit/riihack/pull/115).
+**Posljedice.** Produkcija na pravim podacima čim je build s #115 gotov (🟨 vrijeme javlja integrator). Shema i
+baza ostaju kod Leonovog graditelja ([ADR-026](#adr-026)).
+
 <a id="adr-029"></a>
 ## ADR-029 · Produkcija prelazi na prave podatke nakon probe M2
 **Datum:** 24.10. ~16:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-018](#adr-018), [ADR-013](#adr-013), [ADR-028](#adr-028)
