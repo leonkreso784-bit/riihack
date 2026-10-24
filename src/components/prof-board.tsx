@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward, Trophy } from "lucide-react";
+import { CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward, Trophy } from "lucide-react";
 import { api } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { LeaderboardRow, ProfStateResponse } from "@/lib/types";
@@ -44,17 +44,6 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <Link href="/profesor/igre" className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-secondary-foreground hover:underline">
-          <ArrowLeft className="size-4" aria-hidden /> Moje igre
-        </Link>
-        {!finished && (
-          <p className="text-sm text-muted-foreground">
-            Kasniš? Uđi na /ulaz s kodom <strong className="font-mono text-base tracking-widest text-foreground">{world.joinCode}</strong>
-          </p>
-        )}
-      </div>
-
       {finished ? (
         <SeasonPodium rows={players} name={world.name} anonymous={anonymous} />
       ) : (
