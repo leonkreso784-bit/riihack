@@ -8,6 +8,59 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+Odluke ADR-037 do 041 donio je Leon u sub ~21:15 (graditelj ih je prenio dokumentaristu porukom [ODLUKA]).
+
+<a id="adr-041"></a>
+## ADR-041 · Demo za žiri ide s profesorskim računom
+**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon) · **Vezano:** [ADR-036](#adr-036)
+
+**Kontekst.** Na obilasku 3 žiri sam isprobava aplikaciju. Profesorski računi rade na produkciji od ~20:25.
+**Odluka.** Demo na žiriju obavezno ide s profesorskim računom, ne samo s profesorskim kodom.
+**Posljedice.** Demo pokazuje „moje igre" i knjižnicu situacija. 🟨 Tehnički detalji (koji račun, koja igra, kako
+žiri dobiva pristup) dogovaraju se s Leonom.
+
+<a id="adr-040"></a>
+## ADR-040 · Tuđi hotel: prihod i dobit zatvorenih mjeseci su javni
+**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon) · **Vezano:** [ADR-035](#adr-035)
+
+**Kontekst.** ADR-035 skriva sav novac tuđih hotela. Pravim tvrtkama su prihod i dobit javni (FINA).
+**Odluka.** Prihod i dobit zatvorenih mjeseci tuđeg hotela vide se kao javni podaci. Ostalo o novcu ostaje skriveno,
+kao i odgovori i ocjene.
+**Posljedice.** Djelomično mijenja ADR-035. Student uspoređuje poslovanje s konkurencijom, a učenje drugih ostaje
+privatno.
+
+<a id="adr-039"></a>
+## ADR-039 · Redoslijed do predaje: demo i smoke prvo
+**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon) · **Vezano:** [plan vala 3](../superpowers/plans/2026-10-24-simpolis-val-3.md)
+
+**Kontekst.** Do predaje ostaju L8 (demo i smoke za val 3), L19 (suradnja među hotelima) i čišćenje baze.
+**Odluka.**
+- Graditelj prvo radi L8 demo i smoke za val 3; L19 suradnju samo ako ostane vremena.
+- Imena hotela u demo seedu usklađuju se s mjestom (L8).
+- Stranicu knjižnice situacija za profesora radi graditelj (Leonov agent), a Rino je stilski pregleda.
+- Skriptu za čišćenje testnih podataka iz baze graditelj piše i isproba večeras, ne u nedjelju ujutro.
+
+**Posljedice.** Demo za obilazak 3 ne ovisi o L19. Čišćenje baze nije posao za zadnji sat.
+
+<a id="adr-038"></a>
+## ADR-038 · Skice „Tokovi" samo za prezentaciju; „Što ako?" se ne radi
+**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon)
+
+**Kontekst.** Simon je napravio skice „Tokovi"; trebalo je odlučiti što od njih ide u aplikaciju.
+**Odluka.** Skice su samo za prezentaciju i ne idu u aplikaciju. Ruta „Što ako?" se ne radi.
+**Posljedice.** Nema novog posla u kodu; „Što ako?" je u [BACKLOG.md](BACKLOG.md).
+
+<a id="adr-037"></a>
+## ADR-037 · Integrator sam spaja aditivne dodatke ugovoru prepisane iz plana
+**Datum:** 24.10. ~21:15, potvrđeno integratoru ~21:20 · **Status:** ✅ (Leon) · **Vezano:** [ADR-017](#adr-017), [ADR-011](#adr-011)
+
+**Kontekst.** Svaki dodatak ugovoru čekao je Leonovo „spoji" (ADR-017), i kad je bio doslovno iz plana vala 3.
+**Odluka.** Integrator sam spaja aditivne, neobavezne dodatke ugovoru (novi tip ili polje s `?` u `types.ts`)
+prepisane iz bloka „Ugovor" u planu. Leonovo „spoji" ostaje za izmjene postojećih tipova, `rules.ts`, `package.json`,
+lock datoteku i plan.
+**Posljedice.** Djelomično mijenja ADR-017. Manje čekanja na Leona, a promjene koje mogu slomiti tuđi kod i dalje
+idu preko njega.
+
 Odluke ADR-033 do 036 su val 3; zadaci, ugovor i raspored su u planu vala 3
 ([#134](https://github.com/leonkreso784-bit/riihack/pull/134), spojen 19:16; [plan vala 3](../superpowers/plans/2026-10-24-simpolis-val-3.md)).
 
@@ -26,7 +79,7 @@ odjava i „moje igre" rade, ulaz kodom nepromijenjen.
 
 <a id="adr-035"></a>
 ## ADR-035 · Tuđi hotel: samo javni podaci
-**Datum:** 24.10. ~18:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-008](#adr-008)
+**Datum:** 24.10. ~18:50 · **Status:** ✅ (Leon), novac djelomično zamijenjen u [ADR-040](#adr-040) · **Vezano:** [ADR-008](#adr-008)
 
 **Kontekst.** Na karti i ljestvici student vidi druge hotele u gradu; treba odlučiti koliko vidi.
 **Odluka.** Vidi samo javno: mjesto, zvjezdice, cijenu, recenzije, popunjenost prošlog mjeseca, broj zaposlenih po
@@ -75,7 +128,7 @@ na pokazatelj odjela (1 bod na 1000 €); vrijednosti vrijede iz `rules.ts`. Mot
 **Kontekst.** Plan i pravila tima predviđali su zamrzavanje koda u ned 06:30, poslije samo popravci.
 **Odluka.** Zamrzavanja nema: radi se punom brzinom do predaje. Rok predaje ostaje **ned 10:30**.
 **Posljedice.** Pravilo spajanja (`main` uvijek radi, integrator, smoke) vrijedi do kraja. 🟨 zamrzavanje još piše u
-`CLAUDE.md`, `PLAN-24H.md`, `TEAM.md` i u glavnom planu; vlasnici ih usklađuju (`docs/ROADMAP.md` i pitch uskladio
+`CLAUDE.md`, `PLAN-24H.md` i u glavnom planu (s ploče u `TEAM.md` maknuto 21:15, `ff2a870`); vlasnici ih usklađuju (`docs/ROADMAP.md` i pitch uskladio
 Simon u [#131](https://github.com/leonkreso784-bit/riihack/pull/131)).
 
 <a id="adr-030"></a>
@@ -231,7 +284,7 @@ ne odluči drukčije.
 
 <a id="adr-017"></a>
 ## ADR-017 · Ugovor i situacije spajaju se samo na Leonovo „spoji"
-**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [ADR-015](#adr-015), [ADR-011](#adr-011), [#75](https://github.com/leonkreso784-bit/riihack/pull/75)
+**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon), djelomično zamijenjen u [ADR-037](#adr-037) · **Vezano:** [ADR-015](#adr-015), [ADR-011](#adr-011), [#75](https://github.com/leonkreso784-bit/riihack/pull/75)
 
 **Kontekst.** Integrator spaja automatski sve što prođe provjeru (ADR-015), ali neke datoteke mijenjaju temelj za
 sve ostale: ugovor tipova i pravila, ovisnosti i sadržaj po kojem AI sudi.

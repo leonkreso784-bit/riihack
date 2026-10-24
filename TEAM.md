@@ -61,6 +61,12 @@ na koga čeka i što smo dogovorili.
 | 24.10. | Ploča tima u `TEAM.md`, svatko svoje polje, izravno na `main` | Leon |
 | 24.10. | Tri Leonove sesije: graditelj, integrator (jedini spaja), dokumentacija | Leon |
 | 24.10. | Dokumentacija ipak ide na `main` preko PR-a (po njoj grade ljudi i agenti): #58 vraćen s #60, ponovno kao #71 (15:05) | Leon |
+| 24.10. ~21:20 | Integrator sam spaja aditivne neobavezne dodatke ugovoru (novi tip ili polje s `?` u `types.ts`) prepisane iz bloka „Ugovor" u planu; Leonovo „spoji" ostaje za izmjene postojećih tipova, `rules.ts`, `package.json`, lock i plan ([ADR-037](docs/records/DECISIONS.md#adr-037)) | Leon |
+| 24.10. ~21:15 | Simonove skice „Tokovi" samo za prezentaciju; ruta „Što ako?" se ne radi ([ADR-038](docs/records/DECISIONS.md#adr-038)) | Leon |
+| 24.10. ~21:15 | Graditelj: L8 demo i smoke za val 3 prvo, L19 samo ako ostane vremena; imena hotela u demo seedu po mjestu; stranicu knjižnice radi graditelj, Rino je stilski pregleda; skriptu za čišćenje baze graditelj radi i isproba večeras ([ADR-039](docs/records/DECISIONS.md#adr-039)) | Leon |
+| 24.10. ~21:15 | Tuđi hoteli: prihod i dobit zatvorenih mjeseci su javni (kao kod FINA-e), ostali novac skriven ([ADR-040](docs/records/DECISIONS.md#adr-040)) | Leon |
+| 24.10. ~21:15 | Demo na žiriju obavezno s profesorskim računom; tehnički detalji s Leonom ([ADR-041](docs/records/DECISIONS.md#adr-041)) | Leon |
+| 24.10. ~21:15 | Nakon svakog povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci` ([BUG-013](docs/records/BUGS.md#bug-013--provjera-pada-u-mapi-bez-npm-ci-nakon-promjene-package-lockjson)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 

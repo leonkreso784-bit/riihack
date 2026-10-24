@@ -30,4 +30,6 @@ Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-1
 - Više jezika.
 - AI koji sam šalje situacije studentima (AI samo predlaže, profesor sprema, [ADR-024](DECISIONS.md#adr-024)).
 - Mobilna aplikacija (web je responsive).
+- Ruta „Što ako?" i Simonove skice „Tokovi" u aplikaciji; skice su samo za prezentaciju
+  ([ADR-038](DECISIONS.md#adr-038)).
 - Merlin.

@@ -23,6 +23,16 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-013 · Provjera pada u mapi bez `npm ci` nakon promjene `package-lock.json`
+- **Status:** ✅ riješen pravilom 24.10. ~21:15 (Leon) · **Težina:** nizak (lokalno, ne na `main`-u)
+- **Opis:** provjera u Leonovoj mapi pala je jer u `node_modules` nije bilo paketa `better-auth` i `uqr`.
+- **Uzrok:** nakon povlačenja koje je promijenilo `package-lock.json` (nove ovisnosti iz
+  [#139](https://github.com/leonkreso784-bit/riihack/pull/139) i [#147](https://github.com/leonkreso784-bit/riihack/pull/147))
+  nitko nije pokrenuo `npm ci`.
+- **Rješenje:** nakon svakog povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci`.
+- **Lekcija:** ako se lock datoteka promijenila, lokalni `node_modules` više ne odgovara kodu; pokreni `npm ci` prije
+  provjere, inače tražiš grešku koje u kodu nema.
+
 ### BUG-012 · Dva istodobna `POST /round`: drugi vraća 409 „Sezona je gotova"
 - **Status:** ✅ riješen 24.10. 20:44 ([#166](https://github.com/leonkreso784-bit/riihack/pull/166); smoke na produkciji
   14/14) · **Težina:** srednji (dvoklik profesora mogao je preskočiti mjesec; dvostrukog obračuna nije bilo)

@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~21:15 · odluke za kraj: redoslijed, demo, javni podaci
+
+- **Odluke (Leon, preko graditelja):** integrator sam spaja aditivne dodatke ugovoru iz plana vala 3
+  ([ADR-037](DECISIONS.md#adr-037)); skice „Tokovi" samo za prezentaciju, „Što ako?" se ne radi
+  ([ADR-038](DECISIONS.md#adr-038)); L8 demo i smoke prvo, L19 ako ostane vremena, skripta za čišćenje baze večeras
+  ([ADR-039](DECISIONS.md#adr-039)); prihod i dobit zatvorenih mjeseci tuđih hotela su javni
+  ([ADR-040](DECISIONS.md#adr-040)); demo za žiri s profesorskim računom ([ADR-041](DECISIONS.md#adr-041)).
+- **Pravilo:** nakon povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci`
+  ([BUG-013](BUGS.md#bug-013--provjera-pada-u-mapi-bez-npm-ci-nakon-promjene-package-lockjson)).
+- **Spojeno:** dokumentacija #181 (21:15). Integrator je s ploče maknuo redak o zamrzavanju (`ff2a870`).
+
 ## Sub 24.10. 21:00–21:15 · ekrani računa, knjižnica u sučelju, poruke među hotelima
 
 - **Spojeno:** dokumentacija #175 (21:01); Simonov S12 knjižnica na stranici situacija (#170, 21:10) i L16 ekrani

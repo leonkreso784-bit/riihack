@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#181](https://github.com/leonkreso784-bit/riihack/pull/181) | 21:15 | Leon | dokumentacija: L16 ekrani, S12, L18 |
 | [#177](https://github.com/leonkreso784-bit/riihack/pull/177) | 21:11 | Leon | L18: poruke među hotelima (`POST /api/me/mail`, `GET /api/prof/[worldId]/mail`, ugovor `SendMailRequest`) |
 | [#169](https://github.com/leonkreso784-bit/riihack/pull/169) | 21:10 | Leon | L16 ekrani: registracija, prijava i „Moje igre" profesora (Rinov ok) |
 | [#170](https://github.com/leonkreso784-bit/riihack/pull/170) | 21:10 | Simon | S12: knjižnica na stranici situacija, spremi i dodaj iz knjižnice (Rinov ok za `client.ts`) |
