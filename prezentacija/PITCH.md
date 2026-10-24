@@ -1,11 +1,11 @@
 # Pitch: Simpolis (nacrt 1, sub 24.10. ~13:10)
 
-**TL;DR:** 7 minuta, demo kreće najkasnije u 2:00 i traje 2,5 minute. Jedna osoba (Ana), jedan broj (Bastani −17 %),
+**TL;DR:** 9 minuta, demo kreće najkasnije u 2:00 i traje 3,5 minute. Jedna osoba (Ana), jedan broj (Bastani −17 %),
 tri obećanja koja otkvačimo naglas, jedan wow trenutak (grad se mijenja uživo na projektoru), jedna rečenica za
 prepričati. Ovo je kostur: tekst se brusi nakon svakog obilaska žirija. Ispod scenarija je popis onoga što demo
 **mora** imati da bi ovaj tekst bio istinit.
 
-> Trajanje provjeriti na Discordu (2023. i 2024.: ~7 min + 3–5 min pitanja). Ned 10:45, svijetla tema, HDMI isproban.
+> Trajanje: **9 minuta** (potvrđeno 24.10.). Ned 10:45, svijetla tema, HDMI isproban.
 > Jedan govori, drugi klika. Pitanja: Leon tehnika i proces, Simon proizvod i AI, Rino sučelje i dizajn.
 
 ## Rečenica koju žiri treba prepričati
@@ -13,7 +13,7 @@ prepričati. Ovo je kostur: tekst se brusi nakon svakog obilaska žirija. Ispod 
 > **„Cesim te uči brojke hotela. ChatGPT ti glumi gosta. Simpolis je jedini gdje ono što kažeš gostu u lipnju vidiš
 > u recenzijama u srpnju i u blagajni u kolovozu."**
 
-## Scenarij (7:00)
+## Scenarij (9:00)
 
 | Vrijeme | Slajd | Što govorimo (nacrt) | Tko |
 | --- | --- | --- | --- |
@@ -21,21 +21,23 @@ prepričati. Ovo je kostur: tekst se brusi nakon svakog obilaska žirija. Ispod 
 | 0:20–1:10 | 2. Problem | „Ovo je Ana, druga godina hotelijerstva u Opatiji. Želi voditi hotel. Prvu pravu odluku s gostom donosi tek na praksi, u zadnjem semestru, 420 sati, ocjena prošao ili pao. Do tada uči uz AI, kao 40 do 50 % srednjoškolaca u Hrvatskoj. A istraživanje na tisuću učenika pokazalo je: tko vježba s AI-jem koji mu daje gotove odgovore, na ispitu bez AI-ja ima **17 % lošiji rezultat**, i ne primijeti da je naučio manje." | |
 | 1:10–1:30 | 3. Zašto postojeće ne radi | „Fakulteti već imaju simulacije. FMTU od 2012. koristi Cesim: student upisuje brojke u tablice. ChatGPT može glumiti gosta, ali ne pamti ništa: sutra je sve zaboravljeno." | |
 | 1:30–2:00 | 4. Obećanja ispunjena | Tri obećanja s prvog obilaska, svako s kvačicom: **1. Pravi grad, prava ekonomija. 2. Odluke s ljudima, ne s gotovim odgovorima. 3. Razred kao Kahoot.** „U subotu u 14:45 smo vam obećali ovo. Pokazat ćemo sve tri, uživo." | |
-| 2:00–4:30 | 5. DEMO | Vidi „Tok demoa" ispod. | klika jedan, govori drugi |
-| 4:30–5:15 | 6. Zašto uči, a ne prepisuje | „Vlastite riječi vrijede više od klika: klik daje najviše 4 od 5. Prepisan gotov odgovor broji se kao klik. AI glumi ljude i provjerava odgovor po rubrici, ali **bodove uvijek računaju pravila igre**, isto za svakoga. Ocjena je napredak u odnosu na vlastiti početak, ne tko ima više novca. Sokratski mentor prvo pita, tek onda objašnjava: u istom istraživanju AI koji daje samo naputke nije štetio učenju." | |
-| 5:15–6:00 | 7. Tko to koristi i tko plaća | Prvi korisnik: kolegij na FMTU (Leonov HotelixSim je pred pilotom). Kupac: profesor, licenca po kolegiju ili semestru, besplatna proba. Drugi kupac: hotelske kuće koje već školuju svoje ljude (akademije, stipendisti). 🟨 cijena i brojke za izračun: dopuniti samo iz izvora. | |
-| 6:00–6:30 | 8. Sigurnost i kako smo gradili | „U demou samo nadimci, AI ključ samo na poslužitelju, na ekranu piše da likove i procjenu radi AI, a profesor ima zadnju riječ. Gradili smo s AI agentima: mi smo pisali specifikaciju, pravila i provjere, AI je pisao kod, mi jamčimo da radi." | |
-| 6:30–6:55 | 9. Što smo promijenili + poziv | „Nakon obilazaka žirija promijenili smo: _(upisati)_. Tražimo jedan kolegij za pilot." + rečenica za prepričati + QR na živi link. | |
-| 6:55–7:00 | | Stani. Nasmiješi se. Čekaj prvo pitanje. | |
+| 2:00–5:30 | 5. DEMO | Vidi „Tok demoa" ispod. | klika jedan, govori drugi |
+| 5:30–6:15 | 6. Zašto uči, a ne prepisuje | „Vlastite riječi vrijede više od klika: klik daje najviše 4 od 5. Prepisan gotov odgovor broji se kao klik. AI glumi ljude i provjerava odgovor po rubrici, ali **bodove uvijek računaju pravila igre**, isto za svakoga. Ocjena je napredak u odnosu na vlastiti početak, ne tko ima više novca. Sokratski mentor prvo pita, tek onda objašnjava: u istom istraživanju AI koji daje samo naputke nije štetio učenju." | |
+| 6:15–7:15 | 7. Tko to koristi i tko plaća | Prvi korisnik: kolegij na FMTU (Leonov HotelixSim je pred pilotom). Kupac: profesor, licenca po kolegiju ili semestru, besplatna proba. Drugi kupac: hotelske kuće koje već školuju svoje ljude (akademije, stipendisti). 🟨 cijena i brojke za izračun: dopuniti samo iz izvora. | |
+| 7:15–8:00 | 8. Sigurnost i kako smo gradili | „U demou samo nadimci, AI ključ samo na poslužitelju, na ekranu piše da likove i procjenu radi AI, a profesor ima zadnju riječ. Gradili smo s AI agentima: mi smo pisali specifikaciju, pravila i provjere, AI je pisao kod, mi jamčimo da radi." | |
+| 8:00–8:50 | 9. Što smo promijenili + poziv | „Nakon obilazaka žirija promijenili smo: _(upisati)_. Tražimo jedan kolegij za pilot." + rečenica za prepričati + QR na živi link. | |
+| 8:50–9:00 | | Stani. Nasmiješi se. Čekaj prvo pitanje. | |
 
-## Tok demoa (2:30, živi link, video kao rezerva)
+## Tok demoa (3:30, živi link, video kao rezerva)
 
 1. **Profesor (projektor):** „Novi grad" → kod igre na velikom ekranu, kao Kahoot. (15 s)
 2. **Studenti ulaze:** dva mobitela (i jedan član žirija, ako želi) upišu kod, ime i ime hotela → hoteli se pojave na karti grada. (20 s)
 3. **Plan mjeseca:** Ana spusti cijenu i doda marketing. (15 s)
 4. **Situacija s likom:** gost Marko iz sobe 204 je ljut, klima ne radi. Ana mu odgovori **svojim riječima**; AI presuda pokaže ispunjene kriterije rubrike. (50 s)
-5. **Wow (30 s):** profesor zatvori mjesec → Anin hotel se napuni, susjedni hotel ostane prazan, novac i recenzije se promijene, na projektoru se grad mijenja uživo, vijest u feedu.
+5. **Wow (45 s):** profesor zatvori mjesec → Anin hotel se napuni, susjedni hotel ostane prazan, novac i recenzije se promijene, na projektoru se grad mijenja uživo, vijest u feedu.
 6. **Mentor:** jedno sokratsko pitanje na kraju kruga („Što bi sljedeći put napravila drukčije i zašto?"). (20 s)
+7. **Ugovor s gradskom tvrtkom:** Ana prihvati ponudu Agencije Kvarner Tours, na karti se pojavi veza. (20 s)
+8. **Profesorov uvid:** profesor otvori Aninu tvrtku i vidi kako je razmišljala, ne samo konačni odgovor. (25 s)
 
 ## Što demo MORA imati da bi ovaj tekst bio istinit
 
@@ -71,7 +73,6 @@ prepričati. Ovo je kostur: tekst se brusi nakon svakog obilaska žirija. Ispod 
 
 ## Otvoreno
 
-- Trajanje pitcha (Discord).
 - Tko govori, tko klika.
 - Odgovor žirija s prvog obilaska upisati u `PROMISE.md` i ovdje u slajd 9.
 - Izgled slajdova = izgled aplikacije (odluka o smjeru dizajna u tijeku).
