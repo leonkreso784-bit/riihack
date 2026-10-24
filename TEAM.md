@@ -81,15 +81,15 @@ na koga čeka i što smo dogovorili.
 - **Spojeno:** L0–L12; val 3: L13 odjeli (#132, #137), L14 javni profil (#143), raspodjela financija (#144), L15 pošta i pregovaranje (#148), uqr (#139), plan (#134). Shema ručno: ulaganja, raspodjela, Better Auth tablice + `worlds.owner_id`, `mail` + pregovaranje. **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
 - **Zadnje ažurirano:** sub 20:05
 
-## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S9)
+## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S11)
 
-- **Sad radim:** proba obilaska 2 (18:45, demo samo studentski tok na Leonovoj demo igri); slajdovi za nedjelju (simpolis-pitch-share.vercel.app, ne dijeliti prije nedjelje)
-- **Sljedeće:** gumbi playbooka na S8 stranici (M3, čeka Rinov ok za `exportPlaybook`/`importPlaybook` u `client.ts`, pitanje na #108); dokumentacija za predaju (`PREDAJA.md` ima stari poslovni model); video demoa do ned 09:00
-- **Čekam od drugih:** Rino: ok za playbook pozive u `client.ts`; Leon: ruta `situations/generate` (poziva `proposeSituation`)
+- **Sad radim:** priprema za nedjelju: slajdovi (simpolis-pitch-share.vercel.app, ne dijeliti), `PITCH.md` za tok obilaska 3, dokumentacija za predaju
+- **Sljedeće:** S12 knjižnica na S8 stranici (kad L17 stigne); video demoa u nedjelju
+- **Čekam od drugih:** integrator: #150 (obilazak 2 u PROMISE.md)
 - **Drugi čekaju od mene:** —
-- **Obilazak 1 (~15:45):** prošli, samo slajdovi; komentari u `PROMISE.md`. Slajdovi za obilazak 2: simpolis-ziri-share.vercel.app (QR na `/ulaz`)
-- **Spojeno:** S0 (#35), S1 (#41), S2 (#44), S3 (#76), S4 (#79), S5 (#48), S6 (#47), **S8 (#109)**, **S9 (#111)**; pitch (#38, #66, #67, #72, #86, #99), roadmap (#43), obilazak (#51, #55, #61); `ANTHROPIC_API_KEY` na Vercelu. Prijedlog rubrika: #110
-- **Zadnje ažurirano:** sub 17:20 (popunio Claude, ispravi)
+- **Obilasci:** 1 prošao (slajdovi), 2 prošao (aplikacija uživo, pozitivno, bez primjedbi)
+- **Spojeno:** S0–S6, S8 (#109), S9 (#111), playbook i AI prijedlog na S8 (#129), BUG-009 sudac (#120), **karta grada D (#128)**, **S11 agent agencije (#154)**; pitch i dokumenti (#99, #131); pregled L14/L15 na #148, prijedlog rubrika #110
+- **Zadnje ažurirano:** sub 20:10 (popunio Claude, ispravi)
 
 ## Rino · sučelje (R0–R10)
 
