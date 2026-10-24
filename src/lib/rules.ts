@@ -63,3 +63,16 @@ export const MARKETING_MAX = 5000;
 export const FINANCE_EFFECT_DIVISOR = 2000;
 export const FINANCE_EFFECT_CAP = 5;
 export const START_CASH = 20000;
+
+// Ulaganje u odjele (odluka 24.10.): budžet po odjelu u planu mjeseca. Trošak ulazi u obračun, a pokazatelj odjela
+// raste za min(INVEST_EFFECT_CAP, floor(ulog / INVEST_EFFECT_DIVISOR)) po odjelu i mjesecu.
+export const INVEST_MAX = 3000;
+export const INVEST_EFFECT_DIVISOR = 1000;
+export const INVEST_EFFECT_CAP = 3;
+export const DEPARTMENT_METRIC: Record<StaffDepartment, MetricKey> = {
+  reception: "guests",
+  housekeeping: "reviews",
+  kitchen: "guests",
+  maintenance: "operations",
+  management: "staff",
+};
