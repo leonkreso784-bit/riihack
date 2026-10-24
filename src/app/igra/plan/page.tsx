@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Megaphone, Tag } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur } from "@/lib/format";
+import { COST_LABELS, staffCostFor, activeContracts, delta, estimateCostParts, monthlyCosts, planInvestments } from "@/lib/finance-view";
 import { MARKETING_MAX, PRICE_MAX, PRICE_MIN, ROUND_LABELS } from "@/lib/rules";
 import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
@@ -32,6 +33,29 @@ function Slider({ id, label, icon: Icon, value, min, max, step, onChange }: {
   );
 }
 
+function Delta({ cur, prev }: { cur: number; prev: number | undefined }) {
+  const d = delta(cur, prev);
+  if (!d) return <span className="text-muted-foreground">–</span>;
+  if (!d.arrow) return <span className="text-muted-foreground">bez promjene</span>;
+  // za cijenu je rast dobra, za troškove loša: boju ne tumačimo, samo smjer
+  return (
+    <span className="font-bold">
+      {d.arrow} {d.diff > 0 ? "+" : "−"}{eur(Math.abs(d.diff))}
+    </span>
+  );
+}
+
+function CompareRow({ name, now, before, d }: { name: string; now: string; before: string; d: React.ReactNode }) {
+  return (
+    <div className="grid grid-cols-[1fr_auto] items-baseline gap-x-3 gap-y-0.5 py-2">
+      <dt className="font-semibold">{name}</dt>
+      <dd className="text-right tabular-nums">{d}</dd>
+      <dd className="text-xs text-muted-foreground tabular-nums">Sada {now}</dd>
+      <dd className="text-right text-xs text-muted-foreground tabular-nums">Prošlo {before}</dd>
+    </div>
+  );
+}
+
 export default function PlanPage() {
   const { data, error } = usePoll(api.me);
   const [draft, setDraft] = useState<{ price: number; marketing: number }>();
@@ -44,6 +68,22 @@ export default function PlanPage() {
   const plan = draft ?? data.plan;
   const last = data.finances.at(-1);
   const month = ROUND_LABELS[data.world.round - 1] ?? `krug ${data.world.round}`;
+
+  // Troškovi iz TRENUTNIH vrijednosti klizača (ista formula kao motor, lib/finance-view.ts).
+  const staffCost = staffCostFor(data.company.templateId, data.company.roomsCount);
+  const roomsCount = data.company.roomsCount;
+  const contractsNow = activeContracts(data.contracts, data.world.round);
+  const investments = planInvestments(data.plan, data.departments);
+  const costs = monthlyCosts({ staffCost, roomsCount, marketing: plan.marketing, contractsCost: contractsNow.reduce((s, c) => s + c.monthlyCost, 0), investments });
+  const rows = (Object.keys(COST_LABELS) as (keyof typeof COST_LABELS)[]).map((k) => ({ key: k, label: COST_LABELS[k], amount: costs[k] }));
+
+  // Prošli mjesec: troškovi i ulaganja su stvarni, marketing je procjena (ostatak troškova), cijena je prosjek prihoda po noćenju.
+  const prevContracts = last ? activeContracts(data.contracts, last.round) : [];
+  const prevMarketing = last
+    ? (estimateCostParts(last, { staffCost, roomsCount, contractsCost: prevContracts.reduce((s, c) => s + c.monthlyCost, 0) }).find((p) => p.key === "marketing")?.amount ?? 0)
+    : undefined;
+  const prevNights = last ? last.nights + last.contractNights : 0;
+  const prevPrice = last && prevNights > 0 ? Math.round(last.revenue / prevNights) : undefined;
 
   async function save() {
     setSaving(true);
@@ -83,6 +123,34 @@ export default function PlanPage() {
               )}
             </div>
           </Panel>
+
+          <Panel title="Što ova odluka košta">
+            <dl className="divide-y">
+              {rows.map((r) => (
+                <div key={r.key} className="flex items-baseline justify-between gap-3 py-1.5">
+                  <dt className="text-sm text-muted-foreground">{r.label}</dt>
+                  <dd className="font-bold tabular-nums">{eur(r.amount)}</dd>
+                </div>
+              ))}
+              <div className="flex items-baseline justify-between gap-3 pt-2.5">
+                <dt className="text-sm font-bold">Troškovi mjeseca ukupno</dt>
+                <dd className="text-xl font-extrabold tabular-nums" aria-live="polite">{eur(costs.total)}</dd>
+              </div>
+            </dl>
+            <p className="mt-3 rounded-xl bg-sand px-3 py-2 text-xs">Prihod ovisi o tržištu i ostalim hotelima; zna se nakon obračuna.</p>
+          </Panel>
+
+          {last && (
+            <Panel title="Usporedba s prošlim mjesecom">
+              <dl className="divide-y text-sm">
+                <CompareRow name="Cijena noćenja" now={eur(plan.price)} before={prevPrice !== undefined ? `${eur(prevPrice)} (prosjek)` : "–"} d={<Delta cur={plan.price} prev={prevPrice} />} />
+                <CompareRow name="Marketing" now={eur(plan.marketing)} before={prevMarketing !== undefined ? `${eur(prevMarketing)} (procjena)` : "–"} d={<Delta cur={plan.marketing} prev={prevMarketing} />} />
+                <CompareRow name="Ulaganja u odjele" now={eur(investments)} before={eur(last.investments ?? 0)} d={<Delta cur={investments} prev={last.investments ?? 0} />} />
+                <CompareRow name="Troškovi" now={eur(costs.total)} before={eur(last.costs)} d={<Delta cur={costs.total} prev={last.costs} />} />
+              </dl>
+              <p className="mt-3 text-xs text-muted-foreground">Cijena i marketing prošlog mjeseca izračunati su iz obračuna, ne spremljeni plan.</p>
+            </Panel>
+          )}
 
           <Panel title="Što znati prije odluke" tone="mint">
             <p className="text-sm">
