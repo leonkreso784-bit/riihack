@@ -70,7 +70,10 @@ export function streamCharacterReply(
           model: modelFor("character", model),
           system: characterSystem(input),
           prompt: transcriptPrompt(input),
-          maxOutputTokens: 200,
+          maxOutputTokens: 300,
+          // Haiku 5.5 thinks by default and the thinking ate the whole budget, so 5 of 8 replies came back empty and
+          // the student saw the fallback line (audit 24.10. 23:50). A short line in character needs no reasoning.
+          providerOptions: { anthropic: { thinking: { type: "disabled" } } },
           abortSignal: AbortSignal.timeout(AI_TIMEOUT_MS),
           onError: ({ error }) => console.error("[ai]", error instanceof Error ? error.message : error),
         });
