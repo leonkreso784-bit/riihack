@@ -39,6 +39,7 @@ const world: WorldRow = {
   status: "lobby",
   seed: 42,
   settledRound: 0,
+  autoDraw: true,
   createdAt: NOW,
 };
 
@@ -266,6 +267,17 @@ describe("toProfState", () => {
     expect(s.city.links).toEqual([{ companyId: "b", businessId: agency.businessId }]);
     expect(s.news).toEqual([{ at: NOW.toISOString(), text: "Lipanj: najpopunjeniji je Hotel b (91 %)" }]);
   });
+
+  it("banka, slanja i slučajno izvlačenje (L12)", () => {
+    const empty = toProfState({ world, all: [] }, NOW);
+    expect([empty.bank, empty.dispatches, empty.autoDraw]).toEqual([[], [], true]);
+    const bank = [{ id: "custom-x", title: "Kvar", area: "Smještaj", difficulty: 2, source: "custom" as const }];
+    const dispatches = [{ id: "d1", templateId: "custom-x", title: "Kvar", round: 2, companyIds: null, status: "scheduled" as const }];
+    const s = toProfState({ world: { ...world, autoDraw: false }, all: [], bank, dispatches }, NOW);
+    expect(s.bank).toEqual(bank);
+    expect(s.dispatches).toEqual(dispatches);
+    expect(s.autoDraw).toBe(false);
+  });
 });
 
 // ---- L7: situacije, izvještaji, skok kruga ----
@@ -329,11 +341,20 @@ describe("toSituationView", () => {
       ],
       state: "open",
       transcript: [],
+      source: "bank",
     });
     const json = JSON.stringify(v);
     for (const secret of ["TAJNA-OSOBNOST", "TAJNI-CILJ", "TAJNA-RUBRIKA", "criteria", "rubric"]) {
       expect(json).not.toContain(secret);
     }
+  });
+
+  it("profesorova situacija nosi izvor (L12)", () => {
+    const custom = { ...TEMPLATE, id: "custom-abc123" };
+    const row = { situation: { ...situationRow("s1", 1), templateId: custom.id }, answer: null };
+    expect(toSituationView(row, "H", [custom])?.source).toBe("custom");
+    const ai = { ...TEMPLATE, id: "custom-ai-abc123" };
+    expect(toSituationView({ ...row, situation: { ...row.situation, templateId: ai.id } }, "H", [ai])?.source).toBe("ai");
   });
 
   it("odgovor s presudom; prazna polja izostavljena", () => {

@@ -1,9 +1,9 @@
 // Krugovi na poslužitelju: otvaranje kruga (izvlačenje situacija) i zatvaranje kruga jedne tvrtke ili svih.
 // Bez AI-ja: zatvaranje upiše samo brojke; pitanje mentora generira GET /api/me/report/[round] (S4).
-import { and, eq, isNull, lt, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, lt, sql } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import { db } from "@/db";
-import { answers, companies, events, roundReports, rooms, situations, worlds } from "@/db/schema";
+import { answers, companies, dispatches, events, roundReports, rooms, situations, worlds } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
 import { countSituations, getWorld, listSituationsWithAnswers, listWorldRooms } from "@/db/queries";
 import { SITUATIONS } from "@/content";
@@ -12,8 +12,15 @@ import { pickRoom } from "@/lib/engine/rooms";
 import { applyRound } from "@/lib/engine/round";
 import { HttpError } from "@/lib/http";
 import { MISSED_QUALITY, SITUATIONS_PER_ROUND } from "@/lib/rules";
-import type { MetricKey, Metrics, Quality, RoomType, RoundReportView } from "@/lib/types";
+import type { MetricKey, Metrics, Quality, RoomType, RoundReportView, SituationTemplate } from "@/lib/types";
 import type { requirePlayer } from "@/lib/session";
+import {
+  listScheduledDispatches,
+  listUsedTemplateIds,
+  loadTemplates,
+  planImmediateRows,
+  type SituationInsert,
+} from "./situations";
 
 type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
 
@@ -38,20 +45,32 @@ export function addMetricsSql(delta: Partial<Record<MetricKey, number>>) {
 }
 
 /**
- * Otvori krug `round` svim tvrtkama igre: situacije iz drawSituations (iste za sve), soba situacije iz pickRoom dobije
- * problemStatus, rok kruga, događaj round.opened. Zove ga samo onaj tko je prošao zaštitu prelaska kruga (startWorld,
- * openNextRound). Ponovni poziv je bezopasan: unique (companyId, round, templateId) + onConflictDoNothing, sobe se
- * kvare samo za nove situacije, a rok se upisuje samo dok ga nema.
+ * Otvori krug `round` svim tvrtkama igre: situacije iz drawSituations (iste za sve) i profesorova slanja zakazana za
+ * ovaj krug (L12), soba situacije iz pickRoom dobije problemStatus, rok kruga, događaj round.opened. Zove ga samo onaj
+ * tko je prošao zaštitu prelaska kruga (startWorld, openNextRound). Ponovni poziv je bezopasan: unique (companyId,
+ * round, templateId) + onConflictDoNothing, sobe se kvare samo za nove situacije, slanje se izvrši samo dok je
+ * "scheduled", a rok se upisuje samo dok ga nema.
  */
 export async function openRound(world: WorldRow, round: number, deadlineMinutes?: number): Promise<WorldRow> {
-  const [all, worldRooms] = await Promise.all([
+  const [all, worldRooms, pool, usedBefore, scheduled] = await Promise.all([
     db.select({ id: companies.id }).from(companies).where(eq(companies.worldId, world.id)),
     listWorldRooms(world.id),
+    loadTemplates(world.id), // L12: banka + profesorove situacije te igre
+    listUsedTemplateIds(world.id, round),
+    listScheduledDispatches(world.id, round),
   ]);
+  const byId = new Map(pool.map((t) => [t.id, t]));
+  // L12: slučajno izvlačenje samo dok ga profesor nije isključio (autoDraw). Ne ponavlja situacije prijašnjih krugova
+  // ni one zakazane za ovaj krug; kad novih nema dovoljno, izvlači iz cijelog poola.
+  const scheduledIds = new Set(scheduled.map((d) => d.templateId));
+  const fresh = pool.filter((t) => !usedBefore.has(t.id) && !scheduledIds.has(t.id));
+  const drawPool = fresh.length >= SITUATIONS_PER_ROUND ? fresh : pool;
   // Mali pool (manje od SITUATIONS_PER_ROUND) vrati istu situaciju dvaput; dovoljna je jednom.
-  const drawn = [...new Map(drawSituations(world.seed, round, SITUATIONS, SITUATIONS_PER_ROUND).map((t) => [t.id, t])).values()];
+  const drawn = world.autoDraw
+    ? [...new Map(drawSituations(world.seed + round, 1, drawPool, SITUATIONS_PER_ROUND).map((t) => [t.id, t])).values()]
+    : [];
 
-  const rows = all.flatMap(({ id: companyId }) => {
+  const rows: SituationInsert[] = all.flatMap(({ id: companyId }) => {
     const own = worldRooms
       .filter((r) => r.companyId === companyId)
       .map((r) => ({ number: r.number, type: r.type as RoomType }));
@@ -67,14 +86,35 @@ export async function openRound(world: WorldRow, round: number, deadlineMinutes?
     });
   });
 
-  const inserted = rows.length
-    ? await db.insert(situations).values(rows).onConflictDoNothing().returning()
+  // L12: zakazana slanja (ciljani studenti ili svi), sobe mimo već izvučenih situacija.
+  const companyIds = all.map((c) => c.id);
+  const executed: string[] = [];
+  for (const d of scheduled) {
+    const t = byId.get(d.templateId);
+    if (!t) continue;
+    const targets = d.companyIds ? d.companyIds.filter((id) => companyIds.includes(id)) : companyIds;
+    rows.push(...planImmediateRows(t, targets, round, d.roomNumber ?? undefined, worldRooms, rows));
+    executed.push(d.id);
+  }
+  // Ista situacija dvaput istoj tvrtki (dva slanja) → jedan redak.
+  const unique = [...new Map(rows.map((r) => [`${r.companyId}|${r.templateId}`, r])).values()];
+
+  const inserted = unique.length
+    ? await db.insert(situations).values(unique).onConflictDoNothing().returning()
     : [];
 
   const deadline = deadlineMinutes ? new Date(Date.now() + deadlineMinutes * 60_000) : null;
   const items: BatchItem<"pg">[] = [];
+  if (executed.length) {
+    items.push(
+      db
+        .update(dispatches)
+        .set({ status: "sent" })
+        .where(and(inArray(dispatches.id, executed), eq(dispatches.status, "scheduled"))),
+    );
+  }
   for (const s of inserted) {
-    const t = drawn.find((d) => d.id === s.templateId);
+    const t = byId.get(s.templateId);
     if (!t?.room || !s.roomNumber) continue;
     items.push(
       db
@@ -92,7 +132,12 @@ export async function openRound(world: WorldRow, round: number, deadlineMinutes?
       worldId: world.id,
       round,
       type: "round.opened",
-      payload: { round, situations: drawn.map((t) => t.id), deadline: deadline?.toISOString() ?? null },
+      payload: {
+        round,
+        situations: drawn.map((t) => t.id),
+        dispatched: scheduled.filter((d) => executed.includes(d.id)).map((d) => d.templateId),
+        deadline: deadline?.toISOString() ?? null,
+      },
     }),
   );
   await runBatch(items);
@@ -102,9 +147,14 @@ export async function openRound(world: WorldRow, round: number, deadlineMinutes?
 /**
  * Zatvori krug `round` jednoj tvrtki: neodgovorene situacije → expired i odgovor "none" s MISSED_QUALITY, pokazatelji
  * kroz applyRound, izvještaj kruga (bez pitanja mentora), događaj round.closed. Vraća null ako je krug već zatvoren
- * (drugi klik, druga kartica, rok i profesor u istoj sekundi).
+ * (drugi klik, druga kartica, rok i profesor u istoj sekundi). `pool` = predlošci igre (loadTemplates); bez njega se
+ * učitaju ovdje, a closeRoundForAll ih učita jednom za sve tvrtke.
  */
-export async function closeCompanyRound(companyId: string, round: number): Promise<RoundReportView | null> {
+export async function closeCompanyRound(
+  companyId: string,
+  round: number,
+  pool?: SituationTemplate[],
+): Promise<RoundReportView | null> {
   // 1. Zaštita od dvostrukog zatvaranja: ovaj UPDATE prođe točno jednom po (tvrtka, krug).
   const [company] = await db
     .update(companies)
@@ -121,10 +171,14 @@ export async function closeCompanyRound(companyId: string, round: number): Promi
     .where(and(eq(situations.companyId, companyId), eq(situations.round, round), eq(situations.state, "open")));
 
   // 3. Svi rezultati kruga: odgovorene s kvalitetom odgovora, ostale MISSED_QUALITY.
-  const rows = await listSituationsWithAnswers(companyId, round);
+  //    Učinci iz predloška igre (banka ili profesorova situacija, L12).
+  const [rows, templates] = await Promise.all([
+    listSituationsWithAnswers(companyId, round),
+    pool ?? loadTemplates(company.worldId),
+  ]);
   const results = rows.map(({ situation, answer }) => ({
     quality: (answer?.quality ?? MISSED_QUALITY) as Quality,
-    effects: SITUATIONS.find((t) => t.id === situation.templateId)?.effects ?? {},
+    effects: templates.find((t) => t.id === situation.templateId)?.effects ?? {},
   }));
   const metricsBefore = company.metrics;
   const metricsAfter = applyRound(metricsBefore, results);
@@ -169,7 +223,9 @@ export async function closeRoundForAll(world: WorldRow, round: number): Promise<
     .select({ id: companies.id })
     .from(companies)
     .where(and(eq(companies.worldId, world.id), lt(companies.closedRound, round)));
-  const results = await Promise.allSettled(open.map((c) => closeCompanyRound(c.id, round)));
+  if (open.length === 0) return 0;
+  const pool = await loadTemplates(world.id);
+  const results = await Promise.allSettled(open.map((c) => closeCompanyRound(c.id, round, pool)));
   let closed = 0;
   for (const r of results) {
     if (r.status === "rejected") console.error("[round] zatvaranje kruga nije uspjelo", r.reason);
@@ -184,8 +240,9 @@ export async function closeMyRound(ctx: PlayerCtx): Promise<RoundReportView> {
   if (world.status === "lobby") throw new HttpError(409, "Igra još nije počela");
   if (world.status === "finished") throw new HttpError(409, "Sezona je gotova");
   if (company.closedRound >= world.round) throw new HttpError(409, "Ovaj krug si već zatvorio");
-  // Krug je upravo prešao u sljedeći, a situacije se još upisuju (milisekunde): ne zatvaraj prazan krug.
-  if (SITUATIONS.length > 0 && (await countSituations(company.id, world.round)) === 0) {
+  // Krug je upravo prešao u sljedeći, a situacije se još upisuju (milisekunde): ne zatvaraj prazan krug. Bez
+  // slučajnog izvlačenja (L12, autoDraw = false) krug smije biti prazan, pa se tada smije zatvoriti.
+  if (world.autoDraw && SITUATIONS.length > 0 && (await countSituations(company.id, world.round)) === 0) {
     throw new HttpError(409, "Krug se još otvara. Pokušaj za trenutak.");
   }
   const report = await closeCompanyRound(company.id, world.round);

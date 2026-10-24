@@ -33,6 +33,7 @@ import type {
 } from "@/lib/types";
 import { createOffers, listNewsEvents, settleCityRound } from "./city";
 import { closeRoundForAll, openRound } from "./round";
+import { listBank, listDispatches, loadTemplates } from "./situations";
 import { toCompanyDetail, toMeResponse, toProfState } from "./views";
 
 type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
@@ -175,18 +176,20 @@ export async function expireRoundIfDue(
 }
 
 export async function loadProfState(world: WorldRow): Promise<ProfStateResponse> {
-  const [all, reports, contracts, events] = await Promise.all([
+  const [all, reports, contracts, events, bank, dispatches] = await Promise.all([
     listCompanies(world.id),
     listWorldReports(world.id),
     listWorldContracts(world.id),
     listNewsEvents(world.id),
+    listBank(world.id), // L12: banka + profesorove situacije
+    listDispatches(world.id),
   ]);
-  return toProfState({ world, all, reports, contracts, events });
+  return toProfState({ world, all, reports, contracts, events, bank, dispatches });
 }
 
 /** GET /api/me: tvrtka, situacije tekućeg kruga, izvještaji, ljestvica, plan, ugovori, obračuni, grad i vijesti. */
 export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
-  const [rooms, all, situations, reports, plan, contracts, finances, events] = await Promise.all([
+  const [rooms, all, situations, reports, plan, contracts, finances, events, pool] = await Promise.all([
     listRooms(ctx.company.id),
     listCompanies(ctx.world.id),
     listSituationsWithAnswers(ctx.company.id, ctx.world.round),
@@ -195,18 +198,20 @@ export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
     listWorldContracts(ctx.world.id),
     listFinanceRows(ctx.company.id),
     listNewsEvents(ctx.world.id),
+    loadTemplates(ctx.world.id), // L12: i profesorove situacije
   ]);
-  return toMeResponse({ ...ctx, rooms, all, situations, reports, plan, contracts, finances, events });
+  return toMeResponse({ ...ctx, rooms, all, situations, reports, plan, contracts, finances, events }, new Date(), pool);
 }
 
 /** GET /api/prof/[worldId]/companies/[id]: uvid u jednu tvrtku; tvrtka iz druge igre → 404. */
 export async function loadCompanyDetail(world: WorldRow, companyId: string): Promise<CompanyDetailResponse> {
   const found = await getCompanyInWorld(companyId, world.id);
   if (!found) throw new HttpError(404, "Ta tvrtka nije u ovoj igri");
-  const [rooms, situations, reports] = await Promise.all([
+  const [rooms, situations, reports, pool] = await Promise.all([
     listRooms(found.company.id),
     listSituationsWithAnswers(found.company.id),
     listCompanyReports(found.company.id),
+    loadTemplates(world.id), // L12: i profesorove situacije
   ]);
-  return toCompanyDetail({ ...found, roomsCount: rooms.length, situations, reports });
+  return toCompanyDetail({ ...found, roomsCount: rooms.length, situations, reports }, pool);
 }

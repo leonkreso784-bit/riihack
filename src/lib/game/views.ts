@@ -12,6 +12,7 @@ import type {
   WorldRow,
 } from "@/db/schema";
 import { SITUATIONS, getHotel } from "@/content";
+import { sourceOfTemplateId } from "@/lib/engine/draft";
 import { progress } from "@/lib/engine/round";
 import { renderSituationText } from "@/lib/engine/text";
 import { MAX_ROUNDS } from "@/lib/rules";
@@ -21,6 +22,7 @@ import type {
   AnswerView,
   CompanyDetailResponse,
   CompanyView,
+  DispatchView,
   LeaderboardRow,
   MeResponse,
   Metrics,
@@ -32,6 +34,7 @@ import type {
   RoomView,
   RoundReportView,
   SituationState,
+  SituationSummary,
   SituationTemplate,
   SituationView,
   WorldStatus,
@@ -173,6 +176,7 @@ export function toSituationView(
     state: situation.state as SituationState,
     transcript: situation.transcript,
     ...(answer && { answer: toAnswerView(answer) }),
+    source: sourceOfTemplateId(found.id), // L12: banka, profesor ili AI prijedlog koji je profesor spremio
   };
 }
 
@@ -244,17 +248,27 @@ export function toMeResponse(
   };
 }
 
+/** `bank` = banka + profesorove situacije (listBank), `dispatches` = profesorova slanja (listDispatches), L12. */
 export function toProfState(
-  input: { world: WorldRow; all: CompanyWithPlayer[]; reports?: RoundReportRow[] } & CityInput,
+  input: {
+    world: WorldRow;
+    all: CompanyWithPlayer[];
+    reports?: RoundReportRow[];
+    bank?: SituationSummary[];
+    dispatches?: DispatchView[];
+  } & CityInput,
   now: Date = new Date(),
 ): ProfStateResponse {
-  const { world, all, reports = [], contracts = [], events = [] } = input;
+  const { world, all, reports = [], contracts = [], events = [], bank = [], dispatches = [] } = input;
   const players = toLeaderboard(all, reports);
   return {
     world: { ...toWorldView(world, now), joinCode: world.joinCode, maxPlayers: world.maxPlayers },
     players,
     city: toCityView(players, toCityLinks(contracts, world.round)),
     news: buildNews(events, hotelNames(all)),
+    bank,
+    dispatches,
+    autoDraw: world.autoDraw,
   };
 }
 
