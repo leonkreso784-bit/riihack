@@ -6,6 +6,12 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~18:40 · bez zamrzavanja, odjeli s ulaganjem
+
+- **Odluke (Leon):** nema zamrzavanja koda, gradi se do predaje ([ADR-031](DECISIONS.md#adr-031)); odjeli s pravim
+  ulaganjem kroz budžet u planu mjeseca ([ADR-032](DECISIONS.md#adr-032)).
+- **Slijedi:** graditelj ugovor, motor i API za budžet odjela; Rino stranica odjela.
+
 ## Sub 24.10. 18:10–18:30 · pred obilazak 2
 
 - **Ime prijašnjeg projekta:** čisti Rino; kod u #107, plan slijedi
