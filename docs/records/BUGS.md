@@ -14,10 +14,12 @@ Bugove BUG-015 do 017 i 019 do 025 prijavio je tester produkcije (sesija koja sa
 ~22:05, ~22:20 i ~22:25.
 
 ### BUG-025 · Zadani rok „10 min" na ploči profesora sam zatvara mjesec
-- **Status:** 🔴 otvoren (Rino popravlja, Leon) · **Težina:** srednji (u demou mjesec se zatvori sam usred izlaganja)
-- **Opis:** tester (~22:30): rok mjeseca na ploči profesora je zadano „10 min" (`prof-board.tsx:83`), pa se mjesec
-  zatvori nakon 10 minuta i kad profesor to ne želi. 🟨 Očekivano ponašanje potvrđuje tester.
-- **Rješenje:** 🟨 čeka Rina.
+- **Status:** 🔴 otvoren (Rino, Leonova odluka ~22:35) · **Težina:** kritičan za demo (žiri na obilasku lako ostane
+  dulje od 10 minuta)
+- **Opis:** tester potvrdio na produkciji (22:18): za sljedeći mjesec unaprijed je odabran rok „10 min". Kad istekne,
+  odgovori se više ne primaju, neodgovorene situacije postanu „expired" s ocjenom 1/5 i mjesec se svima zatvori.
+- **Uzrok:** `src/components/prof-board.tsx:83`, `useState<number | undefined>(10)`.
+- **Rješenje:** 🟨 čeka Rina: zadano „Ručno" (bez roka), 10 min ostaje izbor.
 - **Lekcija:** zadana vrijednost koja sama pokreće radnju mora biti „isključeno"; profesor je uključuje svjesno.
 
 ### BUG-019 · Situacija nakon isteka roka piše „Ponuđeni odgovor"
@@ -53,7 +55,7 @@ Bugove BUG-015 do 017 i 019 do 025 prijavio je tester produkcije (sesija koja sa
 - **Opis:** ploča profesora na 1280×720 nakon „Završi sezonu": nema podija, ljestvica zauzima pola širine, desna
   polovica je prazna; pobjednik ima crveno „▼ −19.3", drugi „▼ −36.9". Koraci: igra s 2 studenta, zatvoriti 2
   mjeseca, „Završi sezonu".
-- **Rješenje:** 🟨 čeka Rina: podij preko cijele širine i napredak koji pobjedniku ne izgleda kao poraz.
+- **Rješenje:** 🟨 ostatak (širina, crveni ▼ kod pobjednika) radi Rino.
 - **Lekcija:** završni ekran demoa provjeri na rezoluciji projektora i s pravim brojkama, ne samo s lažnim podacima.
 
 ### BUG-023 · `/igra` nakon kraja sezone i dalje čeka obračun
