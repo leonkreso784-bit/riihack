@@ -14,6 +14,12 @@ Vremena su lokalna (CEST).
 - **Čeka Leonovu odluku:** Rinov prijedlog sigurnosnih zaglavlja (CSP, zabrana iframea, `nosniff`); preporuka
   dokumentarista: tri jednostavna zaglavlja da, stroga CSP poslije.
 - **Baza:** integratorov smoke u 23:56 ostavio je jednu igru „Smoke …" (javljeno graditelju).
+- **Simonov audit produkcije (00:00–00:40, issueovi #226 i #227):** izvještaj mjeseca, mentor i podij ne vide obračun
+  grada (#226); plan se ne prenosi u sljedeći mjesec, zatvaranje mjeseca s 12 hotela traje ~18 s jer botovi igraju
+  redom, protuponuda s istom cijenom prolazi, „Moje igre" sporo (#227). Ništa ne blokira obilazak.
+- **Predaja graditelja (~00:15):** sesija se zatvara, nastavlja nova. Redoslijed: #226, plan se prenosi (#227.1),
+  protuponuda bez dobitka vraća 400 (#227.3), brže „Moje igre" (#227.6), pa seed i smoke; prije predaje čišćenje baze
+  i provjera imena prijašnjeg projekta. Simon radi paralelne botove (#227.2; Leon timu: „može, kreni").
 
 ## Sub 24.10. ~23:30 · demo spreman za obilazak 3
 
