@@ -49,9 +49,9 @@ Iskreno reći: **sučelje radi na primjer-podacima** (piše „primjer" na ekran
 > Zašto to treba? AI studentu napiše savršen esej o vođenju hotela, ali ga ne nauči što
 > reći ljutom gostu u sobi 204. Studenti hotelijerstva prvu pravu odluku s gostom donose tek na praksi, u zadnjem
 > semestru: 420 sati, ocjena prošao ili pao. Do tada uče uz AI, kao 40 do 50 % srednjoškolaca u Hrvatskoj. A tko
-> vježba s AI-jem koji mu daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat** (Bastani i sur.,
-> PNAS 2025.). Fakulteti već imaju simulacije, ali Cesim traži samo brojke, a ChatGPT glumi gosta pa sutra sve
-> zaboravi.
+> vježba s AI-jem koji mu daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat** (srednjoškolci,
+> Bastani i sur., PNAS 2025.); AI koji daje samo naputke nije štetio, a tako radi Simpolis. Fakulteti već imaju simulacije, ali Cesim traži samo brojke, a ChatGPT glumi gosta, ali nema
+> zajednički grad ni razred.
 >
 > Simpolis je grad u simulaciji: profesor ga napravi kao Kahoot, svaki student vodi svoj hotel, a svi hoteli dijele
 > iste turiste i isti novac. Do nedjelje obećavamo tri stvari:
@@ -98,16 +98,17 @@ prvo promijenili?". Odmah nakon: odgovor u `PROMISE.md`, izmjene u roadmap.
 
 ## Pitanja koja žiri uvijek pita (kratki odgovori)
 
-- **Zašto ne ChatGPT ili Cesim?** „Cesim te uči brojke hotela. ChatGPT ti glumi gosta, ali sutra sve zaboravi. Kod
+- **Zašto ne ChatGPT ili Cesim?** „Cesim te uči brojke hotela. ChatGPT ti glumi gosta, ali nema zajednički grad ni razred. Kod
   nas ono što kažeš gostu u lipnju vidiš u recenzijama u srpnju i u blagajni u kolovozu."
 - **Kako spriječiti prepisivanje?** Vlastite riječi vrijede više od klika (klik najviše 4/5), prepisan ponuđeni
   odgovor broji se kao klik, a bodove ne daje AI nego pravila.
 - **Tko plaća?** Fakultet licencom po kolegiju (prvi korisnik: kolegij na FMTU u Opatiji, gdje je Leonov HotelixSim
-  pred pilotom). Kasnije **tvrtke**: hotelske kuće već plaćaju vlastite akademije za nove ljude, pa im je jeftinije
-  da studenti vježbaju na njihovim situacijama prije prvog dana. AI trošak je ispod eura za razred od 30 studenata.
+  pred pilotom). Model: **hotelska kuća plaća scenarij, fakultet i studenti koriste besplatno**, prvi pilot na jednom
+  kolegiju FMTU-a. To je naša pretpostavka, tvrtke još nismo pitali. AI trošak je procjena od oko 2 eura po razredu.
 - **Je li ovo demo ili mock-up?** Sučelje je na primjer-podacima i to piše na ekranu; AI sudac radi na pravom modelu;
   baza i grad stižu do 18:45. Reći što je pripremljeno prije (istraživanje, starter) i što je AI.
 - **Privatnost?** U demou samo nadimci, AI ključ samo na poslužitelju, na ekranu piše što radi AI.
+- **Student zalijepi odgovor iz ChatGPT-a?** Ako je više od pola zalijepljeno, vrijedi najviše kao klik (4/5).
 - **Zašto Rijeka / tema?** Tema je učenje u doba AI-ja: Simpolis tjera studenta da razmišlja sam, a AI mu glumi
   ljude umjesto da mu piše odgovore.
 

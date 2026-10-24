@@ -9,7 +9,7 @@ mjesec), jasno tko plaća („kao AWS Academy, ali za hotelijerstvo") i jedna re
 
 ## Rečenica koju žiri treba prepričati
 
-> **„Cesim te uči brojke hotela. ChatGPT ti glumi gosta. Simpolis je jedini gdje ono što kažeš gostu u lipnju vidiš
+> **„Cesim te uči brojke hotela. ChatGPT ti glumi gosta. Simpolis je jedini koji smo našli gdje ono što kažeš gostu u lipnju vidiš
 > u recenzijama u srpnju i u blagajni u kolovozu."**
 
 ## Pravilo jezika
@@ -22,24 +22,24 @@ motorom". Usporedbe: **Sims ili Tycoon** (vodiš nešto i vidiš posljedice), **
 
 | Vrijeme | Što | Što govorimo (nacrt) |
 | --- | --- | --- |
-| 0:00–0:15 | Udica | „Tko je igrao Sims ili neki Tycoon? Zamislite to, ali za pravi posao. To je Simpolis: vodiš hotel, i svaka loša odluka se osjeti." |
-| 0:15–0:45 | Problem | „Ana studira hotelijerstvo u Opatiji. S pravim ljutim gostom prvi put razgovara tek na praksi, u zadnjem semestru. Do tada uči uz AI, koji joj napiše savršen odgovor. Istraživanje na tisuću učenika: tko vježba s AI-jem koji daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat**." |
+| 0:00–0:15 | Udica | „Danas AI odgovara na sve. U Simpolisu AI nikad ne odgovara umjesto tebe: on glumi gosta. Zamislite Sims ili Tycoon, ali za pravi posao: vodiš hotel, i svaka loša odluka se osjeti." |
+| 0:15–0:45 | Problem | „Ana studira hotelijerstvo u Opatiji. S pravim ljutim gostom prvi put razgovara tek na praksi, u zadnjem semestru. Do tada uči uz AI, koji joj napiše savršen odgovor. Istraživanje na tisuću srednjoškolaca: tko vježba s AI-jem koji daje gotove odgovore, na ispitu bez njega ima **17 % lošiji rezultat**. A AI koji daje samo naputke nije štetio. Tako radi Simpolis." |
 | 0:45–1:00 | Obećanja | „U subotu smo vam obećali tri stvari: pravi grad s pravom ekonomijom, odluke s ljudima umjesto gotovih odgovora, i razred kao Kahoot. Evo ih." |
 | 1:00–3:15 | **DEMO** | vidi „Tok demoa" |
 | 3:15–3:45 | Zašto uči | „AI ovdje ne piše odgovore. Glumi ljude i provjerava tvoje razmišljanje po rubrici, a bodove uvijek računaju pravila igre, isto za svakoga. Tvoje riječi vrijede više od klika, a prepisan odgovor vrijedi kao klik." |
-| 3:45–4:25 | Tko plaća | „Kao AWS Academy, ali za hotelijerstvo: **tvrtka plaća, fakultet i studenti koriste besplatno.** Hotelska kuća postavi scenarij po svom hotelu (sezona, cijene, osoblje), studenti vježbaju baš njezin posao, a tko želi, može joj pokazati svoj rezultat i dobiti poziv na praksu. Valamar i Maistra već plaćaju stipendije i programe za mlade; ovo im je jeftiniji i mjerljiviji put. AI trošak je ispod eura po razredu." |
+| 3:45–4:25 | Tko plaća | „Kao AWS Academy, ali za hotelijerstvo: **tvrtka plaća, fakultet i studenti koriste besplatno.** Hotelska kuća postavi scenarij po svom hotelu (sezona, cijene, osoblje), studenti vježbaju baš njezin posao, a tko želi, može joj pokazati svoj rezultat i dobiti poziv na praksu. Valamar i Maistra već ulažu u stipendije i programe za mlade (to je naša pretpostavka za pilot, nismo ih još pitali). AI trošak je procjena od oko 2 eura po razredu." |
 | 4:25–4:50 | Vizija i poziv | „Danas hotel. Sutra agencija, dobavljač i banka u istom gradu. Tražimo **jedan kolegij i jednu hotelsku kuću za pilot.**" + rečenica za prepričati + QR |
 | 4:50–5:00 | | Stani. Nasmiješi se. Čekaj pitanje. |
 
 ## Tok demoa (2:15, živi link, video kao rezerva)
 
 1. **Kahoot (25 s):** profesor na projektoru napravi grad, pojavi se veliki kod. **Član žirija ulazi mobitelom** i
-   dobije svoj hotel (iznenađenje).
+   dobije svoj hotel (iznenađenje). **Pravilo:** ako ulaz ne uspije za 20 s, ulazi Rino sa svog mobitela i idemo dalje.
 2. **Ljudi, ne gotovi odgovori (45 s):** gost Marko iz sobe 204 je ljut, klima ne radi. Ana mu odgovori svojim
    riječima, AI sudac pokaže što je dobro napravila, a što nije.
 3. **Pravi grad (45 s, wow):** Ana spusti cijenu, profesor zatvori mjesec, i **grad se promijeni na projektoru**:
    Anin hotel se napuni, susjedni ostane prazan, novac i recenzije se pomaknu, vijest u feedu.
-4. **Mentor (20 s):** umjesto da kaže rješenje, pita: „Što bi sljedeći put napravila drukčije i zašto?"
+4. **Mentor (20 s):** umjesto da kaže rješenje, pita: „Što bi sljedeći put napravila drukčije i zašto?" (ako kasni: snimka zaslona)
 
 ## Ako pitaju za tvrtke i podatke studenata
 
@@ -74,10 +74,12 @@ Annex III 4(a); vidi `simpolis-research/company-college-partnerships.md`.)
 
 - **Zlouporaba / prepisivanje?** Prepisan odgovor broji se kao klik; zalijepljen tekst se vidi; bodove računaju pravila, ne AI.
 - **Kako zarađuje?** Kao AWS Academy: tvrtka (hotelska kuća) plaća scenarij i licence, fakultet i studenti koriste besplatno; prvi pilot na kolegiju FMTU-a (u gospodarskom vijeću FMTU-a već su Valamar, Maistra i Arena). AI trošak: oko 0,003 $ po presudi, oko 0,80 $ za razred od 30 studenata s 8 situacija (mjereno 24.10.).
-- **Zašto ne Cesim ili ChatGPT?** Rečenica za prepričati.
-- **Je li ovo demo ili mock-up?** Živi link, pravi podaci u bazi; reći naglas što je pripremljeno prije (istraživanje, starter) i što je AI.
+- **Zašto ne Cesim ili ChatGPT?** Rečenica za prepričati. ChatGPT pamti razgovore, ali nema zajednički grad, novac ni razred.
+- **Je li ovo demo ili mock-up?** Reći točno ono što je istina u nedjelju (živi link; baza samo ako stvarno radi), što je pripremljeno prije (istraživanje, starter) i što je AI.
 - **Što ako AI ne radi?** Igra teče dalje: presuda daje 3/5, lik ima fiksnu rečenicu, mentor fiksno pitanje.
-- **Privatnost?** Nadimci, sve na EU poslužiteljima (provjeriti Vercel regiju i Neon Frankfurt), AI ne odlučuje o ocjeni.
+- **Privatnost?** Samo nadimci; baza u Frankfurtu; AI pozivi idu modelu (Anthropic, SAD) bez osobnih podataka; AI ne odlučuje o ocjeni.
+- **Student zalijepi odgovor iz ChatGPT-a?** Ako je više od pola odgovora zalijepljeno, vrijedi najviše kao klik (4/5), a profesor to vidi.
+- **Može li se vjerovati AI sucu?** Sudac samo kaže koji su kriteriji ispunjeni i zašto, obrazloženje vidi student i profesor, a bodove računaju ista pravila za sve.
 
 ## Otvoreno
 
