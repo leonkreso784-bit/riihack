@@ -34,3 +34,18 @@ Leon ([@leonkreso784-bit](https://github.com/leonkreso784-bit)), Simon ([@simons
 - [PREDAJA.md](PREDAJA.md): predložak dokumentacije i pitcha
 - **[Plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md)**: tko radi što, zadaci i prekretnice
 - [RESEARCH.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/RESEARCH.md): istraživanje (prošla izdanja, žiri, Rijeka, pitch) i ažurni vodiči za stack
+
+## Pokretanje
+
+Treba Node 24 i npm.
+
+```bash
+npm install
+cp .env.example .env.local   # vrijednosti dobiješ od Leona, nikad u git
+npm run db:push              # shema na zajedničku Neon bazu
+npm run dev                  # http://localhost:3000
+```
+
+- Sučelje bez backenda: u `.env.local` postavi `NEXT_PUBLIC_USE_MOCK=1`.
+- Provjere prije svakog PR-a: `npm run typecheck && npm run lint && npm test && npm run build`.
+- Demo igra: `npm run seed:demo`; provjera cijelog toka: `npm run smoke`.
