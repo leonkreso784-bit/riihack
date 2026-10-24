@@ -74,7 +74,7 @@ const COMPANY: CompanyView = {
   id: "c-ana",
   hotelName: "Vila Ana",
   playerName: "Ana Kovač",
-  templateId: "rijeka-3",
+  templateId: "rijeka-centar",
   place: "Rijeka",
   stars: 3,
   roomsCount: MOCK_ROOMS.length,
@@ -212,6 +212,8 @@ const FINANCES: RoundFinance[] = [
     costs: 13000,
     profit: 18700,
     cashAfter: 38700,
+    // Same items the engine settles (#144): staff 6.300 + rooms 16 × 300 + marketing 1.000 + Pekara 900 = 13.000.
+    breakdown: { revenueOwn: 31700, revenueContracts: 0, costStaff: 6300, costRooms: 4800, costMarketing: 1000, costContracts: 900, costInvestments: 0 },
   },
 ];
 
