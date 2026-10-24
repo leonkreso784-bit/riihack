@@ -70,12 +70,12 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen (387 testova, smoke 14/14) · produkcija https://riihack.vercel.app READY (sub 21:11) na pravim podacima; `/api/me`, `/api/me/mail`, `/api/prof/games` i `/api/prof/library` 401 bez kolačića
-- **Zadnja spajanja (sub 20:40–21:11):** #164 R13 pošta, #165 L17 knjižnica, #166 dvoklik, #168 R8 uvid u studenta, #173 sitnice, #170 S12 knjižnica na situacijama, #169 L16 ekrani računa, #177 L18 poruke među hotelima (`SendMailRequest` u `types.ts`); dokumentacija #171, #175
+- **CI na `main`-u:** ✅ zelen (414 testova) · produkcija https://riihack.vercel.app READY (sub 21:52, `f5f373f`), smoke na produkciji 19/19
+- **Zadnja spajanja (sub 21:10–21:51):** #170 S12 knjižnica na situacijama, #169 L16 ekrani računa, #177 L18 poruke među hotelima, #176 popravci iz revizije, #174 i #179 Tokovi, #186 profesor samo preko računa, #189 `/profesor/knjiznica`, #190 `rubric?`/`effects?`, #184 javni prihod i dobit tuđih hotela, #191 L8 demo seed i smoke val 3, #188 skripta za čišćenje (bez `--apply` bez Leona); dokumentacija #180–#185
 - **Red čekanja:** prazan
 - **Env na Vercelu:** `NEXT_PUBLIC_USE_MOCK=0` (Production, Preview), `BETTER_AUTH_SECRET` (Production, Preview) i `BETTER_AUTH_URL` (Production) postavljeni sub ~20:25
-- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917
-- **Zadnje ažurirano:** sub 21:15
+- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne)
+- **Zadnje ažurirano:** sub 21:55
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
