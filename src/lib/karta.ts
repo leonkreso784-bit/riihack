@@ -27,58 +27,106 @@ export type PublicProfile = {
   sample: { profile: boolean; ratings: boolean; price: boolean; finance: boolean };
 };
 
-export type LatLng = [number, number];
-
 export const MONTHS = ["lipanj", "srpanj", "kolovoz", "rujan", "listopad", "studeni"];
 export const monthName = (round: number) => MONTHS[(round - 1) % MONTHS.length];
 
-export const PLACES: Record<string, LatLng> = {
-  Rijeka: [45.3271, 14.4422],
-  Opatija: [45.3376, 14.3052],
-  Omišalj: [45.211, 14.553],
-  "Mali Lošinj": [44.531, 14.468],
-  Crikvenica: [45.1765, 14.6925],
-  Rab: [44.757, 14.76],
-};
+// ---- izometrijska karta (smjer D, "društvena igra") ----
+// Teren je mreža GRID x GRID polja: . more, s pijesak, g trava, h/H brdo (terase), p mol.
+export const GRID = 18;
+export const TERRAIN_ROWS = [
+  "..................",
+  ".....ssss.........",
+  "...sgghhhhggss....",
+  "..sgghHHHhgggss...",
+  "..sggghHHhggsss...",
+  ".sgggghhhgggsss...",
+  ".sggggggggggsss...",
+  ".sggggggggggss....",
+  ".ssggggggggs......",
+  "..ssggggp..gss....",
+  "...sggggp..ss.....",
+  "........p.........",
+  "..sgggs...sggss...",
+  ".sggggss..sgggss..",
+  ".sgggggss.sgggggs.",
+  "..sggggss..sgggss.",
+  "...sssss...ssss...",
+  "..................",
+];
+export const terrainCell = (x: number, y: number) => (x < 0 || y < 0 || x >= GRID || y >= GRID ? "." : (TERRAIN_ROWS[y]?.[x] ?? "."));
 
-export function placeLatLng(place: string): LatLng {
-  const key = Object.keys(PLACES).find((k) => place === k || place.startsWith(k));
-  return PLACES[key ?? "Rijeka"];
+export type DistrictId = "luka" | "setnica" | "plaza" | "brdo" | "ana" | "otok";
+export type Slot = [number, number]; // središte hotela u koordinatama polja (zgrada zauzima +-HOTEL_HALF)
+export const HOTEL_HALF = 0.66;
+export const DISTRICTS: { id: DistrictId; name: string; anchor: Slot; slots: Slot[] }[] = [
+  { id: "luka", name: "Stara luka", anchor: [8, 8], slots: [[8, 8], [8, 6.5], [9.5, 8], [6.5, 7], [9.5, 6.5], [6, 10]] },
+  { id: "setnica", name: "Šetnica", anchor: [3.5, 7.5], slots: [[3.5, 7.5], [2, 7.5], [3.5, 9], [4, 6], [5.5, 5.5], [4, 4.5]] },
+  { id: "plaza", name: "Plaža Zlatna", anchor: [12.5, 5], slots: [[12.5, 5], [11, 5], [12.5, 6.5], [14, 5], [12, 3.5], [11, 6.5], [12, 10]] },
+  { id: "brdo", name: "Brdo", anchor: [8, 3.5], slots: [[8, 3.5], [6.5, 3.5], [8, 2], [8, 5], [9.5, 4], [6.5, 2], [5, 3]] },
+  { id: "ana", name: "Otok Sveta Ana", anchor: [4.5, 14], slots: [[4.5, 14], [3, 14], [6, 14]] },
+  { id: "otok", name: "Mali otok", anchor: [13, 14], slots: [[13, 14], [11.5, 14], [14.5, 15]] },
+];
+export const districtById = (id: DistrictId) => DISTRICTS.find((d) => d.id === id)!;
+export const SLOT_CAPACITY = DISTRICTS.reduce((n, d) => n + d.slots.length, 0);
+
+const PLACE_DISTRICT: [string, DistrictId][] = [["Rijeka", "luka"], ["Opatija", "setnica"], ["Crikvenica", "plaza"], ["Mali Lošinj", "ana"], ["Rab", "otok"], ["Omišalj", "brdo"], ["Krk", "brdo"]];
+export function districtOfPlace(place: string): DistrictId {
+  return PLACE_DISTRICT.find(([k]) => place === k || place.startsWith(k))?.[1] ?? "luka";
 }
 
-// Hoteli u istom mjestu raspoređeni su u mali krug (~0,006°) po indeksu.
-export function hotelPositions(hotels: { companyId: string; place: string }[]): Record<string, LatLng> {
-  const byPlace = new Map<string, string[]>();
-  for (const h of hotels) byPlace.set(placeLatLng(h.place).join(), [...(byPlace.get(placeLatLng(h.place).join()) ?? []), h.companyId]);
-  const out: Record<string, LatLng> = {};
-  for (const h of hotels) {
-    const [lat, lng] = placeLatLng(h.place);
-    const group = byPlace.get(`${lat},${lng}`) ?? [];
-    const n = group.length;
-    if (n < 2) {
-      out[h.companyId] = [lat, lng];
-      continue;
+export type Lot = { slot: Slot; district: DistrictId };
+const dist = (a: Slot, b: Slot) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+
+// Hotelima se parcele dodjeljuju stabilno (po companyId, ne po poretku ljestvice): svaki ide u okrug svog mjesta,
+// a kad je okrug pun, u najbliži okrug sa slobodnim mjestom. Preko kapaciteta parcele se ponavljaju s pomakom.
+export function allocateLots(hotels: { companyId: string; place: string }[]): Record<string, Lot> {
+  const used = new Map<DistrictId, number>(DISTRICTS.map((d) => [d.id, 0]));
+  const out: Record<string, Lot> = {};
+  const sorted = [...hotels].sort((a, b) => (a.companyId < b.companyId ? -1 : a.companyId > b.companyId ? 1 : 0));
+  sorted.forEach((h, i) => {
+    const want = districtById(districtOfPlace(h.place));
+    const free = DISTRICTS.filter((d) => (used.get(d.id) ?? 0) < d.slots.length).sort((a, b) => dist(a.anchor, want.anchor) - dist(b.anchor, want.anchor));
+    const d = free.includes(want) ? want : free[0];
+    if (!d) {
+      const wrap = DISTRICTS[i % DISTRICTS.length];
+      const base = wrap.slots[Math.floor(i / DISTRICTS.length) % wrap.slots.length];
+      out[h.companyId] = { slot: [base[0] + 0.35, base[1] + 0.35], district: wrap.id };
+      return;
     }
-    const a = (2 * Math.PI * group.indexOf(h.companyId)) / n;
-    out[h.companyId] = [lat + 0.006 * Math.sin(a), lng + 0.009 * Math.cos(a)];
+    const n = used.get(d.id) ?? 0;
+    used.set(d.id, n + 1);
+    out[h.companyId] = { slot: d.slots[n], district: d.id };
+  });
+  return out;
+}
+
+// Gradske tvrtke imaju fiksne parcele po ključnoj riječi iz id-a/imena (pravi sadržaj: agencija-adria; mock: b-adria).
+export const BIZ_LOTS: [string, Slot][] = [
+  ["adria", [7.5, 9.5]],
+  ["ucka", [2.5, 5.5]],
+  ["praonica", [5.5, 8.5]],
+  ["pekara", [9.5, 2.5]],
+  ["zastita", [11.5, 8.5]],
+  ["vinarija", [7.5, 14.5]],
+];
+export const BIZ_EXTRA_LOTS: Slot[] = [[13.5, 2.5], [3.5, 2.5], [13.5, 9.5], [15.5, 13.5]];
+export function businessLots(bs: Pick<CityBusiness, "id" | "name">[]): Record<string, Slot> {
+  const out: Record<string, Slot> = {};
+  let extra = 0;
+  for (const b of bs) {
+    const id = `${b.id} ${b.name}`.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const hit = BIZ_LOTS.find(([k]) => id.includes(k));
+    out[b.id] = hit ? hit[1] : BIZ_EXTRA_LOTS[extra++ % BIZ_EXTRA_LOTS.length];
   }
   return out;
 }
 
-// Gradske tvrtke: ključ je dio id-a (pravi sadržaj: agencija-adria; mock: b-adria).
-const BIZ_COORDS: [string, LatLng][] = [
-  ["adria", [45.329, 14.437]],
-  ["ucka", [45.288, 14.204]],
-  ["praonica", [45.342, 14.4]],
-  ["pekara", [45.333, 14.457]],
-  ["zastita", [45.32, 14.465]],
-  ["vinarija", [45.075, 14.674]],
-];
-export function businessLatLng(b: Pick<CityBusiness, "id" | "name">, index = 0): LatLng {
-  const id = `${b.id} ${b.name}`.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
-  const hit = BIZ_COORDS.find(([k]) => id.includes(k));
-  if (hit) return hit[1];
-  return [45.3271 + 0.01 * ((index % 3) - 1), 14.4422 + 0.012 * (Math.floor(index / 3) + 1)]; // nepoznata: blizu Rijeke
+// Visina zgrade iz javnog novca na računu, u odnosu na najbogatiji hotel grada.
+export const HOTEL_H_MIN = 34;
+export const HOTEL_H_MAX = 90;
+export function hotelHeight(cash: number, maxCash: number): number {
+  if (cash <= 0 || maxCash <= 0) return HOTEL_H_MIN;
+  return Math.round(HOTEL_H_MIN + (HOTEL_H_MAX - HOTEL_H_MIN) * Math.min(1, cash / maxCash));
 }
 
 export const BIZ_META: Record<BusinessKind, { label: string; letter: string; nkd: string }> = {

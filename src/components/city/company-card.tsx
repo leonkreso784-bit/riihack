@@ -14,7 +14,7 @@ function Primjer() {
   return <span title="Uzorak: stvarni podatak još nije u API-ju" className="ml-1.5 rounded-full bg-sand px-1.5 py-px align-middle text-[10px] font-bold text-foreground">primjer</span>;
 }
 
-export function CompanyCard({ profile: p, all, onClose }: { profile: PublicProfile; all: PublicProfile[]; onClose: () => void }) {
+export function CompanyCard({ profile: p, all, district, onClose }: { profile: PublicProfile; all: PublicProfile[]; district: string; onClose: () => void }) {
   const [tab, setTab] = useState(0);
   const blocked = inBlockade(p.cash);
   return (
@@ -32,7 +32,7 @@ export function CompanyCard({ profile: p, all, onClose }: { profile: PublicProfi
           {p.isYou && <span className="ml-2 rounded-full bg-sand px-2 py-0.5 align-middle text-[11px] font-bold">Tvoj hotel</span>}
         </h3>
         <p className="mt-1 text-[13px] text-muted-foreground">
-          {"★".repeat(p.stars)} · Hotel · {p.place} · {p.student}{" "}
+          {"★".repeat(p.stars)} · Hotel · {district} · {p.student}{" "}
           <span className={cn("ml-1 rounded-full px-2 py-0.5 text-[11px] font-bold", blocked ? "bg-down-soft text-down" : "bg-mint text-up")}>{blocked ? "U blokadi" : "Aktivan"}</span>
         </p>
       </div>
@@ -46,7 +46,7 @@ export function CompanyCard({ profile: p, all, onClose }: { profile: PublicProfi
       <div className="min-h-0 flex-1 overflow-y-auto px-5 pb-5 pt-3.5 text-[13px]">
         {tab === 0 && <Pregled p={p} />}
         {tab === 1 && <Financije p={p} all={all} />}
-        {tab === 2 && <Registar p={p} />}
+        {tab === 2 && <Registar p={p} district={district} />}
         {!p.isYou && <p className="mt-4 rounded-lg bg-sand/60 px-3 py-2 text-[11px]">Skica: za tuđe hotele su ocjene, cijena i financije uzorak (oznaka &bdquo;primjer&ldquo;). Novac na računu, mjesto, igrač i ugovori su stvarni.</p>}
       </div>
     </div>
@@ -143,12 +143,12 @@ function Financije({ p, all }: { p: PublicProfile; all: PublicProfile[] }) {
   );
 }
 
-function Registar({ p }: { p: PublicProfile }) {
+function Registar({ p, district }: { p: PublicProfile; district: string }) {
   const rows: [string, React.ReactNode][] = [
     ["Tvrtka", `${p.name} d.o.o.`],
     ["Matični broj u igri", p.simId],
     ["Status", inBlockade(p.cash) ? "Aktivan, račun u blokadi" : "Aktivan"],
-    ["Sjedište", p.place],
+    ["Sjedište", district],
     ["Pravni oblik", "društvo s ograničenom odgovornošću"],
     ["Djelatnost (NKD)", "55.10 Hoteli i sličan smještaj"],
     ["Osnivač i direktor", p.student],
