@@ -280,6 +280,16 @@ export async function listFinanceRows(companyId: string): Promise<FinanceRow[]> 
   return db.select().from(finances).where(eq(finances.companyId, companyId)).orderBy(asc(finances.round));
 }
 
+/** Obračuni svih tvrtki igre (za javne profile na karti, jedan upit umjesto po tvrtki). */
+export async function listWorldFinances(worldId: string): Promise<FinanceRow[]> {
+  const rows = await db
+    .select({ finance: finances })
+    .from(finances)
+    .innerJoin(companies, eq(companies.id, finances.companyId))
+    .where(eq(companies.worldId, worldId));
+  return rows.map((r) => r.finance);
+}
+
 /** Zadnji događaji igre zadanih vrsta, najnoviji prvo. */
 export async function listEvents(worldId: string, types: string[], limit: number): Promise<EventRow[]> {
   return db

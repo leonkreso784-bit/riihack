@@ -97,6 +97,7 @@ export function toFinance(row: FinanceRow): RoundFinance {
     profit: row.profit,
     cashAfter: row.cashAfter,
     investments: row.investments,
+    ...(row.breakdown && { breakdown: row.breakdown }),
   };
 }
 

@@ -63,6 +63,32 @@ export async function requireProf(worldId: string): Promise<WorldRow> {
   return rows[0];
 }
 
+/** Igra za člana: igrač čija je tvrtka u toj igri ili profesor te igre (javni podaci, npr. karta); inače 401. */
+export async function requireWorldMember(worldId: string): Promise<WorldRow> {
+  const jar = await cookies();
+  const token = jar.get(PLAYER_COOKIE)?.value;
+  const code = jar.get(PROF_COOKIE)?.value;
+  if (isUuid(worldId) && token) {
+    const rows = await db
+      .select({ world: worlds })
+      .from(players)
+      .innerJoin(companies, eq(players.companyId, companies.id))
+      .innerJoin(worlds, eq(companies.worldId, worlds.id))
+      .where(and(eq(players.tokenHash, await hashCode(token)), eq(worlds.id, worldId)))
+      .limit(1);
+    if (rows[0]) return rows[0].world;
+  }
+  if (isUuid(worldId) && code) {
+    const rows = await db
+      .select()
+      .from(worlds)
+      .where(and(eq(worlds.id, worldId), eq(worlds.profCodeHash, await hashCode(normalizeCode(code)))))
+      .limit(1);
+    if (rows[0]) return rows[0];
+  }
+  throw new HttpError(401, "Uđi u igru kodom");
+}
+
 /** Tijelo zahtjeva kao JSON objekt; neispravan JSON ili nešto drugo od objekta → 400. */
 export async function readJson(req: Request): Promise<Record<string, unknown>> {
   let body: unknown;

@@ -9,7 +9,7 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 ---
 
 Odluke ADR-033 do 036 su val 3; zadaci, ugovor i raspored su u planu vala 3
-([#134](https://github.com/leonkreso784-bit/riihack/pull/134), 🟨 čeka spajanje).
+([#134](https://github.com/leonkreso784-bit/riihack/pull/134), spojen 19:16; [plan vala 3](../superpowers/plans/2026-10-24-simpolis-val-3.md)).
 
 <a id="adr-036"></a>
 ## ADR-036 · Profesorski računi (Better Auth); prijava kodom ostaje
