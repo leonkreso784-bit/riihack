@@ -63,7 +63,7 @@ export default function GamePage() {
 
         <div className="space-y-5">
           <div className="anim-rise grid grid-cols-2 gap-3 [--i:3]">
-            <StatCard icon={Wallet} label="Stanje računa" value={<CountUp value={company.cash} />} unit="€" tone="accent" note="obračun kad profesor zatvori mjesec" />
+            <StatCard icon={Wallet} label="Stanje računa" value={<CountUp value={company.cash} />} unit="€" tone="accent" note={world.status === "finished" ? "konačno stanje, sezona je gotova" : "obračun kad profesor zatvori mjesec"} />
             <StatCard icon={BedDouble} label="Popunjenost" value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note={settled} />
             <StatCard icon={ChartColumn} label="Dobit" value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note={settled} />
             <StatCard icon={Moon} label="Noćenja" value={june ? <CountUp value={june.nights + june.contractNights} /> : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />

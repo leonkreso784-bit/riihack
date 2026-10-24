@@ -72,7 +72,7 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
               {short ? charsLeft(MIN_OWN_ANSWER_CHARS - length) : `${length} / ${MAX_OWN_ANSWER_CHARS} znakova`}
             </p>
             {error && <FormError key={error}>{error}</FormError>}
-            <SubmitButton busy={busy} busyText="Mentor čita tvoj odgovor…">Pošalji mentoru</SubmitButton>
+            <SubmitButton busy={busy} disabled={short} busyText="Mentor čita tvoj odgovor…">Pošalji mentoru</SubmitButton>
           </form>
         )
       )}

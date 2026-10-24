@@ -25,7 +25,7 @@ export function VerdictCard({
       <div className="flex items-center justify-between gap-3">
         <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
           {answer.mode === "own" ? <PenLine className="size-4" aria-hidden /> : <MousePointerClick className="size-4" aria-hidden />}
-          {answer.mode === "own" ? "Tvoj odgovor" : answer.copied ? "Prepisani ponuđeni odgovor" : "Ponuđeni odgovor"}
+          {answer.mode === "own" ? "Tvoj odgovor" : answer.mode === "none" ? "Bez odgovora" : answer.copied ? "Prepisani ponuđeni odgovor" : "Ponuđeni odgovor"}
         </p>
         <Pill tone={tone} className="px-3 py-1 text-base">
           {answer.quality} / 5
