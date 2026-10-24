@@ -97,6 +97,8 @@ function wordStream(text: string, ms = 40): ReadableStream<string> {
 const mockReport = MOCK_ME.reports[0];
 // Mock round ends 10 minutes after the page loads; serverNow moves with the clock like the real API.
 const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
+// After a mock join the "professor" starts the game 8 s later, so the waiting room can be seen in the demo.
+let mockLobbyUntil = 0;
 
 const mockApi: Api = {
   createWorld: () => wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" }),
@@ -107,10 +109,18 @@ const mockApi: Api = {
   finish: () => wait({ ...MOCK_PROF, world: { ...MOCK_PROF.world, status: "finished" } }),
   companyDetail: () => wait(MOCK_DETAIL),
   join: () => {
+    mockLobbyUntil = Date.now() + 8000;
     const c = MOCK_ME.company;
     return wait({ companyId: c.id, hotelName: c.hotelName, place: c.place, stars: c.stars });
   },
-  me: () => wait({ ...MOCK_ME, world: { ...MOCK_ME.world, roundDeadline: MOCK_DEADLINE, serverNow: new Date().toISOString() } }),
+  me: () => {
+    const lobby = Date.now() < mockLobbyUntil;
+    const world = { ...MOCK_ME.world, serverNow: new Date().toISOString() };
+    return wait({
+      ...MOCK_ME,
+      world: lobby ? { ...world, status: "lobby", round: 0, roundDeadline: null } : { ...world, roundDeadline: MOCK_DEADLINE },
+    });
+  },
   rooms: () => wait(MOCK_ROOMS),
   answer: (_id, req) =>
     wait(
