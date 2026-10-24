@@ -52,11 +52,6 @@ export default function ProfSignIn() {
             Registriraj se
           </Link>
         </p>
-        <p>
-          <Link href="/profesor" className="font-semibold text-secondary-foreground hover:underline">
-            Imaš samo profesorski kod?
-          </Link>
-        </p>
       </div>
     </div>
   );
