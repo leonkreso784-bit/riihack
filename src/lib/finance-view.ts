@@ -1,7 +1,6 @@
-// Cost and revenue breakdown of a month, rebuilt in the browser from what the API already sends. Same items as the
-// engine (economy.ts roundFinance): staff + fixed per room + marketing + contracts + department investments.
-// ponytail: marketing is the remainder (costs minus the rest), because past months' plans are not in MeResponse.
-// If the engine adds a cost item, it shows up here as marketing; then ask Leon for the breakdown in RoundFinance.
+// Cost and revenue breakdown of a month. The server sends it (RoundFinance.breakdown, #144); months settled before that
+// have only totals, so for them it is rebuilt from the same items as the engine (economy.ts roundFinance), with
+// marketing as the remainder because past months' plans are not in MeResponse.
 import { HOTELS } from "@/content";
 import { FIXED_COST_PER_ROOM } from "./rules";
 import type { CompanyView, ContractView, RoundFinance } from "./types";
@@ -18,6 +17,12 @@ export const activeIn = (contracts: ContractView[], round: number) =>
 export const staffCostOf = (company: Pick<CompanyView, "templateId">) => HOTELS.find((h) => h.id === company.templateId)?.staffCost ?? 0;
 
 export function breakdown(f: RoundFinance, company: Pick<CompanyView, "templateId" | "roomsCount">, contracts: ContractView[]): Breakdown {
+  const b = f.breakdown;
+  if (b)
+    return {
+      revenue: { rooms: b.revenueOwn, contracts: b.revenueContracts },
+      costs: { staff: b.costStaff, rooms: b.costRooms, marketing: b.costMarketing, contracts: b.costContracts, investments: b.costInvestments },
+    };
   const active = activeIn(contracts, f.round);
   const contractRevenue = Math.min(f.revenue, active.reduce((s, c) => s + c.nights * c.pricePerNight, 0));
   const staff = staffCostOf(company);

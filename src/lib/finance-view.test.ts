@@ -18,9 +18,13 @@ describe("breakdown", () => {
       { nights: 300, contractNights: 40, capacityNights: 480, occupancyPct: 71, marketSharePct: 20 } as never,
       { round: 2, price: 90, marketing: 1200, staffCost: hotel.staffCost, roomsCount: 16, cashBefore: 20000, contracts: [k as never], investments: 2000 },
     );
-    const b = breakdown(f, { templateId: hotel.id, roomsCount: 16 }, [k]);
-    expect(b.costs).toEqual({ staff: hotel.staffCost, rooms: 16 * FIXED_COST_PER_ROOM, marketing: 1200, contracts: 900, investments: 2000 });
-    expect(b.revenue).toEqual({ rooms: 300 * 90, contracts: 40 * 70 });
+    const expected = {
+      costs: { staff: hotel.staffCost, rooms: 16 * FIXED_COST_PER_ROOM, marketing: 1200, contracts: 900, investments: 2000 },
+      revenue: { rooms: 300 * 90, contracts: 40 * 70 },
+    };
+    // From the server's breakdown, and rebuilt for an old month that has only totals: both the same.
+    expect(breakdown(f, { templateId: hotel.id, roomsCount: 16 }, [k])).toEqual(expected);
+    expect(breakdown({ ...f, breakdown: undefined }, { templateId: hotel.id, roomsCount: 16 }, [k])).toEqual(expected);
   });
 
   it("counts a contract only in its active months", () => {
