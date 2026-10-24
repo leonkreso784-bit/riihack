@@ -8,6 +8,16 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-017"></a>
+## ADR-017 · Ugovor i situacije spajaju se samo na Leonovo „spoji"
+**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [ADR-015](#adr-015), [ADR-011](#adr-011), [#75](https://github.com/leonkreso784-bit/riihack/pull/75)
+
+**Kontekst.** Integrator spaja automatski sve što prođe provjeru (ADR-015), ali neke datoteke mijenjaju temelj za
+sve ostale: ugovor tipova i pravila, ovisnosti i sadržaj po kojem AI sudi.
+**Odluka.** PR-ovi koji diraju `src/lib/types.ts`, `src/lib/rules.ts`, `package.json` ili `package-lock.json`, te
+L6 (8 situacija s rubrikama, #75), spajaju se samo na Leonovo „spoji".
+**Posljedice.** Ostalo integrator i dalje spaja sam.
+
 <a id="adr-016"></a>
 ## ADR-016 · `CharacterInput` dobiva `messageNo?` i `maxMessages?` kao neobavezna polja
 **Datum:** 24.10. ~14:40 · **Status:** ✅ (Leon) · **Vezano:** [#42](https://github.com/leonkreso784-bit/riihack/pull/42), [#63](https://github.com/leonkreso784-bit/riihack/pull/63), [ADR-011](#adr-011)

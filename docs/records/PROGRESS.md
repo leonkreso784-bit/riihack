@@ -6,6 +6,16 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 15:00–15:10 · L4 živ, motor B i C
+
+- **Leon:** L4 API ulaza, profesora i soba (#74, 15:09): `/api/me` bez kolačića vraća 401, dakle ruta postoji. Motor
+  B (L5, #70) i motor C s ekonomijom grada (L9, #68) te sadržaj gradskih tvrtki (L10, #69).
+- **Simon:** pitch i obilazak (#67), tema učenja (#72). Otvoren S3 lik i ruta chat (#76).
+- **Rino:** animacije sučelja (#73).
+- **Dokumentacija:** na `main`-u (#71).
+- **Odluka:** ugovor i L6 spajaju se samo na Leonovo „spoji" ([ADR-017](DECISIONS.md#adr-017)).
+- **Otvoreno:** #75 L6 situacije (čeka Leona), #76 S3.
+
 ## Sub 24.10. 14:35–15:00 · baza živa, L1–L3, R1–R3
 
 - **Leon:** Neon baza `simpolis-db` (Frankfurt, besplatni plan) preko Vercel Marketplacea, `DATABASE_URL` na Vercelu
