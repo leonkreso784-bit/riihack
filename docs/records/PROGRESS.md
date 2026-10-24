@@ -6,6 +6,31 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 18:50–19:05 · odjeli na `main`-u, ulaz poveznicom
+
+- **Spojeno:** ugovor odjela (#132, 18:54, Leonovo „spoji") i motor odjela L13 (#137, 18:59; 301 test, smoke 14/14),
+  pa odjeli imaju pravo ulaganje ([ADR-032](DECISIONS.md#adr-032)). Rinov `/ulaz?kod=…` (#138, 18:59), dokumentacija
+  #136. Produkcija READY.
+- **Čeka Leona:** plan vala 3 (#134); paket `uqr` za QR na profesorovoj čekaonici (drugi dio #138).
+
+## Sub 24.10. ~18:50 · val 3
+
+- **Odluke (Leon):** pošta s agencijama i pregovaranje ([ADR-033](DECISIONS.md#adr-033)), poruke i suradnja među
+  hotelima ([ADR-034](DECISIONS.md#adr-034)), tuđi hotel samo s javnim podacima ([ADR-035](DECISIONS.md#adr-035)),
+  profesorski računi ([ADR-036](DECISIONS.md#adr-036)).
+- **Plan vala 3** (zadaci L13–L19, S10–S12, R11–R15) u [#134](https://github.com/leonkreso784-bit/riihack/pull/134),
+  čeka spajanje.
+- **Spojeno:** Simon uskladio ROADMAP i pitch s ADR-031 (#131), dokumentacija #133.
+
+## Sub 24.10. 18:35–18:50 · bez zamrzavanja, odjeli s ulaganjem, popravci pred obilazak 2
+
+- **Odluke (Leon):** nema zamrzavanja koda, gradi se do predaje ([ADR-031](DECISIONS.md#adr-031)); odjeli s pravim
+  ulaganjem kroz budžet u planu mjeseca ([ADR-032](DECISIONS.md#adr-032)).
+- **Spojeno:** Rinovi popravci prije obilaska M2 (#127, 18:36; dvije boje upisane izravno, ne kroz tokene), Simonov
+  S8 playbook i AI prijedlog na stranici situacija (#129, 18:45; 292 testa), dokumentacija #130.
+- **Odjeli:** shema dodana aditivnim SQL-om (graditelj); ugovor #132 čeka Leonovo „spoji". Slijede motor i API
+  (graditelj) i stranica odjela (Rino).
+
 ## Sub 24.10. 18:10–18:30 · pred obilazak 2
 
 - **Ime prijašnjeg projekta:** čisti Rino; kod u #107, plan slijedi

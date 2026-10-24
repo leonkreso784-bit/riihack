@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Plus, Send } from "lucide-react";
+import { ArrowLeft, Download, Plus, Send, Upload } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { ROUND_LABELS } from "@/lib/rules";
-import type { DispatchView, ProfStateResponse, SituationSource, SituationSummary } from "@/lib/types";
+import type { DispatchView, Playbook, ProfStateResponse, SituationSource, SituationSummary } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
 import { Pill, type Tone } from "@/components/pill";
@@ -32,6 +32,9 @@ export default function ProfSituations() {
   const [sending, setSending] = useState<SituationSummary | null>(null);
   const [switching, setSwitching] = useState(false);
   const [switchError, setSwitchError] = useState<string | null>(null);
+  const [importing, setImporting] = useState(false);
+  const [playbookError, setPlaybookError] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   if (error && !data) return <FormError>{error.message}</FormError>;
   if (!data) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
@@ -51,6 +54,44 @@ export default function ProfSituations() {
       setSwitchError((err as Error).message);
     }
     setSwitching(false);
+  }
+
+  async function exportPlaybook() {
+    setPlaybookError(null);
+    try {
+      const playbook = await api.exportPlaybook(worldId);
+      const blob = new Blob([JSON.stringify(playbook, null, 2)], { type: "application/json" });
+      const slug = (playbook.name || state.world.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `playbook-${slug || new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      setPlaybookError((err as Error).message);
+    }
+  }
+
+  async function importPlaybook(file: File) {
+    setPlaybookError(null);
+    setImporting(true);
+    try {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(await file.text());
+      } catch {
+        throw new Error("Datoteka nije ispravan JSON.");
+      }
+      const pb = parsed as Partial<Playbook> | null;
+      if (!pb || pb.version !== 1 || !Array.isArray(pb.situations)) throw new Error("Ovo nije playbook (očekujem version 1 i popis situacija).");
+      await api.importPlaybook(worldId, pb as Playbook);
+      toast.success(`Uvezeno ${pb.situations.length} situacija`);
+      refresh();
+    } catch (err) {
+      setPlaybookError((err as Error).message);
+    }
+    setImporting(false);
+    if (fileRef.current) fileRef.current.value = "";
   }
 
   return (
@@ -74,6 +115,7 @@ export default function ProfSituations() {
       {creating && (
         <SituationForm
           worldId={worldId}
+          players={state.players}
           onCancel={() => setCreating(false)}
           onCreated={(s) => {
             setCreating(false);
@@ -82,6 +124,31 @@ export default function ProfSituations() {
           }}
         />
       )}
+
+      <Panel title="Playbook">
+        <p className="mb-4 text-sm text-muted-foreground">Spremi svoje situacije i postavke i učitaj ih u drugu igru.</p>
+        <div className="flex flex-wrap gap-3">
+          <button type="button" onClick={exportPlaybook} className={`${BUTTON} bg-secondary text-secondary-foreground hover:bg-[#dbe7ff]`}>
+            <Download className="size-4" aria-hidden /> Izvezi playbook
+          </button>
+          <button type="button" disabled={importing} onClick={() => fileRef.current?.click()} className={`${BUTTON} bg-secondary text-secondary-foreground hover:bg-[#dbe7ff]`}>
+            <Upload className="size-4" aria-hidden /> {importing ? "Uvozim…" : "Uvezi playbook"}
+          </button>
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".json,application/json"
+            className="sr-only"
+            tabIndex={-1}
+            aria-label="Datoteka playbooka"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) void importPlaybook(file);
+            }}
+          />
+        </div>
+        {playbookError && <div className="mt-3"><FormError>{playbookError}</FormError></div>}
+      </Panel>
 
       <Panel tone="accent">
         <div className="flex items-center justify-between gap-4">

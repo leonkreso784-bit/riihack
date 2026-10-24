@@ -7,6 +7,11 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#138](https://github.com/leonkreso784-bit/riihack/pull/138) | 18:59 | Rino | `/ulaz?kod=…` sam upiše kod (prvi dio QR ulaza) |
+| [#137](https://github.com/leonkreso784-bit/riihack/pull/137) | 18:59 | Leon | L13: motor odjela, ulaganje u troškove i pokazatelje, `departments` u `/api/me` |
+| [#136](https://github.com/leonkreso784-bit/riihack/pull/136) | 18:55 | Leon | dokumentacija: ADR-033 do 036 (val 3) |
+| [#132](https://github.com/leonkreso784-bit/riihack/pull/132) | 18:54 | Leon | ugovor: ulaganje u odjele (`types.ts`, `rules.ts`, plan) |
+| [#129](https://github.com/leonkreso784-bit/riihack/pull/129) | 18:45 | Simon | S8: playbook (izvoz i uvoz) i AI prijedlog situacije na stranici situacija |
 | [#118](https://github.com/leonkreso784-bit/riihack/pull/118) | 18:02 | Leon | L12: AI prijedlog situacije za profesora (`POST …/situations/generate`) |
 | [#111](https://github.com/leonkreso784-bit/riihack/pull/111) | 17:15 | Simon | S9: AI prijedlog situacije iz stanja hotela, mentor s obračunom mjeseca |
 | [#104](https://github.com/leonkreso784-bit/riihack/pull/104) | 17:12 | Leon | L12: profesor mijenja ocjenu mentora |
@@ -18,6 +23,11 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#131](https://github.com/leonkreso784-bit/riihack/pull/131) | 18:50 | Simon | ROADMAP i pitch bez zamrzavanja, nedjeljni raspored |
+| [#133](https://github.com/leonkreso784-bit/riihack/pull/133) | 18:49 | Leon | dokumentacija: shema odjela, dnevnik do 18:50 |
+| [#130](https://github.com/leonkreso784-bit/riihack/pull/130) | 18:41 | Leon | dokumentacija: ADR-031 i ADR-032 |
+| [#127](https://github.com/leonkreso784-bit/riihack/pull/127) | 18:36 | Rino | popravci prije obilaska: `/igra` na 1000–1100 px, bez „(S6)", plavi „polis" |
+| [#126](https://github.com/leonkreso784-bit/riihack/pull/126) | 18:30 | Leon | dokumentacija: ok za playbook u `client.ts` |
 | [#124](https://github.com/leonkreso784-bit/riihack/pull/124) | 18:27 | Leon | dokumentacija: BUG-008 u radu (Rino) |
 | [#123](https://github.com/leonkreso784-bit/riihack/pull/123) | 18:11 | Leon | dokumentacija: BUG-009 riješen |
 | [#122](https://github.com/leonkreso784-bit/riihack/pull/122) | 18:07 | Leon | dokumentacija: BUG-010 dopunjen |

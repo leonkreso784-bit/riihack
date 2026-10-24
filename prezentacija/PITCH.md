@@ -49,7 +49,7 @@ promijeni kad profesor zatvori mjesec), tko plaća u jednoj rečenici. Nakon ži
 - [ ] Situacija s likom: razgovor, odgovor, presuda (R5, S2, S3, L7)
 - [ ] Obračun mjeseca za cijeli grad i karta koja ga pokaže (L9, L11, S5)
 - [ ] Mentor s rezervom bez AI-ja (S4)
-- [ ] Demo igra spremna (L8), zamrznuta verzija prije ned 08:00
+- [ ] Demo igra spremna (L8, kod iz `seed:demo`) prije obilaska 3 u ned 08:00 (žiri sam probava, bez pitcha)
 - [ ] Video demoa snimljen do ned 09:00 (rezerva)
 
 ## Ako pitaju (kratki odgovori)

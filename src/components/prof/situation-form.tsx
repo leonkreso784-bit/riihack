@@ -1,12 +1,13 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Sparkles, Trash2 } from "lucide-react";
 import { api } from "@/lib/client";
 import { METRIC_LABELS } from "@/lib/rules";
-import type { MetricKey, Skill, SituationDraft, SituationSummary } from "@/lib/types";
+import type { LeaderboardRow, MetricKey, Skill, SituationDraft, SituationSummary } from "@/lib/types";
 import { Field, FormError, SubmitButton } from "@/components/form";
 import { Panel } from "@/components/panel";
+import { Pill } from "@/components/pill";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -101,6 +102,21 @@ const initial: FormState = {
   effects: { guests: "", reviews: "", staff: "", operations: "", finance: "" },
 };
 
+function fromDraft(d: SituationDraft): FormState {
+  const effects: Record<MetricKey, string> = { guests: "", reviews: "", staff: "", operations: "", finance: "" };
+  for (const k of METRIC_KEYS) if (d.effects[k] !== undefined) effects[k] = String(d.effects[k]);
+  return {
+    title: d.title,
+    text: d.text,
+    area: d.area,
+    difficulty: d.difficulty,
+    character: { ...d.character },
+    criteria: d.rubric.map((k) => ({ id: k.id, text: k.text, skill: k.skill })),
+    options: d.options.map((o) => ({ id: o.id, text: o.text, criteria: [...o.criteria] })),
+    effects,
+  };
+}
+
 function SelectField({ id, label, value, onChange, children }: { id: string; label: string; value: string; onChange: (v: string) => void; children: React.ReactNode }) {
   return (
     <div className="space-y-2">
@@ -115,7 +131,7 @@ function SelectField({ id, label, value, onChange, children }: { id: string; lab
 }
 
 // S8: professor writes a situation. Internal criterion ids are never reused while editing; toDraft renumbers them c1..c5 in order.
-export function SituationForm({ worldId, onCreated, onCancel }: { worldId: string; onCreated: (s: SituationSummary) => void; onCancel: () => void }) {
+export function SituationForm({ worldId, players = [], onCreated, onCancel }: { worldId: string; players?: LeaderboardRow[]; onCreated: (s: SituationSummary) => void; onCancel: () => void }) {
   const uid = useId();
   const [f, setF] = useState<FormState>(initial);
   const [nextCriterion, setNextCriterion] = useState(4);
@@ -123,6 +139,11 @@ export function SituationForm({ worldId, onCreated, onCancel }: { worldId: strin
   const [errors, setErrors] = useState<string[]>([]);
   const [serverError, setServerError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [aiSource, setAiSource] = useState(false);
+  const [hint, setHint] = useState("");
+  const [companyId, setCompanyId] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
   const id = (name: string) => `${uid}-${name}`;
 
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) => setF((s) => ({ ...s, [key]: value }));
@@ -138,6 +159,22 @@ export function SituationForm({ worldId, onCreated, onCancel }: { worldId: strin
       options: s.options.map((o) => ({ ...o, criteria: o.criteria.filter((x) => x !== cid) })),
     }));
 
+  async function suggest() {
+    setGenerating(true);
+    setAiError(null);
+    try {
+      const draft = await api.generateSituation(worldId, { ...(companyId ? { companyId } : {}), ...(hint.trim() ? { hint: hint.trim() } : {}) });
+      setF(fromDraft(draft));
+      setNextCriterion(draft.rubric.length + 1);
+      setNextOption(draft.options.length + 1);
+      setErrors([]);
+      setAiSource(true);
+    } catch (err) {
+      setAiError((err as Error).message);
+    }
+    setGenerating(false);
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setServerError(null);
@@ -146,7 +183,7 @@ export function SituationForm({ worldId, onCreated, onCancel }: { worldId: strin
     if (found.length > 0) return;
     setBusy(true);
     try {
-      onCreated(await api.createSituation(worldId, toDraft(f)));
+      onCreated(await api.createSituation(worldId, toDraft(f), aiSource ? "ai" : undefined));
     } catch (err) {
       setServerError((err as Error).message);
       setBusy(false);
@@ -155,6 +192,29 @@ export function SituationForm({ worldId, onCreated, onCancel }: { worldId: strin
 
   return (
     <form onSubmit={submit} noValidate aria-label="Nova situacija" className="space-y-6">
+      <Panel title="AI prijedlog">
+        <p className="mb-4 text-sm text-muted-foreground">AI samo predlaže. Ti pregledaš, urediš i spremiš; ništa ne ide studentima bez tebe.</p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field id={id("hint")} label="Tema (neobavezno), npr. bazen, alergija…" value={hint} onChange={(e) => setHint(e.target.value)} maxLength={120} disabled={generating} />
+          <SelectField id={id("hotel")} label="Hotel (neobavezno)" value={companyId} onChange={setCompanyId}>
+            <option value="">Cijeli razred</option>
+            {players.map((p) => (
+              <option key={p.companyId} value={p.companyId}>
+                {p.hotelName} ({p.playerName})
+              </option>
+            ))}
+          </SelectField>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <button type="button" className={GHOST_BUTTON} onClick={suggest} disabled={generating}>
+            <Sparkles className="size-4" aria-hidden /> {generating ? "AI piše nacrt…" : "Predloži AI-jem"}
+          </button>
+          {generating && <span role="status" className="text-sm text-muted-foreground">Može potrajati i 15 sekundi.</span>}
+          {aiSource && !generating && <Pill tone="warn">AI nacrt, provjeri prije spremanja</Pill>}
+        </div>
+        {aiError && <div className="mt-3"><FormError>{aiError}</FormError></div>}
+      </Panel>
+
       <Panel title="Situacija">
         <div className="space-y-4">
           <Field id={id("title")} label="Naslov (3 do 80 znakova)" value={f.title} onChange={(e) => set("title", e.target.value)} maxLength={80} />

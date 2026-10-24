@@ -4,8 +4,8 @@
 > [planu izvedbe](superpowers/plans/2026-10-24-simpolis.md), status u issueima i PR-ovima.
 
 **TL;DR:** do **14:30** ulaz kodom i sobe (M1). Do **18:45** grad radi: plan, obračun mjeseca, karta, lik s presudom
-(M2). Do **ned 07:45** cijeli demo (M3). **06:30** zamrzavanje, **09:00** video demoa, **10:00** predaja (rok 10:30),
-**10:45** pitch, **5 min**. Najveći rizik: obračun grada (L9 + L11), jer je on wow trenutak.
+(M2). Gradi se do predaje, **bez zamrzavanja koda** (ADR-031). Ned: **08:00–09:00** obilazak žirija 3 (samo demo, žiri sam
+probava), video demoa, **10:00** predaja na Discordu (rok 10:30), **10:45–12:30** pitchevi (**5 min**), 13:30 proglašenje. Najveći rizik: obračun grada (L9 + L11), jer je on wow trenutak.
 
 ## Tko radi što
 
@@ -28,7 +28,7 @@ Smjene spavanja 23–05: uvijek su dvojica budna; tko ide spavati, prije toga sp
 | Simon S3 chat ruta | Leon: spojiti #42 (`CharacterInput.messageNo`), L1 tablice razgovora | ~15:00 |
 | Simon S5 karta, S6 financije | Leon L9 + L11 (obračun grada) | ~18:00 |
 | Rino R5 situacija | Simon S3 + Leon L7 | ~17:30 |
-| Demo i video | Leon L8 demo igra, zamrznuta verzija | ned 06:30 |
+| Demo i video | Leon L8 demo igra (spojeno, #103), video demoa | ned prije predaje |
 
 ## Što dodajemo za pouzdanost
 
@@ -47,3 +47,16 @@ Smjene spavanja 23–05: uvijek su dvojica budna; tko ide spavati, prije toga sp
 - **Rezerva:** snimka zaslona istog toka do ned 09:00.
 - **Higgsfield (Leon):** jedan uvodni klip 10–15 s; više ne stane u 5 minuta. Izgled kao aplikacija, bez lažnih
   ljudi i brojki.
+
+## Dodano nakon žirija 1 (sub ~16:00–19:00)
+
+| Što | Tko | Stanje |
+| --- | --- | --- |
+| L12 profesorove situacije (shema, slanje, rute) | Leon | spojeno (#95) |
+| S8 sučelje profesorovih situacija | Simon | spojeno (#109) |
+| S9 AI prijedlog situacije, mentor s obračunom mjeseca | Simon | spojeno (#111); ruta Leon (#118) |
+| Playbook: izvoz i uvoz situacija i postavki | Leon ruta (#100), Simon gumbi (#129) | ruta spojena, gumbi u PR-u |
+| Karta Kvarnera i kartica tvrtke (kao Google Maps) | prijedlog Simon (#125), skica #128, ugradnja Rino | prijedlog |
+| Odjeli s budžetom u planu (ADR-032) | Leon motor i ugovor, Rino stranica | u izradi |
+
+**Vizija** (Leon, `docs/product/VISION.md`): profesor jednog dana podešava i samu mehaniku igre (sezona, potražnja, cijene).

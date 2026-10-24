@@ -74,6 +74,25 @@ describe("economy", () => {
     expect(f.contractNights).toBe(40);
   });
 
+  it("roundFinance s ulaganjem u odjele", () => {
+    const agency = { nights: 40, pricePerNight: 70, monthlyCost: 0 } as ContractTemplate;
+    const m = { companyId: "A", nights: 400, contractNights: 40, capacityNights: 600, occupancyPct: 73, marketSharePct: 50 };
+    const f = roundFinance(m, {
+      round: 2,
+      price: 80,
+      marketing: 1000,
+      staffCost: 9000,
+      roomsCount: 20,
+      cashBefore: 20000,
+      contracts: [agency],
+      investments: 2000,
+    });
+    expect(f.costs).toBe(18000);
+    expect(f.profit).toBe(16800);
+    expect(f.cashAfter).toBe(36800);
+    expect(f.investments).toBe(2000);
+  });
+
   it("financeEffect", () => {
     expect(financeEffect(18800)).toBe(5);
     expect(financeEffect(-3000)).toBe(-1);

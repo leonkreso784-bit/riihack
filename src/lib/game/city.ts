@@ -19,6 +19,7 @@ import {
 } from "@/db/queries";
 import { CITY, CONTRACTS, getBusiness, getContract, getHotel } from "@/content";
 import { contractEffects, contractNightsTotal, drawOffer, isActive } from "@/lib/engine/contracts";
+import { INVESTMENT_ERROR, investmentEffects, investmentTotal, parseInvestments } from "@/lib/engine/departments";
 import { financeEffect, refPrice, roundFinance, settleMarket } from "@/lib/engine/economy";
 import { eur } from "@/lib/format";
 import { HttpError } from "@/lib/http";
@@ -48,8 +49,8 @@ const OFFER_GONE = "Ova ponuda više ne vrijedi";
 
 // ---------- Čisti dijelovi (bez baze, testirani u city.test.ts) ----------
 
-/** Plan iz tijela zahtjeva: cijena i marketing moraju biti cijeli brojevi u rasponu, inače 400. */
-export function parsePlan(body: { price?: unknown; marketing?: unknown }): PlanRequest {
+/** Plan iz tijela zahtjeva: cijena, marketing i ulaganja po odjelu moraju biti cijeli brojevi u rasponu, inače 400. */
+export function parsePlan(body: { price?: unknown; marketing?: unknown; investments?: unknown }): PlanRequest {
   const { price, marketing } = body;
   if (typeof price !== "number" || !Number.isInteger(price) || price < PRICE_MIN || price > PRICE_MAX) {
     throw new HttpError(400, `Cijena noćenja mora biti cijeli broj od ${eur(PRICE_MIN)} do ${eur(PRICE_MAX)}`);
@@ -57,7 +58,10 @@ export function parsePlan(body: { price?: unknown; marketing?: unknown }): PlanR
   if (typeof marketing !== "number" || !Number.isInteger(marketing) || marketing < 0 || marketing > MARKETING_MAX) {
     throw new HttpError(400, `Marketing mora biti cijeli broj od ${eur(0)} do ${eur(MARKETING_MAX)}`);
   }
-  return { price, marketing };
+  if (body.investments === undefined) return { price, marketing };
+  const investments = parseInvestments(body.investments);
+  if (!investments) throw new HttpError(400, INVESTMENT_ERROR);
+  return { price, marketing, investments };
 }
 
 export function toContractView(row: ContractRow): ContractView {
@@ -92,6 +96,7 @@ export function toFinance(row: FinanceRow): RoundFinance {
     costs: row.costs,
     profit: row.profit,
     cashAfter: row.cashAfter,
+    investments: row.investments,
   };
 }
 
@@ -191,10 +196,10 @@ function metricsPlus(delta: Partial<Record<MetricKey, number>>): SQL {
 
 // ---------- Plan kruga ----------
 
-/** Plan za krug iz spremljenog retka; bez njega cijena je referentna cijena soba, a marketing 0. */
+/** Plan za krug iz spremljenog retka; bez njega cijena je referentna cijena soba, marketing 0 i bez ulaganja. */
 export function toPlan(round: number, row: PlanRow | null, rooms: { basePrice: number }[]): RoundPlan {
-  if (row) return { round, price: row.price, marketing: row.marketing };
-  return { round, price: refPrice(rooms), marketing: 0 };
+  if (row) return { round, price: row.price, marketing: row.marketing, investments: row.investments ?? {} };
+  return { round, price: refPrice(rooms), marketing: 0, investments: {} };
 }
 
 /** Plan tvrtke za krug (spremljeni ili zadani). */
@@ -205,13 +210,13 @@ export async function getPlan(companyId: string, round: number): Promise<RoundPl
 
 /** Spremi plan tekućeg kruga (samo dok igra traje, a tvrtka krug nije zatvorila ni grad ga nije obračunao). */
 export async function savePlan(ctx: PlayerCtx, req: PlanRequest): Promise<RoundPlan> {
-  const { price, marketing } = parsePlan(req);
+  const { price, marketing, investments } = parsePlan(req);
   const { world, company } = ctx;
   if (world.status !== "running" || company.closedRound >= world.round || world.settledRound >= world.round) {
     throw new HttpError(409, PLAN_CLOSED);
   }
-  const row = await upsertPlan({ companyId: company.id, round: world.round, price, marketing });
-  return { round: row.round, price: row.price, marketing: row.marketing };
+  const row = await upsertPlan({ companyId: company.id, round: world.round, price, marketing, investments });
+  return toPlan(row.round, row, []);
 }
 
 // ---------- Ugovori ----------
@@ -318,7 +323,15 @@ async function writeSettlement(world: WorldRow, round: number): Promise<void> {
       contractRows.filter((c) => c.companyId === company.id),
       round,
     );
-    return { company, roomsCount: roomsOf.length, ref, price: plan?.price ?? ref, marketing: plan?.marketing ?? 0, active };
+    return {
+      company,
+      roomsCount: roomsOf.length,
+      ref,
+      price: plan?.price ?? ref,
+      marketing: plan?.marketing ?? 0,
+      investments: plan?.investments ?? {},
+      active,
+    };
   });
 
   const market = settleMarket(
@@ -344,8 +357,13 @@ async function writeSettlement(world: WorldRow, round: number): Promise<void> {
       roomsCount: h.roomsCount,
       cashBefore: h.company.cash,
       contracts: h.active,
+      investments: investmentTotal(h.investments),
     });
-    const delta = sumEffects(contractEffects(h.active), { finance: financeEffect(finance.profit) });
+    const delta = sumEffects(
+      contractEffects(h.active),
+      { finance: financeEffect(finance.profit) },
+      investmentEffects(h.investments),
+    );
     return { company: h.company, finance, delta };
   });
 

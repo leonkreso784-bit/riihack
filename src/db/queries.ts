@@ -5,7 +5,7 @@ import { answers, companies, contracts, events, finances, players, plans, rooms,
 import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
 import type { ContractRow, EventRow, FinanceRow, PlanRow } from "./schema";
 import { getTemplate } from "@/lib/game/situations";
-import type { ChatTurn, SituationTemplate } from "@/lib/types";
+import type { ChatTurn, DepartmentInvestments, SituationTemplate } from "@/lib/types";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -224,11 +224,19 @@ export async function getPlanRow(companyId: string, round: number): Promise<Plan
 }
 
 /** Jedan plan po tvrtki i krugu: novi zapis ili prepisivanje starog (unique (company_id, round)). */
-export async function upsertPlan(p: { companyId: string; round: number; price: number; marketing: number }): Promise<PlanRow> {
+// Bez `investments` postojeći plan zadrži svoja ulaganja (novi dobije {}).
+export async function upsertPlan(p: {
+  companyId: string;
+  round: number;
+  price: number;
+  marketing: number;
+  investments?: DepartmentInvestments;
+}): Promise<PlanRow> {
+  const set = { price: p.price, marketing: p.marketing, ...(p.investments && { investments: p.investments }) };
   const rows = await db
     .insert(plans)
     .values(p)
-    .onConflictDoUpdate({ target: [plans.companyId, plans.round], set: { price: p.price, marketing: p.marketing } })
+    .onConflictDoUpdate({ target: [plans.companyId, plans.round], set })
     .returning();
   return rows[0];
 }

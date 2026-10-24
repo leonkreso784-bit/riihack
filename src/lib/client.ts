@@ -1,7 +1,7 @@
 // Browser-side API calls. Until the backend is live every call answers from mock.ts; NEXT_PUBLIC_USE_MOCK=0 switches to the server.
 import { useEffect, useEffectEvent, useState } from "react";
 import { PASTE_SHARE, POLL_MS } from "./rules";
-import { MOCK_DETAIL, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
+import { MOCK_DETAIL, MOCK_SAMPLE_DRAFT, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
 import type {
   AnswerRequest,
   AnswerView,
@@ -13,10 +13,12 @@ import type {
   CreateWorldRequest,
   CreateWorldResponse,
   DispatchRequest,
+  GenerateSituationRequest,
   JoinRequest,
   JoinResponse,
   MeResponse,
   OpenRoundRequest,
+  Playbook,
   PlanRequest,
   ProfLoginRequest,
   ProfLoginResponse,
@@ -57,7 +59,11 @@ const realApi = {
   companyDetail: (worldId: string, companyId: string) =>
     get<CompanyDetailResponse>(`/api/prof/${worldId}/companies/${companyId}`),
   // S8: professor's own situations, sending, settings
-  createSituation: (worldId: string, req: SituationDraft) => post<SituationSummary>(`/api/prof/${worldId}/situations`, req),
+  createSituation: (worldId: string, req: SituationDraft, source?: "ai") =>
+    post<SituationSummary>(`/api/prof/${worldId}/situations`, source ? { ...req, source } : req),
+  exportPlaybook: (worldId: string) => get<Playbook>(`/api/prof/${worldId}/playbook`),
+  importPlaybook: (worldId: string, playbook: Playbook) => post<ProfStateResponse>(`/api/prof/${worldId}/playbook`, playbook),
+  generateSituation: (worldId: string, req: GenerateSituationRequest) => post<SituationDraft>(`/api/prof/${worldId}/situations/generate`, req),
   dispatch: (worldId: string, req: DispatchRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/dispatch`, req),
   worldSettings: (worldId: string, req: WorldSettingsRequest) => post<ProfStateResponse>(`/api/prof/${worldId}/settings`, req),
   join: (req: JoinRequest) => post<JoinResponse>("/api/join", req),
@@ -158,17 +164,36 @@ const mockApi: Api = {
   },
   companyDetail: () => wait(MOCK_DETAIL),
   // S8: these change MOCK_PROF in memory so the situation list updates in the demo.
-  createSituation: (_worldId, draft) => {
+  createSituation: (_worldId, draft, source) => {
     const summary: SituationSummary = {
       id: `custom-${Date.now()}`,
       title: draft.title,
       area: draft.area,
       difficulty: draft.difficulty,
-      source: "custom",
+      source: source ?? "custom",
     };
     MOCK_PROF.bank = [...(MOCK_PROF.bank ?? []), summary];
     return wait(summary);
   },
+  exportPlaybook: (_worldId) => {
+    const custom = (MOCK_PROF.bank ?? []).filter((b) => b.source !== "bank");
+    const situations = (custom.length ? custom : [{ title: "Uzorak situacije" }]).map((b) => ({ ...MOCK_SAMPLE_DRAFT, title: b.title }));
+    return wait({ version: 1 as const, name: MOCK_PROF.world.name, settings: { autoDraw: MOCK_PROF.autoDraw ?? true }, situations });
+  },
+  importPlaybook: (_worldId, playbook) => {
+    const added: SituationSummary[] = playbook.situations.map((d, i) => ({
+      id: `custom-${Date.now()}-${i}`,
+      title: d.title,
+      area: d.area,
+      difficulty: d.difficulty,
+      source: "custom",
+    }));
+    MOCK_PROF.bank = [...(MOCK_PROF.bank ?? []), ...added];
+    MOCK_PROF.autoDraw = playbook.settings.autoDraw;
+    return wait(mockProfState());
+  },
+  generateSituation: (_worldId, req) =>
+    wait({ ...MOCK_SAMPLE_DRAFT, title: req.hint ? `AI: ${req.hint}`.slice(0, 80) : MOCK_SAMPLE_DRAFT.title }, 800),
   dispatch: (_worldId, req) => {
     const title = MOCK_PROF.bank?.find((s) => s.id === req.templateId)?.title ?? req.templateId;
     // Sending now leaves no trace in the list (students get it at once); a later round is scheduled.
