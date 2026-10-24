@@ -1,5 +1,4 @@
 import type { BusinessKind, CityBusiness, CityView, LeaderboardRow } from "@/lib/types";
-import { eur } from "@/lib/format";
 
 const H = 490;
 const BACK_GROUND = 175; // baseline of city businesses (back row)
@@ -129,7 +128,7 @@ function Hotel({ h, x, max, lit, you }: { h: LeaderboardRow; x: number; max: num
   const name = wrap2(h.hotelName, max);
   return (
     <g>
-      <title>{`${h.hotelName}, ${h.place}: napredak ${h.progress}, ${eur(h.cash)}${lit ? ", krug zatvoren" : ""}`}</title>
+      <title>{`${h.hotelName}, ${h.place}: napredak ${h.progress}${lit ? ", krug zatvoren" : ""}`}</title>
       {lit && <rect className="cm-glow" x={left - 8} y={top - 8} width={w + 16} height={bh + 16} rx={14} fill="var(--primary)" opacity={0.85} filter="url(#cm-blur)" />}
       <rect x={left} y={top} width={w} height={bh} rx={5} fill={hotelFill(h.progress)} stroke={you ? "var(--sand)" : "none"} strokeWidth={you ? 3 : 0} />
       <rect x={left - 4} y={top - 6} width={w + 8} height={8} rx={3} fill="color-mix(in srgb, var(--card) 28%, var(--night))" />
@@ -149,7 +148,7 @@ function Hotel({ h, x, max, lit, you }: { h: LeaderboardRow; x: number; max: num
       {name.map((line, i) => (
         <text key={i} x={x} y={FRONT_GROUND + 28 + i * 17} textAnchor="middle" fontSize={15} fontWeight={800} fill={INK}>{line}</text>
       ))}
-      <text x={x} y={FRONT_GROUND + 28 + name.length * 17 + 4} textAnchor="middle" fontSize={15} fontWeight={800} fill="var(--mint)" className="tabular-nums">{eur(h.cash)}</text>
+      <text x={x} y={FRONT_GROUND + 28 + name.length * 17 + 4} textAnchor="middle" fontSize={15} fontWeight={800} fill="var(--mint)" className="tabular-nums">napredak {h.progress}</text>
     </g>
   );
 }

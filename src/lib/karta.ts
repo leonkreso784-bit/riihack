@@ -18,7 +18,9 @@ export type ProfileDetail = {
   metrics: Metrics | null; // samo tvoj hotel
   share: number | null; // samo tvoj hotel
   months: ProfileMonth[] | null; // samo tvoj hotel (financije zatvorenih mjeseci)
+  publicFinances: PublicMonth[] | null; // prihod i dobit zatvorenih mjeseci, najstariji prvi (javno, ADR-040)
 };
+export type PublicMonth = { round: number; revenue: number; profit: number };
 
 export type PublicProfile = {
   id: string;
@@ -29,8 +31,8 @@ export type PublicProfile = {
   rooms: number | null;
   staff: number | null;
   staffByDept: Partial<Record<StaffDepartment, number>>;
-  cash: number;
-  startCash: number | null; // početni novac iz predloška
+  cash: number | null; // samo tvoj hotel (ADR-040): tuđi novac se ne prikazuje
+  startCash: number | null; // samo tvoj hotel
   progress: number;
   roundGain: number;
   closedRound: number;
@@ -135,12 +137,12 @@ export function businessLots(bs: Pick<CityBusiness, "id" | "name">[]): Record<st
   return out;
 }
 
-// Visina zgrade iz javnog novca na računu, u odnosu na najbogatiji hotel grada.
+// Visina zgrade iz javnog napretka, u odnosu na najnapredniji hotel grada (ADR-040: bez novca).
 export const HOTEL_H_MIN = 34;
 export const HOTEL_H_MAX = 90;
-export function hotelHeight(cash: number, maxCash: number): number {
-  if (cash <= 0 || maxCash <= 0) return HOTEL_H_MIN;
-  return Math.round(HOTEL_H_MIN + (HOTEL_H_MAX - HOTEL_H_MIN) * Math.min(1, cash / maxCash));
+export function hotelHeight(progress: number, maxProgress: number): number {
+  if (progress <= 0 || maxProgress <= 0) return HOTEL_H_MIN;
+  return Math.round(HOTEL_H_MIN + (HOTEL_H_MAX - HOTEL_H_MIN) * Math.min(1, progress / maxProgress));
 }
 
 export const BIZ_META: Record<BusinessKind, { label: string; letter: string; nkd: string }> = {
@@ -177,9 +179,19 @@ export function bonitet(cash: number, startCash: number, lastProfit: number | nu
   return { grade: "C", text: "Niže: posluje s gubitkom", tone: "down" };
 }
 
-// Rang po napretku na ljestvici (1 = najbolji); isti napredak razrješava novac na računu.
-export function rank(id: string, rows: { id: string; progress: number; cash: number }[]): number {
-  const sorted = [...rows].sort((a, b) => b.progress - a.progress || b.cash - a.cash);
+// Bonitet tuđeg hotela samo iz javnih podataka (prihod i dobit zatvorenih mjeseci).
+export function publicBonitet(months: PublicMonth[]): Bonitet {
+  const last = months.at(-1);
+  if (!last) return { grade: "–", text: "Još nema zatvorenog mjeseca", tone: "none" };
+  const prev = months.length > 1 ? months.at(-2)! : null;
+  if (last.profit > 0 && (!prev || last.profit >= prev.profit)) return { grade: "A", text: "Dobro: posluje s dobiti, dobit raste", tone: "up" };
+  if (last.profit > 0) return { grade: "B", text: "Srednje: dobit, ali manja nego prošli mjesec", tone: "warn" };
+  return { grade: "C", text: "Niže: posluje s gubitkom", tone: "down" };
+}
+
+// Rang po napretku na ljestvici (1 = najbolji); isti napredak razrješava naziv hotela.
+export function rank(id: string, rows: { id: string; progress: number; hotelName: string }[]): number {
+  const sorted = [...rows].sort((a, b) => b.progress - a.progress || a.hotelName.localeCompare(b.hotelName, "hr"));
   return sorted.findIndex((p) => p.id === id) + 1;
 }
 
@@ -206,7 +218,7 @@ export function profilesFromMe(me: MeResponse, publicViews: Record<string, Compa
         const b = bizById.get(l.businessId);
         return b ? [{ name: b.name, kind: b.kind }] : [];
       });
-  const rows = me.city.hotels.map((h) => ({ id: h.companyId, progress: h.progress, cash: h.cash }));
+  const rows = me.city.hotels.map((h) => ({ id: h.companyId, progress: h.progress, hotelName: h.hotelName }));
   const rankOf = (id: string) => rank(id, rows);
 
   me.city.hotels.forEach((row, i) => {
@@ -227,8 +239,8 @@ function otherProfile(row: LeaderboardRow, index: number, partners: PublicProfil
     stars: pub?.stars ?? tpl?.stars ?? null,
     rooms: pub?.roomsCount ?? tpl?.rooms.length ?? null,
     ...staff,
-    cash: row.cash,
-    startCash: tpl?.startCash ?? null,
+    cash: null,
+    startCash: null,
     progress: row.progress,
     roundGain: row.roundGain,
     closedRound: row.closedRound,
@@ -236,7 +248,7 @@ function otherProfile(row: LeaderboardRow, index: number, partners: PublicProfil
     partners,
     simId: simId(index),
     isYou: false,
-    detail: pub ? { price: pub.price, reviews: pub.reviews, guests: pub.guests, occupancyPct: pub.occupancyPct ?? null, metrics: null, share: null, months: null } : null,
+    detail: pub ? { price: pub.price, reviews: pub.reviews, guests: pub.guests, occupancyPct: pub.occupancyPct ?? null, metrics: null, share: null, months: null, publicFinances: pub.finances ?? [] } : null,
   };
 }
 
@@ -270,6 +282,7 @@ function ownProfile(me: MeResponse, index: number, linked: PublicProfile["partne
       metrics: c.metrics,
       share: me.finances.at(-1)?.marketSharePct ?? 0,
       months: me.finances.map((f) => ({ round: f.round, revenue: f.revenue, costs: f.costs, nights: f.nights, occupancyPct: f.occupancyPct })),
+      publicFinances: null,
     },
   };
 }

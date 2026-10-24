@@ -4,8 +4,7 @@
 // Teren je statičan (board-geometry.ts), zgrade, natpisi, ugovori i animacije su React.
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import type { CityView, LeaderboardRow } from "@/lib/types";
-import { eur } from "@/lib/format";
-import { BIZ_META, DISTRICTS, HOTEL_HALF, allocateLots, businessLots, districtById, growth, hotelHeight, inBlockade, type PublicProfile } from "@/lib/karta";
+import { BIZ_META, DISTRICTS, HOTEL_HALF, allocateLots, businessLots, districtById, growth, hotelHeight, fmtDec, type PublicProfile } from "@/lib/karta";
 import { cn } from "@/lib/utils";
 import { CX, DEFS, DISTRICT_LABELS, HH, HW, P, VIEW, baseLayer, groundRange, lerp, occupied, pt, rnd, terrainDrawables } from "./board-geometry";
 
@@ -330,7 +329,7 @@ const CSS = `
 `;
 
 type LegendItem = [string, string, boolean?];
-const LEGEND: LegendItem[] = [["#1640aa", "Tvoj hotel", true], ["#246bfd", "Hotel u igri"], ["#c94a4a", "U blokadi"], ["#2f8f6b", "Gradski partner"]];
+const LEGEND: LegendItem[] = [["#1640aa", "Tvoj hotel", true], ["#246bfd", "Hotel u igri"], ["#2f8f6b", "Gradski partner"]];
 function Legend({ className }: { className?: string }) {
   return (
     <div className={cn("text-xs", className)}>
@@ -340,7 +339,7 @@ function Legend({ className }: { className?: string }) {
           {t}
         </div>
       ))}
-      <div className="mt-1 font-medium text-muted-foreground">Viši hotel = više novca</div>
+      <div className="mt-1 font-medium text-muted-foreground">Viši hotel = veći napredak</div>
     </div>
   );
 }
@@ -380,7 +379,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   // Raspored: parcele hotela i tvrtki iz javnih podataka.
   const lots = useMemo(() => allocateLots(city.hotels), [city.hotels]);
   const bizLots = useMemo(() => businessLots(city.businesses), [city.businesses]);
-  const maxCash = Math.max(0, ...city.hotels.map((h) => h.cash));
+  const maxProgress = Math.max(0, ...city.hotels.map((h) => h.progress));
 
   // Statični sloj ovisi samo o zauzetim parcelama.
   const slotKey = city.hotels.map((h) => lots[h.companyId]?.slot.join()).join("|") + "#" + Object.values(bizLots).map((s) => s.join()).join("|");
@@ -393,21 +392,21 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
   const hotelIds = city.hotels.map((h) => h.companyId);
   const targets = useMemo(() => {
     const t: Record<string, number> = {};
-    city.hotels.forEach((h) => (t[h.companyId] = hotelHeight(h.cash, maxCash)));
+    city.hotels.forEach((h) => (t[h.companyId] = hotelHeight(h.progress, maxProgress)));
     city.businesses.forEach((b) => (t[`b:${b.id}`] = BIZ_H));
     return t;
-  }, [city.hotels, city.businesses, maxCash]);
+  }, [city.hotels, city.businesses, maxProgress]);
   const order = useMemo(() => [...city.hotels.map((h) => h.companyId), ...city.businesses.map((b) => `b:${b.id}`)].sort(), [city.hotels, city.businesses]);
   const heights = useTweened(targets, order, reduced);
   const hOf = (key: string) => heights[key] ?? 0;
 
-  // Plutajuće oznake promjene novca: usporedba s prošlim podacima (prilagodba stanja tijekom crtanja).
-  const sig = city.hotels.map((h) => `${h.companyId}:${h.cash}`).join("|");
-  const [prev, setPrev] = useState<{ sig: string; cash: Record<string, number> }>({ sig, cash: Object.fromEntries(city.hotels.map((h) => [h.companyId, h.cash])) });
+  // Plutajuće oznake promjene napretka: usporedba s prošlim podacima (prilagodba stanja tijekom crtanja).
+  const sig = city.hotels.map((h) => `${h.companyId}:${h.progress}`).join("|");
+  const [prev, setPrev] = useState<{ sig: string; cash: Record<string, number> }>({ sig, cash: Object.fromEntries(city.hotels.map((h) => [h.companyId, h.progress])) });
   const [tags, setTags] = useState<{ key: string; id: string; delta: number }[]>([]);
   if (sig !== prev.sig) {
-    const fresh = city.hotels.filter((h) => prev.cash[h.companyId] !== undefined && prev.cash[h.companyId] !== h.cash).map((h) => ({ key: `${h.companyId}:${h.cash}`, id: h.companyId, delta: h.cash - prev.cash[h.companyId] }));
-    setPrev({ sig, cash: Object.fromEntries(city.hotels.map((h) => [h.companyId, h.cash])) });
+    const fresh = city.hotels.filter((h) => prev.cash[h.companyId] !== undefined && prev.cash[h.companyId] !== h.progress).map((h) => ({ key: `${h.companyId}:${h.progress}`, id: h.companyId, delta: h.progress - prev.cash[h.companyId] }));
+    setPrev({ sig, cash: Object.fromEntries(city.hotels.map((h) => [h.companyId, h.progress])) });
     if (fresh.length && !reduced) setTags(fresh);
   }
   useEffect(() => {
@@ -490,7 +489,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
     setTimeout(() => (dragged.current = false), 0);
   };
 
-  const rowsOf = (cash: number, maxC: number) => Math.max(2, Math.round((hotelHeight(cash, maxC) - 14) / 17));
+  const rowsOf = (progress: number, maxP: number) => Math.max(2, Math.round((hotelHeight(progress, maxP) - 14) / 17));
   const shownIds = new Set([...alwaysShown, ...(hoverId ? [hoverId] : []), ...(selectedId ? [selectedId] : [])]);
   const chipOrder = [...city.hotels].sort((a, b) => Number(shownIds.has(a.companyId)) - Number(shownIds.has(b.companyId)) || Number(hoverId === a.companyId) - Number(hoverId === b.companyId));
   const hotelsN = city.hotels.length;
@@ -535,7 +534,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
                 const [ax, ay] = lots[h.companyId].slot;
                 const prof = profiles[h.companyId];
                 const pct = prof?.detail?.occupancyPct ?? 55;
-                return <Hotel key={`h-${h.companyId}`} id={h.companyId} name={h.hotelName} ax={ax} ay={ay} ht={hOf(h.companyId)} rows={rowsOf(h.cash, maxCash)} tone={h.companyId === youId ? "me" : inBlockade(h.cash) ? "blk" : "h"} litPct={pct} selected={selectedId === h.companyId} onSelect={select} onHover={hover} />;
+                return <Hotel key={`h-${h.companyId}`} id={h.companyId} name={h.hotelName} ax={ax} ay={ay} ht={hOf(h.companyId)} rows={rowsOf(h.progress, maxProgress)} tone={h.companyId === youId ? "me" : "h"} litPct={pct} selected={selectedId === h.companyId} onSelect={select} onHover={hover} />;
               })}
             </g>
             <g pointerEvents="none">
@@ -564,7 +563,7 @@ export function CityBoard({ city, youId, profiles, selectedId, onSelect }: { cit
                   <g key={t.key} transform={`translate(${tx},${ty - 40})`}>
                     <g className="cb-delta">
                       <text textAnchor="middle" fontSize="20" fontWeight="800" stroke="#fff" strokeWidth="5" paintOrder="stroke" fill={t.delta >= 0 ? "#0f7a3c" : "#c42626"}>
-                        {t.delta >= 0 ? "+" : "−"}{eur(Math.abs(t.delta))}
+                        {t.delta >= 0 ? "+" : "−"}{fmtDec(Math.abs(t.delta))}
                       </text>
                     </g>
                   </g>

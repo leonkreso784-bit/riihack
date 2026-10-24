@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { CompanyPublicView, MeResponse } from "./types";
-import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, allocateLots, bonitet, businessLots, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, rank, reviewsCount, score, simId, terrainCell, word } from "./karta";
+import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, allocateLots, bonitet, businessLots, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, publicBonitet, rank, reviewsCount, score, simId, terrainCell, word } from "./karta";
 
 describe("ocjena gostiju", () => {
   it("score = 5 + reviews / 20", () => {
@@ -44,11 +44,11 @@ describe("rast i rang", () => {
     expect(growth([{ revenue: 1 }])).toBeNull();
     expect(growth([{ revenue: 0 }, { revenue: 5 }])).toBeNull();
   });
-  it("rang po napretku, isti napredak razrješava novac", () => {
+  it("rang po napretku, isti napredak razrješava naziv hotela (ne novac)", () => {
     const rows = [
-      { id: "a", progress: 5, cash: 100 },
-      { id: "b", progress: 9, cash: 50 },
-      { id: "c", progress: 5, cash: 300 },
+      { id: "a", progress: 5, hotelName: "Zora" },
+      { id: "b", progress: 9, hotelName: "Maris" },
+      { id: "c", progress: 5, hotelName: "Adria" },
     ];
     expect(rank("b", rows)).toBe(1);
     expect(rank("c", rows)).toBe(2);
@@ -76,13 +76,13 @@ describe("profili: samo pravi podaci", () => {
     const o = ps.o1;
     expect(o.isYou).toBe(false);
     expect(o.detail).toBeNull();
-    expect(o.cash).toBe(12000);
+    expect(o.cash).toBeNull();
+    expect(o.startCash).toBeNull();
     expect(o.progress).toBe(8);
     expect(o.roundGain).toBe(2);
     expect(o.stars).toBeGreaterThan(0);
     expect(o.rooms).toBeGreaterThan(0);
     expect(o.staff).toBeGreaterThan(0);
-    expect(o.startCash).toBeGreaterThan(0);
     expect(o.partners).toEqual([{ name: "Agencija Adria", kind: "agency" }]);
   });
   it("rang po napretku s ljestvice", () => {
@@ -90,8 +90,24 @@ describe("profili: samo pravi podaci", () => {
     expect(ps.me.rank).toBe(2);
     expect(ps.o2.rank).toBe(3);
   });
-  it("blokada = novac ispod nule", () => {
-    expect(ps.o2.cash).toBeLessThan(0);
+  it("tuđi hotel ne nosi novac nigdje u pogledu kartice (ADR-040)", () => {
+    const pub = { companyId: "o2", hotelName: "Hotel o2", playerName: "Igrač o2", place: "Rab", stars: 3, roomsCount: 9, price: 80, reviews: 50, guests: 40, staffByDepartment: { management: 1, reception: 1, housekeeping: 1, maintenance: 1, kitchen: 1 }, contracts: [], finances: [{ round: 1, revenue: 8000, profit: -200 }] } as unknown as CompanyPublicView;
+    for (const o of [ps.o2, profilesFromMe(me, { o2: pub }).o2]) {
+      expect(o.cash).toBeNull();
+      expect(o.startCash).toBeNull();
+      expect(JSON.stringify(o)).not.toMatch(/-300|12000/);
+    }
+    expect(profilesFromMe(me, { o2: pub }).o2.detail?.publicFinances).toEqual([{ round: 1, revenue: 8000, profit: -200 }]);
+  });
+  it("tvoj hotel zadržava svoj novac", () => {
+    expect(ps.me.cash).toBe(25000);
+    expect(ps.me.detail?.publicFinances).toBeNull();
+  });
+  it("bonitet tuđeg hotela samo iz javne dobiti", () => {
+    expect(publicBonitet([]).grade).toBe("–");
+    expect(publicBonitet([{ round: 1, revenue: 9, profit: 5 }]).grade).toBe("A");
+    expect(publicBonitet([{ round: 1, revenue: 9, profit: 5 }, { round: 2, revenue: 9, profit: 3 }]).grade).toBe("B");
+    expect(publicBonitet([{ round: 1, revenue: 9, profit: 5 }, { round: 2, revenue: 9, profit: -1 }]).grade).toBe("C");
   });
   it("tvoj hotel ima puni detalj iz plana i financija", () => {
     const d = ps.me.detail!;
@@ -104,7 +120,7 @@ describe("profili: samo pravi podaci", () => {
   it("javni profil (L14) popunjava detalj tuđeg hotela", () => {
     const pub = { companyId: "o1", hotelName: "Hotel o1", playerName: "Igrač o1", place: "Opatija", stars: 4, roomsCount: 17, price: 120, reviews: 70, guests: 60, occupancyPct: 66, staffByDepartment: { management: 2, reception: 3, housekeeping: 0, maintenance: 1, kitchen: 2 }, contracts: [] } as unknown as CompanyPublicView;
     const withPub = profilesFromMe(me, { o1: pub });
-    expect(withPub.o1.detail).toMatchObject({ price: 120, reviews: 70, guests: 60, occupancyPct: 66, months: null });
+    expect(withPub.o1.detail).toMatchObject({ price: 120, reviews: 70, guests: 60, occupancyPct: 66, months: null, publicFinances: [] });
     expect(withPub.o1.staff).toBe(8);
     expect(withPub.o1.staffByDept.housekeeping).toBeUndefined();
     expect(withPub.o2.detail).toBeNull();
@@ -187,13 +203,13 @@ describe("raspored hotela", () => {
 });
 
 describe("visina zgrade", () => {
-  it("raste s novcem, najbogatiji je najviši, blokada i nula su minimum", () => {
-    expect(hotelHeight(30000, 30000)).toBe(HOTEL_H_MAX);
-    expect(hotelHeight(15000, 30000)).toBeGreaterThan(HOTEL_H_MIN);
-    expect(hotelHeight(15000, 30000)).toBeLessThan(HOTEL_H_MAX);
-    expect(hotelHeight(-500, 30000)).toBe(HOTEL_H_MIN);
+  it("raste s napretkom, najnapredniji je najviši, nula i minus su minimum", () => {
+    expect(hotelHeight(10, 10)).toBe(HOTEL_H_MAX);
+    expect(hotelHeight(5, 10)).toBeGreaterThan(HOTEL_H_MIN);
+    expect(hotelHeight(5, 10)).toBeLessThan(HOTEL_H_MAX);
+    expect(hotelHeight(-1, 10)).toBe(HOTEL_H_MIN);
     expect(hotelHeight(0, 0)).toBe(HOTEL_H_MIN);
-    expect(hotelHeight(40000, 30000)).toBe(HOTEL_H_MAX);
+    expect(hotelHeight(12, 10)).toBe(HOTEL_H_MAX);
   });
 });
 
