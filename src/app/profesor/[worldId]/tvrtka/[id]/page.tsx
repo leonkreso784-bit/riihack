@@ -13,6 +13,7 @@ import { Pill, type Tone } from "@/components/pill";
 import { FormError } from "@/components/form";
 import { Delta } from "@/components/metric-bar";
 import { BackLink } from "@/components/back-link";
+import { Dots, Loading } from "@/components/loading";
 
 const QUALITIES: Quality[] = [1, 2, 3, 4, 5];
 function how(a: AnswerView | undefined, state: SituationView["state"]): { label: string; tone: Tone } {
@@ -37,7 +38,7 @@ export default function StudentPage() {
         <FormError>{error.message}</FormError>
       </div>
     );
-  if (!data) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
 
   const { company, situations, reports } = data;
   const rounds = [...new Set([...situations.map((s) => s.round), ...reports.map((r) => r.round)])].sort((a, b) => a - b);
@@ -197,7 +198,13 @@ function ChangeGrade({ worldId, situationId, current, onChange }: { worldId: str
             disabled={busy}
             className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-primary px-5 font-bold text-primary-foreground transition-colors hover:bg-[#1f5fe0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-60"
           >
-            {busy ? "Spremam…" : `Spremi ocjenu ${picked} / 5`}
+            {busy ? (
+              <>
+                <Dots /> Spremam
+              </>
+            ) : (
+              `Spremi ocjenu ${picked} / 5`
+            )}
           </button>
           <button
             type="button"

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/page-header";
 import { FormError } from "@/components/form";
 import { ROOM_STATUS, RoomTile } from "@/components/room-tile";
+import { Loading } from "@/components/loading";
 
 const FILTERS: (RoomStatus | "all")[] = ["all", "free", "occupied", "cleaning", "broken"];
 
@@ -15,7 +16,7 @@ export default function RoomsPage() {
   const { data: rooms, error } = usePoll(api.rooms);
   const [filter, setFilter] = useState<RoomStatus | "all">("all");
   if (error && !rooms) return <FormError>{error.message}</FormError>;
-  if (!rooms) return <p className="pt-6 text-muted-foreground">Učitavam…</p>;
+  if (!rooms) return <Loading />;
 
   const count = (s: RoomStatus) => rooms.filter((r) => r.status === s).length;
   const shown = filter === "all" ? rooms : rooms.filter((r) => r.status === filter);

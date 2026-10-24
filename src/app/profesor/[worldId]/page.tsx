@@ -9,6 +9,7 @@ import type { BotsRequest, LeaderboardRow, ProfStateResponse } from "@/lib/types
 import { ProfBoard } from "@/components/prof-board";
 import { QrCode } from "@/components/qr-code";
 import { FormError } from "@/components/form";
+import { Loading } from "@/components/loading";
 
 const noop = () => () => {};
 const useHost = () => useSyncExternalStore(noop, () => location.host, () => "");
@@ -18,7 +19,7 @@ export default function ProfWorld() {
   const { worldId } = useParams<{ worldId: string }>();
   const { data, error, syncedAt, refresh } = usePoll(() => api.profState(worldId));
   if (error && !data) return <FormError>{error.message}</FormError>;
-  if (!data) return <p className="pt-12 text-center text-muted-foreground">Učitavam…</p>;
+  if (!data) return <Loading />;
   return data.world.status === "lobby" ? (
     <Lobby state={data} onStarted={refresh} />
   ) : (

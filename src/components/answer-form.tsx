@@ -111,8 +111,8 @@ export function OptionsForm({
         ))}
       </fieldset>
       {error && <FormError key={error}>{error}</FormError>}
-      <SubmitButton busy={busy || !picked} busyText={busy ? `${firstName} razmišlja o tvom odgovoru…` : "Odaberi jedan odgovor"}>
-        Pošalji odgovor
+      <SubmitButton busy={busy} disabled={!picked} busyText={`${firstName} razmišlja o tvom odgovoru…`}>
+        {picked ? "Pošalji odgovor" : "Odaberi jedan odgovor"}
       </SubmitButton>
     </form>
   );

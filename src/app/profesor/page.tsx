@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { Loading } from "@/components/loading";
 
 const BUTTON =
   "flex min-h-14 items-center justify-center rounded-[var(--radius)] px-4 text-lg font-bold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
@@ -26,7 +27,7 @@ export default function ProfEntry() {
 
       <div className="mt-8 min-h-[7.75rem] space-y-3">
         {session.isPending || signedIn ? (
-          <p className="text-center text-muted-foreground">Učitavam…</p>
+          <Loading className="pt-0 pb-0" />
         ) : (
           <>
             <Link href="/profesor/prijava" className={`${BUTTON} bg-primary text-primary-foreground hover:bg-[#1f5fe0]`}>
