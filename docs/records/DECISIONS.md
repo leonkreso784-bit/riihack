@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-052"></a>
+## ADR-052 · Napisan odgovor s ocjenom 1 ne oduzima
+**Datum:** 25.10. ~01:25 · **Status:** ✅ (Leon, preneseno preko graditelja) · **Vezano:**
+[ADR-046](#adr-046), [ADR-049](#adr-049),
+[BUG-030](BUGS.md#bug-030--odgovor-koji-promaši-temu-kažnjava-se-kao-propušten-pa-je-gori-od-šutnje)
+
+**Kontekst.** Po [ADR-046](#adr-046) ocjena 1 nosi −2× i za napisan odgovor koji promaši temu, pa je student s
+općenitim odgovorima završio sezonu gore od studenta koji nije odgovorio ništa (tester, BUG-030).
+**Odluka.** Napisan odgovor s ocjenom 1 ima množitelj 0. Propuštena situacija i prazan odgovor ostaju −2×.
+**Posljedice.** Odgovoriti je uvijek barem jednako dobro kao ne odgovoriti, kako ADR-046 i obećava. Mijenja brojke:
+radi graditelj, spaja se na Leonovo „spoji", pa ponovni seed demo igre i smoke.
+
 <a id="adr-051"></a>
 ## ADR-051 · Kod igre na ploči nakon pokretanja nije potreban
 **Datum:** 25.10. ~01:10 · **Status:** ✅ (Leon, preneseno preko testera) · **Vezano:**
@@ -66,7 +78,8 @@ negativan (BUG-026), a brojke su računate prije #213. U pitchu je kalibracija �
 
 <a id="adr-046"></a>
 ## ADR-046 · Odgovorena situacija donosi plus već od ocjene 3
-**Datum:** 24.10. ~22:50 · **Status:** ✅ (Leon; prijedlog graditelja) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
+**Datum:** 24.10. ~22:50 · **Status:** ✅ (Leon; prijedlog graditelja), ocjena 1 za napisan odgovor zamijenjena u
+[ADR-052](#adr-052) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
 
 **Kontekst.** Učinak situacije na pokazatelje bio je (kvaliteta − 3) × učinak: ocjena 3 nije donosila ništa, a
 propuštena (kvaliteta 1) oduzimala je dvostruko. Financije vraćaju najviše +5 mjesečno, pa je napredak bio negativan
@@ -165,6 +178,8 @@ nudi samo prijavu i registraciju računom; ruta za prijavu profesorskim kodom os
 kao i odgovori i ocjene.
 **Posljedice.** Djelomično mijenja ADR-035. Student uspoređuje poslovanje s konkurencijom, a učenje drugih ostaje
 privatno. Kod je [#184](https://github.com/leonkreso784-bit/riihack/pull/184) (21:51, Leonovo „spoji" jer dira ugovor).
+Leon je 25.10. ~01:25 potvrdio: ljestvica i grad ne pokazuju stanje računa tuđih hotela, samo napredak, prihod i
+dobit; svoj račun student vidi ([BUG-034](BUGS.md#bug-034--ljestvica-studentu-pokazuje-novac-tuđih-hotela)).
 
 <a id="adr-039"></a>
 ## ADR-039 · Redoslijed do predaje: demo i smoke prvo
