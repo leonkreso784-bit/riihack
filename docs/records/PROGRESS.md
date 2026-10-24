@@ -12,8 +12,9 @@ Vremena su lokalna (CEST).
 - **Odluke (Leon, ~01:25, preko graditelja):** napisan odgovor s ocjenom 1 ne oduzima
   ([ADR-052](DECISIONS.md#adr-052), BUG-030); ljestvica i grad bez stanja računa tuđih hotela (potvrđen
   [ADR-040](DECISIONS.md#adr-040), BUG-034). Gradi graditelj.
-- **Otvoreno:** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)), Simonov #242 (BUG-033 i 037), Rinov #244
-  (BUG-036 i 038), graditeljev #245 (brže „Moje igre", #227.6).
+- **Spojeno poslije (01:27–01:28):** Rinov #244 (BUG-036 i 038), graditeljev #245 (brže „Moje igre", #227.6), Simonov
+  #242 (BUG-033 i 037); četiri niska buga riješena.
+- **Otvoreno:** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)).
 
 ## Ned 25.10. ~01:15 · obračun grada spojen, kod igre na ploči ne treba
 

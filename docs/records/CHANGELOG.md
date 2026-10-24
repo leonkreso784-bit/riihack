@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#242](https://github.com/leonkreso784-bit/riihack/pull/242) | 01:28 | Simon | mentor prepozna prazan odgovor (BUG-033), množina u Tokovima odjela (BUG-037) |
+| [#245](https://github.com/leonkreso784-bit/riihack/pull/245) | 01:27 | Leon | brže „Moje igre": igre se traže odmah, usporedno sa sesijom (#227.6) |
+| [#244](https://github.com/leonkreso784-bit/riihack/pull/244) | 01:27 | Rino | situacija ne skrola stranicu (BUG-038), poruka bez padeža i potvrda praznog odgovora (BUG-036) |
 | [#243](https://github.com/leonkreso784-bit/riihack/pull/243) | 01:16 | Leon | dokumentacija: ADR-050 i 051, BUG-032 riješen, BUG-037 do 039 |
 | [#240](https://github.com/leonkreso784-bit/riihack/pull/240) | 01:12 | Leon | izvještaj mjeseca, mentor i podij vide obračun grada (BUG-032, #226) |
 | [#235](https://github.com/leonkreso784-bit/riihack/pull/235) | 01:12 | Simon | botovi igraju mjesec paralelno, najviše 5 odjednom (#227.2) |

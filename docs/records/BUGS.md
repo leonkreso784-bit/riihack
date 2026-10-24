@@ -17,28 +17,6 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** —
 - **Lekcija:** —
 
-### BUG-038 · Situacija na mobitelu sama skrola i skrije naslov
-- **Status:** 🟡 PR [#244](https://github.com/leonkreso784-bit/riihack/pull/244) (Rino) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (ned ~01:08, produkcija, 375 px): pri otvaranju situacije stranica sama skrola 178 px, a naslov
-  ostane pod zaglavljem.
-- **Uzrok:** `scrollIntoView` na kraj razgovora pri učitavanju (`src/components/chat-panel.tsx:50`).
-- **Rješenje:** —
-- **Lekcija:** —
-
-### BUG-037 · „Još 2 situacija čeka" u Tokovima odjela
-- **Status:** 🟡 PR [#242](https://github.com/leonkreso784-bit/riihack/pull/242) (Simon) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (ned ~01:08, produkcija): množina uz broj je kriva.
-- **Uzrok:** obje grane uvjeta daju „situacija čeka" (`src/components/tokovi/departments-flow.tsx:478`).
-- **Rješenje:** —
-- **Lekcija:** —
-
-### BUG-036 · Sitnice sučelja: padež u razgovoru, prazan odgovor bez potvrde
-- **Status:** 🟡 PR [#244](https://github.com/leonkreso784-bit/riihack/pull/244) (Rino) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ; `src/components/chat-panel.tsx:110`); prazan odgovor na situaciju
-  šalje se bez pitanja „Sigurno?".
-- **Rješenje:** —
-- **Lekcija:** —
-
 ### BUG-035 · Botovi: „(bot)" dvaput, „Moje igre" ih broji kao studente
 - **Status:** 🔴 otvoren · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): bot ima „(bot)" u imenu i uz to značku „bot"; „Moje igre" botove broji
@@ -52,13 +30,6 @@ opis · uzrok · rješenje · **lekcija**.
   [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci.
 - **Rješenje:** Leon (~01:25): ljestvica i grad pokazuju samo napredak, prihod i dobit tuđih hotela, bez stanja
   računa; svoj račun student vidi (ADR-040). Radi graditelj.
-- **Lekcija:** —
-
-### BUG-033 · Mentor pita o „tvom odgovoru" kad je odgovor prazan
-- **Status:** 🟡 PR [#242](https://github.com/leonkreso784-bit/riihack/pull/242) (Simon) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (ned ~00:55, produkcija): na prazan odgovor mentor svejedno pita o „tvom odgovoru"
-  (usp. [ADR-049](DECISIONS.md#adr-049): kod prazne refleksije mentor to prepozna).
-- **Rješenje:** —
 - **Lekcija:** —
 
 ### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
@@ -121,6 +92,35 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-038 · Situacija na mobitelu sama skrola i skrije naslov
+- **Status:** ✅ riješen 25.10. 01:27 ([#244](https://github.com/leonkreso784-bit/riihack/pull/244), Rino) · **Težina:** nizak
+- **Opis:** tester (ned ~01:08, produkcija, 375 px): pri otvaranju situacije stranica sama skrola 178 px, a naslov
+  ostane pod zaglavljem.
+- **Uzrok:** `scrollIntoView` na kraj razgovora pri učitavanju (`src/components/chat-panel.tsx:50`).
+- **Rješenje:** skrola se samo okvir razgovora (`scrollTo` na popis poruka), ne stranica.
+- **Lekcija:** u ugrađenom okviru `scrollIntoView` pomiče i cijelu stranicu; skrolaj samo spremnik.
+
+### BUG-037 · „Još 2 situacija čeka" u Tokovima odjela
+- **Status:** ✅ riješen 25.10. 01:28 ([#242](https://github.com/leonkreso784-bit/riihack/pull/242), Simon) · **Težina:** nizak
+- **Opis:** tester (ned ~01:08, produkcija): množina uz broj je kriva.
+- **Uzrok:** obje grane uvjeta daju „situacija čeka" (`src/components/tokovi/departments-flow.tsx:478`).
+- **Rješenje:** ispravna množina uz broj u Tokovima odjela.
+- **Lekcija:** grane uvjeta za množinu provjeri testom s 1, 2 i 5.
+
+### BUG-036 · Sitnice sučelja: padež u razgovoru, prazan odgovor bez potvrde
+- **Status:** ✅ riješen 25.10. 01:27 ([#244](https://github.com/leonkreso784-bit/riihack/pull/244), Rino) · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): „Poruka za Helena Bogdan" (treba dativ; `src/components/chat-panel.tsx:110`); prazan odgovor na situaciju
+  šalje se bez pitanja „Sigurno?".
+- **Rješenje:** oznaka poruke bez padeža; prazan odgovor traži potvrdu.
+- **Lekcija:** tekst s imenom osobe piši tako da ne traži padež; radnja bez sadržaja traži potvrdu.
+
+### BUG-033 · Mentor pita o „tvom odgovoru" kad je odgovor prazan
+- **Status:** ✅ riješen 25.10. 01:28 ([#242](https://github.com/leonkreso784-bit/riihack/pull/242), Simon) · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): na prazan odgovor mentor svejedno pita o „tvom odgovoru"
+  (usp. [ADR-049](DECISIONS.md#adr-049): kod prazne refleksije mentor to prepozna).
+- **Rješenje:** mentor prepozna prazan odgovor i ne pita o njemu.
+- **Lekcija:** prazan ulaz AI-ju označi izričito; ne oslanjaj se na to da će ga model sam primijetiti.
 
 ### BUG-032 · Izvještaj mjeseca, mentor i podij ne vide obračun grada
 - **Status:** ✅ riješen 25.10. 01:12 ([#240](https://github.com/leonkreso784-bit/riihack/pull/240)) · **Težina:**
