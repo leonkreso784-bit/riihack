@@ -26,12 +26,11 @@ Za demo su dvije vrste tvrtki:
 4. Na profesorovu ekranu uživo se pune mjesta („7 / 24 studenta"). Kad su svi unutra, ili kad profesor odluči,
    on pokrene igru.
 5. **Svaki student dobije drukčiji hotel** iz banke hotela (§5): drugo mjesto, broj i vrste soba, drukčije
-   raspoređene snage. Ime hotela je studentovo, a hotel ima **sve svoje sobe koje se mogu pregledati** (§5b),
-   slično kao u HotelixSimu.
+   raspoređene snage. Ime hotela je studentovo, a hotel ima **sve svoje sobe koje se mogu pregledati** (§5b).
 
 ### 1a · Što je stvarno, što je sučelje, što je plan
 
-Ne gradimo proizvod koji radi do kraja. Iz HotelixSima u bazu i backend ulazi samo ono najbitnije, a ostalo je
+Ne gradimo proizvod koji radi do kraja. U bazu i backend ulazi samo ono najbitnije, a ostalo je
 sučelje na lažnim podacima ili samo plan za pitch.
 
 | Razina | Što | Kako |
@@ -40,13 +39,13 @@ sučelje na lažnim podacima ili samo plan za pitch.
 | **Samo sučelje** (lažni podaci) | radar vještina, simulator unaprijed | ekrani čitaju pripremljene podatke s oznakom „primjer" |
 | **Planirano** (dokumentacija i pitch) | studenti vode i druge vrste tvrtki (agencija, dobavljač, zaštitarska firma), ugovori između studenata, banka i krediti, više gradova i država, šok gumb, novine, glas, replay sezone, profesor sam dodaje situacije | opisano u ovom dokumentu i na slajdu „Što dalje" |
 
-**Oblik:** web platforma, **responsive za sve uređaje** (mobitel, tablet, računalo, projektor). Izgled i osjećaj
-kao današnji HotelixSim, opsegom malo veći (svijet, više vrsta tvrtki, profesor), ali **pojednostavljen** (vidi §5a).
+**Oblik:** web platforma, **responsive za sve uređaje** (mobitel, tablet, računalo, projektor). Simulacija
+hotela je **pojednostavljena** (vidi §5a); izgled je u §9.
 
 **Što NE radimo u 24 h:** račune i lozinke, više jezika, pravu ekonomiju tržišta, zajedničko tržište gostiju,
 generiranje situacija AI-jem, mobilnu aplikaciju.
 
-## 2 · Načela (preuzeta iz HotelixSima, kod pišemo iznova)
+## 2 · Načela
 
 1. **AI ne odlučuje o brojkama.** AI glumi likove, provjerava koje kriterije rubrike odgovor ispunjava i piše
    mentorov osvrt. Bodove računa **motor** (čiste TypeScript funkcije), uvijek jednako.
@@ -106,7 +105,7 @@ Svaka vrsta tvrtke je **paket** u `content/<kind>/` (JSON u repou, ne u bazi):
 **Svaka situacija u demou ima lika** (moja odluka): bez lika nema vlastitog odgovora, a vlastiti odgovor je srž
 pitcha. Situacija bez lika ostaje mogućnost u formatu, ali je u demou ne koristimo.
 
-Za demo: **hotel 8–10 situacija** (Leon piše iz HotelixSim iskustva), **agencija 4–5** 🟨. Situacije u krugu bira
+Za demo: **hotel 8–10 situacija** (piše Leon), **agencija 4–5** 🟨. Situacije u krugu bira
 motor iz `seed` svijeta i broja kruga (ne iz stanja tvrtke), pa **svi u istom svijetu dobiju iste situacije u
 istom krugu** (moja odluka; usporedivo za profesora).
 
@@ -136,9 +135,9 @@ bolje ocijenjen hotel uzme goste drugima**. Hotel ne može primiti više od svog
 
 Formule i vrijednosti su u planu izvedbe (L9).
 
-## 5a · Pojednostavljeni HotelixSim (što ostaje, što otpada)
+## 5a · Pojednostavljena simulacija hotela (što ostaje, što otpada)
 
-| HotelixSim danas | Simpolis demo |
+| Puna simulacija hotela | Simpolis demo |
 | --- | --- |
 | pregled hotela, pokazatelji, KPI (ADR, RevPAR) | **ostaje**, na jednom ekranu „Moja tvrtka": 5 pokazatelja (početak prema sada) + popunjenost, ADR, RevPAR |
 | situacije, razgovor s likom, presuda, mentor | **ostaje** (srž) |
@@ -230,7 +229,7 @@ smije vidjeti, njime se samo ulazi.
 | `POST /api/me/close-round` | zatvori svoj krug → izvještaj i mentor |
 | 🟨 `POST /api/contracts`, `POST /api/contracts/[id]/respond` | ponuda i odgovor na ugovor |
 
-**Pravila kruga** (kao HotelixSim ADR-037): profesor otvara krug k. Student igra krug k i zatvara ga kad je
+**Pravila kruga:** profesor otvara krug k. Student igra krug k i zatvara ga kad je
 spreman; njegova tvrtka se tada obračuna i on odmah vidi rezultat i mentora. Kad istekne rok, poslužitelj pri
 sljedećem čitanju zatvori sve otvorene krugove (neodgovoreno = kvaliteta 1). Nitko ne ide ispred otvorenog kruga.
 
@@ -263,7 +262,7 @@ Sučelje je na hrvatskom i **responsive**: mobitel (jedan stupac, donja navigaci
 navigacija, dva stupca), projektor za profesorovu ploču (velika slova). Svaki ekran se provjerava na 375 px,
 768 px i 1440 px širine.
 
-**Izgled** kao HotelixSim: font Plus Jakarta Sans, bijele kartice zaobljene 20 px na svijetloplavoj podlozi,
+**Izgled:** font Plus Jakarta Sans, bijele kartice zaobljene 20 px na svijetloplavoj podlozi,
 naglasak plava `#246bfd`, rast zelena `#0f7a3c`, pad crvena `#c42626`, upozorenje jantar `#a16207`, pomoćne podloge
 pijesak `#f4e8d5` i menta `#d8f0ee`. Boje kao Tailwind tokeni, ne heks u komponentama. Ikone `lucide-react`.
 Svaki broj ima ime i jedinicu (€, %, /100).

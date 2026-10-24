@@ -115,7 +115,7 @@ Profesor dobiva situacije (ADR-024) i promjenu ocjene mentora.
 daju krive padeže.
 **Odluka.** Vijesti su oblika u kojem se ime ne sklanja: „Novi hotel u gradu: {hotel} ({mjesto})", „Novi ugovor:
 {hotel} i {tvrtka}", „Počinje {mjesec}", „{Mjesec}: najpopunjeniji je {hotel} ({x} %)".
-**Posljedice.** Ulazi u L11 fazu B i u plan. Mehanike se i dalje naslanjaju na HotelixSim (ideje, ne kod).
+**Posljedice.** Ulazi u L11 fazu B i u plan.
 
 <a id="adr-020"></a>
 ## ADR-020 · Razgovor s likom (S3): transkript, situacije, rubni slučaj
@@ -226,10 +226,10 @@ prijeđe bez sukoba.
 
 <a id="adr-009"></a>
 ## ADR-009 · Napredak kao normalizirani dobitak
-**Datum:** 24.10. 13:39 · **Status:** ✅ (Leon s timom) · **Vezano:** [#31](https://github.com/leonkreso784-bit/riihack/pull/31), [#45](https://github.com/leonkreso784-bit/riihack/pull/45), [plan › Gamifikacija](../superpowers/plans/2026-10-24-simpolis.md#gamifikacija-bodovanje-iz-hotelixsima-l5-odlučeno-2410)
+**Datum:** 24.10. 13:39 · **Status:** ✅ (Leon s timom) · **Vezano:** [#31](https://github.com/leonkreso784-bit/riihack/pull/31), [#45](https://github.com/leonkreso784-bit/riihack/pull/45), [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md) (L5)
 
 **Kontekst.** Hoteli kreću s različito raspoređenim pokazateljima; zbroj razlika nagrađuje one koji kreću nisko.
-**Odluka.** Napredak je normalizirani dobitak (Hake 1998, kao u HotelixSimu), raspon −100 do +100; ljestvica nosi i
+**Odluka.** Napredak je normalizirani dobitak (Hake 1998), raspon −100 do +100; ljestvica nosi i
 `roundGain` (napredak u zadnjem zatvorenom krugu). Gamifikacija R10: podij kruga, top 5 i moje mjesto, anonimno.
 **Posljedice.** Poznati rizik: bod pri vrhu vrijedi više; za demo prihvatljivo.
 
@@ -297,7 +297,7 @@ ključ i RLS.
 
 <a id="adr-002"></a>
 ## ADR-002 · AI ne odlučuje o brojkama
-**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon, načelo iz HotelixSima) · **Vezano:** [ARHITEKTURA §2](../../ARHITEKTURA.md#2--načela-preuzeta-iz-hotelixsima-kod-pišemo-iznova), [CLAUDE.md](../../CLAUDE.md)
+**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §2](../../ARHITEKTURA.md#2--načela), [CLAUDE.md](../../CLAUDE.md)
 
 **Kontekst.** Ocjena mora biti ponovljiva i objašnjiva profesoru; AI je nepredvidiv.
 **Odluka.** AI glumi likove, vraća popis ispunjenih kriterija rubrike i piše mentora. Kvalitetu i bodove računa motor

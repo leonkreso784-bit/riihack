@@ -17,8 +17,7 @@ Provjeriti s pravilima na Discordu koji se format traži. Nacrt sadržaja (dopun
 5. **Uloga AI-ja:** AI glumi likove, provjerava koje kriterije rubrike odgovor ispunjava i piše mentorov osvrt.
    **Bodove računaju pravila igre**, uvijek jednako, pa je ocjena fer i provjerljiva.
 6. **Poslovni model** 🟨: licenca po kolegiju ili semestru za fakultete i srednje škole; besplatna proba za
-   profesora. Kasnije: tvrtke za obuku novih zaposlenika (hotelski lanci, agencije). Prvi korisnik: FMTU Opatija,
-   gdje je HotelixSim (isti pristup) pred pilotom.
+   profesora. Kasnije: tvrtke za obuku novih zaposlenika (hotelski lanci, agencije). Prvi korisnik: FMTU Opatija.
 7. **Što bismo radili dalje:** nove simulacije u istom svijetu (dobavljač, zaštitarska firma…), zajedničko tržište,
    profesor sam dodaje situacije, situacije iz gradiva kolegija, engleski jezik.
 8. **Linkovi:** demo, repo, video

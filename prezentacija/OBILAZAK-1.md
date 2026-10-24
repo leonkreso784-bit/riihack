@@ -116,8 +116,7 @@ sebi motivirajuće: meta-analiza Wouters 2013. to nije potvrdila; mi tvrdimo da 
   nas ono što kažeš gostu u lipnju vidiš u recenzijama u srpnju i u blagajni u kolovozu."
 - **Kako spriječiti prepisivanje?** Vlastite riječi vrijede više od klika (klik najviše 4/5), prepisan ponuđeni
   odgovor broji se kao klik, a bodove ne daje AI nego pravila.
-- **Tko plaća?** Fakultet licencom po kolegiju (prvi korisnik: kolegij na FMTU u Opatiji, gdje je Leonov HotelixSim
-  pred pilotom). Model: **hotelska kuća plaća scenarij, fakultet i studenti koriste besplatno**, prvi pilot na jednom
+- **Tko plaća?** Fakultet licencom po kolegiju (prvi korisnik: kolegij na FMTU u Opatiji). Model: **hotelska kuća plaća scenarij, fakultet i studenti koriste besplatno**, prvi pilot na jednom
   kolegiju FMTU-a. To je naša pretpostavka, tvrtke još nismo pitali. AI trošak je procjena od oko 2 eura po razredu.
 - **Je li ovo demo ili mock-up?** Sučelje je na primjer-podacima i to piše na ekranu; AI sudac radi na pravom modelu;
   baza i grad stižu do 18:45. Reći što je pripremljeno prije (istraživanje, starter) i što je AI.

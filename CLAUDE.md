@@ -8,7 +8,7 @@ Upute za Claude Code (i za ljude) u ovom repou.
 
 Radni repo tima Leon, Simon i Rino za **Ri-Hack 4.0**, hackathon RITEH Web Teama u STEP RI-ju u Rijeci. Imamo 24 sata da napravimo rješenje na zadanu temu i predamo dokumentaciju preko Discorda. Natjecanje je isključivo programersko, ali žiri cijeni jasnu viziju i poslovni model.
 
-**Tema:** *Poticanje ljudi na učenje u doba umjetne inteligencije*. Radimo **Simpolis**: svijet simulacija za učenje (prvo hotel), na foru Leonovog HotelixSima. Iz HotelixSima se prenose ideje, ne kod. Ime nikad nije HotelixSim. Rok predaje: **ned 25.10.2026. u 10:30**. **Ovo je repo natjecanja:** prvi commit napravljen je na natjecanju (pravilo s Discorda, [ocjenjivanje](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/research/ocjenjivanje-2026.md)), a predaje se GitHub link na ovaj repo. Priprema i istraživanje ostaju u [ri-hack-4](https://github.com/leonkreso784-bit/ri-hack-4). Sve o ideji je u [IDEJA.md](IDEJA.md), a tehnika u [ARHITEKTURA.md](ARHITEKTURA.md).
+**Tema:** *Poticanje ljudi na učenje u doba umjetne inteligencije*. Radimo **Simpolis**: svijet simulacija za učenje (prvo hotel). Sav kod i tekstovi pišu se iznova na natjecanju. Rok predaje: **ned 25.10.2026. u 10:30**. **Ovo je repo natjecanja:** prvi commit napravljen je na natjecanju (pravilo s Discorda, [ocjenjivanje](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/research/ocjenjivanje-2026.md)), a predaje se GitHub link na ovaj repo. Priprema i istraživanje ostaju u [ri-hack-4](https://github.com/leonkreso784-bit/ri-hack-4). Sve o ideji je u [IDEJA.md](IDEJA.md), a tehnika u [ARHITEKTURA.md](ARHITEKTURA.md).
 
 ## Istraživanje (u repou ri-hack-4)
 

@@ -56,7 +56,7 @@ na koga čeka i što smo dogovorili.
 | --- | --- | --- |
 | 24.10. | L0 je Leonov #37, a Simonov #36 se zatvara | Leon |
 | 24.10. | Neon (Frankfurt, besplatni plan) preko Vercel Marketplacea radi Leon; `ANTHROPIC_API_KEY` vodi Simon | Leon |
-| 24.10. | Gamifikacija kao u HotelixSimu: #31 prihvaćen (R10 = #46, napredak = normalizirani dobitak, `roundGain`) | Leon s timom |
+| 24.10. | Gamifikacija: #31 prihvaćen (R10 = #46, napredak = normalizirani dobitak, `roundGain`) | Leon s timom |
 | 24.10. | Osoblje hotela vidi se uz sobe (`/igra/osoblje`, sadržaj bez baze, `GET /api/me/staff`); karta pokazuje cijelu ekonomiju grada | Leon s timom |
 | 24.10. | Simon i Rino su u Vercel timu; env dobivate s `vercel link` i `vercel env pull .env.local` | Leon |
 | 24.10. | Ploča tima u `TEAM.md`, svatko svoje polje, izravno na `main` | Leon |
@@ -115,7 +115,6 @@ Student hotelijerstva (FMTU Opatija) koji je sam naučio programirati. Drugi hac
 
 - **Stack:** Rust, TypeScript/JavaScript, Python, PostgreSQL/Supabase, React, Svelte, Node, Vercel, Railway
 - **Projekti:**
-  - **HotelixSim:** simulacija vođenja hotela za studente. Rust jezgra, Axum, Postgres, React, Claude glumi likove i ocjenjuje odgovore. Ide u pilot na fakultetu.
   - **Sokrat Study** ([sokratstudy.com](https://www.sokratstudy.com/)): platforma za učenje s karticama, kvizovima i vlastitim materijalima. Javno dostupna.
   - **Sokratis:** desktop aplikacija koja analizira git repo (Rust, Tauri, Svelte).
   - **KuhAI:** projekt sa SHAKER 2026. Plan obroka iz slike frižidera (Hono, Postgres, Claude).
