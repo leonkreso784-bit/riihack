@@ -144,11 +144,12 @@ describe("toMeResponse", () => {
   });
 
   it("bez podataka grada: zadani plan (prosjek cijena soba), prazni ugovori, obračuni, vijesti i linije", () => {
-    expect(me.plan).toEqual({ round: 0, price: 85, marketing: 0 });
+    expect(me.plan).toEqual({ round: 0, price: 85, marketing: 0, investments: {} });
     expect(me.situations).toEqual([]);
     expect(me.reports).toEqual([]);
     expect(me.contracts).toEqual([]);
     expect(me.finances).toEqual([]);
+    expect(me.departments?.every((d) => d.investment === 0)).toBe(true);
     expect(me.news).toEqual([]);
     expect(me.leaderboard).toHaveLength(2);
     expect(me.city).toEqual({ businesses: CITY, hotels: me.leaderboard, links: [] });
@@ -185,6 +186,7 @@ function financeRow(companyId: string, round: number, profit: number): FinanceRo
     costs: 20000,
     profit,
     cashAfter: 20000 + profit,
+    investments: 0,
   };
 }
 
@@ -202,7 +204,7 @@ describe("toMeResponse s gradom", () => {
       ...a,
       rooms: [room("101", 70), room("102", 90)],
       all: [a, b],
-      plan: { id: "p", companyId: "a", round: 2, price: 60, marketing: 1000 },
+      plan: { id: "p", companyId: "a", round: 2, price: 60, marketing: 1000, investments: { maintenance: 2000 } },
       contracts,
       finances: [financeRow("a", 2, 500), financeRow("a", 1, 1000)],
       events: [
@@ -213,7 +215,24 @@ describe("toMeResponse s gradom", () => {
     NOW,
   );
 
-  it("spremljeni plan tekućeg kruga", () => expect(me.plan).toEqual({ round: 2, price: 60, marketing: 1000 }));
+  it("spremljeni plan tekućeg kruga", () =>
+    expect(me.plan).toEqual({ round: 2, price: 60, marketing: 1000, investments: { maintenance: 2000 } }));
+
+  it("odjeli: pet odjela s osobljem predloška i ulaganjem iz plana", () => {
+    expect(me.departments?.map((d) => d.department)).toEqual([
+      "reception",
+      "housekeeping",
+      "kitchen",
+      "maintenance",
+      "management",
+    ]);
+    expect(me.departments?.reduce((s, d) => s + d.staffCount, 0)).toBe(hotel.staff.length);
+    expect(me.departments?.find((d) => d.department === "maintenance")).toMatchObject({
+      metric: "operations",
+      metricValue: 50,
+      investment: 2000,
+    });
+  });
 
   it("samo svoji ugovori, najnoviji prvo; prihvaćen ima rok", () => {
     expect(me.contracts.map((c) => c.id)).toEqual(["k-new", "k-old"]);

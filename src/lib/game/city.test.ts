@@ -23,7 +23,7 @@ function contract(over: Partial<ContractRow>): ContractRow {
   };
 }
 
-function planError(body: { price?: unknown; marketing?: unknown }): HttpError | undefined {
+function planError(body: { price?: unknown; marketing?: unknown; investments?: unknown }): HttpError | undefined {
   try {
     parsePlan(body);
   } catch (err) {
@@ -53,6 +53,20 @@ describe("parsePlan", () => {
       const err = planError({ price: 80, marketing });
       expect(err?.status).toBe(400);
       expect(err?.message).toBe("Marketing mora biti cijeli broj od 0 € do 5.000 €");
+    }
+  });
+
+  it("ulaganja po odjelu: bez njih ništa, ispravna bez nula, neispravna → 400", () => {
+    expect(parsePlan({ price: 80, marketing: 0 })).not.toHaveProperty("investments");
+    expect(parsePlan({ price: 80, marketing: 0, investments: { maintenance: 2000, reception: 0 } })).toEqual({
+      price: 80,
+      marketing: 0,
+      investments: { maintenance: 2000 },
+    });
+    for (const investments of [{ kitchen: 5000 }, { kitchen: 1.5 }, { spa: 100 }, null, "1000"]) {
+      const err = planError({ price: 80, marketing: 0, investments });
+      expect(err?.status).toBe(400);
+      expect(err?.message).toBe("Ulaganje po odjelu mora biti cijeli broj od 0 do 3.000 €");
     }
   });
 });
@@ -176,9 +190,14 @@ describe("sumEffects", () => {
 
 describe("toPlan", () => {
   it("spremljeni plan, inače referentna cijena soba i marketing 0", () => {
-    const row = { id: "p", companyId: "ana", round: 2, price: 60, marketing: 500 };
-    expect(toPlan(2, row, [])).toEqual({ round: 2, price: 60, marketing: 500 });
-    expect(toPlan(2, null, [{ basePrice: 70 }, { basePrice: 90 }, { basePrice: 95 }])).toEqual({ round: 2, price: 85, marketing: 0 });
-    expect(toPlan(1, null, [])).toEqual({ round: 1, price: PRICE_MIN, marketing: 0 });
+    const row = { id: "p", companyId: "ana", round: 2, price: 60, marketing: 500, investments: { kitchen: 1000 } };
+    expect(toPlan(2, row, [])).toEqual({ round: 2, price: 60, marketing: 500, investments: { kitchen: 1000 } });
+    expect(toPlan(2, null, [{ basePrice: 70 }, { basePrice: 90 }, { basePrice: 95 }])).toEqual({
+      round: 2,
+      price: 85,
+      marketing: 0,
+      investments: {},
+    });
+    expect(toPlan(1, null, [])).toEqual({ round: 1, price: PRICE_MIN, marketing: 0, investments: {} });
   });
 });

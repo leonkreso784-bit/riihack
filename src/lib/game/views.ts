@@ -12,6 +12,7 @@ import type {
   WorldRow,
 } from "@/db/schema";
 import { SITUATIONS, getHotel } from "@/content";
+import { departmentViews } from "@/lib/engine/departments";
 import { sourceOfTemplateId } from "@/lib/engine/draft";
 import { progress } from "@/lib/engine/round";
 import { renderSituationText } from "@/lib/engine/text";
@@ -211,7 +212,7 @@ const hotelNames = (all: CompanyWithPlayer[]) =>
 /**
  * `situations` = situacije tvrtke (u odgovor idu samo one tekućeg kruga); `reports` = izvještaji svih tvrtki igre
  * (tvrtka dobije svoje, ljestvica skok kruga); `plan` = spremljeni plan tekućeg kruga (bez njega zadani);
- * `finances` = obračuni tvrtke.
+ * `finances` = obračuni tvrtke; `departments` = stanje odjela iz osoblja predloška, soba, pokazatelja i ulaganja plana.
  */
 export function toMeResponse(
   input: {
@@ -232,13 +233,14 @@ export function toMeResponse(
   const { plan = null, finances = [], contracts = [], events = [] } = input;
   const leaderboard = toLeaderboard(all, reports);
   const current = situations.filter((s) => s.situation.round === world.round);
+  const roundPlan = toPlan(world.round, plan, rooms);
   return {
     world: toWorldView(world, now),
     company: toCompanyView(company, player, rooms.length),
     situations: toSituationViews(current, company.name, pool),
     leaderboard,
     reports: companyReports(reports, company.id),
-    plan: toPlan(world.round, plan, rooms),
+    plan: roundPlan,
     contracts: contracts
       .filter((c) => c.companyId === company.id)
       .sort((a, b) => b.roundOffered - a.roundOffered)
@@ -246,6 +248,12 @@ export function toMeResponse(
     finances: [...finances].sort((a, b) => a.round - b.round).map(toFinance),
     city: toCityView(leaderboard, toCityLinks(contracts, world.round)),
     news: buildNews(events, hotelNames(all)),
+    departments: departmentViews({
+      metrics: company.metrics,
+      staff: getHotel(company.templateId).staff,
+      rooms: rooms.map((r) => ({ number: r.number, status: r.status as RoomStatus })),
+      investments: roundPlan.investments ?? {},
+    }),
   };
 }
 
