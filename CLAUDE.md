@@ -2,7 +2,7 @@
 
 Upute za Claude Code (i za ljude) u ovom repou.
 
-> **Nova sesija počinje čitanjem [docs/SLJEDECA_SESIJA.md](docs/SLJEDECA_SESIJA.md)** (gdje smo, što je prvo, što je otvoreno).
+> **Nova sesija počinje čitanjem [docs/SLJEDECA_SESIJA.md](docs/SLJEDECA_SESIJA.md)** (gdje smo, što je prvo, što je otvoreno). Leonov početni prompt: [docs/PROMPT_SLJEDECA_SESIJA.md](docs/PROMPT_SLJEDECA_SESIJA.md).
 
 ## Što je ovo
 
