@@ -6,6 +6,15 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. ~18:50 · val 3
+
+- **Odluke (Leon):** pošta s agencijama i pregovaranje ([ADR-033](DECISIONS.md#adr-033)), poruke i suradnja među
+  hotelima ([ADR-034](DECISIONS.md#adr-034)), tuđi hotel samo s javnim podacima ([ADR-035](DECISIONS.md#adr-035)),
+  profesorski računi ([ADR-036](DECISIONS.md#adr-036)).
+- **Plan vala 3** (zadaci L13–L19, S10–S12, R11–R15) u [#134](https://github.com/leonkreso784-bit/riihack/pull/134),
+  čeka spajanje.
+- **Spojeno:** Simon uskladio ROADMAP i pitch s ADR-031 (#131), dokumentacija #133.
+
 ## Sub 24.10. 18:35–18:50 · bez zamrzavanja, odjeli s ulaganjem, popravci pred obilazak 2
 
 - **Odluke (Leon):** nema zamrzavanja koda, gradi se do predaje ([ADR-031](DECISIONS.md#adr-031)); odjeli s pravim

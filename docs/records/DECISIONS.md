@@ -8,6 +8,48 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+Odluke ADR-033 do 036 su val 3; zadaci, ugovor i raspored su u planu vala 3
+([#134](https://github.com/leonkreso784-bit/riihack/pull/134), 🟨 čeka spajanje).
+
+<a id="adr-036"></a>
+## ADR-036 · Profesorski računi (Better Auth); prijava kodom ostaje
+**Datum:** 24.10. ~18:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-004](#adr-004), [ADR-027](#adr-027), [ADR-026](#adr-026)
+
+**Kontekst.** Žiri pita kako bi Simpolis koristio pravi profesor; bez računa profesor nema popis svojih igara, a
+situacije prenosi samo datotekom (playbook, ADR-027).
+**Odluka.** Profesor se prijavljuje e-mailom i lozinkom (Better Auth, računi u našoj Neon bazi) i vidi **moje igre**
+i **knjižnicu situacija**. Prijava profesorskim kodom ostaje za postojeće igre i demo; studenti i dalje ulaze kodom.
+**Posljedice.** Djelomično mijenja ADR-004. Tablice Better Autha dodaju se pregledanim aditivnim SQL-om (ADR-026).
+
+<a id="adr-035"></a>
+## ADR-035 · Tuđi hotel: samo javni podaci
+**Datum:** 24.10. ~18:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-008](#adr-008)
+
+**Kontekst.** Na karti i ljestvici student vidi druge hotele u gradu; treba odlučiti koliko vidi.
+**Odluka.** Vidi samo javno: mjesto, zvjezdice, cijenu, recenzije, popunjenost prošlog mjeseca, broj zaposlenih po
+odjelima i ugovore s tvrtkama. **Bez novca, odgovora i ocjena.**
+**Posljedice.** Natjecanje je vidljivo, a učenje drugih ostaje privatno.
+
+<a id="adr-034"></a>
+## ADR-034 · Pošta među hotelima: poruke i prijedlog suradnje
+**Datum:** 24.10. ~18:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-008](#adr-008), [ADR-002](#adr-002)
+
+**Kontekst.** Hoteli dijele tržište turista (ADR-008), ali se međusobno ne mogu dogovarati.
+**Odluka.** Slobodne poruke među hotelima i jedna vrsta dogovora s posljedicom: hotel preusmjerava goste drugom
+hotelu za proviziju. Obračun radi motor.
+**Posljedice.** Mijenja obračun tržišta, pa se radi zadnje u valu 3, iza smokea.
+
+<a id="adr-033"></a>
+## ADR-033 · Pošta s agencijama i pregovaranje: motor odlučuje, AI piše
+**Datum:** 24.10. ~18:50 · **Status:** ✅ (Leon) · **Vezano:** [ADR-002](#adr-002), [ADR-023](#adr-023)
+
+**Kontekst.** Ponude gradskih tvrtki dosad su se samo prihvaćale ili odbijale. Žiri traži stabilnu mehaniku, ne
+odluke AI-ja (ADR-023).
+**Odluka.** Ponuda stiže kao e-mail; student prihvaća, odbija ili predlaže drugu cijenu. **Motor** odlučuje po
+pravilu: protuponuda do 15 % u korist hotela se prihvaća, 15–30 % agencija jednom nudi sredinu, iznad 30 % ponuda
+propada. **AI** samo piše tekst odgovora agenta.
+**Posljedice.** Isti ishod za istu protuponudu; AI ne mijenja brojke (ADR-002).
+
 <a id="adr-032"></a>
 ## ADR-032 · Odjeli s pravim ulaganjem: budžet po odjelu u planu mjeseca
 **Datum:** 24.10. ~18:40 · **Status:** ✅ (Leon) · **Vezano:** [ADR-002](#adr-002), [ADR-012](#adr-012), [ADR-011](#adr-011)
@@ -29,7 +71,8 @@ odjelu i najviše +3 na pokazatelj odjela (1 bod na 1000 €). Konačne vrijedno
 **Kontekst.** Plan i pravila tima predviđali su zamrzavanje koda u ned 06:30, poslije samo popravci.
 **Odluka.** Zamrzavanja nema: radi se punom brzinom do predaje. Rok predaje ostaje **ned 10:30**.
 **Posljedice.** Pravilo spajanja (`main` uvijek radi, integrator, smoke) vrijedi do kraja. 🟨 zamrzavanje još piše u
-`CLAUDE.md`, `PLAN-24H.md`, `TEAM.md`, `docs/ROADMAP.md` i u planu; vlasnici ih usklađuju.
+`CLAUDE.md`, `PLAN-24H.md`, `TEAM.md` i u glavnom planu; vlasnici ih usklađuju (`docs/ROADMAP.md` i pitch uskladio
+Simon u [#131](https://github.com/leonkreso784-bit/riihack/pull/131)).
 
 <a id="adr-030"></a>
 ## ADR-030 · Integrator dobiva dozvole i sam prebacuje produkciju na prave podatke
@@ -316,7 +359,7 @@ besplatni plan) preko Vercel Marketplacea: baza `simpolis-db` napravljena sub ~1
 
 <a id="adr-004"></a>
 ## ADR-004 · Bez računa: kodovi i httpOnly kolačići
-**Datum:** 24.10. 11:59 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** `bef8ab5`, [ARHITEKTURA §8](../../ARHITEKTURA.md#8--api), [napomene-rino.md](../napomene-rino.md) točka 1
+**Datum:** 24.10. 11:59 · **Status:** 🔁 za profesora djelomično zamijenjeno [ADR-036](#adr-036); studenti i dalje bez računa (Leon, na Rinov prijedlog) · **Vezano:** `bef8ab5`, [ARHITEKTURA §8](../../ARHITEKTURA.md#8--api), [napomene-rino.md](../napomene-rino.md) točka 1
 
 **Kontekst.** Računi i lozinke su izvan opsega 24 h; ulaz mora biti kao na Kahootu. Profesorova ploča ide na
 projektor, pa bi kod u adresi vidio cijeli razred.

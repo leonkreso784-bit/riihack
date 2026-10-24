@@ -19,6 +19,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#131](https://github.com/leonkreso784-bit/riihack/pull/131) | 18:50 | Simon | ROADMAP i pitch bez zamrzavanja, nedjeljni raspored |
+| [#133](https://github.com/leonkreso784-bit/riihack/pull/133) | 18:49 | Leon | dokumentacija: shema odjela, dnevnik do 18:50 |
 | [#130](https://github.com/leonkreso784-bit/riihack/pull/130) | 18:41 | Leon | dokumentacija: ADR-031 i ADR-032 |
 | [#127](https://github.com/leonkreso784-bit/riihack/pull/127) | 18:36 | Rino | popravci prije obilaska: `/igra` na 1000–1100 px, bez „(S6)", plavi „polis" |
 | [#126](https://github.com/leonkreso784-bit/riihack/pull/126) | 18:30 | Leon | dokumentacija: ok za playbook u `client.ts` |
