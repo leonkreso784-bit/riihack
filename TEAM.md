@@ -79,9 +79,9 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim:** L19 suradnja (preusmjeravanje gostiju); L18 poruke među hotelima je PR #177 (21:06, zelen lokalno, dira ugovor)
-- **Sljedeće:** L19 suradnja, L8 demo i smoke za val 3, ruta „Što ako?" ako Leon odabere Simonovu skicu 1, čišćenje testnih podataka prije predaje
-- **Čekam od drugih:** Leon: „spoji #169" i „spoji #177" (ugovor `SendMailRequest`); odluka o Simonovim skicama „Tokovi"
+- **Sad radim (4 agenta, od 21:20):** L8 demo i smoke za val 3 (demo s profesorskim računom, imena hotela prema mjestu), skripta za čišćenje testnih podataka (samo suhi prolaz), stranica knjižnice za profesora (Rino stilski pregleda), javni prihod i dobit tuđih hotela (L14, ugovor)
+- **Sljedeće:** L19 suradnja samo ako ostane vremena
+- **Čekam od drugih:** Leon: `DEMO_PROF_EMAIL` i `DEMO_PROF_PASSWORD` u `.env.local` (testni račun za demo)
 - **Drugi čekaju od mene:** —
 - **Otvoreno:** #169 L16 ekrani računa (zelen)
 - **Spojeno:** L0–L12; val 3: L13 odjeli, L14 javni profil, raspodjela financija, L15 pošta i pregovaranje, L16 računi (#147, Better Auth na produkciji od ~20:25), L17 knjižnica (#165), dvoklik na zatvaranje mjeseca (#166). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
