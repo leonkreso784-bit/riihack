@@ -1,106 +1,82 @@
 # Rino · sučelje: gdje smo stali
 
-> Zapisano **sub 24.10.2026. oko 15:40**. Ovo je jedina datoteka koju nova sesija (ili druga sesija usporedno) čita
-> da nastavi Rinov dio. Živi na grani `rino/dokumentacija`; na `main` ide samo ploča u `TEAM.md`.
+> Zapisano **sub 24.10.2026. oko 21:00**. Nova sesija (nakon `/clear`) čita ovu datoteku da nastavi Rinov dio. Živi na
+> grani `rino/dokumentacija`; na `main` ide samo Rinovo polje u `TEAM.md`.
 
 ## Prvo pročitaj
 
-1. `TEAM.md` na `main`-u: ploča tima, **pravila suradnje** i tko na koga čeka.
-2. Plan izvedbe: `docs/superpowers/plans/2026-10-24-simpolis.md` (zadaci R0–R10, ugovor tipova, API).
-3. Ova datoteka: stanje i sljedeći koraci.
+1. `TEAM.md` na `main`-u: ploča tima, **pravila suradnje**, tko na koga čeka.
+2. Plan izvedbe `docs/superpowers/plans/2026-10-24-simpolis.md` (R0–R10) i plan vala 3
+   `docs/superpowers/plans/2026-10-24-simpolis-val-3.md` (R11–R15).
+3. Ova datoteka.
+4. `gh pr list --state open` i `git log origin/main --oneline -15`: što se spojilo dok nas nije bilo.
 
-## Pravila koja vrijede (iz TEAM.md)
+## Pravila
 
-- **Spaja samo integrator (Leonova sesija).** Ti otvoriš PR, provjeriš ga na svježem `main`-u i javiš „#N je spreman".
-- Na `main` izravno ide **samo** tvoje polje u `TEAM.md` (commit `ploča: Rino`). Sve ostalo ide preko grana i PR-ova.
-- Jedan zadatak = jedna grana `rino/<ID>-<opis>` = jedan PR. Diraš **samo svoje datoteke** (`src/app/` bez `api/`,
-  `src/components/` bez `city/` i `wow/`, `src/lib/client.ts`, `src/lib/mock.ts`, `globals.css`, `layout.tsx`).
-- `types.ts`, `rules.ts`, `package.json` mijenja samo Leon. Karta grada, plan, financije su Simonovi (S5, S6).
-- Prije PR-a: `npm run typecheck && npm run lint && npm test && npm run build` na svježem `main`-u.
+- **Spaja samo integrator (Leonova sesija).** Ti otvoriš PR, provjeriš na svježem `main`-u i javiš „#N je spreman".
+- Na `main` izravno ide **samo** tvoje polje u `TEAM.md` (commit `ploča: Rino`). Sve ostalo preko grana i PR-ova.
+- Jedan zadatak = jedna grana `rino/<ID>-<opis>` = jedan PR. Prije PR-a: `npm run typecheck && npm run lint && npm test && npm run build`.
+- **Tvoje datoteke:** `src/app/` (bez `api/`, `igra/grad`, `profesor/[worldId]/situacije`), `src/components/` (bez `city/`, `wow/`),
+  `src/lib/client.ts`, `src/lib/mock.ts`, `src/lib/format.ts`, `src/lib/finance-view.ts`, `globals.css`, `layout.tsx`.
+- **Ne diraj:** grad i karta (Simon, `components/city/`), `types.ts`, `rules.ts`, `package.json` (Leon). Financije i Plan
+  su Simonove (S6): Rino ih je proširio u #142 uz Simonov ok.
+- U repou se **ne smije** pojaviti ime prijašnjeg projekta (Leonov stari simulator hotela): ni u kodu, komentaru, commitu
+  ni PR-u. Prije PR-a `git grep -i` za to ime mora biti prazan.
+- Svaki PR provjeri u pregledniku (lažni podaci lokalno, 375 i 1440 px), a nakon spajanja **na produkciji** jednom pravom
+  igrom. Previewi traže Vercel prijavu, pa testiramo na https://riihack.vercel.app nakon spajanja.
+- `.env.local` lokalno ima zamjenske vrijednosti (nema prave baze). Ne povlačiti tajne bez Rinovog izričitog ok-a.
 
 ## Gdje je što
 
 | Što | Gdje |
 | --- | --- |
 | Repo | `leonkreso784-bit/riihack`, lokalno `C:\Users\Korisnik\Desktop\riihack` |
-| Produkcija (`main`) | https://riihack.vercel.app |
-| Preview grane | `https://riihack-git-<grana-s-crticama>-leon-kresos-projects.vercel.app` (prijava u Vercel, Rino je u timu) |
-| Lažni podaci | zadano **uključeni**; `NEXT_PUBLIC_USE_MOCK=0` na Vercelu prebacuje na pravi API (Leon, kad L4–L7 rade) |
-| Logo | **izvorna slika V1**: `public/brand/logo.png`, kvadrat `public/brand/logo-mark.png`, `src/components/logo.tsx` (`LogoMark`), `src/app/icon.png`. Ne crtati iznova. |
-| Tema i animacije | `src/app/globals.css` (tokeni, `gloss`, `surface`, `glass`, `anim-*`, sve isključeno uz reduced-motion) |
-| Zajedničke komponente | `panel`, `stat-card`, `metric-bar`, `pill`, `round-banner`, `leaderboard`, `count-up`, `form`, `room-tile`, `code-input` |
+| Produkcija (`main`, **pravi API od 17:52**) | https://riihack.vercel.app |
+| Lažni podaci | lokalno (`npm run build && npx next start`) bez `NEXT_PUBLIC_USE_MOCK=0`; demo igra `/profesor/w-demo`, situacija `/igra/situacija/s-klima` |
+| Alat za test u pregledniku | `playwright-core` (+ `jsqr`, `pngjs`) u scratchpad mapi sesije; nakon `/clear` instalirati iznova u novi scratchpad |
+| Logo | izvorna slika V1: `public/brand/logo.png`, `logo-mark.png`, `src/components/logo.tsx`. Ne crtati iznova. |
 
-## Gotovo (spojeno na `main`)
+## Spojeno (sve na produkciji)
 
 | PR | Što |
 | --- | --- |
-| #40 | R0: ljuska, tema, komponente, `client.ts` + `mock.ts`, profesionalni i sjajni izgled |
-| #49, #52 | `roundGain` u mocku; lažni podaci zadano na Vercelu |
-| #54 | R1: ulaz kao Kahoot (`/`) i čekaonica (`/cekaonica`) |
-| #56 | R2: profesor (`/profesor`, `/profesor/novi`, `/profesor/[worldId]` s golemim kodom za projektor) |
-| #57 | R3: sobe po katovima i detalj sobe (`/igra/sobe`, `/igra/sobe/[broj]`) |
-| #65 | Logo V1 (ChatGPT koncept, vektorski) |
-| #73 | Animacije (kartice ulaze redom, trake rastu, brojke se odbrojavaju, sjaj, puls odbrojavanja) |
+| #40–#78, #91 | R0 ljuska i tema, R1 ulaz, R2 profesor, R3 sobe, logo V1, animacije, favicon |
+| #93 | `/` predstavljanje, ulaz kodom na `/ulaz` |
+| #97 | R5 situacija s likom (razgovor, vlastiti odgovor, klik, presuda) |
+| #108 | R6 profesorova ploča (krug, rok, „Zatvori … i otvori …", tko je gotov, ljestvica, „Situacije"), **bez karte grada** (Simonovo) |
+| #113, #135 | Osoblje → **Odjeli** (`/igra/osoblje`): pokazatelj, upozorenja, ulaganje 0–3.000 € po odjelu |
+| #127 | popravci M2 (prelijevanje na 1000–1100 px, plavi „polis") |
+| #138, #151 | `/ulaz?kod=…` sam upiše kod; **QR kod** na profesorovoj čekaonici (provjeren QR čitačem) |
+| #142 | detaljnije Financije (sažetak po mjesecima, raspodjela troškova), Plan („Što ova odluka košta"), Odjeli (povijest) |
+| #152 | R4 **„Završi mjesec"** za studenta; profesor vidi tko je gotov i otvara sljedeći mjesec **svima** |
+| #157 | plan bez imena prijašnjeg projekta |
+| #160 | R7 **izvještaj mjeseca i sokratski mentor** (`/igra/izvjestaj/[krug]`) |
+| #164 | R13 **Pošta** (`/igra/posta`): ponude agencija, protuponuda, odgovor agencije (motor + Simonov AI), omotnica na mobitelu |
+| pregled | ok i odobrenje za #128 (Simonova karta, smjer D) i #107 (komentari) |
 
-Provjereno kroz cijeli tok na produkciji (profesor stvori igru → kod → student uđe → čekaonica → `/igra` → sobe),
-0 grešaka u konzoli, nijedan ekran nije širi od 375 px.
+Provjereno na produkciji (20:00): QR → student → Završi mjesec → profesor vidi i otvara srpanj → Financije, Plan, Odjeli,
+Grad; 0 grešaka.
 
-## Otvoreno (sub 16:05)
+## Otvoreno (sub 21:00)
 
-- **#91 logo i favicon točno kao V1** (izvorna slika iz `public/brand/`; `icon.png` 64 px, `apple-icon.png` 180 px). Spremno za integratora. Dok se ne spoji, produkcija
-  prikazuje stari prepisani SVG S. (#78 je spojen prije nego je ovaj commit stigao, zato novi PR.)
-- **Ulazna stranica: ODLUKA (Rino, sub 16:10): vratiti predstavljanje na `/`.** Prvi zadatak sljedeće sesije:
-  - `/` = predstavljačka stranica kakva je bila prije R1 (commit `cd6ee70`: veliki logo, „Simpolis", podnaslov,
-    tri kartice „Pravi grad", „Ljudi, ne gotovi odgovori", „Razred kao Kahoot"), ali s **izvornim logom V1** i manje
-    „AI predloška" (bez sjaja iza loga i gradijentnog teksta ako smeta). Gumbi: **„Uđi u igru"** → `/ulaz` i
-    **„Ja sam profesor"** → `/profesor`.
-  - Sadašnji ulaz kodom (R1) seli s `/` na **`/ulaz`** (premjesti `src/app/page.tsx` u `src/app/ulaz/page.tsx`).
-  - Popravi sve poveznice na ulaz: čekaonica i greške („Natrag na ulaz" → `/ulaz`), profesorova čekaonica
-    („Uđi na {host} i upiši kod" → prikazati `{host}/ulaz`).
-  - Provjeri cijeli tok na previewu (sad pravi API): profesor napravi igru → student `/ulaz` → čekaonica → `/igra`.
-- **Pravi podaci su OK** (Rino): previewi idu na pravi API, to je u redu; produkcija na lažnim dok Leon ne kaže.
-- **Gumb Odjava** maknut: treba Leonova ruta `POST /api/logout`. Kod je u commitu `21bb687`.
-- **Smjer dizajna (#39)**: odlučuješ s Leonom.
-- **Nakon žirija 1 (Leon):** profesor piše i šalje situacije (L12 backend, S8 Simon, `/profesor/[worldId]/situacije`).
-  Rino je rekao OK da Simon u `client.ts`/`mock.ts` **samo doda** `createSituation`, `dispatch`, `worldSettings` po
-  istom uzorku i javi prije PR-a.
-- **Preview grane sad idu na pravi API** (`NEXT_PUBLIC_USE_MOCK=0` samo za Preview). Za test `/igra` na previewu prvo
-  napravi igru kao profesor pa uđi kao student. Produkcija ostaje na lažnim podacima.
+- **#168 R8 uvid u studenta** (`/profesor/[worldId]/tvrtka/[id]`): po mjesecu situacije, odgovori, presude, razgovor,
+  mentor; **„Promijeni ocjenu" 1–5**; imena na ploči vode na stranicu. Spojen s `main`-om, bez konflikata, spremno za
+  integratora. Radar vještina namjerno izostavljen (pokazni podaci).
+- **Leonov #166 treba Rinov ok:** jedan redak u `prof-board.tsx` (`fromRound: round` u `api.openRound`), popravak
+  dvoklika koji je preskakao mjesec. Ispravno, bez konflikta s #168. Rino napiše „ok" na PR.
+- **Nakon spajanja #164 i #168:** jedna prava igra na produkciji: pošta s pravom ponudom agencije (protuponuda),
+  zatim ploča → student → promijeni ocjenu.
 
-## Sljedeće (redom, za M2 sub 18:45, Leonov redoslijed nakon žirija 1; prije svega vraćanje predstavljanja na `/`, vidi Otvoreno)
+## Sljedeće (redom)
 
-| Red | Zadatak | Issue | Što još (nakon žirija) |
-| --- | --- | --- | --- |
-| 1 | **R5 situacija s likom** (stream, vlastiti odgovor, klik, „Gost razmišlja…", presuda, „Zvučite kao brošura") | #25 | situacija **bez opcija** (`options: []`) = samo vlastiti odgovor; oznaka „od profesora" kad je `source === "custom"` |
-| 2 | **R6 profesorova ploča uživo** (krug, odbrojavanje, „Zatvori mjesec", studenti, mjesto za kartu) | #26 | poveznica „Situacije" → `/profesor/[worldId]/situacije` |
-| 3 | **R4 dovršiti** („Zatvori krug", prazna stanja, kraj sezone) | #24 | kartice na `/igra` imaju fiksno „lipanj": mjesec iz `ROUND_LABELS[finances.at(-1).round - 1]` |
-| 4 | Osoblje uz sobe (`/igra/osoblje`) | — | dodati `api.staff()` u `client.ts` (ruta `/api/me/staff` radi) |
-| 5 | R7 sokratski mentor, R10 podij | #27, #46 | poslije M2 |
-| 6 | R8 uvid u studenta | #28 | gumb „Promijeni ocjenu" (pitati Leona za rutu) |
+1. Provjera #164 (pošta) i #168 (R8) na produkciji čim se spoje.
+2. **R14** stil i pregled profesorskih ekrana (prijava, registracija, moje igre) kad ih Leon napravi (L16 backend je
+   spojen, ekrani još nisu). Pitati Leona u kojem su PR-u.
+3. **R10** podij kruga i ljestvica za projektor (#46), ako ima vremena.
+4. **R15** poruke među hotelima i suradnja, kad Leon napravi L18 (backend).
+5. Tjedni umjesto mjesečnog kruga: u Leonovom backlogu (traži ugovor i motor); sučelje tek kad ugovor bude na `main`-u.
 
-## Više sesija usporedno
+## Rokovi
 
-Svaka sesija radi **jedan** zadatak u **svojem radnom stablu**, da se ne sudaraju:
-
-```bash
-cd C:/Users/Korisnik/Desktop/riihack
-git fetch
-git worktree add ../riihack-R5 -b rino/R5-situacija origin/main
-cd ../riihack-R5 && npm install && cp ../riihack/.env.local .
-```
-
-Zatim u tom folderu otvori novu Claude Code sesiju i zalijepi (zamijeni ID, issue i granu):
-
-> Radi zadatak **R5** iz `docs/superpowers/plans/2026-10-24-simpolis.md` (issue #25), grana `rino/R5-situacija`.
-> Prvo pročitaj `TEAM.md` (pravila suradnje) i `docs/rino/STANJE.md` s grane `rino/dokumentacija`
-> (`git show origin/rino/dokumentacija:docs/rino/STANJE.md`). Diraj samo datoteke iz zadatka; koristi postojeće
-> komponente (`Panel`, `Pill`, `FormError`, `SubmitButton`, `gloss`, `surface`, `anim-*`) i `api`/`usePoll` iz
-> `src/lib/client.ts` (lažni podaci već imaju stream lika i presudu). Na kraju: provjere na svježem `main`-u, PR s
-> „Closes #25" i oznakom „Spremno za integratora", pa ažuriraj svoje polje u `TEAM.md`. Ne spajaj sam.
-
-Nakon spajanja: `git worktree remove ../riihack-R5`.
-
-## Kad završiš sesiju
-
-1. Ažuriraj polje **Rino** u `TEAM.md` (izravno na `main`, `ploča: Rino`).
-2. Dopiši ovdje (grana `rino/dokumentacija`) što je gotovo, što je otvoreno i što je sljedeće.
+M3 obilazak 3: **ned 07:45**. Zamrzavanje koda: ned 06:30 (Leon je rekao da nema strogog zamrzavanja, ali poslije
+samo popravci). Predaja: **ned 10:15** (rok 10:30).
