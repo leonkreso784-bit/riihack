@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
 import type { Metrics, StaffMember } from "@/lib/types";
-import { departmentViews, investmentEffects, investmentTotal, parseInvestments } from "./departments";
+import { departmentViews, investmentEffects, investmentTotal, parseInvestments, rooms } from "./departments";
 
 describe("departments", () => {
+  it("množina soba uz broj", () => {
+    expect([1, 2, 4, 5, 11, 12, 21, 22, 25].map(rooms)).toEqual([
+      "1 soba", "2 sobe", "4 sobe", "5 soba", "11 soba", "12 soba", "21 soba", "22 sobe", "25 soba",
+    ]);
+  });
+
   it("parseInvestments: ispravna ulaganja, bez nula", () => {
     expect(parseInvestments({ reception: 1500, kitchen: 0, maintenance: 3000 })).toEqual({
       reception: 1500,
@@ -60,7 +66,7 @@ describe("departments", () => {
       alerts: ["Ivo: traži slobodan vikend"],
       investment: 1000,
     });
-    expect(views[1].alerts).toEqual(["2 soba čeka čišćenje", "Pokazatelj je nizak (35/100)"]);
+    expect(views[1].alerts).toEqual(["2 sobe čekaju čišćenje", "Pokazatelj je nizak (35/100)"]);
     expect(views[1].metric).toBe("reviews");
     expect(views[2]).toMatchObject({ label: "Kuhinja i restoran", staffCount: 0, alerts: [], investment: 0 });
     expect(views[3]).toMatchObject({ metric: "operations", metricValue: 70, alerts: ["1 soba u kvaru"], investment: 2000 });

@@ -13,6 +13,14 @@ import type {
 export const INVESTMENT_ERROR = "Ulaganje po odjelu mora biti cijeli broj od 0 do 3.000 €";
 const LOW_METRIC = 40;
 
+/** 2–4, 22–24 … (osim 12–14): „sobe", „čekaju"; inače „soba", „čeka". */
+const few = (n: number) => n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14);
+
+/** „1 soba", „2 sobe", „5 soba", „22 sobe" (hrvatska množina uz broj). */
+export function rooms(n: number): string {
+  return `${n} ${few(n) ? "sobe" : "soba"}`;
+}
+
 const DEPARTMENTS = Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[];
 const isDepartment = (k: string): k is StaffDepartment => (DEPARTMENTS as string[]).includes(k);
 
@@ -57,8 +65,8 @@ export function departmentViews(i: {
     const metricValue = i.metrics[metric];
     const people = i.staff.filter((s) => s.department === department);
     const alerts: string[] = [];
-    if (department === "housekeeping" && cleaning > 0) alerts.push(`${cleaning} soba čeka čišćenje`);
-    if (department === "maintenance" && broken > 0) alerts.push(`${broken} soba u kvaru`);
+    if (department === "housekeeping" && cleaning > 0) alerts.push(`${rooms(cleaning)} ${few(cleaning) ? "čekaju" : "čeka"} čišćenje`);
+    if (department === "maintenance" && broken > 0) alerts.push(`${rooms(broken)} u kvaru`);
     for (const s of people) if (s.note) alerts.push(`${s.name}: ${s.note}`);
     if (metricValue < LOW_METRIC) alerts.push(`Pokazatelj je nizak (${metricValue}/100)`);
     return {
