@@ -62,6 +62,7 @@ export type DispatchView = { id: string; templateId: string; title: string; roun
 export type DepartmentView = { department: StaffDepartment; label: string; metric: MetricKey; metricValue: number; staffCount: number; alerts: string[]; investment: number }; // stanje odjela: pokazatelj, ljudi, upozorenja (hrvatski), ulaganje iz plana tekućeg mjeseca
 export type MeResponse = { world: WorldView; company: CompanyView; situations: SituationView[]; leaderboard: LeaderboardRow[]; reports: RoundReportView[]; plan: RoundPlan; contracts: ContractView[]; finances: RoundFinance[]; city: CityView; news: NewsItem[]; departments?: DepartmentView[] };
 export type ProfStateResponse = { world: WorldView & { joinCode: string; maxPlayers: number }; players: LeaderboardRow[]; city: CityView; news: NewsItem[]; bank?: SituationSummary[]; dispatches?: DispatchView[]; autoDraw?: boolean }; // bank = banka + profesorove situacije; autoDraw = slučajno izvlačenje po krugu
+export type ProfGameSummary = { worldId: string; name: string; joinCode: string; status: WorldStatus; round: number; maxRounds: number; players: number; createdAt: string }; // igre prijavljenog profesora (L16)
 export type CompanyDetailResponse = { company: CompanyView; situations: SituationView[]; reports: RoundReportView[] };
 
 // Zahtjevi

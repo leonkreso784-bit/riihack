@@ -10,6 +10,9 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import type { ChatTurn, DepartmentInvestments, FinanceBreakdown, Metrics, SituationTemplate, Verdict } from "@/lib/types";
+import { user } from "./auth-schema";
+
+export * from "./auth-schema"; // L16: Better Auth tablice, da ih drizzleAdapter nađe u istoj shemi
 
 const id = () => uuid("id").primaryKey().defaultRandom();
 const createdAt = () =>
@@ -27,6 +30,7 @@ export const worlds = pgTable("worlds", {
   seed: integer("seed").notNull(),
   settledRound: integer("settled_round").notNull().default(0),
   autoDraw: boolean("auto_draw").notNull().default(true), // L12: slučajno izvlačenje situacija pri otvaranju kruga
+  ownerId: text("owner_id").references(() => user.id), // L16: profesorski račun; null = igra samo s kodom
   createdAt: createdAt(),
 });
 

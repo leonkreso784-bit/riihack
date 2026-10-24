@@ -18,6 +18,7 @@ import {
   toCompanyDetail,
   toLeaderboard,
   toMeResponse,
+  toProfGameSummary,
   toProfState,
   toRoom,
   toSituationView,
@@ -40,6 +41,7 @@ const world: WorldRow = {
   seed: 42,
   settledRound: 0,
   autoDraw: true,
+  ownerId: null,
   createdAt: NOW,
 };
 
@@ -479,5 +481,24 @@ describe("toCompanyDetail", () => {
     ]);
     expect(d.situations[0].answer?.verdict?.criteriaMet).toEqual(["c1"]);
     expect(d.reports).toEqual([{ round: 1, metricsBefore: metrics, metricsAfter: metrics }]);
+  });
+});
+
+describe("toProfGameSummary (L16)", () => {
+  it("igra s popisa ima kod, stanje, krug i broj studenata", () => {
+    expect(toProfGameSummary({ ...world, status: "running", round: 2, ownerId: "u1" }, 3)).toEqual({
+      worldId: world.id,
+      name: "Test L4",
+      joinCode: "KVRN26",
+      status: "running",
+      round: 2,
+      maxRounds: 4,
+      players: 3,
+      createdAt: "2026-10-24T14:30:00.000Z",
+    });
+  });
+
+  it("broj iz baze kao string postaje broj, bez studenata je 0", () => {
+    expect(toProfGameSummary(world, "0" as unknown as number).players).toBe(0);
   });
 });

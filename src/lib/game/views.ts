@@ -27,6 +27,7 @@ import type {
   LeaderboardRow,
   MeResponse,
   Metrics,
+  ProfGameSummary,
   ProfStateResponse,
   Quality,
   Room,
@@ -56,6 +57,20 @@ export function toWorldView(world: WorldRow, now: Date = new Date()): WorldView 
     status: world.status as WorldStatus,
     roundDeadline: world.roundDeadline ? world.roundDeadline.toISOString() : null,
     serverNow: now.toISOString(),
+  };
+}
+
+/** Igra s popisa „moje igre" (L16); players = broj prijavljenih studenata. */
+export function toProfGameSummary(world: WorldRow, players: number): ProfGameSummary {
+  return {
+    worldId: world.id,
+    name: world.name,
+    joinCode: world.joinCode,
+    status: world.status as WorldStatus,
+    round: world.round,
+    maxRounds: MAX_ROUNDS,
+    players: Number(players),
+    createdAt: world.createdAt.toISOString(),
   };
 }
 

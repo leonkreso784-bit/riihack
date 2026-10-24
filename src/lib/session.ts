@@ -1,10 +1,12 @@
-// Tko zove API: igrač po kolačiću sp_player (slučajni token, u bazi samo hash), profesor po sp_prof (profesorski kod).
-import { cookies } from "next/headers";
+// Tko zove API: igrač po kolačiću sp_player (slučajni token, u bazi samo hash), profesor po sp_prof (profesorski kod)
+// ili po Better Auth sesiji (profesorski račun, vlasnik igre).
+import { cookies, headers } from "next/headers";
 import { and, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { companies, players, worlds } from "@/db/schema";
 import type { CompanyRow, PlayerRow, WorldRow } from "@/db/schema";
 import { isUuid } from "@/db/queries";
+import { getAuth } from "@/lib/auth";
 import { hashCode, normalizeCode } from "@/lib/engine/codes";
 import { HttpError } from "@/lib/http";
 
@@ -50,17 +52,48 @@ export async function requirePlayer(): Promise<{ player: PlayerRow; company: Com
   return rows[0];
 }
 
-/** Igra samo ako hash profesorskog kolačića odgovara baš njoj; inače 403 (i za worldId koji nije uuid). */
+export type ProfUser = { id: string; name: string; email: string };
+
+/** Prijavljeni profesor (Better Auth sesija) ili null. */
+export async function getProfUser(): Promise<ProfUser | null> {
+  const session = await getAuth().api.getSession({ headers: await headers() });
+  if (!session) return null;
+  const { id, name, email } = session.user;
+  return { id, name, email };
+}
+
+/** Prijavljeni profesor ili 401. */
+export async function requireProfUser(): Promise<ProfUser> {
+  const user = await getProfUser();
+  if (!user) throw new HttpError(401, "Prijavi se kao profesor");
+  return user;
+}
+
+/**
+ * Igra samo za njezinog profesora: hash kolačića sp_prof odgovara baš njoj ILI je prijavljeni račun vlasnik (owner_id).
+ * Inače 403 (i za worldId koji nije uuid).
+ */
 export async function requireProf(worldId: string): Promise<WorldRow> {
+  if (!isUuid(worldId)) throw new HttpError(403, "Samo profesor ove igre");
   const code = (await cookies()).get(PROF_COOKIE)?.value;
-  if (!code || !isUuid(worldId)) throw new HttpError(403, "Samo profesor ove igre");
-  const rows = await db
-    .select()
-    .from(worlds)
-    .where(and(eq(worlds.id, worldId), eq(worlds.profCodeHash, await hashCode(normalizeCode(code)))))
-    .limit(1);
-  if (!rows[0]) throw new HttpError(403, "Samo profesor ove igre");
-  return rows[0];
+  if (code) {
+    const rows = await db
+      .select()
+      .from(worlds)
+      .where(and(eq(worlds.id, worldId), eq(worlds.profCodeHash, await hashCode(normalizeCode(code)))))
+      .limit(1);
+    if (rows[0]) return rows[0];
+  }
+  const user = await getProfUser();
+  if (user) {
+    const rows = await db
+      .select()
+      .from(worlds)
+      .where(and(eq(worlds.id, worldId), eq(worlds.ownerId, user.id)))
+      .limit(1);
+    if (rows[0]) return rows[0];
+  }
+  throw new HttpError(403, "Samo profesor ove igre");
 }
 
 /** Igra za člana: igrač čija je tvrtka u toj igri ili profesor te igre (javni podaci, npr. karta); inače 401. */
