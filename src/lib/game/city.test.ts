@@ -1,4 +1,6 @@
+import { PgDialect } from "drizzle-orm/pg-core";
 import { describe, expect, it } from "vitest";
+import { companies, roundReports } from "@/db/schema";
 import type { ContractRow } from "@/db/schema";
 import { CITY, CONTRACTS, getBusiness } from "@/content";
 import { HttpError } from "@/lib/http";
@@ -8,6 +10,7 @@ import {
   activeTemplates,
   buildNews,
   contractTerms,
+  metricsPlus,
   parsePlan,
   sumEffects,
   toCityLinks,
@@ -238,5 +241,29 @@ describe("toPlan", () => {
       investments: {},
     });
     expect(toPlan(1, null, [])).toEqual({ round: 1, price: PRICE_MIN, marketing: 0, investments: {} });
+  });
+});
+
+describe("metricsPlus (#226: obračun ide i u tvrtku i u izvještaj mjeseca)", () => {
+  const dialect = new PgDialect();
+
+  it("piše delta u zadani jsonb stupac, rezano 0–100", () => {
+    const q = dialect.sqlToQuery(metricsPlus(roundReports.metricsAfter, { finance: 5 }));
+    expect(q.sql).toContain('"round_reports"."metrics_after"');
+    expect(q.sql).not.toContain('"companies"');
+    expect(q.sql).toContain("'{finance}'");
+    expect(q.sql).toContain("least(100, greatest(0,");
+    expect(q.sql).toContain("+ 5");
+  });
+
+  it("isti izraz za companies.metrics", () => {
+    const q = dialect.sqlToQuery(metricsPlus(companies.metrics, { reviews: -3 }));
+    expect(q.sql).toContain('"companies"."metrics"');
+    expect(q.sql).toContain("+ -3");
+  });
+
+  it("preskače nule i nepoznate ključeve", () => {
+    const q = dialect.sqlToQuery(metricsPlus(roundReports.metricsAfter, { finance: 0 }));
+    expect(q.sql).not.toContain("jsonb_set");
   });
 });

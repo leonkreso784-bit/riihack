@@ -2,8 +2,9 @@
 // Obračun ide za cijeli grad odjednom, jer turisti biraju između svih hotela (ARHITEKTURA §5c).
 import { and, eq, lt, sql, type SQL } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
+import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
-import { companies, contracts, events, finances, worlds } from "@/db/schema";
+import { companies, contracts, events, finances, roundReports, worlds } from "@/db/schema";
 import type { ContractRow, EventRow, FinanceRow, PlanRow, WorldRow } from "@/db/schema";
 import {
   getContractForCompany,
@@ -213,11 +214,12 @@ export function sumEffects(...parts: Partial<Record<MetricKey, number>>[]): Part
 
 // Pokazatelji + učinak u jednoj SQL naredbi (jsonb_set po ključu, rezano na 0–100), da se ne izgubi
 // istodobno zatvaranje kruga koje također piše pokazatelje. Ključevi su samo MetricKey, pa je sql.raw siguran.
-function metricsPlus(delta: Partial<Record<MetricKey, number>>): SQL {
-  let expr: SQL = sql`${companies.metrics}`;
+/** Pokazatelji u jsonb stupcu (`companies.metrics` ili `round_reports.metrics_after`) plus delta, rezano 0–100. */
+export function metricsPlus(column: AnyPgColumn, delta: Partial<Record<MetricKey, number>>): SQL {
+  let expr: SQL = sql`${column}`;
   for (const [k, d] of Object.entries(delta) as [MetricKey, number][]) {
     if (!(k in METRIC_LABELS) || !Number.isInteger(d) || d === 0) continue;
-    const current = sql`round((${companies.metrics} ->> ${sql.raw(`'${k}'`)})::numeric)::int`;
+    const current = sql`round((${column} ->> ${sql.raw(`'${k}'`)})::numeric)::int`;
     expr = sql`jsonb_set(${expr}, ${sql.raw(`'{${k}}'`)}, to_jsonb(least(100, greatest(0, ${current} + ${sql.raw(String(d))}))))`;
   }
   return expr;
@@ -525,8 +527,13 @@ async function writeSettlement(world: WorldRow, round: number): Promise<void> {
   const perHotel: BatchItem<"pg">[] = settled.flatMap(({ company, finance, delta }) => [
     db
       .update(companies)
-      .set({ cash: sql`${companies.cash} + ${finance.profit}`, metrics: metricsPlus(delta) })
+      .set({ cash: sql`${companies.cash} + ${finance.profit}`, metrics: metricsPlus(companies.metrics, delta) })
       .where(eq(companies.id, company.id)),
+    // #226: ista delta i u izvještaj mjeseca, da izvještaj, mentor i podij (roundGain) vide obračun kao i tvrtka
+    db
+      .update(roundReports)
+      .set({ metricsAfter: metricsPlus(roundReports.metricsAfter, delta) })
+      .where(and(eq(roundReports.companyId, company.id), eq(roundReports.round, round))),
     // bez onConflict: da obračun ikad stigne dvaput, unique (company_id, round) poništi cijeli batch
     db.insert(finances).values({ companyId: company.id, ...finance }),
   ]);
