@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#216](https://github.com/leonkreso784-bit/riihack/pull/216) | 23:08 | Rino | `/profesor` bez bljeska prijave, ploča bez dvostrukog „Moje igre" |
+| [#214](https://github.com/leonkreso784-bit/riihack/pull/214) | 23:06 | Leon | BUG-026: odgovor na situaciju uvijek se isplati (učinak po ocjeni, ADR-046) |
+| [#218](https://github.com/leonkreso784-bit/riihack/pull/218) | 23:06 | Leon | dokumentacija: ADR-046, bugovi riješeni, botovi |
 | [#205](https://github.com/leonkreso784-bit/riihack/pull/205) | 23:00 | Simon | botovi: računalni hoteli s težinom, profesor ih dodaje u čekaonici (ADR-044) |
 | [#213](https://github.com/leonkreso784-bit/riihack/pull/213) | 22:55 | Leon | BUG-024: kvaliteta iz svih pokazatelja određuje privlačnost i potražnju hotela (ADR-045) |
 | [#211](https://github.com/leonkreso784-bit/riihack/pull/211) | 22:50 | Rino | rok „Ručno" (BUG-025), podij sezone i ljestvica cijelom širinom (BUG-022), kraj sezone na `/igra` (BUG-023), „Bez odgovora" (BUG-019), „← Moje igre" i kod igre na ploči |

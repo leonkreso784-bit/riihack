@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 23:05–23:20 · balans gotov, kasni ulaz, bez kalibracije
+
+- **Spojeno:** BUG-026 (#214, 23:06, Leonovo „spoji"), Rinov #216 (23:08), dokumentacija #218 (23:06). Integrator:
+  436 testova, smoke 18/18, CI zelen, produkcija READY 23:08.
+- **Odluke (Leon):** kasni ulaz u igru koja je počela ([ADR-048](DECISIONS.md#adr-048),
+  [BUG-027](BUGS.md#bug-027--kasni-student-ne-može-ući-u-igru-koja-je-počela)); #209 se ne spaja prije predaje
+  ([ADR-047](DECISIONS.md#adr-047)).
+- **Sljedeće:** jedan ponovni seed demo igre i smoke (graditelj), pa tester igra cijelu sezonu s dobrim i lošim
+  studentom.
+- **Čeka:** #212 (Rinov ok), #217 ugovor botova u planu (Leonovo „spoji"), #206 i #215 (Simonov rebase).
+
 ## Sub 24.10. 22:45–23:05 · rok „Ručno", pokazatelji, botovi
 
 - **Spojeno:** Rinov #211 (22:50): rok mjeseca zadano „Ručno"

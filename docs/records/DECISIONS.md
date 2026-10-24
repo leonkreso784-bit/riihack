@@ -8,6 +8,26 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-048"></a>
+## ADR-048 · Kasni ulaz: student ulazi i u igru koja je već počela
+**Datum:** 24.10. ~23:10 · **Status:** ✅ (Leon) · **Vezano:** [BUG-027](BUGS.md#bug-027--kasni-student-ne-može-ući-u-igru-koja-je-počela), [ADR-041](#adr-041)
+
+**Kontekst.** Na ploči piše „Kasniš? Uđi na /ulaz s kodom", a server novom studentu nakon „Pokreni" vraća 409. Demo
+igra `KVRNDM` je već u 2. mjesecu, pa žiri na obilasku 3 ne bi mogao ući kao novi student.
+**Odluka.** Novi student i nakon početka igre dobije hotel i igra od trenutnog mjeseca; nakon kraja sezone ulaz
+ostaje zatvoren. Radi graditelj, uz test da kasni ulaz ne kvari obračun, tržište ni ljestvicu.
+**Posljedice.** Žiri može ući u bogatu demo igru iznutra. 🟨 PR još nije otvoren.
+
+<a id="adr-047"></a>
+## ADR-047 · Kalibracija troškova (#209) ne ide prije predaje
+**Datum:** 24.10. ~23:15 · **Status:** ✅ (Leon; mišljenje graditelja) · **Vezano:** [ADR-046](#adr-046)
+
+**Kontekst.** Simonov [#209](https://github.com/leonkreso784-bit/riihack/pull/209) usklađuje troškove sa stvarnim kvarnerskim hotelima (PDV 13 %, provizija
+portala 8 %, materijal 17 %, plaće po zvjezdicama), pa marža pada s 29–86 % na 11–31 %.
+**Odluka.** #209 se ne spaja prije predaje i ostaje otvoren za poslije.
+**Posljedice.** Po Simonovim brojkama hotel uz referentnu cijenu u lipnju i rujnu ide u minus, pa bi napredak opet bio
+negativan (BUG-026), a brojke su računate prije #213. U pitchu je kalibracija „sljedeći korak".
+
 <a id="adr-046"></a>
 ## ADR-046 · Odgovorena situacija donosi plus već od ocjene 3
 **Datum:** 24.10. ~22:55 · **Status:** ✅ (Leon; prijedlog graditelja) · **Vezano:** [BUG-026](BUGS.md#bug-026--napredak-je-negativan-za-sve-hotele-od-prvog-mjeseca), [ADR-009](#adr-009), [ADR-045](#adr-045)
@@ -18,7 +38,7 @@ za sve hotele, i uz dobre odgovore.
 **Odluka.** Učinak po kvaliteti: 1 (loš ili propušten odgovor) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×. Radi graditelj
 zajedno s BUG-024, pa jedan ponovni seed demo igre i smoke.
 **Posljedice.** Odgovoriti i potruditi se uvijek je bolje nego ne odgovoriti. Mijenjaju se brojke, pa se spaja na
-Leonovo „spoji".
+Leonovo „spoji". Spojeno [#214](https://github.com/leonkreso784-bit/riihack/pull/214) (23:06).
 
 <a id="adr-045"></a>
 ## ADR-045 · Graditelj preuzima otvorene bugove; pokazatelji jače utječu na goste
