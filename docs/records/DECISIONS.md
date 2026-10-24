@@ -61,8 +61,9 @@ tog odjela, uz ograničenje. Graditelj radi motor, API i ugovor (`types.ts`, `ru
 polja neobavezna**); Rino radi stranicu odjela.
 **Posljedice.** Brojke i dalje računa samo motor (ADR-002). Shema ručnim aditivnim SQL-om ([ADR-026](#adr-026)):
 `plans.investments` (jsonb, `'{}'`) i `finances.investments` (int, 0), broj redaka nepromijenjen. Ugovor je
-[#132](https://github.com/leonkreso784-bit/riihack/pull/132) (🟨 čeka Leonovo „spoji"); predlaže do 3000 € mjesečno po
-odjelu i najviše +3 na pokazatelj odjela (1 bod na 1000 €). Konačne vrijednosti vrijede iz plana kad se spoji.
+[#132](https://github.com/leonkreso784-bit/riihack/pull/132) (spojen 18:54): do 3000 € mjesečno po odjelu i najviše +3
+na pokazatelj odjela (1 bod na 1000 €); vrijednosti vrijede iz `rules.ts`. Motor je
+[#137](https://github.com/leonkreso784-bit/riihack/pull/137) (18:59).
 
 <a id="adr-031"></a>
 ## ADR-031 · Nema zamrzavanja koda; gradi se do predaje

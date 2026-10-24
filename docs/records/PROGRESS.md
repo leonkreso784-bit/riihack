@@ -6,6 +6,13 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 18:50–19:05 · odjeli na `main`-u, ulaz poveznicom
+
+- **Spojeno:** ugovor odjela (#132, 18:54, Leonovo „spoji") i motor odjela L13 (#137, 18:59; 301 test, smoke 14/14),
+  pa odjeli imaju pravo ulaganje ([ADR-032](DECISIONS.md#adr-032)). Rinov `/ulaz?kod=…` (#138, 18:59), dokumentacija
+  #136. Produkcija READY.
+- **Čeka Leona:** plan vala 3 (#134); paket `uqr` za QR na profesorovoj čekaonici (drugi dio #138).
+
 ## Sub 24.10. ~18:50 · val 3
 
 - **Odluke (Leon):** pošta s agencijama i pregovaranje ([ADR-033](DECISIONS.md#adr-033)), poruke i suradnja među
