@@ -18,11 +18,11 @@ Jedan redak, s oznakom na početku:
 
 | Oznaka | Tko šalje | Kome | Primjer |
 | --- | --- | --- | --- |
-| `[GRADITELJ]` | graditelj | integratoru, dokumentaristu | `[GRADITELJ] PR #60 (L1 shema) spreman, CI zelen` |
-| `[INTEGRATOR]` | integrator | svima | `[INTEGRATOR] spojeno #60, main zelen` |
-| `[DOKUMENTACIJA]` | dokumentarist | kome treba | `[DOKUMENTACIJA] trebam izvor za odluku o #42` |
-| `[ODLUKA]` | bilo tko | dokumentaristu | `[ODLUKA] #42 prihvaćen, messageNo neobavezno (Leon)` |
-| `[BUG]` | bilo tko | dokumentaristu | `[BUG] /profesor pada kad nema igre, #63` |
+| `[GRADITELJ]` | graditelj | integratoru, dokumentaristu | `[GRADITELJ] PR #N (L5 motor B) spreman, CI zelen` |
+| `[INTEGRATOR]` | integrator | svima | `[INTEGRATOR] spojeno #N, main zelen` |
+| `[DOKUMENTACIJA]` | dokumentarist | kome treba | `[DOKUMENTACIJA] trebam izvor za odluku o #N` |
+| `[ODLUKA]` | bilo tko | dokumentaristu | `[ODLUKA] novo polje X neobavezno (Leon)` |
+| `[BUG]` | bilo tko | dokumentaristu | `[BUG] /stranica pada kad …, issue #N` |
 
 `[ODLUKA]` postaje ADR u [DECISIONS.md](../records/DECISIONS.md), `[BUG]` unos u [BUGS.md](../records/BUGS.md).
 

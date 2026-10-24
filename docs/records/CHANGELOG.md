@@ -16,7 +16,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 | [#56](https://github.com/leonkreso784-bit/riihack/pull/56) | 14:44 | Rino | R2: profesor, nova igra, kod, čekaonica za projektor |
 | [#62](https://github.com/leonkreso784-bit/riihack/pull/62) | 14:44 | Leon | L1: shema baze i zajednički upiti |
 | [#61](https://github.com/leonkreso784-bit/riihack/pull/61) | 14:44 | Simon | obilazak: Rinov tok demoa nakon R1 |
-| [#60](https://github.com/leonkreso784-bit/riihack/pull/60) | 14:40 | Leon | revert #58: dokumentacija ostaje na grani |
+| [#60](https://github.com/leonkreso784-bit/riihack/pull/60) | 14:40 | Leon | revert #58 (dokumentacija se ipak vraća s #71) |
 | [#54](https://github.com/leonkreso784-bit/riihack/pull/54) | 14:38 | Rino | R1: ulaz kao Kahoot i čekaonica |
 | [#55](https://github.com/leonkreso784-bit/riihack/pull/55) | 14:38 | Simon | obilazak žirija: slajdovi |
 | [#58](https://github.com/leonkreso784-bit/riihack/pull/58) | 14:38 | Leon | dokumentacija (vraćeno s #60) |

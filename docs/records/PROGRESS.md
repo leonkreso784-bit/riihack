@@ -22,7 +22,7 @@ Vremena su lokalna (CEST).
 ## Sub 24.10. ~14:30 · tri sesije, dokumentacija
 
 Leon pokreće tri Claude sesije: graditelj, integrator, dokumentarist ([ADR-015](DECISIONS.md#adr-015),
-[SESIJE.md](../workflow/SESIJE.md)). Dokumentarist gradi strukturu `docs/` (ovaj PR).
+[SESIJE.md](../workflow/SESIJE.md)). Dokumentarist gradi strukturu `docs/` (#58).
 **Otvoreno:** #42 tipovi lika (čeka Leonovu odluku), #54 R1 ulaz, #55 slajdovi žirija. **Čeka se:** Neon baza
 (`DATABASE_URL`), zatim L1–L4 za prave podatke.
 

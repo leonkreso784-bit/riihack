@@ -126,8 +126,8 @@ bio isproban na Vercelu.
 **Odluka.** Neon Postgres + Drizzle ORM, samo s poslužitelja; Better Auth izbačen jer nema računa. Neon (Frankfurt,
 besplatni plan) preko Vercel Marketplacea: baza `simpolis-db` napravljena sub ~14:35, `DATABASE_URL` na Vercelu
 (production, preview, development), tablice iz L1 ([#62](https://github.com/leonkreso784-bit/riihack/pull/62)) u bazi.
-**Posljedice.** Nema Supabase Realtimea (vidi ADR-003) ni transakcija na `neon-http` (ADR-007). 🟨 `CLAUDE.md` pod
-„Stack" još navodi Supabase.
+**Posljedice.** Nema Supabase Realtimea (vidi ADR-003) ni transakcija na `neon-http` (ADR-007). `CLAUDE.md` › Stack usklađen
+(Neon + Drizzle).
 
 <a id="adr-004"></a>
 ## ADR-004 · Bez računa: kodovi i httpOnly kolačići
