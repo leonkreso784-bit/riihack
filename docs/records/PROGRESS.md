@@ -15,6 +15,8 @@ Vremena su lokalna (CEST).
   ([ADR-047](DECISIONS.md#adr-047)). 🟨 #233 i #237 su dorada sučelja: Rino u opisu traži Leonovu odluku spajaju li
   se prije žirija.
 - **Provjereno:** ime prijašnjeg projekta nema na `main`-u (`git grep -i`).
+- **BUG-028 (tester, ~00:46, API na produkciji):** pitanje mentora 1,9–4,1 s, osvrt 4,3–5,0 s, svi osvrti pravi tekst;
+  zatvaranje mjeseca s 2 bota 4,6–5,7 s. Sučelje u pregledniku tek se provjerava.
 
 ## Ned 25.10. ~00:30 · mentor spor
 
