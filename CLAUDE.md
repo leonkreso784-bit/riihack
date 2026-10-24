@@ -17,7 +17,7 @@ Radni repo tima Leon, Simon i Rino za **Ri-Hack 4.0**, hackathon RITEH Web Teama
 ## Dokumenti
 
 - [README.md](README.md): osnovno o natjecanju i linkovi
-- [TEAM.md](TEAM.md): tko smo i u čemu je tko jak
+- **[TEAM.md](TEAM.md): ploča tima** (tko što radi sada, tko na koga čeka, pravila suradnje, odluke) i tko smo. **Pogledaj je prije nego kreneš na zadatak.**
 - [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md): zadani stack, provjera prije početka, git pravila
 - [PLAN-24H.md](PLAN-24H.md): raspored 24 sata
 - [IDEJA.md](IDEJA.md): tema, ideja, ime
@@ -51,6 +51,7 @@ Svatko radi s više agenata usporedno. Pravila su u [planu izvedbe](docs/superpo
 - `main` mora uvijek raditi. Radi se na granama `ime/opis` (npr. `simon/ai-chat`).
 - Merge u `main` često, barem svaka 2 do 3 sata.
 - Nikad `git push --force` na `main`.
+- Iznimka od rada na granama: ploča u `TEAM.md` (svatko samo svoje polje) ide izravno na `main`, commit `ploča: <ime>`.
 - Tajne samo u `.env.local`. U repo ide `.env.example` s imenima varijabli, bez vrijednosti.
 
 ## Stack
