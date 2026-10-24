@@ -6,6 +6,13 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 20:30–20:45 · izvještaj mjeseca i pošta u sučelju
+
+- **Spojeno:** Rinov R7 izvještaj mjeseca i sokratski mentor (#160, 20:35) i R13 pošta s protuponudom (#164, 20:40;
+  lažni podaci koriste pravi motor pregovora, 376 testova); dokumentacija #161 i #163.
+- **Shema L17 (graditelj):** tablica `library_situations` (veza na `user`, briše se s korisnikom) aditivnim SQL-om;
+  korisnika 10 prije i poslije ([ADR-036](DECISIONS.md#adr-036), knjižnica situacija).
+
 ## Sub 24.10. 20:15–20:30 · profesorski računi na produkciji
 
 - **Odluka (Leon, ~20:20):** prijava profesorskim računom radi i na produkciji. Integrator je na Leonovo izravno „da"
