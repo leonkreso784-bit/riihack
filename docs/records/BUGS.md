@@ -10,37 +10,6 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
-Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja samo testira, ne mijenja kod) u sub
-~22:05, ~22:20 i ~22:25.
-
-### BUG-027 · Kasni student ne može ući u igru koja je počela
-- **Status:** 🟡 u radu (graditelj, od ~23:05; PR stiže) · **Težina:** visok (žiri na obilasku 3 ulazi u demo igru koja je u
-  2. mjesecu)
-- **Opis:** graditelj (~23:05): ploča piše „Kasniš? Uđi na /ulaz s kodom" (Rinov #211), a `join.ts` novom studentu
-  nakon „Pokreni" vraća 409.
-- **Uzrok:** ulaz je bio namjerno zatvoren nakon početka igre; tekst na ploči i pravilo na serveru nisu usklađeni.
-- **Rješenje:** [ADR-048](DECISIONS.md#adr-048): kasni ulaz dopušten, igra od trenutnog mjeseca.
-- **Lekcija:** kad sučelje nešto obeća („Kasniš? Uđi"), provjeri da server to i dopušta, na pravim podacima.
-
-### BUG-020 · Sitni tekstovi: „2 studenata", tehnički tekst u toku mjeseca
-- **Status:** 🟡 (a) riješen 22:45 ([#208](https://github.com/leonkreso784-bit/riihack/pull/208)); (b) u Simonovom [#206](https://github.com/leonkreso784-bit/riihack/pull/206) · **Težina:** nizak
-- **Opis:** (a) „Moje igre" (`/profesor/igre`, Leonova datoteka): „2 studenata" umjesto „2 studenta". (b) „Kako je
-  izračunat mjesec" (`/igra/izvjestaj/1/tok`, Simonov): kartica „Ugled · Nije spremljeno uz obračun" je tehnički
-  tekst za studenta (`src/lib/tokovi/month-flow.ts:158`), a početni čvor ponavlja „Početak: Lipanj / Lipanj".
-- **Uzrok:** kao [BUG-016](#bug-016--krivi-hrvatski-u-brojevima-i-rodu); tekst pisan za razvoj ostao u sučelju.
-- **Rješenje:** 🟨 (a) graditelj, (b) Simon.
-- **Lekcija:** svaki tekst na ekranu čita student ili žiri; poruke za razvoj ne idu u sučelje.
-
-### BUG-021 · Ploča profesora: nema puta natrag ni koda igre nakon početka
-- **Status:** 🟡 djelomično: „← Moje igre" i kod igre za one koji kasne u [#211](https://github.com/leonkreso784-bit/riihack/pull/211) (22:50); ostatak u graditeljevom
-  [#212](https://github.com/leonkreso784-bit/riihack/pull/212) · **Težina:** nizak (srednji za demo: student koji kasni ne može ući)
-- **Opis:** ploča (`/profesor/[worldId]`) i uvid u studenta imaju samo „Odjava", bez poveznice na „Moje igre" i
-  „Knjižnica"; profesor se vraća tipkom natrag. Nakon početka igre kod igre se više ne vidi na ploči, pa student koji
-  kasni ne može ući s projektora.
-- **Rješenje:** 🟨 čeka Rina.
-- **Lekcija:** novi ekrani (računi, knjižnica) traže put do njih sa svih starih ekrana; provjeri navigaciju od
-  prijave do svake stranice.
-
 ### BUG-006 · `db:push` predlaže pražnjenje tablica `situations` i `contracts`
 - **Status:** 🟡 zaobiđeno pravilom, alat nije popravljen · **Težina:** kritičan (gubitak podataka na zajedničkoj
   bazi), uhvaćeno prije upisa, podaci netaknuti
@@ -53,6 +22,35 @@ Bugove BUG-015 do 017 i 019 do 026 prijavio je tester produkcije (sesija koja sa
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-027 · Kasni student ne može ući u igru koja je počela
+- **Status:** ✅ riješen 24.10. 23:26 ([#221](https://github.com/leonkreso784-bit/riihack/pull/221), Leonovo „spoji") · **Težina:** visok (žiri na obilasku 3 ulazi u demo igru koja je u
+  2. mjesecu)
+- **Opis:** graditelj (~23:05): ploča piše „Kasniš? Uđi na /ulaz s kodom" (Rinov #211), a `join.ts` novom studentu
+  nakon „Pokreni" vraća 409.
+- **Uzrok:** ulaz je bio namjerno zatvoren nakon početka igre; tekst na ploči i pravilo na serveru nisu usklađeni.
+- **Rješenje:** kasni student dobije hotel, situacije tekućeg mjeseca koje ima svaka tvrtka, ponudu mjeseca i igra
+  od tog mjeseca; nakon kraja sezone 409 „Sezona je završena". Demo igra ima 15 mjesta (bilo 6). Smoke korak 20
+  ([ADR-048](DECISIONS.md#adr-048)).
+- **Lekcija:** kad sučelje nešto obeća („Kasniš? Uđi"), provjeri da server to i dopušta, na pravim podacima.
+
+### BUG-020 · Sitni tekstovi: „2 studenata", tehnički tekst u toku mjeseca
+- **Status:** ✅ riješen 24.10. 23:27 ((a) [#208](https://github.com/leonkreso784-bit/riihack/pull/208); (b) Simonov [#206](https://github.com/leonkreso784-bit/riihack/pull/206)) · **Težina:** nizak
+- **Opis:** (a) „Moje igre" (`/profesor/igre`, Leonova datoteka): „2 studenata" umjesto „2 studenta". (b) „Kako je
+  izračunat mjesec" (`/igra/izvjestaj/1/tok`, Simonov): kartica „Ugled · Nije spremljeno uz obračun" je tehnički
+  tekst za studenta (`src/lib/tokovi/month-flow.ts:158`), a početni čvor ponavlja „Početak: Lipanj / Lipanj".
+- **Uzrok:** kao [BUG-016](#bug-016--krivi-hrvatski-u-brojevima-i-rodu); tekst pisan za razvoj ostao u sučelju.
+- **Rješenje:** (a) „2 studenta" kroz `plural`; (b) tehnički tekst u toku mjeseca zamijenjen.
+- **Lekcija:** svaki tekst na ekranu čita student ili žiri; poruke za razvoj ne idu u sučelje.
+
+### BUG-021 · Ploča profesora: nema puta natrag ni koda igre nakon početka
+- **Status:** ✅ riješen 24.10. 23:15 ([#211](https://github.com/leonkreso784-bit/riihack/pull/211) i [#212](https://github.com/leonkreso784-bit/riihack/pull/212)) · **Težina:** nizak (srednji za demo: student koji kasni ne može ući)
+- **Opis:** ploča (`/profesor/[worldId]`) i uvid u studenta imaju samo „Odjava", bez poveznice na „Moje igre" i
+  „Knjižnica"; profesor se vraća tipkom natrag. Nakon početka igre kod igre se više ne vidi na ploči, pa student koji
+  kasni ne može ući s projektora.
+- **Rješenje:** „← Moje igre" i „Knjižnica" u zaglavlju profesora i na uvidu u studenta; kod igre za one koji kasne.
+- **Lekcija:** novi ekrani (računi, knjižnica) traže put do njih sa svih starih ekrana; provjeri navigaciju od
+  prijave do svake stranice.
 
 ### BUG-026 · Napredak je negativan za sve hotele od prvog mjeseca
 - **Status:** ✅ riješen 24.10. 23:06 ([#214](https://github.com/leonkreso784-bit/riihack/pull/214), Leonovo „spoji"; 🟨 tester provjerava cijelu sezonu) · **Težina:** visok (ljestvica i podij pokazuju da su svi izgubili)

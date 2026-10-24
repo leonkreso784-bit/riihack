@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Sub 24.10. 23:15–23:30 · kasni ulaz, svi bugovi s testa zatvoreni
+
+- **Spojeno:** #212 (23:15, BUG-019 i 021 ostatak), dokumentacija #220 (23:17), Simonova karta prema broju hotela #215
+  (23:22), kasni ulaz #221 (23:26, Leonovo izravno „spoji"; [BUG-027](BUGS.md#bug-027--kasni-student-ne-može-ući-u-igru-koja-je-počela)
+  riješen, demo igra 15 mjesta), Simonovi Tokovi za odjele #206 (23:27, BUG-020b). Integrator: 497 testova, build,
+  smoke 1–18 i 20; CI zelen; produkcija READY 23:27.
+- **Bugovi:** BUG-014 do 027 su riješeni (većinu je prijavio tester produkcije); aktivan je samo BUG-006 (pravilo
+  bez `db:push`).
+- **Sljedeće:** graditelj čisti QA igre, sije demo igru i pokreće smoke na produkciji, s provjerom kasnog ulaza u
+  `KVRNDM`; zatim tester igra cijelu sezonu (dobar i loš student) i provjerava podij na 1280×720.
+
 ## Sub 24.10. 23:05–23:15 · balans gotov, kasni ulaz, bez kalibracije
 
 - **Spojeno:** BUG-026 (#214, 23:06, Leonovo „spoji"), Rinov #216 (23:08), dokumentacija #218 (23:06). Integrator:

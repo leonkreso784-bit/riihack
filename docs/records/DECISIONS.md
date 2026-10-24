@@ -16,7 +16,8 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 igra `KVRNDM` je već u 2. mjesecu, pa žiri na obilasku 3 ne bi mogao ući kao novi student.
 **Odluka.** Novi student i nakon početka igre dobije hotel i igra od trenutnog mjeseca; nakon kraja sezone ulaz
 ostaje zatvoren. Radi graditelj, uz test da kasni ulaz ne kvari obračun, tržište ni ljestvicu.
-**Posljedice.** Žiri može ući u bogatu demo igru iznutra. 🟨 PR još nije otvoren.
+**Posljedice.** Žiri može ući u bogatu demo igru iznutra. Spojeno [#221](https://github.com/leonkreso784-bit/riihack/pull/221) (23:26, Leonovo izravno „spoji"):
+demo igra ima 15 mjesta, smoke korak 20 provjerava kasni ulaz.
 
 <a id="adr-047"></a>
 ## ADR-047 · Kalibracija troškova (#209) ne ide prije predaje
