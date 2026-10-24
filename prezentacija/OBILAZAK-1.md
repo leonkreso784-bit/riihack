@@ -11,15 +11,18 @@ izvan 3 obećanja.
 
 | Slajd | Što | Tko |
 | --- | --- | --- |
-| 1 | Simpolis, jedna rečenica, tim | Simon |
-| 2 | Problem: −17 %, 40–50 %, 420 sati | Simon |
-| 3 | Cesim (tablice brojeva) uz naš ekran | Simon |
-| 4 | Usporedba: Cesim, CompanyGame AI, ChatGPT, Virtualni hotel, Simpolis + rečenica za prepričati | Simon |
-| 5 | Tri obećanja sa stanjem (radi / stiže do 18:45) | Simon |
-| 6 | „Pogledajmo aplikaciju" + QR → prebaci na riihack.vercel.app | Rino |
+| 1 | Simpolis: „kao igra vođenja tvrtke, ali za pravi posao" | Simon |
+| 2 | Problem: 17 % lošiji rezultat, 40–50 %, 420 sati | Simon |
+| 3 | Usporedba: Cesim, CompanyGame AI, ChatGPT, Virtualni hotel, Simpolis + rečenica za prepričati | Simon |
+| 4 | Četiri stvari koje drugi nemaju zajedno (USP) | Simon |
+| 5 | Tri obećanja (samo „AI sudac radi" je označeno) | Simon |
+| 6 | „Pogledajmo aplikaciju" + mobiteli + QR → prebaci na riihack.vercel.app | Rino |
 | 7 | AI sudac: isti gost, tri odgovora | Simon |
-| 8 | Kako radi: AI ne daje bodove, protiv prepisivanja, ako AI ne radi, trošak | Leon |
+| 8 | Kako radi: AI ne daje bodove, prepisivanje, ako AI ne radi, trošak | Leon |
 | 9 | „U nedjelju sva tri obećanja, uživo" + pitanje žiriju | svi |
+| 10–11 | **Dodatak za pitanja:** Cesim uz naš ekran; usporedba korištenja (tablice ili razgovor). Ne prikazujemo ih, osim ako žiri pita. | Simon |
+
+Simon na slajdovima 1–5 ima oko 1:30 (5 brzih slajdova, po 15–20 s), Rino 1:45, Simon 0:30, Leon 0:30, pitanje 0:15.
 
 ## Gdje smo (stanje 14:05)
 
