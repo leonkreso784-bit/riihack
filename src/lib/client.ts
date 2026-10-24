@@ -100,11 +100,28 @@ const MOCK_DEADLINE = new Date(Date.now() + 10 * 60_000).toISOString();
 // After a mock join the "professor" starts the game 8 s later, so the waiting room can be seen in the demo.
 let mockLobbyUntil = 0;
 
+// Mock professor game: lobby until "Pokreni", students drop in one every 2.5 s so the projector view comes alive.
+let mockProfOpenedAt = Date.now();
+let mockProfStarted = false;
+function mockProfState(): ProfStateResponse {
+  const world = { ...MOCK_PROF.world, serverNow: new Date().toISOString() };
+  if (mockProfStarted) return { ...MOCK_PROF, world: { ...world, roundDeadline: MOCK_DEADLINE } };
+  const joined = Math.min(MOCK_PROF.players.length, Math.floor((Date.now() - mockProfOpenedAt) / 2500));
+  return { ...MOCK_PROF, world: { ...world, status: "lobby", round: 0, roundDeadline: null }, players: MOCK_PROF.players.slice(0, joined) };
+}
+
 const mockApi: Api = {
-  createWorld: () => wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" }),
+  createWorld: () => {
+    mockProfOpenedAt = Date.now();
+    mockProfStarted = false;
+    return wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" });
+  },
   profLogin: () => wait({ worldId: MOCK_PROF.world.id }),
-  profState: () => wait(MOCK_PROF),
-  start: () => wait(MOCK_PROF),
+  profState: () => wait(mockProfState()),
+  start: () => {
+    mockProfStarted = true;
+    return wait(mockProfState());
+  },
   openRound: () => wait(MOCK_PROF),
   finish: () => wait({ ...MOCK_PROF, world: { ...MOCK_PROF.world, status: "finished" } }),
   companyDetail: () => wait(MOCK_DETAIL),
