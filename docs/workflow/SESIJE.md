@@ -6,8 +6,8 @@ Odluka: [ADR-015](../records/DECISIONS.md#adr-015). Simon i Rino rade po pravili
 
 | Sesija | Radi | Radno stablo | Ne radi |
 | --- | --- | --- | --- |
-| **Graditelj** | L-zadaci iz [plana](../superpowers/plans/2026-10-24-simpolis.md) s agentima (jedan zadatak = jedan agent = jedna grana) | `Documents/riihack` (+ stabla po zadatku) | ne spaja sam |
-| **Integrator** | pregledava i spaja PR-ove, čuva zeleni `main` | `Documents/riihack-integracija` | ne piše značajke |
+| **Graditelj** | L-zadaci iz [plana](../superpowers/plans/2026-10-24-simpolis.md) s agentima (jedan zadatak = jedan agent = jedna grana) | `Documents/riihack` (+ stabla po zadatku) | ne spaja i ne mijenja stanje PR-a |
+| **Integrator** | jedini vodi stanje PR-ova (draft, ready, spajanje), čuva zeleni `main` | `Documents/riihack-integracija` | ne piše značajke |
 | **Dokumentarist** | vodi `docs/` (PRD, ADR, dnevnik, bugovi) | `Documents/riihack-docs` | ne piše kod, ne spaja sam |
 
 Svaka sesija radi **samo u svom radnom stablu**. Odluke donosi Leon s timom; sesije ih bilježe, ne donose.

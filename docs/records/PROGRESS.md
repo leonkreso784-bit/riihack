@@ -13,7 +13,9 @@ Vremena su lokalna (CEST).
 - **Simon:** pitch i obilazak (#67), tema učenja (#72). Otvoren S3 lik i ruta chat (#76).
 - **Rino:** animacije sučelja (#73).
 - **Dokumentacija:** na `main`-u (#71).
-- **Odluka:** ugovor i L6 spajaju se samo na Leonovo „spoji" ([ADR-017](DECISIONS.md#adr-017)).
+- **Odluke:** ugovor i L6 spajaju se samo na Leonovo „spoji" ([ADR-017](DECISIONS.md#adr-017)); pravi podaci samo
+  na Previewu ([ADR-018](DECISIONS.md#adr-018)); smoke 1–10 usporedno s L7 ([ADR-019](DECISIONS.md#adr-019));
+  odgovori za S3 ([ADR-020](DECISIONS.md#adr-020)); stanje PR-ova vodi samo integrator ([ADR-015](DECISIONS.md#adr-015)).
 - **Otvoreno:** #75 L6 situacije (čeka Leona), #76 S3.
 
 ## Sub 24.10. 14:35–15:00 · baza živa, L1–L3, R1–R3

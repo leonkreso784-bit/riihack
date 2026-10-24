@@ -23,10 +23,11 @@ typecheck, lint, test, build. Lokalno zeleno na Windowsu nije dokaz za Linux
 
 ## Nakon deploya
 
-Otvori https://riihack.vercel.app i ekran koji si mijenjao, u pregledniku. Vercel nema tvoj `.env.local`
+Otvori ekran koji si mijenjao u pregledniku: preview link PR-a (pravi podaci) i https://riihack.vercel.app
+(lažni podaci dok tim ne odluči, [ADR-018](../records/DECISIONS.md#adr-018)). Vercel nema tvoj `.env.local`
 ([BUG-003](../records/BUGS.md#bug-003--igra-na-vercelu-vraća-greška-404)).
 
-## Smoke cijelog toka (L8, od M2)
+## Smoke cijelog toka (L8, koraci 1–10 usporedno s L7)
 
 ```bash
 npm run smoke          # BASE_URL zadano http://localhost:3000
