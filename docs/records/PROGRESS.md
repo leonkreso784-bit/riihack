@@ -6,6 +6,17 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~03:50 CET · projektor
+
+- **Spojeno:** [#263](https://github.com/leonkreso784-bit/riihack/pull/263) 02:40 i [#265](https://github.com/leonkreso784-bit/riihack/pull/265) 03:08 CET (dokumentacija), [#264](https://github.com/leonkreso784-bit/riihack/pull/264) 03:48 CET (projektor: podij
+  mjeseca i ljestvica nakon kraja sezone bez crvenog, kompaktni podij sezone uz ljestvicu, ploča profesora do 1600 px;
+  BUG-051 do 054 i BUG-060; dira 5 Rinovih komponenti po [ADR-054](DECISIONS.md#adr-054), rebase zbog sukoba s
+  [#252](https://github.com/leonkreso784-bit/riihack/pull/252)).
+- **Integrator za #264:** 564 testa, build, tuđe stanje računa se ne prikazuje (nakon rebasea na #252).
+- **CI `main`:** zelen (`2afc3ff`); produkcija READY 03:48 CET.
+- **Slijedi:** tester provjerava podij i ploču na 1920 i 2560 px. Preskočeno u #264 i ostaje Rinu:
+  [BUG-055](BUGS.md#bug-055--sitnice-prikaza-na-projektoru-završi-sezonu-podij-na-2560-px-kartice-botova).
+
 ## Ned 25.10. ~02:55 CET · #262 potvrđen, put žirija prošao
 
 - **Tester (produkcija, ~02:45 CET):** ✅ svih pet ispravaka iz [#262](https://github.com/leonkreso784-bit/riihack/pull/262) (BUG-043, 045, 046, 047, 049) i BUG-056
