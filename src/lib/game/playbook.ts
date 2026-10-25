@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { customSituations, events, worlds } from "@/db/schema";
 import type { CustomSituationRow, WorldRow } from "@/db/schema";
 import { customSituationId, toTemplate, validateDraft } from "@/lib/engine/draft";
+import { hasSituationTitle } from "@/lib/game/library";
 import { loadProfState } from "@/lib/game/world";
 import { HttpError } from "@/lib/http";
 import type { Playbook, ProfStateResponse, SituationDraft } from "@/lib/types";
@@ -47,6 +48,18 @@ export function parsePlaybook(body: Record<string, unknown>): Playbook {
   return { version: 1, name: body.name, settings: { autoDraw: settings.autoDraw }, situations: situations as SituationDraft[] };
 }
 
+/** Situacije kojih naslov još nije u igri (ni ranije u istom playbooku); ostale se preskaču da ponovni uvoz ne udvostruči popis. */
+export function splitNewDrafts(existingTitles: string[], drafts: SituationDraft[]): { fresh: SituationDraft[]; skipped: number } {
+  const titles = [...existingTitles];
+  const fresh: SituationDraft[] = [];
+  for (const d of drafts) {
+    if (hasSituationTitle(titles, d.title)) continue;
+    titles.push(d.title);
+    fresh.push(d);
+  }
+  return { fresh, skipped: drafts.length - fresh.length };
+}
+
 // ---------- Baza ----------
 
 /** GET /api/prof/[worldId]/playbook: profesorove situacije igre (redom stvaranja) i postavke. */
@@ -61,12 +74,14 @@ export async function exportPlaybook(world: WorldRow): Promise<Playbook> {
 
 /**
  * POST /api/prof/[worldId]/playbook: tek kad su sve situacije ispravne, jedan db.batch upiše sve kao profesorove,
- * postavi autoDraw i događaj playbook.imported. Studentima se ništa ne šalje.
+ * postavi autoDraw i događaj playbook.imported. Situacije s naslovom koji već postoji u igri preskaču se (broj ide u događaj). Studentima se ništa ne šalje.
  */
 export async function importPlaybook(world: WorldRow, body: Record<string, unknown>): Promise<ProfStateResponse> {
   const playbook = parsePlaybook(body);
+  const existing = await db.select({ template: customSituations.template }).from(customSituations).where(eq(customSituations.worldId, world.id));
+  const { fresh, skipped } = splitNewDrafts(existing.map((e) => e.template.title), playbook.situations);
   const now = Date.now(); // isti upit bi svima dao isti now(): razmak od 1 ms čuva redoslijed stvaranja pri izvozu
-  const rows = playbook.situations.map((d, i) => {
+  const rows = fresh.map((d, i) => {
     const id = customSituationId("custom");
     return { id, worldId: world.id, source: "custom", template: toTemplate(id, d), createdAt: new Date(now + i) };
   });
@@ -74,7 +89,7 @@ export async function importPlaybook(world: WorldRow, body: Record<string, unkno
     worldId: world.id,
     round: world.round,
     type: "playbook.imported",
-    payload: { count: rows.length, name: playbook.name },
+    payload: { count: rows.length, skipped, name: playbook.name },
   });
   const setDraw = db.update(worlds).set({ autoDraw: playbook.settings.autoDraw }).where(eq(worlds.id, world.id)).returning();
   const [updated] =

@@ -10,7 +10,11 @@ export const GET = route(async (_req, ctx): Promise<RoundReportView> => {
   const { company } = await requirePlayer();
   const round = Number((await ctx.params).round);
   const report = Number.isInteger(round) && round > 0 ? await getReport(company.id, round) : null;
-  if (!report) throw new HttpError(404, "Krug nije zatvoren");
+  if (!report) {
+    // Kasni ulaz: tvrtka ulazi s closedRound = tekući krug − 1 i nema izvještaje za mjesece prije ulaska.
+    const beforeJoin = Number.isInteger(round) && round > 0 && round <= company.closedRound;
+    throw new HttpError(404, beforeJoin ? "U tom mjesecu još nisi bio u igri" : "Krug nije zatvoren");
+  }
 
   let question = report.mentorQuestion ?? undefined;
   if (!question) {

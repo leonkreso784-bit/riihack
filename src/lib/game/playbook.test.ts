@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { HttpError } from "@/lib/http";
 import type { SituationDraft, SituationTemplate } from "@/lib/types";
-import { buildPlaybook, parsePlaybook, rowToDraft } from "./playbook";
+import { buildPlaybook, parsePlaybook, rowToDraft, splitNewDrafts } from "./playbook";
 
 const DRAFT: SituationDraft = {
   title: "Kvar klime",
@@ -74,5 +74,27 @@ describe("parsePlaybook", () => {
     expect(message(() => parsePlaybook(body({ situations: [DRAFT, bad] })))).toBe(
       "Situacija 2: Naslov mora imati od 3 do 80 znakova",
     );
+  });
+});
+
+describe("splitNewDrafts", () => {
+  const other = { ...DRAFT, title: "Pokvaren lift" };
+
+  it("preskače situacije čiji naslov već postoji u igri (bez razlike u velikim slovima)", () => {
+    const r = splitNewDrafts(["kvar  klime"], [DRAFT, other]);
+    expect(r.fresh).toEqual([other]);
+    expect(r.skipped).toBe(1);
+  });
+
+  it("ponovni uvoz istog playbooka ne dodaje ništa", () => {
+    const r = splitNewDrafts([DRAFT.title, other.title], [DRAFT, other]);
+    expect(r.fresh).toEqual([]);
+    expect(r.skipped).toBe(2);
+  });
+
+  it("duplikat unutar istog playbooka uvozi samo jednom", () => {
+    const r = splitNewDrafts([], [DRAFT, DRAFT]);
+    expect(r.fresh).toHaveLength(1);
+    expect(r.skipped).toBe(1);
   });
 });
