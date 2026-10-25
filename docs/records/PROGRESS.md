@@ -6,6 +6,20 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~10:00 CET · produkcija zamrznuta, predaja
+
+- **Spojeno:** [#288](https://github.com/leonkreso784-bit/riihack/pull/288) 09:45 CET (Rino: Financije bez klizača, 2 retka CSS) i
+  [#289](https://github.com/leonkreso784-bit/riihack/pull/289) 09:46 CET (dokumentacija). Otvoren je samo
+  [#209](https://github.com/leonkreso784-bit/riihack/pull/209) i ne spaja se ([ADR-047](DECISIONS.md#adr-047)).
+- **Provjera:** CI `main` zelen (`bb7b155`), produkcija READY.
+- **Zamrzavanje:** od 10:00 integrator spaja samo na Leonovo izravno „spoji"; produkcija zamrznuta (graditelj).
+- **Tester ✅ [#285](https://github.com/leonkreso784-bit/riihack/pull/285) i [#287](https://github.com/leonkreso784-bit/riihack/pull/287) (~09:58 CET):** bez fatalnog. Novi
+  [BUG-075](BUGS.md#bug-075--mentorov-odgovor-na-refleksiju-napisanu-prije-obračuna-citira-privremene-brojke)
+  (srednji, Simon, poslije natjecanja) i BUG-076 do 078 (niski, Rino).
+- **Dokumentarist (09:48):** ime prijašnjeg projekta nema na `main`-u; pripremljen tekst predaje za #prezentacije
+  (aplikacija, GitHub, prezentacija u prilogu, dokumentacija; 669 commitova, 235 spojenih PR-ova, 674 testa).
+- **Slijedi:** prezentaciju dovršava Simon; predaja do 10:30.
+
 ## Ned 25.10. ~09:35 CET · mentor na svojoj stranici
 
 - **Spojeno:** [#286](https://github.com/leonkreso784-bit/riihack/pull/286) 09:30 CET (Leon: promo video 1080p) i [#285](https://github.com/leonkreso784-bit/riihack/pull/285) 09:33 CET (Rino: stranica

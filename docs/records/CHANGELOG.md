@@ -7,6 +7,8 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#289](https://github.com/leonkreso784-bit/riihack/pull/289) | 09:46 CET | Leon | dokumentacija: Rinov #285, promo video |
+| [#288](https://github.com/leonkreso784-bit/riihack/pull/288) | 09:45 CET | Rino | Financije: bez klizača u Financijskom sažetku (2 retka CSS u `src/app/igra/financije/page.tsx`) |
 | [#287](https://github.com/leonkreso784-bit/riihack/pull/287) | 09:43 CET | Simon | Tokovi: zum ploče (50–150 %, zadano 100 % bez promjene za pitch) i audit stavke S1–S6 (upute, brojevi koraka, pristupačni nazivi, kontrast linija, tekstovi kartica); samo `src/components/tokovi/*`, `src/lib/tokovi/*`; 674 testa, build |
 | [#285](https://github.com/leonkreso784-bit/riihack/pull/285) | 09:33 CET | Rino | stranica `/igra/mentor` sa svim razgovorima s mentorom, Financije u dvije kartice, objašnjenja „?" uz nazive, raspored Hotela (BUG-070 do 074; zatvara #284); bez promjene baze i API-ja; 647 testova, build |
 | [#286](https://github.com/leonkreso784-bit/riihack/pull/286) | 09:30 CET | Leon | prezentacija: promo video Simpolis 1080p (56 s, `prezentacija/video/simpolis-promo-1080p.mp4`); 4K verzija u prilozima izdanja **promo-video** |
