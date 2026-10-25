@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
-import { eur } from "@/lib/format";
+import { eur, plural } from "@/lib/format";
 import { Delta } from "@/components/metric-bar";
 import { cn } from "@/lib/utils";
 import { BIZ_META, bonitet, publicBonitet, fmtDec, growth, inBlockade, monthName, profit, reviewsCount, score, word, type PublicProfile, type ProfileDetail } from "@/lib/karta";
@@ -96,7 +96,7 @@ function Ocjene({ d }: { d: ProfileDetail }) {
         <div className="rounded-[10px_10px_10px_0] bg-night px-2.5 py-2 text-xl font-extrabold text-white">{fmtDec(s)}</div>
         <div>
           <b className="text-base">{word(s)}</b>
-          {d.months && <div className="text-xs text-muted-foreground">{nights > 0 ? `${reviewsCount(nights)} recenzija gostiju` : "Još nema recenzija"}</div>}
+          {d.months && <div className="text-xs text-muted-foreground">{nights > 0 ? `${reviewsCount(nights)} ${plural(reviewsCount(nights), "recenzija", "recenzije", "recenzija")} gostiju` : "Još nema recenzija"}</div>}
         </div>
         <div className="ml-auto shrink-0 text-right">
           <b className="whitespace-nowrap">od {d.price} €</b>
@@ -171,7 +171,7 @@ function Financije({ p }: { p: PublicProfile }) {
                 <tr><td>Ukupni prihodi</td>{shown.map((m) => <td key={m.round}>{eur(m.revenue)}</td>)}</tr>
                 <tr><td>Ukupni rashodi</td>{shown.map((m) => <td key={m.round}>{eur(m.costs)}</td>)}</tr>
                 <tr><td><b>Dobit/gubitak</b></td>{shown.map((m) => <td key={m.round} className={profit(m) >= 0 ? "text-up" : "text-down"}><b>{eur(profit(m))}</b></td>)}</tr>
-                <tr><td>Rast/pad prihoda</td><td colSpan={shown.length} className={g === null ? "" : g >= 0 ? "text-up" : "text-down"}>{g === null ? "još nema usporedbe" : `${g >= 0 ? "▲ +" : "▼ "}${g} %`}</td></tr>
+                <tr><td>Rast/pad prihoda</td><td colSpan={shown.length} className={g === null ? "" : g >= 0 ? "text-up" : "text-down"}>{g === null ? "još nema usporedbe" : `${g >= 0 ? "▲ +" : "▼ −"}${Math.abs(g)} %`}</td></tr>
                 {p.staff !== null && <tr><td>Broj zaposlenih</td>{shown.map((m) => <td key={m.round}>{p.staff}</td>)}</tr>}
               </tbody>
             </table>
@@ -188,7 +188,7 @@ function Financije({ p }: { p: PublicProfile }) {
               <tbody className="[&_td]:border-t [&_td]:py-1.5 [&_td]:text-right [&_td:first-child]:text-left tabular-nums">
                 <tr><td>Ukupni prihodi</td>{pubShown.map((m) => <td key={m.round}>{eur(m.revenue)}</td>)}</tr>
                 <tr><td><b>Dobit/gubitak</b></td>{pubShown.map((m) => <td key={m.round} className={m.profit >= 0 ? "text-up" : "text-down"}><b>{eur(m.profit)}</b></td>)}</tr>
-                <tr><td>Rast/pad prihoda</td><td colSpan={pubShown.length} className={g === null ? "" : g >= 0 ? "text-up" : "text-down"}>{g === null ? "još nema usporedbe" : `${g >= 0 ? "▲ +" : "▼ "}${g} %`}</td></tr>
+                <tr><td>Rast/pad prihoda</td><td colSpan={pubShown.length} className={g === null ? "" : g >= 0 ? "text-up" : "text-down"}>{g === null ? "još nema usporedbe" : `${g >= 0 ? "▲ +" : "▼ −"}${Math.abs(g)} %`}</td></tr>
               </tbody>
             </table>
           ) : <Note>Financije se objavljuju nakon zatvaranja prvog mjeseca.</Note>}

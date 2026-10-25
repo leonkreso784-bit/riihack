@@ -58,8 +58,8 @@ export function StepDetail({ step, wide }: { step: FlowStepData; wide?: boolean 
       <section aria-label="Ulaz">
         <h4 className={H4}>Ulaz</h4>
         <dl className="rounded-2xl bg-muted px-3.5 py-1.5 text-sm">
-          {step.inputs.map((r) => (
-            <div key={r.label} className="flex justify-between gap-3 border-b border-border py-2 last:border-0">
+          {step.inputs.map((r, i) => (
+            <div key={`${r.label}:${i}`} className="flex justify-between gap-3 border-b border-border py-2 last:border-0">
               <dt className="text-muted-foreground">{r.label}</dt>
               <dd className="text-right font-bold">{r.value}</dd>
             </div>
@@ -78,8 +78,8 @@ export function StepDetail({ step, wide }: { step: FlowStepData; wide?: boolean 
       <section aria-label="Izlaz">
         <h4 className={H4}>Izlaz</h4>
         <dl className="rounded-2xl bg-secondary px-4 py-2">
-          {step.outputs.map((r) => (
-            <div key={r.label} className={cn("py-1.5", r.value.length > 36 ? "space-y-0.5" : "flex items-baseline justify-between gap-3")}>
+          {step.outputs.map((r, i) => (
+            <div key={`${r.label}:${i}`} className={cn("py-1.5", r.value.length > 36 ? "space-y-0.5" : "flex items-baseline justify-between gap-3")}>
               <dt className="text-sm font-semibold text-muted-foreground">{r.label}</dt>
               <dd className={cn("tabular-nums", r.value.length <= 36 && "text-right", r.strong ? "text-xl font-extrabold whitespace-nowrap text-secondary-foreground" : "text-sm font-bold")}>{r.value}</dd>
             </div>
