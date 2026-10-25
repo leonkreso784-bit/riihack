@@ -103,7 +103,7 @@ export default function PlanPage() {
           </Panel>
         </div>
 
-        <ContractOffers contracts={data.contracts} />
+        <ContractOffers contracts={data.contracts} round={data.world.round} />
       </div>
     </div>
   );

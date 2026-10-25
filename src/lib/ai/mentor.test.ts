@@ -249,3 +249,35 @@ describe("mentorDebrief repair", () => {
     expect(warn).toHaveBeenCalledWith("[ai] mentor debrief rejected:", "slash-gender");
   });
 });
+
+describe("Cyrillic letters in mentor text (SVJEZEOCI-03)", () => {
+  const full = { ...input, question: "Što bi gostu još trebalo?", reflection: "Trebao sam ponuditi nešto više od isprike." };
+  const mixedScript = "mog\u043b\u043e"; // "mog" + Cyrillic "lo", as seen once in a stored mentor text
+
+  it("rejects a question with Cyrillic letters and retries", async () => {
+    const model = new MockLanguageModelV4({
+      doGenerate: [reply(`Što je ${mixedScript} drukčije u odluci o sobi 204?`), reply("Što je moglo biti drukčije u odluci o sobi 204?")],
+    });
+    await expect(mentorQuestion(input, model)).resolves.toBe("Što je moglo biti drukčije u odluci o sobi 204?");
+    expect(model.doGenerateCalls).toHaveLength(2);
+  });
+
+  it("falls back when both question attempts contain Cyrillic letters", async () => {
+    const model = new MockLanguageModelV4({ doGenerate: reply(`Što je ${mixedScript} drukčije u odluci o sobi 204?`) });
+    await expect(mentorQuestion(input, model)).resolves.toBe(fallbackMentorQuestion(input));
+    expect(model.doGenerateCalls).toHaveLength(2);
+  });
+
+  it("names Cyrillic as the reason a debrief is rejected", () => {
+    expect(debriefProblem(`Gost je ${mixedScript} dobiti više. Isprika nije dovoljna. Nastavi tako.`)).toBe("cyrillic");
+    expect(debriefProblem("Gost je mogao dobiti više. Isprika nije dovoljna. Nastavi tako.")).toBeNull();
+  });
+
+  it("retries a debrief with Cyrillic letters, then accepts the clean one", async () => {
+    const dirty = `Gost je ${mixedScript} dobiti više. Isprika nije dovoljna. Naknada bi pomogla. Što bi ponudio?`;
+    const good = "Gost je mogao dobiti više. Isprika nije dovoljna. Naknada bi pomogla. Što bi ponudio?";
+    const model = new MockLanguageModelV4({ doGenerate: [reply(dirty), reply(good)] });
+    await expect(mentorDebrief(full, model)).resolves.toBe(good);
+    expect(model.doGenerateCalls).toHaveLength(2);
+  });
+});

@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { Check, Handshake, X } from "lucide-react";
 import { api } from "@/lib/client";
-import { eur } from "@/lib/format";
+import { activeIn } from "@/lib/finance-view";
+import { eur, plural } from "@/lib/format";
+import { MAX_ROUNDS } from "@/lib/rules";
 import type { BusinessKind, ContractView } from "@/lib/types";
 import { Panel } from "@/components/panel";
 import { Pill } from "@/components/pill";
@@ -20,21 +22,33 @@ const KIND_LABELS: Record<BusinessKind, string> = {
 const BTN =
   "inline-flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-xl px-4 text-sm font-bold transition-colors focus-visible:outline-2 focus-visible:outline-primary disabled:opacity-50 sm:flex-none";
 
+/** Months the contract can still run: the season ends with month MAX_ROUNDS (review GAP4-04). */
+const monthsLeft = (c: ContractView) => Math.max(1, Math.min(c.durationRounds, MAX_ROUNDS - c.roundOffered + 1));
+
 function terms(c: ContractView) {
-  const months = `${c.durationRounds} ${c.durationRounds === 1 ? "mjesec" : "mjeseca"}`;
-  const main = c.nights > 0 ? `${c.nights} noćenja po ${eur(c.pricePerNight)} po noćenju` : `${eur(c.monthlyCost)} mjesečno`;
+  const n = monthsLeft(c);
+  const months = `${n} ${n === 1 ? "mjesec" : "mjeseca"}`;
+  // An open offer the agency countered is signed at the counter (decideContract), so show that number (review IGRA-B-02).
+  const counter = c.status === "offered";
+  const price = counter ? (c.counterPricePerNight ?? c.pricePerNight) : c.pricePerNight;
+  const cost = counter ? (c.counterMonthlyCost ?? c.monthlyCost) : c.monthlyCost;
+  const main = c.nights > 0 ? `${c.nights} ${plural(c.nights, "noćenje", "noćenja", "noćenja")} po ${eur(price)} po noćenju` : `${eur(cost)} mjesečno`;
   return `${main} · ${months}`;
 }
 
-// Offers of this round (Prihvati / Odbij) and the contracts already running. onDecide fires after the server accepted the answer.
-export function ContractOffers({ contracts, onDecide }: { contracts: ContractView[]; onDecide?: (id: string, accept: boolean) => void }) {
+const isCountered = (c: ContractView) => c.counterPricePerNight !== undefined || c.counterMonthlyCost !== undefined;
+
+// Offers of this round (Prihvati / Odbij) and the contracts running this round. onDecide fires after the server accepted the answer.
+// `round` is world.round: without it ended contracts would still be listed as active (review GAP1-01).
+export function ContractOffers({ contracts, round, onDecide }: { contracts: ContractView[]; round: number; onDecide?: (id: string, accept: boolean) => void }) {
   const [busy, setBusy] = useState<string>();
   const [error, setError] = useState<string>();
   const [decided, setDecided] = useState<Record<string, ContractView["status"]>>({});
 
-  const status = (c: ContractView) => decided[c.id] ?? c.status;
-  const offers = contracts.filter((c) => status(c) === "offered");
-  const active = contracts.filter((c) => status(c) === "accepted");
+  const current = contracts.map((c) => (decided[c.id] ? { ...c, status: decided[c.id] } : c));
+  // An offer of an earlier month can no longer be decided (openOffer answers 409), so it is not offered again.
+  const offers = current.filter((c) => c.status === "offered" && c.roundOffered === round);
+  const active = activeIn(current, round);
 
   async function decide(c: ContractView, accept: boolean) {
     setBusy(c.id);
@@ -72,6 +86,7 @@ export function ContractOffers({ contracts, onDecide }: { contracts: ContractVie
                 <p className="mt-1 text-sm font-semibold">{c.title}</p>
                 <p className="mt-1 text-sm text-muted-foreground">{c.text}</p>
                 <p className="mt-2 text-sm font-bold tabular-nums">{terms(c)}</p>
+                {isCountered(c) && <p className="mt-1 text-xs font-semibold text-secondary-foreground">Protuponuda agencije: Prihvati potpisuje ovaj iznos.</p>}
                 <div className="mt-3 flex gap-2">
                   <button type="button" disabled={busy === c.id} onClick={() => decide(c, true)} className={cn(BTN, "bg-primary text-primary-foreground hover:bg-primary/90")}>
                     <Check className="size-4" aria-hidden />
@@ -97,7 +112,7 @@ export function ContractOffers({ contracts, onDecide }: { contracts: ContractVie
                   <span className="block font-bold">{c.businessName}</span>
                   <span className="block text-sm text-muted-foreground tabular-nums">{terms(c)}</span>
                 </span>
-                {c.activeUntilRound !== undefined && <Pill tone="up">do kruga {c.activeUntilRound}</Pill>}
+                {c.activeUntilRound !== undefined && <Pill tone="up">do kruga {Math.min(c.activeUntilRound, MAX_ROUNDS)}</Pill>}
               </li>
             ))}
           </ul>

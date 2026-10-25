@@ -41,7 +41,8 @@ export default function MonthFlowPage() {
 
   const finance = data?.me.finances.find((f) => f.round === round);
   // Kasni ulaz: tvrtka ulazi s closedRound = tekući krug − 1 i nema obračun za mjesece prije ulaska.
-  const beforeJoin = !!data && !finance && round <= data.me.company.closedRound;
+  // Student koji je sam završio mjesec ima izvještaj, ali obračun čeka profesora: to nije kasni ulaz.
+  const beforeJoin = !!data && !finance && round <= data.me.company.closedRound && !data.me.reports.some((r) => r.round === round);
 
   return (
     <div className="space-y-5 pt-4 md:pt-0">

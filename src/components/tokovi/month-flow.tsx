@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { BedDouble, Building2, Euro, FileText, Gauge, Magnet, Play, Receipt, Star, Tag, TrendingUp, Wallet, X, type LucideIcon } from "lucide-react";
+import { financeEffect } from "@/lib/engine/economy";
 import { num } from "@/lib/format";
 import { MARKETING_MAX, PRICE_MAX, PRICE_MIN } from "@/lib/rules";
 import type { RoundFinance } from "@/lib/types";
@@ -185,7 +186,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
   const priceMin = Math.max(PRICE_MIN, Math.min(base.price, Math.floor(base.price * 0.5)));
   const priceMax = Math.min(PRICE_MAX, Math.max(base.price, Math.ceil(base.price * 1.6)));
   const set = (patch: Partial<typeof current>) => setScenario({ ...current, ...patch });
-  const effect = (p: number) => Math.max(-5, Math.min(5, Math.trunc(p / 2000))) + 0;
+  const effect = (p: number) => financeEffect(p) + 0; // same rule as the engine, not a copy of its numbers
 
   const lit = (a: StepId, b: StepId) => selected === a || selected === b;
 
@@ -194,7 +195,11 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
       <Panel title="Što ako?" tone="accent">
         <p className="mb-4 text-sm text-muted-foreground">{est.ok ? ESTIMATE_LABEL : est.reason}</p>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-x-8 gap-y-5 md:grid-cols-2">
-          <Slider id={`${uid}-cijena`} label="Cijena po noći" value={current.price} min={priceMin} max={priceMax} step={1} disabled={!est.ok} format={eur} onChange={(n) => set({ price: n })} />
+          {base.price > 0 ? (
+            <Slider id={`${uid}-cijena`} label="Cijena po noći" value={current.price} min={priceMin} max={priceMax} step={1} disabled={!est.ok} format={eur} onChange={(n) => set({ price: n })} />
+          ) : (
+            <p className="text-sm text-muted-foreground">Cijena po noći: nije poznata, jer ovaj mjesec nije bilo gostiju s tržišta.</p>
+          )}
           <Slider id={`${uid}-marketing`} label="Marketing" value={current.marketing} min={0} max={MARKETING_MAX} step={current.marketing % 50 === 0 ? 50 : 1} disabled={!est.ok} format={eur} onChange={(n) => set({ marketing: n })} />
         </div>
         {est.ok && (

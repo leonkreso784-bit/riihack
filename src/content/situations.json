@@ -251,7 +251,7 @@
   {
     "id": "popust-grupa",
     "title": "Agencija traži veliki popust za grupu",
-    "text": "Agent putničke agencije javlja se u hotel {hotel} s upitom za grupu od trideset soba na četiri noći u lipnju. Traži dvadeset pet posto popusta na cjenik i kaže da mu konkurencija iz susjedne ulice nudi povoljnije. Lipanj u vašem hotelu nije pun, ali nije ni prazan, a troškovi po sobi su poznati. Ponudu želi potvrditi do kraja dana.",
+    "text": "Agent putničke agencije javlja se u {hotel} s upitom za grupu od trideset soba na četiri noći ovog mjeseca. Traži dvadeset pet posto popusta na cjenik i kaže da mu konkurencija iz susjedne ulice nudi povoljnije. Ovaj mjesec vaš hotel nije pun, ali nije ni prazan, a troškovi po sobi su poznati. Ponudu želi potvrditi do kraja dana.",
     "area": "Prodaja i ugovori",
     "difficulty": 4,
     "character": {
@@ -297,7 +297,7 @@
       },
       {
         "id": "o2",
-        "text": "Ne možemo ići na dvadeset pet posto, mogu najviše deset. Uostalom, lipanj nam je skoro pun, ako ne odlučite danas, soba neće biti.",
+        "text": "Ne možemo ići na dvadeset pet posto, mogu najviše deset. Uostalom, ovaj mjesec nam je skoro pun, ako ne odlučite danas, soba neće biti.",
         "criteria": [
           "c2"
         ]
@@ -314,7 +314,7 @@
       },
       {
         "id": "o4",
-        "text": "Mogu sniziti cijenu, ali za dvanaest posto popusta tražim depozit od trideset posto i rooming listu na vrijeme. Ne tvrdim da je lipanj pun, jer nije, ali ni cijena ispod troška nije moguća.",
+        "text": "Mogu sniziti cijenu, ali za dvanaest posto popusta tražim depozit od trideset posto i rooming listu na vrijeme. Ne tvrdim da je ovaj mjesec pun, jer nije, ali ni cijena ispod troška nije moguća.",
         "criteria": [
           "c2",
           "c3",

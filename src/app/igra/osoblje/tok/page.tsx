@@ -30,7 +30,17 @@ export default function DepartmentsFlowPage() {
         <div className="h-80 animate-pulse rounded-[var(--radius)] bg-muted" aria-busy="true" aria-label="Učitavam" />
       ) : (
         <DepartmentsFlow
-          input={{ metrics: data.company.metrics, plan: data.plan.investments ?? {}, staff: staff ?? null, rooms: rooms ?? null, situations: data.situations, round: data.world.round }}
+          input={{
+            metrics: data.company.metrics,
+            plan: data.plan.investments ?? {},
+            staff: staff ?? null,
+            rooms: rooms ?? null,
+            situations: data.situations,
+            round: data.world.round,
+            // After the close and the settlement these effects are already in company.metrics (review AI-TOKOVI-01).
+            closed: data.company.closedRound >= data.world.round,
+            settled: data.finances.some((f) => f.round === data.world.round),
+          }}
         />
       )}
     </div>

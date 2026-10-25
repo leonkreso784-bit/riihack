@@ -14,6 +14,7 @@ import { Slider, StepDetail, type FlowStepData } from "@/components/tokovi/flow-
 import {
   AI_NOTE,
   buildDepartmentsBoard,
+  METRIC_ACCUSATIVE,
   WHATIF_LABEL,
   whatIfDepartment,
   type DepartmentLane,
@@ -288,7 +289,7 @@ function Lane({ lane, result, openKey, onOpen, highlight, laneRef }: { lane: Dep
                 <span className="mb-1 flex items-center gap-1.5 font-bold tracking-wide uppercase">
                   <MessagesSquare className="size-3.5" aria-hidden /> Situacije
                 </span>
-                Kad odgovoriš na situaciju koja dira {lane.metricLabel.toLowerCase()}, ovdje stiže kartica: zelena za dobar odgovor, crvena za loš.
+                Kad odgovoriš na situaciju koja dira {METRIC_ACCUSATIVE[lane.metric]}, ovdje stiže kartica: zelena za dobar odgovor, crvena za loš.
               </div>
             )}
           </div>
