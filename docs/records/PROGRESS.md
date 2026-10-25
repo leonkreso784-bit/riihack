@@ -6,6 +6,20 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~02:45 · Leon spava, spajanja do jutra
+
+- **Odobrenje:** Leon je ~02:42 integratoru izravno u njegovoj sesiji napisao „izravno ti dajem odobrenje za svo
+  spajanje" i „Idem spavat sada i sve treba automatizirano radit" ([ADR-054](DECISIONS.md#adr-054)); integrator spaja
+  zelene PR-ove do jutra.
+- **Spojeno:** dokumentacija #256 (02:35, ARHITEKTURA §1a, §3, §9a), Simonov #250 (02:38, mentorovo pitanje),
+  #249 (02:38, granica poruka, BUG-042), #247 (02:38, granica AI prijedloga), #255 (02:39, BUG-035 dio, BUG-039),
+  dokumentacija #257 (02:44).
+- **Integrator:** #241 + #255 zajedno 545 testova, build, smoke 1–18 i 20; chat i AI prijedlog bez kolačića vraćaju
+  401/403. CI `main` zelen (`8b46045`), produkcija READY 02:39.
+- **Čeka:** #241, #252 i #253 integratorov agent provjerava zajedno pa spaja.
+- **Dalje:** nakon #241/#252/#253 ponovni seed demo igre `KVRNDM` i smoke (graditelj); tester provjerava BUG-029,
+  030, 034 i 042.
+
 ## Ned 25.10. ~02:40 · rubni slučajevi
 
 - **Tester, rubni slučajevi na produkciji (02:18–02:36) ✅:** klik-odgovor, granica 6 poruka u sučelju, 2000/2001
@@ -16,8 +30,8 @@ Vremena su lokalna (CEST).
 - **Balans (tester):** recepcija + kuhinja donose +6 gostiju mjesečno; uz referentnu cijenu 172 € (4 zvjezdice, 17 soba) račun naraste s 20.000 na 98.280 € u 2 mjeseca (dobit 27.390 + 50.890 €); kasni
   student kreće s 20.000 €, ostali su na 60–98 tisuća. Odluka graditelja (~02:40): ne mijenja se prije predaje, ide
   uz [ADR-047](DECISIONS.md#adr-047) kao kalibracija, sljedeći korak.
-- **Odluka:** Leon spava; graditelj do jutra traži spajanja u njegovo ime ([ADR-054](DECISIONS.md#adr-054); prihvaća
-  li integrator prenesenu ovlast, 🟨 potvrditi).
+- **Odluka:** Leon spava; graditelj do jutra traži spajanja u njegovo ime ([ADR-054](DECISIONS.md#adr-054); ~02:42
+  Leon integratoru izravno odobrio svo spajanje, vidi unos iznad).
 
 ## Ned 25.10. ~02:30 · zaglavlja spojena, ocjena 1, skriveni račun
 

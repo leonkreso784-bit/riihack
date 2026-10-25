@@ -7,6 +7,12 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#257](https://github.com/leonkreso784-bit/riihack/pull/257) | 02:44 | Leon | dokumentacija: BUG-040 do 050, ADR-054, suženi kriterij karte i vijesti |
+| [#255](https://github.com/leonkreso784-bit/riihack/pull/255) | 02:39 | Leon | „Moje igre" broji studente bez botova (BUG-035, dio), knjižnica bez duplikata (BUG-039) |
+| [#247](https://github.com/leonkreso784-bit/riihack/pull/247) | 02:38 | Leon | granica AI prijedloga: 30 po igri i 5 u minuti (ADR-053) |
+| [#249](https://github.com/leonkreso784-bit/riihack/pull/249) | 02:38 | Leon | granica 6 poruka u razgovoru drži i pod istodobnim zahtjevima (BUG-042, ADR-053) |
+| [#250](https://github.com/leonkreso784-bit/riihack/pull/250) | 02:38 | Simon | mentorovo pitanje s tisućicama se više ne reže, rodno neutralno obraćanje |
+| [#256](https://github.com/leonkreso784-bit/riihack/pull/256) | 02:35 | Leon | dokumentacija: ARHITEKTURA.md §1a, §3 i §9a prema stanju main-a |
 | [#254](https://github.com/leonkreso784-bit/riihack/pull/254) | 02:29 | Leon | dokumentacija: PRD i BACKLOG prema demou |
 | [#251](https://github.com/leonkreso784-bit/riihack/pull/251) | 02:23 | Leon | sigurnosna zaglavlja na svim rutama: `X-Frame-Options`, `nosniff`, `Referrer-Policy` (ADR-053) |
 | [#248](https://github.com/leonkreso784-bit/riihack/pull/248) | 02:18 | Leon | dokumentacija: ADR-053 sigurnost |

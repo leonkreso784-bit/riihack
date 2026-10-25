@@ -17,8 +17,9 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 **Odluka.** Leon: „zamolio sam te da ti tražiš drugu sesiju spajanja jer ja idem sad spavat i sve treba biti posloženo
 i dobro testirano da žiri može sutra igrati". Graditelj u Leonovo ime traži spajanja do jutra, uključujući sadržaj
 situacija (ispravak „spremljena", BUG-047).
-**Posljedice.** Integrator po svojim pravilima prihvaća samo Leonovo izravno „spoji" u svojoj sesiji, pa to odlučuje
-integrator (🟨 potvrditi prihvaća li integrator prenesenu ovlast).
+**Posljedice.** Integrator po svojim pravilima prihvaća samo Leonovo izravno „spoji" u svojoj sesiji. Leon je ~02:42
+integratoru izravno u njegovoj sesiji napisao „izravno ti dajem odobrenje za svo spajanje" i „Idem spavat sada i sve
+treba automatizirano radit"; integrator spaja zelene PR-ove do jutra.
 
 <a id="adr-053"></a>
 ## ADR-053 · Sigurnost prije predaje: granice AI-ja i tri zaglavlja, bez CSP-a
@@ -37,7 +38,8 @@ modela bez granice. Rino je predložio sigurnosna zaglavlja (CSP, zabrana iframe
 
 **Posljedice.** Trošak AI-ja po igri je ograničen, a demo radi kao i prije. Granica AI prijedloga nije atomična (mala
 utrka na granici, zapisano u #247). Radi graditelj. Zaglavlja spojena [#251](https://github.com/leonkreso784-bit/riihack/pull/251) (02:23), integrator ih je na
-produkciji potvrdio curlom; #247 i #249 provjerava integrator.
+produkciji potvrdio curlom. Granice AI prijedloga [#247](https://github.com/leonkreso784-bit/riihack/pull/247) i poruka
+[#249](https://github.com/leonkreso784-bit/riihack/pull/249) spojene su 02:38.
 
 <a id="adr-052"></a>
 ## ADR-052 · Napisan odgovor s ocjenom 1 ne oduzima
