@@ -8,14 +8,20 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ## Ned 25.10. ~04:16 CET · projektor potvrđen
 
+- **Spojeno:** [#270](https://github.com/leonkreso784-bit/riihack/pull/270) 04:11 CET (dokumentacija: BUG-063) i [#271](https://github.com/leonkreso784-bit/riihack/pull/271) 04:19 CET (graditelj:
+  izvještaj se osvježava svakih 15 s dok je mjesec privremen, napomena samo tada; Tokovi kasnog studenta „U tom
+  mjesecu još nisi bio u igri"; BUG-057, 058 i 059; dira Rinov `izvjestaj/[krug]/page.tsx` i Simonov `tok/page.tsx`
+  po [ADR-054](DECISIONS.md#adr-054); 564 testa, build).
 - **Tester ✅ [#264](https://github.com/leonkreso784-bit/riihack/pull/264) (produkcija):** ploča profesora 1600 px na 1920, ljestvica 20/18/14 px; podij mjeseca
   bez crvenog na 1280/1920/2560; kraj sezone: podij uz ljestvicu, 12/12 redova na 1080 i 8 na 720, bez crvenog;
   studentski ekrani nepromijenjeni. BUG-051 do 054 i BUG-060 potvrđeni.
 - **Sudac usput:** 5/5 i 5/5 za 2,5–2,7 s.
 - **Novi bugovi (nizak, Rino):** [BUG-064](BUGS.md#bug-064--zaglavlje-ploče-profesora-ostaje-1152-px-a-ploča-1600-px) (zaglavlje 1152 px, ploča 1600 px) i
   [BUG-065](BUGS.md#bug-065--na-2560-px-ploča-ostaje-1600-px-a-fontovi-nemaju-2xl-stupanj) (na 2560 px sve sitno, nema `2xl`).
-- **Ostaje:** [BUG-059](BUGS.md#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene)
-  (s BUG-057 i 058 u [#271](https://github.com/leonkreso784-bit/riihack/pull/271), čeka spajanje), BUG-064 i 065 nisko.
+- **Simon:** [#267](https://github.com/leonkreso784-bit/riihack/pull/267) i [#268](https://github.com/leonkreso784-bit/riihack/pull/268) su nacrti; integrator ih ne spaja do Simonove potvrde.
+- **Slijedi:** tester provjerava [#271](https://github.com/leonkreso784-bit/riihack/pull/271) na produkciji
+  ([BUG-059](BUGS.md#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene), 058, 057);
+  BUG-064 i 065 nisko (Rino).
 
 ## Ned 25.10. ~04:10 CET · botovi ne planiraju
 

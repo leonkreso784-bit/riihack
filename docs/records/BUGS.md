@@ -27,7 +27,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-063 · Botovi ostaju na cijeni 1. mjeseca jer im se prenosi plan
-- **Status:** 🟡 u radu (graditelj, PR stiže) · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)
+- **Status:** 🟡 PR [#272](https://github.com/leonkreso784-bit/riihack/pull/272) (graditelj: plan se ne prenosi botovima) čeka spajanje · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)
 - **Opis:** našao Simon (u nacrtu PR-a [#268](https://github.com/leonkreso784-bit/riihack/pull/268)), javio graditelj ~04:10 CET: od [#241](https://github.com/leonkreso784-bit/riihack/pull/241) se plan
   prenosi i botovima, pa bot više ne planira i ostaje na cijeni 1. mjeseca; poticaj botova iz
   [ADR-044](DECISIONS.md#adr-044) ne radi.
@@ -59,32 +59,6 @@ opis · uzrok · rješenje · **lekcija**.
   (`src/app/igra/situacija/[id]/tok/page.tsx:41`).
 - **Rješenje:** —
 - **Lekcija:** —
-
-### BUG-059 · Izvještaj 3. mjeseca nakon „Završi sezonu" i dalje piše „Brojke su privremene"
-- **Status:** 🟡 PR [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (graditelj) čeka spajanje · **Težina:** srednji
-- **Opis:** tester (~02:50 CET, put žirija na probnoj igri `HYSJV5`): nakon „Završi sezonu" izvještaj 3. mjeseca i
-  dalje piše „Brojke su privremene; konačne su nakon što profesor zatvori mjesec." Napomenu je uveo [#262](https://github.com/leonkreso784-bit/riihack/pull/262)
-  ([BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke)). Tester ponovno potvrdio (~04:16 CET).
-- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:49` gleda samo `world.round === round`, ne i kraj sezone.
-- **Rješenje:** —
-- **Lekcija:** —
-
-### BUG-058 · Tokovi mjeseca za kasnog studenta: „Obračun… još nije gotov" za mjesec prije ulaska
-- **Status:** 🟡 PR [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (graditelj) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (~02:45 CET, produkcija): `/igra/izvjestaj/1/tok` za kasnog studenta piše „Obračun za ovaj mjesec
-  još nije gotov" za mjesec prije njegova ulaska (`src/app/igra/izvjestaj/[krug]/tok/page.tsx:55–57`); dolazi se samo
-  ručnom adresom. Izvještaj istog mjeseca to već kaže točno ([BUG-049](#bug-049--kasni-student-vidi-krug-nije-zatvoren-za-mjesec-prije-svog-ulaska), [#262](https://github.com/leonkreso784-bit/riihack/pull/262)).
-- **Rješenje:** —
-- **Lekcija:** kad se doda novi slučaj (kasni ulaz), provjeri sve stranice koje čitaju isti podatak, i one do kojih
-  se dolazi samo adresom.
-
-### BUG-057 · Izvještaj otvoren dok profesor zatvara mjesec ostaje na privremenim brojkama
-- **Status:** 🟡 PR [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (graditelj) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (~02:45 CET, produkcija): izvještaj mjeseca otvoren dok profesor zatvara mjesec zadrži privremene
-  brojke do ručnog osvježavanja. Nastavak [BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke).
-- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:24–25`: izvještaj i stanje igre osvježavaju se svakih 10 min.
-- **Rješenje:** —
-- **Lekcija:** ekran koji prikazuje privremeno stanje treba se sam osvježiti kad stanje postane konačno.
 
 ### BUG-056 · Ponovni uvoz playbooka javlja „Uvezeno 5 situacija" iako nije dodana nijedna
 - **Status:** 🔴 otvoren (Rino ili graditelj ako bude vremena) · **Težina:** nizak
@@ -179,6 +153,32 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-059 · Izvještaj 3. mjeseca nakon „Završi sezonu" i dalje piše „Brojke su privremene"
+- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); 🟨 tester provjerava na produkciji · **Težina:** srednji
+- **Opis:** tester (~02:50 CET, put žirija na probnoj igri `HYSJV5`): nakon „Završi sezonu" izvještaj 3. mjeseca i
+  dalje piše „Brojke su privremene; konačne su nakon što profesor zatvori mjesec." Napomenu je uveo [#262](https://github.com/leonkreso784-bit/riihack/pull/262)
+  ([BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke)). Tester ponovno potvrdio (~04:16 CET).
+- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:49` gleda samo `world.round === round`, ne i kraj sezone.
+- **Rješenje:** [#271](https://github.com/leonkreso784-bit/riihack/pull/271): napomena „Brojke su privremene…" prikazuje se samo dok je mjesec privremen.
+- **Lekcija:** —
+
+### BUG-058 · Tokovi mjeseca za kasnog studenta: „Obračun… još nije gotov" za mjesec prije ulaska
+- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (~02:45 CET, produkcija): `/igra/izvjestaj/1/tok` za kasnog studenta piše „Obračun za ovaj mjesec
+  još nije gotov" za mjesec prije njegova ulaska (`src/app/igra/izvjestaj/[krug]/tok/page.tsx:55–57`); dolazi se samo
+  ručnom adresom. Izvještaj istog mjeseca to već kaže točno ([BUG-049](#bug-049--kasni-student-vidi-krug-nije-zatvoren-za-mjesec-prije-svog-ulaska), [#262](https://github.com/leonkreso784-bit/riihack/pull/262)).
+- **Rješenje:** [#271](https://github.com/leonkreso784-bit/riihack/pull/271): Tokovi za mjesec prije ulaska kasnog studenta pišu „U tom mjesecu još nisi bio u igri".
+- **Lekcija:** kad se doda novi slučaj (kasni ulaz), provjeri sve stranice koje čitaju isti podatak, i one do kojih
+  se dolazi samo adresom.
+
+### BUG-057 · Izvještaj otvoren dok profesor zatvara mjesec ostaje na privremenim brojkama
+- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (~02:45 CET, produkcija): izvještaj mjeseca otvoren dok profesor zatvara mjesec zadrži privremene
+  brojke do ručnog osvježavanja. Nastavak [BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke).
+- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:24–25`: izvještaj i stanje igre osvježavaju se svakih 10 min.
+- **Rješenje:** [#271](https://github.com/leonkreso784-bit/riihack/pull/271): dok je mjesec privremen, izvještaj se osvježava svakih 15 s; dira Rinov `izvjestaj/[krug]/page.tsx` i Simonov `tok/page.tsx` po [ADR-054](DECISIONS.md#adr-054).
+- **Lekcija:** ekran koji prikazuje privremeno stanje treba se sam osvježiti kad stanje postane konačno.
 
 ### BUG-060 · Podij „Skok mjeseca": 2. i 3. mjesto crveno kad padnu
 - **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); tester potvrdio na projektoru (~04:16 CET) · **Težina:** srednji
