@@ -1,5 +1,5 @@
 // Zajednički upiti. Atomičnost: neon-http nema transakcija, pa jedna SQL naredba po operaciji.
-import { and, asc, count, desc, eq, getTableColumns, inArray, isNull, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, getTableColumns, inArray, isNull, sql, type SQL } from "drizzle-orm";
 import { db } from "./index";
 import { answers, companies, contracts, events, finances, players, plans, rooms, roundReports, situations, worlds } from "./schema";
 import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
@@ -77,6 +77,45 @@ export async function appendTranscript(
       transcript: sql`${situations.transcript} || ${JSON.stringify(turns)}::jsonb`,
     })
     .where(eq(situations.id, situationId));
+}
+
+/** Uvjet za WHERE: student je u transkriptu tog retka poslao manje od `max` poruka (broji se u bazi, ne u ruti). */
+export function studentTurnsBelow(max: number): SQL {
+  return sql`(select count(*) from jsonb_array_elements(${situations.transcript}) as t(turn) where t.turn->>'role' = 'student') < ${max}`;
+}
+
+/** Iz transkripta vraćenog nakon rezervacije: razgovor prije upravo dodane poruke i njezin redni broj. */
+export function afterReservation(transcript: ChatTurn[]): { prior: ChatTurn[]; messageNo: number } {
+  return { prior: transcript.slice(0, -1), messageNo: transcript.filter((t) => t.role === "student").length };
+}
+
+/**
+ * Atomično rezervira mjesto za studentovu poruku: dopisuje je samo ako je situacija otvorena i ima manje od `max`
+ * studentovih poruka (jedan UPDATE, pa ni istodobni zahtjevi ne prođu granicu). Vraća transkript nakon dopisivanja,
+ * ili null kad je razgovor gotov. Odgovor lika se dopisuje poslije, s appendTranscript.
+ */
+export async function reserveStudentTurn(
+  situationId: string,
+  companyId: string,
+  text: string,
+  max: number,
+): Promise<ChatTurn[] | null> {
+  const turn: ChatTurn[] = [{ role: "student", text }];
+  const rows = await db
+    .update(situations)
+    .set({
+      transcript: sql`${situations.transcript} || ${JSON.stringify(turn)}::jsonb`,
+    })
+    .where(
+      and(
+        eq(situations.id, situationId),
+        eq(situations.companyId, companyId),
+        eq(situations.state, "open"),
+        studentTurnsBelow(max),
+      ),
+    )
+    .returning({ transcript: situations.transcript });
+  return rows[0]?.transcript ?? null;
 }
 
 export async function getReport(
