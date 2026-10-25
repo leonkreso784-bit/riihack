@@ -34,7 +34,7 @@ Iz Ardena (Ideja godine 3., Demo Day 2. i 7.000 €, Laqothon finale) i Simonovo
 | 0:27 do 0:55 | **Simon** | 3 · Sims + ime, 4 · Tema | Simpolis = Sims za pravi posao; simulacija + polis; četiri elementa teme, Rino ih pokazuje; tim u jednom dahu |
 | 0:55 do 1:28 | **Leon** | 5 · Tehnika (+ Leonovi klipovi) | AI glumi, sudac označi, pravila računaju; 4 od 5 vs 5; 200+ PR-ova, 550+ testova, 37 API ruta; preglednik, mobitel i laptop |
 | 1:28 do 3:12 | **Rino** | aplikacija | demo, svaki korak počinje imenom elementa teme |
-| 3:12 do 3:50 | **Simon** | 6 · Tko plaća, 7 · Tražimo | licenca po kolegiju, partner tvrtka, besplatno predvorje; 1.000 € naspram 100 $; pilot; povratak na Anu |
+| 3:12 do 3:50 | **Simon** | 6 · Tko plaća, 7 · Tražimo | licenca za cijeli fakultet, partner tvrtka, besplatno predvorje; od 10 € po studentu godišnje naspram oko 1 $ troška; pilot; povratak na Anu |
 | 3:50 do 4:46 | promo | 8 · video sa zvukom | nitko ne govori; zadnji kadar ostaje |
 | 4:46 do 5:00 | svi | 8 (stoji) | čekaju pitanje |
 
@@ -72,7 +72,7 @@ Iz Ardena (Ideja godine 3., Demo Day 2. i 7.000 €, Laqothon finale) i Simonovo
 | rezerva | 3:04 do 3:10 | **U 3:10 Rino je u decku na slajdu 6, bez obzira na korak.** |
 
 **Simon, slajd 6 (3:12):**
-„Tko plaća? Fakultet, licencu po kolegiju za semestar ili godinu, a partner je hotelska kuća: donosi stvarne situacije i put do prakse. Svi ostali igraju besplatno, u zasebnom predvorju. Ciljamo oko tisuću eura po kolegiju za semestar, a naš trošak je oko sto dolara; pilot je besplatan." *(48 riječi, oko 21 s)*
+„Tko plaća? Fakultet, licencu za sve kolegije, po semestru ili godini, a partner je hotelska kuća: donosi stvarne situacije i put do prakse. Svi ostali igraju besplatno, u zasebnom predvorju. Ciljamo od deset eura po studentu godišnje: za fakultet veličine FMTU-a to je oko dvanaest i pol tisuća eura, a naš trošak je oko dolar po studentu. Pilot je besplatan." *(57 riječi, oko 25 s; promo tada završava oko 4:50)*
 
 **Simon, slajd 7:**
 „Tražimo jedan kolegij i jednu hotelsku kuću za pilot, a prvi razgovor može biti danas. Cesim su brojke. ChatGPT je razgovor. Simpolis je oboje. Da Ana ljutog gosta prvi put sretne u učionici, a ne na praksi." *(39 riječi, oko 17 s)*
@@ -111,7 +111,7 @@ Sve iz v7 vrijedi. Novo: ništa preko promoa; ne najavljivati video („sad ćet
 ## Poslovni model i financije (za slajd 6 i za pitanja)
 
 **Model (Simonova odluka 09:00, dorađeno 09:55):**
-1. **Plaća fakultet:** licenca po kolegiju, za semestar ili godinu. Profesor je voditelj igre, fakultet je voditelj obrade podataka.
+1. **Plaća fakultet:** licenca za cijeli fakultet (svi kolegiji i profesori), po semestru ili godini, cijena po studentu. Profesor je voditelj igre, fakultet je voditelj obrade podataka.
 2. **Partner je tvrtka (hotelska kuća):** donosi stvarne situacije za svoj scenarij, mentora i put do prakse; može sufinancirati licencu kolegija (oblik kao AWS Academy: tvrtka podupire obrazovanje, ne kao dokaz da će platiti).
 3. **Svi ostali igraju besplatno, u zasebnom predvorju:** studenti kolegija ostaju u kontroliranom okruženju. Predvorje je kanal prema novim korisnicima; trošak AI-ja ograničen je granicama po igri koje već postoje (#247, #249).
 4. **Pilot je besplatan:** jedan kolegij i jedna hotelska kuća.
@@ -123,15 +123,20 @@ Sve iz v7 vrijedi. Novo: ništa preko promoa; ne najavljivati video („sad ćet
 | AI po studentu za sezonu (4 mjeseca) | ≈ 0,07 $ (s mentorom na Haikuu ≈ 0,045 $) | izmjereno za gosta, ostalo procjena |
 | Razred od 30 | 2 do 4 $ AI-ja | procjena |
 | Jedan fakultet, jedan semestar (3 razreda po 30) | ≈ 100 $ ukupno (Vercel 80 $ fiksno, AI 13 $, Neon 5 $) | procjena, `troskovi-burn-rate.md` |
-| **Ciljana cijena licence** | **≈ 1.000 € po kolegiju za semestar** (oko 11 € po studentu za 90 studenata) | **prijedlog, nitko ga nije potvrdio** |
+| **Ciljana cijena licence** | **od 10 € po studentu godišnje, svi kolegiji**; fakultet veličine FMTU-a (1.250 studenata) ≈ 12.500 € godišnje | **prijedlog, nitko ga nije potvrdio** |
+| Naš trošak za takav fakultet | ≈ 1 $ po studentu godišnje (AI 2 sezone s rezervom ≈ 350 $, Vercel ≈ 720 $, Neon ≈ 240 $) | procjena |
 | Usporedba | Capsim, Marketplace, Harvard i slični 11 do 139 $ po studentu; AdPrax od 39 $ | `analiza-konkurencije.md` |
 | Bruto marža na infrastrukturu | ≈ 90 % | izračun iz gornjih redaka |
+| Slajdovi | 6 (Tko plaća), 10 (Put do tržišta i vizija), 11 (SRCE, GDPR, AI Act) | 10 i 11 su dodatak; u PDF-u stoje iza slajda 7 |
 | Rad (scenarij i podrška) | ≈ 30 sati po semestru | pretpostavka |
 | Prva godina, realno | pilot besplatan; zatim nekoliko kolegija na jednom fakultetu, nekoliko tisuća eura godišnje | pretpostavka; ne obećavamo milijune |
 
 **Što govorimo na pitanjima:**
-- *Koliko košta?* „Ciljamo oko tisuću eura po kolegiju za semestar, što je oko 11 eura po studentu; slični simulatori naplaćuju 11 do 139 dolara po studentu. Pilot je besplatan, a cijenu još nismo provjerili ni s jednim fakultetom."
+- *Koliko košta?* „Od deset eura po studentu godišnje, za sve kolegije; za FMTU oko dvanaest i pol tisuća eura. Slični simulatori naplaćuju 11 do 139 dolara po studentu za jedan kolegij. Pilot je besplatan, a cijenu još nismo provjerili ni s jednim fakultetom."
 - *Zašto bi tvrtka sudjelovala?* „Hotelima trebaju ljudi: dobiva studente koji su njihove situacije već vježbali i put do prakse. To je naša pretpostavka, tvrtke još nismo pitali."
 - *Zarađuje li besplatno predvorje?* „Ne, ono je kanal. Trošak je mali i ograničen po igri."
 - *Koliko je tržište?* „Malo, i to kažemo: FMTU ima oko 1.250 studenata. Prvi cilj je pilot, pa drugi kolegiji i fakulteti s istim motorom."
 - **Ne govoriti:** TAM u milijardama; da je ijedan fakultet ili tvrtka pristao; da je cijena potvrđena.
+- *Kako ćete doći do studenata?* „Jedan kolegij i jedna hotelska kuća za besplatni pilot u ljetnom semestru 2027., pa licenca za fakultet, pa javno predvorje i drugi fakulteti." (slajd 10)
+- *Kako to uđe u sustav fakulteta?* „Sljedeći korak je otvaranje iz Merlina preko LTI-ja i ulaz s AAI@EduHr, oba su sustavi SRCE-a. Suradnju sa SRCE-om tražimo, nije dogovorena." (slajd 11)
+- *GDPR?* „Fakultet je voditelj obrade, mi izvršitelj uz ugovor; baza je u Frankfurtu; u pilotu samo nadimci. Tekst ide Anthropicu u SAD uz standardne klauzule, a za fakultet postoji obrada u EU." (slajd 11)

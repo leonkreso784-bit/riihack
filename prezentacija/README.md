@@ -2,7 +2,7 @@
 
 | Datoteka | Što je |
 | --- | --- |
-| [Simpolis-pitch.pdf](Simpolis-pitch.pdf) | **Prezentacija (završna, v8), 18 slajdova (PDF)** |
+| [Simpolis-pitch.pdf](Simpolis-pitch.pdf) | **Prezentacija (završna, v8), 20 slajdova (PDF)** |
 | [Simpolis-pitch-v6.pdf](Simpolis-pitch-v6.pdf) | Raniji nacrt (v6) |
 | [deck/index.html](deck/index.html) | Ista prezentacija u pregledniku, s klipovima. Strelice mijenjaju slajd; `?kod=KOD#2` upiše kod igre i QR za publiku. |
 | [PITCH-SKRIPTA-v8.md](PITCH-SKRIPTA-v8.md) | **Pitch (završni): Simon, Leon, Rino demo, Simon, promo video na kraju** |
