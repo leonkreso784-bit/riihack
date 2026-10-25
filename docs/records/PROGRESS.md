@@ -6,6 +6,16 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~02:15 CET · tester potvrdio ispravke
+
+- **Tester (produkcija, API, QA igra, 02:05–02:13 CET):** ✅ BUG-029 (plan se prenosi), BUG-030 i BUG-041 (napisan
+  promašaj 0, prazan, zalijepljen i propušten −2×), BUG-034 (tuđi račun skriven), BUG-035 (broj studenata bez
+  botova), BUG-039 (duplikat iz knjižnice), BUG-042 (istodobne poruke 200/409/409, najviše 6);
+  [#247](https://github.com/leonkreso784-bit/riihack/pull/247) (6. prijedlog u minuti → 429), [#251](https://github.com/leonkreso784-bit/riihack/pull/251) (zaglavlja).
+- **Regresija cijele sezone ✅:** dobar student +90,9, loš −55,9; zatvaranje mjeseca 2,8–4,2 s, mentor 2–5 s.
+- **Ostaje (nisko):** dvostruki uvoz playbooka i dalje stvara duplikate (BUG-046, graditelj radi); dvostruko „(bot)"
+  (BUG-035, Rino).
+
 ## Ned 25.10. ~02:05 CET · plan, račun i ocjena spojeni; sat vraćen
 
 - **Promjena sata:** u 03:00 CEST sat je vraćen na 02:00 CET; od ovog unosa vremena su CET. Rokovi obilaska 3
