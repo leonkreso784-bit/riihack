@@ -231,4 +231,20 @@ describe("departments board (staze)", () => {
     expect(m.nextAt).toBe(INVEST_EFFECT_DIVISOR);
     expect(m.details.ulaganje.outputs.at(-1)).toEqual({ label: "Trošak u mjesecu", value: expect.stringContaining("400"), strong: true });
   });
+  it("napisan svoj tekst s kvalitetom 1 ne spušta pokazatelj, klik s 1 spušta (ADR-046)", () => {
+    const written = { ...sit("w", 2, 1, { reviews: 3 }), answer: { mode: "own", text: "Ispričat ću se.", quality: 1, copied: false } } as SituationView;
+    const click = sit("k", 2, 1, { reviews: 3 });
+    const d = situationDeltas([written, click], 2, "reviews");
+    expect(d.map((r) => r.delta)).toEqual([0, -6]);
+    const after = applyRound(METRICS, [
+      { quality: 1, effects: { reviews: 3 }, written: true },
+      { quality: 1, effects: { reviews: 3 } },
+    ]);
+    expect(d.reduce((a, r) => a + r.delta, 0)).toBe(after.reviews - METRICS.reviews);
+    const f = flowOf(base({ situations: [written, click] }), "housekeeping");
+    expect(step(f, "situacije").calc).toBe("0 × 3 = 0  ·  −2 × 3 = −6");
+    const hk = buildDepartmentsBoard(base({ situations: [written] })).lanes.flatMap((l) => l.situations);
+    expect(hk.map((s) => [s.delta, s.tone])).toEqual([[0, "neutral"]]);
+    expect(hk[0].detail.calc).toBe("0 × 3 = 0");
+  });
 });

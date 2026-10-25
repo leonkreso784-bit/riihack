@@ -9,7 +9,7 @@ import { countSituations, getWorld, listRooms, listSituationsWithAnswers, listWo
 import { SITUATIONS } from "@/content";
 import { drawSituations } from "@/lib/engine/draw";
 import { pickRoom } from "@/lib/engine/rooms";
-import { applyRound } from "@/lib/engine/round";
+import { applyRound, isWrittenAnswer } from "@/lib/engine/round";
 import { HttpError } from "@/lib/http";
 import { MISSED_QUALITY, SITUATIONS_PER_ROUND } from "@/lib/rules";
 import type { MetricKey, Metrics, Quality, RoomType, RoundReportView, SituationTemplate } from "@/lib/types";
@@ -21,6 +21,7 @@ import {
   planImmediateRows,
   type SituationInsert,
 } from "./situations";
+import type { SituationWithAnswer } from "./views";
 
 type PlayerCtx = Awaited<ReturnType<typeof requirePlayer>>;
 
@@ -191,6 +192,18 @@ export async function openRound(world: WorldRow, round: number, deadlineMinutes?
 }
 
 /**
+ * Rezultati kruga za applyRound: odgovorene s kvalitetom odgovora, ostale MISSED_QUALITY; učinci iz predloška igre.
+ * `written` = napisan svoj tekst (ADR-046): takav odgovor s kvalitetom 1 ne spušta pokazatelje.
+ */
+export function roundResults(rows: SituationWithAnswer[], templates: SituationTemplate[]) {
+  return rows.map(({ situation, answer }) => ({
+    quality: (answer?.quality ?? MISSED_QUALITY) as Quality,
+    effects: templates.find((t) => t.id === situation.templateId)?.effects ?? {},
+    written: isWrittenAnswer(answer),
+  }));
+}
+
+/**
  * Zatvori krug `round` jednoj tvrtki: neodgovorene situacije → expired i odgovor "none" s MISSED_QUALITY, pokazatelji
  * kroz applyRound, izvještaj kruga (bez pitanja mentora), događaj round.closed. Vraća null ako je krug već zatvoren
  * (drugi klik, druga kartica, rok i profesor u istoj sekundi). `pool` = predlošci igre (loadTemplates); bez njega se
@@ -222,10 +235,7 @@ export async function closeCompanyRound(
     listSituationsWithAnswers(companyId, round),
     pool ?? loadTemplates(company.worldId),
   ]);
-  const results = rows.map(({ situation, answer }) => ({
-    quality: (answer?.quality ?? MISSED_QUALITY) as Quality,
-    effects: templates.find((t) => t.id === situation.templateId)?.effects ?? {},
-  }));
+  const results = roundResults(rows, templates);
   const metricsBefore = company.metrics;
   const metricsAfter = applyRound(metricsBefore, results);
   const delta = Object.fromEntries(KEYS.map((k) => [k, metricsAfter[k] - metricsBefore[k]])) as Metrics;

@@ -9,21 +9,29 @@ function clamp(n: number, min: number, max: number): number {
 /**
  * Množitelj učinka po kvaliteti (BUG-026, Leon sub ~22:55): odgovoriti se uvijek isplati, preskočiti boli.
  * 1 (loše ili propušteno) → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3.
+ * Napisan vlastiti odgovor (`written`) s kvalitetom 1 → 0 (Leon ned ~01:30, ADR-046): student koji napiše bilo što
+ * nikad ne završi ispod onoga koji nije odgovorio. Propušten i prazan odgovor ostaju −2, klik ide po tablici.
  */
-export function qualityFactor(quality: number): number {
-  return quality <= 1 ? -2 : quality - 2;
+export function qualityFactor(quality: number, written = false): number {
+  if (quality <= 1) return written ? 0 : -2;
+  return quality - 2;
 }
 
-// Za svaki rezultat qualityFactor(kvaliteta) × učinak, cijeli brojevi, rezanje na 0–100.
+/** Napisan odgovor: svoj tekst (mode "own") koji nije prazan. Klik, propušten i prazan odgovor nisu napisani. */
+export function isWrittenAnswer(answer: { mode: string; text?: string | null } | null | undefined): boolean {
+  return answer?.mode === "own" && (answer.text ?? "").trim() !== "";
+}
+
+// Za svaki rezultat qualityFactor(kvaliteta, napisan) × učinak, cijeli brojevi, rezanje na 0–100.
 export function applyRound(
   metrics: Metrics,
-  results: { quality: Quality; effects: Partial<Record<MetricKey, number>> }[],
+  results: { quality: Quality; effects: Partial<Record<MetricKey, number>>; written?: boolean }[],
 ): Metrics {
   const out: Metrics = { ...metrics };
   for (const r of results) {
     for (const k of KEYS) {
       const e = r.effects[k];
-      if (e) out[k] += Math.round(qualityFactor(r.quality) * e);
+      if (e) out[k] += Math.round(qualityFactor(r.quality, r.written) * e);
     }
   }
   for (const k of KEYS) out[k] = clamp(Math.round(out[k]), 0, 100);

@@ -1,6 +1,6 @@
 // Tokovi, skica 2: kako je odgovor prošao kroz hotel. Čista funkcija: ništa ne računa iznova, samo prikazuje pravila
 // motora (engine/quality.ts, engine/round.ts) nad podacima koje student već ima. Brojke ne izmišljamo: što nedostaje, piše da nedostaje.
-import { qualityFactor } from "@/lib/engine/round";
+import { isWrittenAnswer, qualityFactor } from "@/lib/engine/round";
 import { CLICK_QUALITY_CAP, DEPARTMENT_METRIC, FALLBACK_QUALITY, METRIC_LABELS, MISSED_QUALITY, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { AnswerView, MetricKey, SituationView, StaffDepartment } from "@/lib/types";
 
@@ -46,9 +46,9 @@ export function signed(n: number): string {
   return n > 0 ? `+${n}` : n < 0 ? `${MINUS}${-n}` : "0";
 }
 
-// Isto kao applyRound: Math.round(qualityFactor(kvaliteta) * učinak). Math.round(-0) pretvaramo u 0.
-export function metricDelta(quality: number, effect: number): number {
-  return Math.round(qualityFactor(quality) * effect) + 0;
+// Isto kao applyRound: Math.round(qualityFactor(kvaliteta, napisan) * učinak). Math.round(-0) pretvaramo u 0.
+export function metricDelta(quality: number, effect: number, written = false): number {
+  return Math.round(qualityFactor(quality, written) * effect) + 0;
 }
 
 export function criterionLabel(id: string, index: number): string {
@@ -71,6 +71,7 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
   const { answer, rubric, effects } = input;
   const q = answer.quality;
   const mode = answer.mode;
+  const written = isWrittenAnswer(answer); // napisan svoj tekst: kvaliteta 1 vrijedi 0 (ADR-046)
   const met = [...new Set(answer.verdict?.criteriaMet ?? [])];
   const hasRubric = !!rubric && rubric.length > 0;
   const ef = activeEffects(effects);
@@ -172,20 +173,20 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
       title: "Učinak",
       small: "Vidi izvještaj mjeseca",
       inputs: [{ label: "Kvaliteta", value: `${q} / 5` }],
-      rule: ["Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3."],
+      rule: ["Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3. Napisan svoj tekst s kvalitetom 1 vrijedi 0."],
       outputs: [{ label: "Pokazatelji", value: "Nisu prikazani za ovu situaciju" }],
       note: NO_EFFECTS_TEXT,
     });
     return steps;
   }
-  const rows = ef.map(([k, e]) => ({ k, e, d: metricDelta(q, e) }));
+  const rows = ef.map(([k, e]) => ({ k, e, d: metricDelta(q, e, written) }));
   steps.push({
     id: "ucinak",
     title: "Učinak",
     small: rows.map((r) => `${METRIC_LABELS[r.k]} ${signed(r.d)}`).join(", "),
     inputs: [{ label: "Kvaliteta", value: `${q} / 5` }, ...rows.map((r) => ({ label: `Učinak: ${METRIC_LABELS[r.k]}`, value: String(r.e) }))],
-    rule: ["Promjena pokazatelja = množitelj kvalitete × učinak situacije (1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3).", "Pokazatelj ostaje između 0 i 100."],
-    calc: rows.map((r) => `${signed(qualityFactor(q))} × ${r.e} = ${signed(r.d)}`).join("  ·  "),
+    rule: ["Promjena pokazatelja = množitelj kvalitete × učinak situacije (1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3). Napisan svoj tekst s kvalitetom 1 vrijedi 0.", "Pokazatelj ostaje između 0 i 100."],
+    calc: rows.map((r) => `${signed(qualityFactor(q, written))} × ${r.e} = ${signed(r.d)}`).join("  ·  "),
     outputs: rows.map((r) => ({ label: METRIC_LABELS[r.k], value: signed(r.d), strong: true })),
     note: CLOSE_NOTE,
   });

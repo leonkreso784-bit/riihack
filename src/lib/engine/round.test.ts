@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { Metrics } from "@/lib/types";
-import { applyRound, progress, qualityFactor, roomStatusAfter } from "./round";
+import { applyRound, isWrittenAnswer, progress, qualityFactor, roomStatusAfter } from "./round";
 
 const all50: Metrics = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
 
 describe("applyRound", () => {
   it("množitelj po kvaliteti: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3 (BUG-026)", () => {
-    expect([1, 2, 3, 4, 5].map(qualityFactor)).toEqual([-2, 0, 1, 2, 3]);
+    expect([1, 2, 3, 4, 5].map((q) => qualityFactor(q))).toEqual([-2, 0, 1, 2, 3]);
   });
   it("računa množitelj × učinak po rezultatu", () => {
     const out = applyRound(all50, [
@@ -25,6 +25,37 @@ describe("applyRound", () => {
     const missed = applyRound(all50, [{ quality: 1, effects: eff }]);
     expect(missed.guests).toBeLessThan(50);
     expect(applyRound(all50, [{ quality: 2, effects: eff }])).toEqual(all50);
+  });
+  it("napisan odgovor s kvalitetom 1 → množitelj 0, propušten ostaje −2 (ADR-046)", () => {
+    expect(qualityFactor(1, true)).toBe(0);
+    expect(qualityFactor(1, false)).toBe(-2);
+    expect(qualityFactor(1)).toBe(-2);
+    expect([2, 3, 4, 5].map((q) => qualityFactor(q, true))).toEqual([0, 1, 2, 3]);
+  });
+  it("applyRound: napisan q=1 ne mijenja pokazatelje, propušten q=1 spušta, napisan 2–5 isto kao prije", () => {
+    const eff = { guests: 3, staff: 4 };
+    expect(applyRound(all50, [{ quality: 1, effects: eff, written: true }])).toEqual(all50);
+    expect(applyRound(all50, [{ quality: 1, effects: eff, written: false }])).toEqual({ ...all50, guests: 44, staff: 42 });
+    expect(applyRound(all50, [{ quality: 1, effects: eff }])).toEqual({ ...all50, guests: 44, staff: 42 });
+    for (const q of [2, 3, 4, 5] as const) {
+      expect(applyRound(all50, [{ quality: q, effects: eff, written: true }])).toEqual(applyRound(all50, [{ quality: q, effects: eff }]));
+    }
+  });
+  it("napisan odgovor nikad ne završi ispod propuštenog", () => {
+    const eff = { guests: 3 };
+    const written = applyRound(all50, Array.from({ length: 8 }, () => ({ quality: 1 as const, effects: eff, written: true })));
+    const missed = applyRound(all50, Array.from({ length: 8 }, () => ({ quality: 1 as const, effects: eff })));
+    expect(written.guests).toBeGreaterThan(missed.guests);
+  });
+  it("isWrittenAnswer: samo svoj tekst koji nije prazan", () => {
+    expect(isWrittenAnswer({ mode: "own", text: "Ispričat ću se gostu." })).toBe(true);
+    expect(isWrittenAnswer({ mode: "own", text: "" })).toBe(false);
+    expect(isWrittenAnswer({ mode: "own", text: "   " })).toBe(false);
+    expect(isWrittenAnswer({ mode: "own", text: null })).toBe(false);
+    expect(isWrittenAnswer({ mode: "own" })).toBe(false);
+    expect(isWrittenAnswer({ mode: "click", text: "prepisana opcija" })).toBe(false);
+    expect(isWrittenAnswer({ mode: "none", text: null })).toBe(false);
+    expect(isWrittenAnswer(undefined)).toBe(false);
   });
   it("reže na 100", () => {
     expect(applyRound({ ...all50, guests: 99 }, [{ quality: 5, effects: { guests: 4 } }]).guests).toBe(100);

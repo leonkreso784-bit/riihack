@@ -2,7 +2,7 @@
 // (engine/departments.ts, engine/round.ts, engine/economy.ts) nad podacima koje student već ima. Sve brojke i pragovi
 // dolaze iz motora i rules.ts, ništa se ne prepisuje, pa promjena pravila odmah promijeni i ovaj prikaz.
 import { departmentViews, investmentEffects, investmentTotal } from "@/lib/engine/departments";
-import { qualityFactor } from "@/lib/engine/round";
+import { isWrittenAnswer, qualityFactor } from "@/lib/engine/round";
 import {
   DEPARTMENT_METRIC,
   FINANCE_EFFECT_CAP,
@@ -61,7 +61,7 @@ export type DepartmentFlow = {
 
 export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava kriterije.";
 export const CLOSE_NOTE = "Primjenjuje se tek kad se mjesec zatvori. Do tada pokazatelj ostaje isti.";
-export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3.";
+export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3. Napisan svoj tekst s kvalitetom 1 vrijedi 0.";
 export const WHATIF_LABEL = "Procjena: mijenjaš samo ulaganje ovog odjela, sve ostalo ostaje kako je u planu.";
 
 const DEPARTMENTS = Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[];
@@ -94,12 +94,13 @@ export function ownInvestEffect(department: StaffDepartment, amount: number): nu
 }
 
 /** Situacije tekućeg mjeseca s odgovorom i učinkom na zadani pokazatelj. */
-export function situationDeltas(situations: SituationView[], round: number, metric: MetricKey): { title: string; quality: number; effect: number; delta: number }[] {
-  const out: { title: string; quality: number; effect: number; delta: number }[] = [];
+export function situationDeltas(situations: SituationView[], round: number, metric: MetricKey): { title: string; quality: number; effect: number; delta: number; written: boolean }[] {
+  const out: { title: string; quality: number; effect: number; delta: number; written: boolean }[] = [];
   for (const s of situations) {
     if (s.round !== round || !s.answer) continue;
     const e = activeEffects(s.effects).find(([k]) => k === metric);
-    if (e) out.push({ title: s.title, quality: s.answer.quality, effect: e[1], delta: metricDelta(s.answer.quality, e[1]) });
+    const written = isWrittenAnswer(s.answer);
+    if (e) out.push({ title: s.title, quality: s.answer.quality, effect: e[1], delta: metricDelta(s.answer.quality, e[1], written), written });
   }
   return out;
 }
@@ -254,7 +255,7 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
         { label: "Na ovom pokazatelju", value: String(sit.length) },
       ],
       rule: [FACTOR_RULE, "Računaju se samo odgovorene situacije koje imaju učinak na ovaj pokazatelj."],
-      calc: sit.length ? sit.map((r) => `${signed(qualityFactor(r.quality))} × ${r.effect} = ${signed(r.delta)}`).join("  ·  ") : undefined,
+      calc: sit.length ? sit.map((r) => `${signed(qualityFactor(r.quality, r.written))} × ${r.effect} = ${signed(r.delta)}`).join("  ·  ") : undefined,
       outputs: sit.length ? [...sit.map((r) => ({ label: r.title, value: `kvaliteta ${r.quality}/5, ${signed(r.delta)}` })), { label: "Zbroj", value: signed(sitSum), strong: true }] : [{ label: "Zbroj", value: "0", strong: true }],
       note: noEffects > 0 ? `Situacije kojima učinak još nije poznat (${noEffects}) ne brojimo.` : undefined,
     });
@@ -385,6 +386,7 @@ const MODE_LABEL = { click: "Odabran ponuđeni odgovor", own: "Svoj tekst", none
 
 function situationStep(s: SituationView, metric: MetricKey, lane: StaffDepartment, effect: number, delta: number): DeptStep {
   const q = s.answer!.quality;
+  const written = isWrittenAnswer(s.answer);
   const all = activeEffects(s.effects);
   const shared = departmentsForMetric(metric).length > 1;
   return {
@@ -399,10 +401,10 @@ function situationStep(s: SituationView, metric: MetricKey, lane: StaffDepartmen
       { label: `Učinak situacije: ${METRIC_LABELS[metric]}`, value: String(effect) },
     ],
     rule: [FACTOR_RULE, "Kvalitetu određuju kriteriji iz rubrike, a ne AI: AI samo označava koje je kriterije odgovor ispunio."],
-    calc: `${signed(qualityFactor(q))} × ${effect} = ${signed(delta)}`,
+    calc: `${signed(qualityFactor(q, written))} × ${effect} = ${signed(delta)}`,
     outputs: [
       { label: METRIC_LABELS[metric], value: signed(delta), strong: true },
-      ...all.filter(([k]) => k !== metric).map(([k, e]) => ({ label: `Usput: ${METRIC_LABELS[k]}`, value: signed(metricDelta(q, e)) })),
+      ...all.filter(([k]) => k !== metric).map(([k, e]) => ({ label: `Usput: ${METRIC_LABELS[k]}`, value: signed(metricDelta(q, e, written)) })),
     ],
     note: shared
       ? `${CLOSE_NOTE} ${METRIC_LABELS[metric]} prate ${departmentsForMetric(metric).map((d) => STAFF_DEPARTMENT_LABELS[d]).join(" i ")}; ova situacija je u stazi ${STAFF_DEPARTMENT_LABELS[lane]} zbog područja „${s.area}“, a broji se samo jednom.`
@@ -426,7 +428,7 @@ export function buildDepartmentsBoard(input: DepartmentsFlowInput): DepartmentsB
     for (const [metric, effect] of activeEffects(s.effects)) {
       const lane = laneForSituation(s, metric);
       if (!lane) continue;
-      const delta = metricDelta(s.answer!.quality, effect);
+      const delta = metricDelta(s.answer!.quality, effect, isWrittenAnswer(s.answer));
       laneSits[lane].push({
         id: `${s.id}-${metric}`,
         title: s.title,

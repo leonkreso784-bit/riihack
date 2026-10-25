@@ -106,4 +106,18 @@ describe("buildAnswerFlow", () => {
     expect(flowInputFromSituation({ ...s, answer: a })).toMatchObject({ rubric: undefined, effects: undefined });
     expect(flowInputFromSituation({ ...s, answer: a, rubric: RUBRIC, effects: EFFECTS } as never)).toMatchObject({ rubric: RUBRIC, effects: EFFECTS });
   });
+  it("napisan svoj tekst s kvalitetom 1 → množitelj 0, prazan i propušten −2, kao applyRound (ADR-046)", () => {
+    const start: Metrics = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
+    const written = step(flow({ answer: own([], { text: "Ispričat ću se gošći." }), rubric: RUBRIC, effects: EFFECTS }), "ucinak");
+    expect(written.outputs.map((o) => o.value)).toEqual(["0", "0", "0"]);
+    expect(written.calc).toContain("0 × 4 = 0");
+    const after = applyRound(start, [{ quality: 1, effects: EFFECTS, written: true }]);
+    expect(after).toEqual(start);
+    const empty = step(flow({ answer: own([], { text: "" }), rubric: RUBRIC, effects: EFFECTS }), "ucinak");
+    expect(empty.calc).toContain("−2 × 4 = −8");
+    const none = step(flow({ answer: { mode: "none", quality: 1, copied: false }, effects: EFFECTS }), "ucinak");
+    expect(none.calc).toContain("−2 × 4 = −8");
+    expect(metricDelta(1, 4, true)).toBe(0);
+    expect(metricDelta(1, 4)).toBe(-8);
+  });
 });
