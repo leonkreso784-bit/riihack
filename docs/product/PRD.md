@@ -96,10 +96,11 @@ ono što demo obećava) · 🟨 potvrditi.
 - ✅ Profesor može zatražiti od AI-ja prijedlog situacije iz stanja hotela, pregledati ga i spremiti; bez njegova spremanja nijedan student ga ne dobije.
   Izvor: #111, #118, #129 ([ADR-024](../records/DECISIONS.md#adr-024)).
 - ✅ Mentor iz brojki jezgre objašnjava što se dogodilo u krugu i kako svijet radi. Izvor: #111, #231, #240.
-- 🔶 Podij kruga i ljestvica čitljivi su na projektoru. Napravljeno (#196, #211); 🟨 provjera na projektoru
-  (1280×720) nije javljena ([PROGRESS.md](../records/PROGRESS.md), ned ~00:50).
-- 🔶 Svaki ekran radi na 375 px, 768 px i 1440 px širine. Tester: 375 i 768 px bez vodoravnog scrolla (PROGRESS.md,
-  ned ~01:08); 🟨 1440 px nije javljeno.
+- 🔶 Podij kruga i ljestvica čitljivi su na projektoru. Napravljeno (#196, #211); provjereno 1920/2560
+  (tester ~02:54): radi bez scrolla, ali crvene strelice i visina podija sezone
+  ([BUG-051 do 054](../records/BUGS.md#bug-051--podij-mjeseca-crvena--08-na-3-mjestu)).
+- ✅ Svaki ekran radi na 375 px, 768 px i 1440 px širine. Tester: 375 i 768 px bez vodoravnog scrolla (PROGRESS.md,
+  ned ~01:08), 1440 px ~02:54.
 
 ### Val 3 · hotel kao tvrtka ([plan vala 3](../superpowers/plans/2026-10-24-simpolis-val-3.md)) i dodaci
 
