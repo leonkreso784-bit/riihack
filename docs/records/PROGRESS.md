@@ -6,6 +6,14 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~10:30 CET · incident prije pitcha
+
+- **Incident (~10:20–10:29 CET):** produkcija za automatske zahtjeve s našeg IP-a vraća Vercel challenge 403
+  ([BUG-079](BUGS.md#bug-079--vercel-challenge-403-za-automatske-zahtjeve-s-našeg-ip-a-prije-pitcha)); uzrok integratorov nadzornik (ping svakih 45 s) i agenti. Razrješenje 10:29:
+  preglednik prolazi, žiri nije pogođen; nadzornik ugašen, na Vercelu ništa nije mijenjano, do kraja pitcha nema
+  automatskih zahtjeva prema produkciji.
+- **Predaja u #prezentacije:** 🟨 čeka potvrdu (Leon).
+
 ## Ned 25.10. ~10:00 CET · produkcija zamrznuta, predaja
 
 - **Spojeno:** [#288](https://github.com/leonkreso784-bit/riihack/pull/288) 09:45 CET (Rino: Financije bez klizača, 2 retka CSS) i
