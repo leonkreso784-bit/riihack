@@ -5,6 +5,7 @@ prekretnica: [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md#prekretn
 
 | Kad | Prekretnica | Ref |
 | --- | --- | --- |
+| ned 25.10. ~08:00 CET | **Obilazak žirija 3 prošao:** žiri sam igra produkciju; prošlo odlično (Leon) | #262, #264, #267, #272 |
 | ned 25.10. ~02:30 CET | **Demo ponovno spreman za obilazak 3:** noćni ispravci spojeni i potvrđeni na produkciji (tester 02:13 CET), `KVRNDM` ponovno posijan, smoke na produkciji 20/20 | #241, #252, #253, #262 |
 | ned 25.10. 02:59 CEST | **Ispravci s testa produkcije spojeni:** obračun grada u izvještaju i podiju, plan se prenosi, skriven tuđi račun, ocjena 1 za napisan odgovor, granice AI-ja i sigurnosna zaglavlja; 561 test, smoke 1–18 i 20 | #240, #241, #247, #249, #251, #252, #253 |
 | sub 24.10. ~23:30 | **Demo spreman za obilazak 3:** val 3, balans cijene i pokazatelja, botovi, kasni ulaz; baza očišćena, demo `KVRNDM` posijan, smoke na produkciji 20/20; bugovi s testa produkcije (BUG-014 do 027) riješeni | #213, #214, #205, #221 |

@@ -10,6 +10,29 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-069 · Istekla ponuda u Pošti ostaje „nepročitana" bez oznake isteka
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): ponuda kojoj je istekao rok ostaje u Pošti označena kao „nepročitana", bez
+  oznake da je istekla.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-068 · Mentorov osvrt piše privremene brojke prije obračuna grada
+- **Status:** 🔴 otvoren (Simon) · **Težina:** nizak
+- **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): mentorov osvrt nastaje prije obračuna grada, pa piše privremene brojke; u
+  osvrtu „Financije 28/100 (+4)", a konačni izvještaj 24 → 33 (+9). Usp.
+  [BUG-032](#bug-032--izvještaj-mjeseca-mentor-i-podij-ne-vide-obračun-grada) i
+  [BUG-059](#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene).
+- **Rješenje:** — (prijedlog: napomena uz osvrt da su brojke privremene ili mentor tek nakon obračuna)
+- **Lekcija:** —
+
+### BUG-067 · Lokalni smoke ostavio 5 testnih igara u zajedničkoj bazi
+- **Status:** 🔴 otvoren (graditelj čisti) · **Težina:** nizak
+- **Opis:** integratorov agent je u 08:01 CET lokalnim smokeom ostavio 5 igara „Smoke …" u zajedničkoj bazi, preko
+  [ADR-055](DECISIONS.md#adr-055) (najviše 3 testne igre).
+- **Rješenje:** —
+- **Lekcija:** smoke na zajedničkoj bazi stvara igre; nakon smokea počisti ih ili koristi postojeće testne igre.
+
 ### BUG-066 · Javni pogled hotela za bota pokazuje referentnu cijenu do zatvaranja mjeseca
 - **Status:** 🔴 otvoren (Simon, ujutro) · **Težina:** nizak
 - **Opis:** tester (~04:28 CET, produkcija): javni pogled hotela (`/api/world/[worldId]/companies`) za bota pokazuje
