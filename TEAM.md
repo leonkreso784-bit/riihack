@@ -76,7 +76,7 @@ na koga čeka i što smo dogovorili.
 | 24.10. ~23:50 | Bez minimalne duljine odgovora i refleksije; prazan odgovor ocjenjuje motor s 1, bez AI-ja ([ADR-049](docs/records/DECISIONS.md#adr-049)) | Leon |
 | 25.10. ~01:10 | Kod igre i QR na ploči nakon pokretanja nisu potrebni; kasni ulaz nije prioritet ([ADR-051](docs/records/DECISIONS.md#adr-051)) | Leon |
 | 25.10. ~01:20 | Sigurnost: AI prijedlog najviše 30 po igri i 5 u minuti, atomična granica poruka s likom, zaglavlja `X-Frame-Options`, `nosniff`, `Referrer-Policy` bez CSP-a; PIN poslije natjecanja ([ADR-053](docs/records/DECISIONS.md#adr-053)) | Leon |
-| 25.10. ~01:25 | Napisan odgovor s ocjenom 1 ima množitelj 0, propušten i prazan −2× ([ADR-052](docs/records/DECISIONS.md#adr-052)); ljestvica i grad bez stanja računa tuđih hotela ([ADR-040](docs/records/DECISIONS.md#adr-040)) | Leon |
+| 25.10. ~01:25 | Napisan odgovor s ocjenom 1 ima množitelj 0, propušten i prazan −2× (zalijepljen odgovor s ocjenom 1 također −2×, #253) ([ADR-052](docs/records/DECISIONS.md#adr-052)); ljestvica i grad bez stanja računa tuđih hotela ([ADR-040](docs/records/DECISIONS.md#adr-040)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 

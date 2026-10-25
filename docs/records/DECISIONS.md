@@ -19,11 +19,13 @@ modela bez granice. Rino je predložio sigurnosna zaglavlja (CSP, zabrana iframe
 - AI prijedlog situacije: najviše 30 po igri i 5 u minuti, inače 429
   ([#247](https://github.com/leonkreso784-bit/riihack/pull/247)).
 - Granica poruka u razgovoru s likom provjerava se atomično ([#249](https://github.com/leonkreso784-bit/riihack/pull/249)).
-- Zaglavlja `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff` i `Referrer-Policy`; stroge CSP nema.
+- Zaglavlja `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff` i `Referrer-Policy`; stroge CSP nema
+  ([#251](https://github.com/leonkreso784-bit/riihack/pull/251)).
 - Ponovni ulaz studenta samo imenom (PIN) je za nakon natjecanja.
 
 **Posljedice.** Trošak AI-ja po igri je ograničen, a demo radi kao i prije. Granica AI prijedloga nije atomična (mala
-utrka na granici, zapisano u #247). Radi graditelj; PR za zaglavlja stiže.
+utrka na granici, zapisano u #247). Radi graditelj. Zaglavlja spojena [#251](https://github.com/leonkreso784-bit/riihack/pull/251) (02:23), integrator ih je na
+produkciji potvrdio curlom; #247 i #249 provjerava integrator.
 
 <a id="adr-052"></a>
 ## ADR-052 · Napisan odgovor s ocjenom 1 ne oduzima
@@ -34,8 +36,12 @@ utrka na granici, zapisano u #247). Radi graditelj; PR za zaglavlja stiže.
 **Kontekst.** Po [ADR-046](#adr-046) ocjena 1 nosi −2× i za napisan odgovor koji promaši temu, pa je student s
 općenitim odgovorima završio sezonu gore od studenta koji nije odgovorio ništa (tester, BUG-030).
 **Odluka.** Napisan odgovor s ocjenom 1 ima množitelj 0. Propuštena situacija i prazan odgovor ostaju −2×.
+Dopuna (graditelj po Leonovom pravilu iz ove odluke, ~02:28, [#253](https://github.com/leonkreso784-bit/riihack/pull/253)): **zalijepljen (kopiran) odgovor s ocjenom 1
+ostaje −2×; samo vlastiti napisan tekst s ocjenom 1 daje 0.**
 **Posljedice.** Odgovoriti je uvijek barem jednako dobro kao ne odgovoriti, kako ADR-046 i obećava. Mijenja brojke:
-radi graditelj, spaja se na Leonovo „spoji", pa ponovni seed demo igre i smoke.
+radi graditelj, spaja se na Leonovo „spoji", pa ponovni seed demo igre i smoke. Kod je [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (otvoren ~02:28),
+čeka spajanje; isti PR popravlja „Promijeni ocjenu" ([BUG-041](BUGS.md#bug-041--promijeni-ocjenu-za-ocjenu-1-krivo-za-1-učinak)). 🟨 potvrditi: opis #253 (jedan commit,
+02:27) zalijepljen tekst još broji kao napisan (0), pa uvjet za zalijepljen odgovor treba biti u PR-u prije spajanja.
 
 <a id="adr-051"></a>
 ## ADR-051 · Kod igre na ploči nakon pokretanja nije potreban
@@ -104,7 +110,9 @@ za sve hotele, i uz dobre odgovore.
 **Odluka.** Učinak po kvaliteti: 1 (loš ili propušten odgovor) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3×. Radi graditelj
 zajedno s BUG-024, pa jedan ponovni seed demo igre i smoke.
 **Posljedice.** Odgovoriti i potruditi se uvijek je bolje nego ne odgovoriti. Mijenjaju se brojke, pa se spaja na
-Leonovo „spoji". Spojeno [#214](https://github.com/leonkreso784-bit/riihack/pull/214) (23:06).
+Leonovo „spoji". Spojeno [#214](https://github.com/leonkreso784-bit/riihack/pull/214) (23:06). „Promijeni ocjenu"
+(override) računao je (nova − stara) × učinak, pa je od ove odluke za ocjenu 1 bio krivo za 1× učinak; popravak u
+[#253](https://github.com/leonkreso784-bit/riihack/pull/253) (vidi [BUG-041](BUGS.md#bug-041--promijeni-ocjenu-za-ocjenu-1-krivo-za-1-učinak)).
 
 <a id="adr-045"></a>
 ## ADR-045 · Graditelj preuzima otvorene bugove; pokazatelji jače utječu na goste

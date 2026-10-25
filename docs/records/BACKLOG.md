@@ -25,6 +25,8 @@ Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-1
 - Stroga CSP ([ADR-053](DECISIONS.md#adr-053)).
 - Šok gumb, novine, glas, replay sezone.
 - Značke iz kriterija rubrike (npr. „Smirivač gostiju"), [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md) (L5, gamifikacija).
+- Karta i vijesti grada na profesorovoj ploči: sljedeći korak (graditelj ~02:32); u demou ih vide studenti
+  (`/igra/grad`), a profesor ima ploču, ljestvicu i uvid.
 - Radar vještina: sljedeći korak, ne radi se prije predaje (graditelj ~02:30). Komponenta
   `src/components/wow/skill-radar.tsx` s lažnim podacima postoji, ali nije ni na jednom ekranu.
 - Simulator unaprijed: procjena popunjenosti i dobiti na stranici Plan, prije odluke
