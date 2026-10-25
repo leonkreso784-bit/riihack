@@ -142,6 +142,14 @@ export async function saveReflection(
     .where(and(eq(roundReports.companyId, companyId), eq(roundReports.round, round)));
 }
 
+/** Piše mentorov osvrt samo ako mentorova teksta još nema (WHERE mentor_text IS NULL); prvi upis pobjeđuje. */
+export async function saveMentorReview(companyId: string, round: number, review: string): Promise<void> {
+  await db
+    .update(roundReports)
+    .set({ mentorText: review })
+    .where(and(eq(roundReports.companyId, companyId), eq(roundReports.round, round), isNull(roundReports.mentorText)));
+}
+
 /** Piše pitanje samo ako ga još nema (WHERE mentor_question IS NULL). */
 export async function saveMentorQuestion(
   companyId: string,

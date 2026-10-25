@@ -3,8 +3,8 @@ import { generateText, type LanguageModel } from "ai";
 import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
 import type { MentorInput, MentorItem, MetricKey, RoundFinance } from "@/lib/types";
 import { modelFor, withAi } from "./client";
-import { fallbackDebrief, fallbackMentorQuestion } from "./fallbacks";
-import { MENTOR_DEBRIEF_SYSTEM, MENTOR_QUESTION_SYSTEM } from "./prompts";
+import { fallbackDebrief, fallbackMentorQuestion, fallbackReview } from "./fallbacks";
+import { MENTOR_DEBRIEF_SYSTEM, MENTOR_QUESTION_SYSTEM, MENTOR_REVIEW_SYSTEM } from "./prompts";
 
 /** Neutralise angle brackets so student text cannot close or open our prompt tags. */
 export const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
@@ -195,4 +195,42 @@ export function mentorDebrief(
     }
     return fallbackDebrief(input);
   }, fallbackDebrief(input), DEBRIEF_TIMEOUT_MS);
+}
+
+const MAX_REVIEW_SENTENCES = 7; // 4 to 6 sentences plus the closing question
+const MAX_REVIEW_CHARS = 1400;
+const REVIEW_TIMEOUT_MS = 20_000;
+
+/** Why an automatic review is rejected, or null when it passes. */
+export function reviewProblem(text: string): string | null {
+  const n = splitSentences(text).length;
+  if (n < 3 || n > MAX_REVIEW_SENTENCES) return `sentences:${n}`;
+  if (text.length > MAX_REVIEW_CHARS) return `length:${text.length}`;
+  if (!noSlashGender(text)) return "slash-gender";
+  if (!noCyrillic(text)) return "cyrillic";
+  if (LEAKED_ID.test(text)) return "leaked-id";
+  if (!noRawKeys(text)) return "raw-key";
+  return null;
+}
+
+/**
+ * The mentor's own review once the month is settled, without the student asking: what went well, what did not
+ * (by the numbers), one tip, then the mentor's question if given. Any failure gives the review built from the numbers.
+ */
+export function mentorReview(input: MentorInput & { question?: string }, model?: LanguageModel): Promise<string> {
+  return withAi(async () => {
+    const question = input.question?.trim() ? `
+
+<pitanje_mentora>${clean(input.question)}</pitanje_mentora>` : "";
+    const prompt = `${factsBlock(input)}${question}
+
+Napiši osvrt na ovaj mjesec.`;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const text = stripMarkdown(await ask(MENTOR_REVIEW_SYSTEM, prompt, model));
+      const problem = reviewProblem(text);
+      if (problem === null) return text;
+      console.warn("[ai] mentor review rejected:", problem);
+    }
+    return fallbackReview(input);
+  }, fallbackReview(input), REVIEW_TIMEOUT_MS);
 }

@@ -2,6 +2,7 @@
 import { getReport, saveMentorQuestion, saveReflection } from "@/db/queries";
 import { mentorDebrief, mentorQuestion } from "@/lib/ai";
 import { buildMentorInput } from "@/lib/ai/mentor-input";
+import { appendDebrief } from "@/lib/mentor-text";
 import { validateOwnAnswer } from "@/lib/engine/validate";
 import { HttpError, route } from "@/lib/http";
 import { readJson, requirePlayer } from "@/lib/session";
@@ -36,7 +37,10 @@ export const POST = route(async (req): Promise<RoundReportView> => {
   const empty = request.text === "";
   const reflection = empty ? "(Student nije ništa napisao. Mentor je to već rekao, ne ponavljaj.)" : request.text;
   const debrief = await mentorDebrief({ ...input, question, reflection });
-  const mentorText = empty ? `${EMPTY_REFLECTION_NOTE} ${debrief}` : debrief;
+  // The automatic review (written once the month is settled) stays; the debrief goes below it. Read again, because
+  // the review may have been saved while the debrief was being written.
+  const current = (await getReport(company.id, request.round))?.mentorText ?? report.mentorText;
+  const mentorText = appendDebrief(current, empty ? `${EMPTY_REFLECTION_NOTE} ${debrief}` : debrief);
   await saveReflection(company.id, request.round, request.text, mentorText);
   return {
     round: request.round,
