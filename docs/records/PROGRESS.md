@@ -6,6 +6,19 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~02:40 · rubni slučajevi
+
+- **Tester, rubni slučajevi na produkciji (02:18–02:36) ✅:** klik-odgovor, granica 6 poruka u sučelju, 2000/2001
+  znakova, lijepljenje ≤ 4, Financije, ulaganja, dvoklik zatvaranja, playbook, povratak istim kodom.
+- **Novi bugovi:** BUG-042 do 050; najteži [BUG-042](BUGS.md#bug-042--razgovor-s-likom-istodobne-6-i-7-poruka-obje-prođu)
+  (istodobne 6. i 7. poruka liku obje prođu, vjerojatno rješava #249). Graditelj jednim PR-om: BUG-043, 045, 046,
+  047, 049; Rino: BUG-044, 048; Simon: BUG-050.
+- **Balans (tester):** recepcija + kuhinja donose +6 gostiju mjesečno; račun 172 € → 98.280 € u 2 mjeseca; kasni
+  student kreće s 20.000 €, ostali su na 60–98 tisuća. Odluka graditelja (~02:40): ne mijenja se prije predaje, ide
+  uz [ADR-047](DECISIONS.md#adr-047) kao kalibracija, sljedeći korak.
+- **Odluka:** Leon spava; graditelj do jutra traži spajanja u njegovo ime ([ADR-054](DECISIONS.md#adr-054); prihvaća
+  li integrator prenesenu ovlast, 🟨 potvrditi).
+
 ## Ned 25.10. ~02:30 · zaglavlja spojena, ocjena 1, skriveni račun
 
 - **Spojeno:** dokumentacija #248 (02:18, ADR-053), graditeljeva sigurnosna zaglavlja #251 (02:23; produkcija READY

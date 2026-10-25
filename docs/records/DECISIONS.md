@@ -8,6 +8,18 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-054"></a>
+## ADR-054 · Leon spava; graditelj do jutra traži spajanja u njegovo ime
+**Datum:** 25.10. ~02:38 · **Status:** ✅ (Leon, preneseno preko graditelja, doslovno) ·
+**Vezano:** [ADR-015](#adr-015), [ADR-017](#adr-017), [ADR-031](#adr-031)
+
+**Kontekst.** Leon ide spavati, a žiri od 08:00 sam igra aplikaciju.
+**Odluka.** Leon: „zamolio sam te da ti tražiš drugu sesiju spajanja jer ja idem sad spavat i sve treba biti posloženo
+i dobro testirano da žiri može sutra igrati". Graditelj u Leonovo ime traži spajanja do jutra, uključujući sadržaj
+situacija (ispravak „spremljena", BUG-047).
+**Posljedice.** Integrator po svojim pravilima prihvaća samo Leonovo izravno „spoji" u svojoj sesiji, pa to odlučuje
+integrator (🟨 potvrditi prihvaća li integrator prenesenu ovlast).
+
 <a id="adr-053"></a>
 ## ADR-053 · Sigurnost prije predaje: granice AI-ja i tri zaglavlja, bez CSP-a
 **Datum:** 25.10. ~01:20 · **Status:** ✅ (Leon, nakon Simonovog sigurnosnog pregleda; preneseno preko graditelja) ·
@@ -97,7 +109,9 @@ demo igra ima 15 mjesta, smoke korak 20 provjerava kasni ulaz.
 portala 8 %, materijal 17 %, plaće po zvjezdicama), pa marža pada s 29–86 % na 11–31 %.
 **Odluka.** #209 se ne spaja prije predaje i ostaje otvoren za poslije.
 **Posljedice.** Po Simonovim brojkama hotel uz referentnu cijenu u lipnju i rujnu ide u minus, pa bi napredak opet bio
-negativan (BUG-026), a brojke su računate prije #213. U pitchu je kalibracija „sljedeći korak".
+negativan (BUG-026), a brojke su računate prije #213. U pitchu je kalibracija „sljedeći korak". Graditelj ~02:40: i
+rast računa (20.000 → ~98.000 € u 2 mjeseca), +3 gosta po odjelu i početni račun kasnog studenta (20.000 €) idu u
+istu kalibraciju poslije predaje.
 
 <a id="adr-046"></a>
 ## ADR-046 · Odgovorena situacija donosi plus već od ocjene 3

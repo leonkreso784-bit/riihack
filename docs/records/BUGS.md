@@ -10,6 +10,75 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-050 · Lik oslovljava studenticu s „Gospodine"
+- **Status:** 🔴 otvoren (Simon, AI) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): lik u razgovoru studenticu oslovljava s „Gospodine".
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-049 · Kasni student vidi „Krug nije zatvoren" za mjesec prije svog ulaska
+- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): student koji je ušao kasnije za mjesec prije svog ulaska vidi
+  „Krug nije zatvoren". Graditelj (~02:40): umjesto toga poruka „Nisi bio u igri".
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-048 · Kartica „Agencije" u Pošti prikazuje i praonicu i zaštitare
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): kartica „Agencije" u Pošti uz agencije prikazuje i praonicu i
+  zaštitare.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-047 · Tipfeler „Soba je spremana" u sadržaju situacija
+- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): u ponuđenom odgovoru piše „Soba je spremana"; ispravak
+  „spremljena". Sadržaj situacija spaja se samo na Leonovo „spoji" ([ADR-017](DECISIONS.md#adr-017)).
+- **Uzrok:** `src/content/situations.json:44`.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-046 · Dvostruki uvoz playbooka udvostruči situacije u igri
+- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): kad profesor isti playbook uveze dvaput, situacije su u igri
+  dvaput. Graditelj (~02:40): drugi uvoz odbija se s 409.
+- **Rješenje:** —
+- **Lekcija:** uvoz mora biti idempotentan ili odbiti ponavljanje.
+
+### BUG-045 · „Uvezeno 2 situacija" (množina)
+- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): nakon uvoza playbooka poruka piše „Uvezeno 2 situacija".
+- **Uzrok:** `src/app/profesor/[worldId]/situacije/page.tsx:107`, broj bez sklanjanja imenice.
+- **Rješenje:** —
+- **Lekcija:** svaki tekst s brojem ide kroz istu funkciju za množinu.
+
+### BUG-044 · `/igra/sobe`: podnaslov ne broji sobu na čišćenju, množina kriva
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): podnaslov stranice Sobe ne broji sobe na čišćenju, pa zbroj ne
+  odgovara ukupnom broju soba, a množina je kriva.
+- **Uzrok:** `src/app/igra/sobe/page.tsx:29` (podnaslov broji samo zauzete, slobodne i u kvaru; fiksni oblici riječi).
+- **Rješenje:** —
+- **Lekcija:** svaki tekst s brojem ide kroz istu funkciju za množinu.
+
+### BUG-043 · Izvještaj mjeseca odmah nakon „Završi" pokazuje privremene brojke
+- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): izvještaj otvoren odmah nakon „Završi" pokazuje brojke prije
+  obračuna grada, bez napomene da nisu konačne. Graditelj (~02:40): napomena „konačno nakon obračuna mjeseca".
+- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:47–53` (ploča „Što se promijenilo" prikazuje brojke izvještaja
+  bez obzira na to je li mjesec obračunat).
+- **Rješenje:** —
+- **Lekcija:** privremeni podatak mora reći da je privremen.
+
+### BUG-042 · Razgovor s likom: istodobne 6. i 7. poruka obje prođu
+- **Status:** 🟡 vjerojatno rješava PR [#249](https://github.com/leonkreso784-bit/riihack/pull/249) (graditelj, [ADR-053](DECISIONS.md#adr-053)), čeka spajanje ·
+  **Težina:** srednji
+- **Opis:** tester (ned 02:18–02:36, produkcija): kad se 6. i 7. poruka liku pošalju istodobno (mimo sučelja), obje
+  prođu, pa granica od 6 poruka ne vrijedi. Sučelje je zaštićeno.
+- **Uzrok:** `src/app/api/situations/[id]/chat/route.ts:28` broji poslane poruke iz transkripta pročitanog prije
+  odgovora, a `src/db/queries.ts:69–79` (`appendTranscript`) dopisuje bez provjere granice.
+- **Rješenje:** —
+- **Lekcija:** granica koju provjerava poslužitelj mora se provjeriti u istom upitu kojim se piše.
+
 ### BUG-041 · „Promijeni ocjenu" za ocjenu 1 krivo za 1× učinak
 - **Status:** 🟡 PR [#253](https://github.com/leonkreso784-bit/riihack/pull/253) čeka spajanje · **Težina:** nizak
 - **Opis:** graditelj (ned ~02:28): kad profesor ručno promijeni ocjenu odgovora („Promijeni ocjenu"), pomak
