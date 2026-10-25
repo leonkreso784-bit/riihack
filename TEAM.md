@@ -81,14 +81,15 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen (561 test; lokalni smoke 1–18 i 20) · produkcija https://riihack.vercel.app READY (ned 02:59 CEST), rute 200/401/404 i tri sigurnosna zaglavlja potvrđeni
-- **Zadnja spajanja (ned 02:18–02:59 CEST):** #251 sigurnosna zaglavlja (ADR-053), #250 mentorovo pitanje, #249 granica 6 poruka atomično, #247 granica AI prijedloga, #255 BUG-039/035, #241 plan se prenosi i protuponuda bez koristi → 400, #252 student ne vidi tuđi novac (ADR-040), #253 napisan odgovor s ocjenom 1 = 0 (ADR-052); dokumentacija #248, #254, #256, #257, #258, #259
+- **CI na `main`-u:** ✅ zelen (567 testova; lokalni smoke 1–18 i 20) · produkcija https://riihack.vercel.app READY (ned 04:24 CET), rute 200/401/404 i tri sigurnosna zaglavlja u redu; demo igra KVRNDM ponovno posijana (graditelj, smoke na produkciji 20/20)
+- **Zadnja spajanja (ned 02:10–04:39 CET):** #262 sitni ispravci (playbook, tekstovi, kasni student), #264 projektor (podij, ljestvica, ploča do 1600 px), #271 izvještaj se osvježava dok mjesec traje (BUG-057/058/059), #272 botovi opet planiraju svaki mjesec (BUG-063, regresija iz #241), #275 skripta za čišćenje `--kodovi`; dokumentacija #260, #261, #263, #265, #269, #270, #273, #274
 - **Odobrenje:** Leon je u 02:42 CEST integratoru izravno dao odobrenje za sva spajanja (ADR-054); integrator spaja sve što prođe provjeru (agent u stablu `riihack-int-agent`: testovi, build, smoke)
-- **Red čekanja:** #209 kalibracija se ne spaja prije predaje (ADR-047); graditelj nakon #241–#253 ponovno sije demo igru i pokreće smoke na produkciji
+- **Red čekanja:** Simonovi draftovi #267 (prije žirija) i #268 (mentor i tekstovi) čekaju Simonovu jutarnju potvrdu; #209 kalibracija se ne spaja prije predaje (ADR-047)
+- **Za Leona ujutro:** čišćenje testnih igara `npx tsx scripts/cleanup-test-data.ts --apply` (klasifikator ga sesijama blokira; u bazi je 100+ igara „Smoke …“)
 - **Env na Vercelu:** `NEXT_PUBLIC_USE_MOCK=0` (Production, Preview), `BETTER_AUTH_SECRET` (Production, Preview) i `BETTER_AUTH_URL` (Production) postavljeni sub ~20:25
-- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne); integratorovi smoke krugovi ostavljaju igre „Smoke …“ u zajedničkoj bazi (graditelj čisti prije predaje)
+- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne)
 - **Vrijeme:** u 03:00 CEST sat se vratio na 02:00 CET; vremena nakon toga su zimsko vrijeme
-- **Zadnje ažurirano:** ned 02:05 CET
+- **Zadnje ažurirano:** ned 05:39 CET
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
