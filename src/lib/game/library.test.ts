@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { HttpError } from "@/lib/http";
 import type { SituationDraft } from "@/lib/types";
-import { libraryItemId, librarySource, prepareLibraryEntry, toLibraryItem } from "./library";
+import { hasSituationTitle, libraryItemId, librarySource, prepareLibraryEntry, toLibraryItem } from "./library";
 
 const DRAFT: SituationDraft = {
   title: "Kvar klime",
@@ -70,5 +70,15 @@ describe("toLibraryItem", () => {
       source: "ai",
       createdAt: "2026-10-25T01:02:03.000Z",
     });
+  });
+});
+
+describe("hasSituationTitle", () => {
+  it("isti naslov, bez obzira na slova i razmake", () => {
+    expect(hasSituationTitle(["Buka s gradilišta"], "  buka  s Gradilišta ")).toBe(true);
+  });
+  it("drugi naslov ili prazan popis nije duplikat", () => {
+    expect(hasSituationTitle(["Kvar klime"], "Buka s gradilišta")).toBe(false);
+    expect(hasSituationTitle([], "Kvar klime")).toBe(false);
   });
 });
