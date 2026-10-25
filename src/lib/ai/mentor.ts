@@ -9,6 +9,7 @@ import { MENTOR_DEBRIEF_SYSTEM, MENTOR_QUESTION_SYSTEM } from "./prompts";
 /** Neutralise angle brackets so student text cannot close or open our prompt tags. */
 export const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
 
+const MIN_QUESTION_WORDS = 4; // a bare "300 €?" is not a question
 const MAX_QUESTION_WORDS = 25;
 const MAX_DEBRIEF_CHARS = 1200;
 const DEBRIEF_TIMEOUT_MS = 35_000; // two Sonnet attempts of 5 to 9 s each must fit; the student waits on this call
@@ -89,16 +90,26 @@ async function ask(system: string, prompt: string, model?: LanguageModel): Promi
   return text.trim();
 }
 
-/** Keep only the first sentence that ends with "?"; null when there is none. */
+/**
+ * Keep only the first sentence that ends with "?"; null when there is none.
+ * Uses splitSentences so "2.300 €", "npr." and "3. kvartal" inside the question do not cut it.
+ */
 export function firstQuestion(text: string): string | null {
   const flat = text.replace(/\s+/g, " ").trim();
-  const match = flat.match(/[^.!?]*\?/);
-  const q = match?.[0].trim().replace(/^["„“'-]+\s*/, "");
+  const sentence = splitSentences(flat).find((s) => /\?["”“»]?$/.test(s));
+  const q = sentence?.replace(/["”“»]+$/, "").trim().replace(/^["„“'-]+\s*/, "");
   return q && q.length > 1 ? q : null;
 }
 
 function questionOk(q: string | null): q is string {
-  return q !== null && wordCount(q) <= MAX_QUESTION_WORDS && noSlashGender(q) && !LEAKED_ID.test(q) && noRawKeys(q);
+  return (
+    q !== null &&
+    wordCount(q) >= MIN_QUESTION_WORDS &&
+    wordCount(q) <= MAX_QUESTION_WORDS &&
+    noSlashGender(q) &&
+    !LEAKED_ID.test(q) &&
+    noRawKeys(q)
+  );
 }
 
 /** One Croatian question, at most 25 words, about the weakest decision. Any failure gives the fixed question. */
