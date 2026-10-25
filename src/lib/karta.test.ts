@@ -44,15 +44,15 @@ describe("rast i rang", () => {
     expect(growth([{ revenue: 1 }])).toBeNull();
     expect(growth([{ revenue: 0 }, { revenue: 5 }])).toBeNull();
   });
-  it("rang po napretku, isti napredak razrješava naziv hotela (ne novac)", () => {
+  it("rang po napretku, isti napredak zadržava redoslijed ljestvice s poslužitelja (ne naziv)", () => {
     const rows = [
       { id: "a", progress: 5, hotelName: "Zora" },
       { id: "b", progress: 9, hotelName: "Maris" },
       { id: "c", progress: 5, hotelName: "Adria" },
     ];
     expect(rank("b", rows)).toBe(1);
-    expect(rank("c", rows)).toBe(2);
-    expect(rank("a", rows)).toBe(3);
+    expect(rank("a", rows)).toBe(2);
+    expect(rank("c", rows)).toBe(3);
   });
 });
 

@@ -230,6 +230,7 @@ export function bonitet(cash: number, startCash: number, lastProfit: number | nu
   if (cash >= startCash * 1.2 && lastProfit > 0) return { grade: "A+", text: "Izvrsno: stabilan rast i rezerve", tone: "up" };
   if (cash >= startCash && lastProfit > 0) return { grade: "A", text: "Dobro: posluje s dobiti", tone: "up" };
   if (lastProfit > 0) return { grade: "B", text: "Srednje: dobit, ali niže rezerve", tone: "warn" };
+  if (lastProfit === 0) return { grade: "C", text: "Niže: posluje bez dobiti", tone: "warn" };
   return { grade: "C", text: "Niže: posluje s gubitkom", tone: "down" };
 }
 
@@ -238,14 +239,17 @@ export function publicBonitet(months: PublicMonth[]): Bonitet {
   const last = months.at(-1);
   if (!last) return { grade: "–", text: "Još nema zatvorenog mjeseca", tone: "none" };
   const prev = months.length > 1 ? months.at(-2)! : null;
-  if (last.profit > 0 && (!prev || last.profit >= prev.profit)) return { grade: "A", text: "Dobro: posluje s dobiti, dobit raste", tone: "up" };
+  if (last.profit > 0 && !prev) return { grade: "A", text: "Dobro: posluje s dobiti", tone: "up" };
+  if (last.profit > 0 && prev && last.profit >= prev.profit) return { grade: "A", text: "Dobro: posluje s dobiti, dobit raste", tone: "up" };
   if (last.profit > 0) return { grade: "B", text: "Srednje: dobit, ali manja nego prošli mjesec", tone: "warn" };
+  if (last.profit === 0) return { grade: "C", text: "Niže: posluje bez dobiti", tone: "warn" };
   return { grade: "C", text: "Niže: posluje s gubitkom", tone: "down" };
 }
 
-// Rang po napretku na ljestvici (1 = najbolji); isti napredak razrješava naziv hotela.
+// Rang po napretku na ljestvici (1 = najbolji). Isti napredak zadržava redoslijed s poslužitelja (novac, pa redoslijed
+// ulaska, views.ts toLeaderboard), pa kartica i ljestvica uvijek kažu isti rang (pregled GAP1-05). Sort je stabilan.
 export function rank(id: string, rows: { id: string; progress: number; hotelName: string }[]): number {
-  const sorted = [...rows].sort((a, b) => b.progress - a.progress || a.hotelName.localeCompare(b.hotelName, "hr"));
+  const sorted = [...rows].sort((a, b) => b.progress - a.progress);
   return sorted.findIndex((p) => p.id === id) + 1;
 }
 
@@ -309,8 +313,8 @@ function otherProfile(row: LeaderboardRow, index: number, partners: PublicProfil
 
 function ownProfile(me: MeResponse, index: number, linked: PublicProfile["partners"], rankNo: number): PublicProfile {
   const c = me.company;
+  // Linije grada već nose samo ugovore aktivne u ovom mjesecu, i vlastite; završeni ugovor nije partner (pregled GAP1-01).
   const partners = [...linked];
-  for (const k of me.contracts) if (k.status === "accepted" && !partners.some((p) => p.name === k.businessName)) partners.push({ name: k.businessName, kind: k.businessKind });
   const mine = me.city.hotels.find((h) => h.companyId === c.id) ?? me.leaderboard.find((h) => h.companyId === c.id);
   return {
     id: c.id,
