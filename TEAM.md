@@ -96,13 +96,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim (08:10):** žiri igra 08:00–09:00; do 09:00 bez deploya (Leon). Noću spojeno i potvrđeno na produkciji: #240, #241, #245, #247, #249, #251, #252, #253, #255, #256, #262, #264, #271, #272, #275, Simonov #267 (08:03). Demo KVRNDM: 2. mjesec, 5 hotela, 15 mjesta, smoke 20/20, put žirija ✅. Baza očišćena 08:00 (240 → 18 igara).
-- **Sljedeće:** #278 (docs: README/CLAUDE bez db:push, PREDAJA usklađena) → integrator; predaja 10:15 (Leon i Simon); nakon natjecanja: Simonov #268, #209 kalibracija, Rinovi niski UI nalazi (BUGS.md).
-- **Čekam od drugih:** Simon: #268 i balans; Rino: niski UI nalazi.
+- **Sad radim (09:09):** produkcija konačna i zamrznuta do predaje (10:15). Jutros spojeno: #275, #278, #279, #281, #282 (docs), Simonovi #267, #268, #277 (prezentacija), #280 mentor sam piše osvrt mjeseca nakon obračuna (ADR-057) — sve potvrđeno na produkciji (smoke 20/20, tester). Baza očišćena (240 → ~25 igara), KVRNDM netaknuta (2. mjesec, 5 hotela, 15 mjesta).
+- **Sljedeće:** predaja u #prezentacije do 10:30 (Leon/Simon, tekst kod dokumentarista). Nakon natjecanja: #209 kalibracija, niski nalazi u BUGS.md (Rino UI, Simon AI tekstovi), ugovori među studentima (L19), radar vještina.
+- **Čekam od drugih:** —
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #278
+- **Otvoreno:** #209 (za odluku, ne spaja se)
 - **Spojeno:** L0–L18, L8 demo, kasni ulaz (#221), balans cijene i kvalitete (#194, #213, #214), bez donje granice odgovora (#225). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** ned 08:10
+- **Zadnje ažurirano:** ned 09:09
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S12)
 
