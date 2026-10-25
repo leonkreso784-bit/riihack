@@ -19,8 +19,8 @@ Provjeriti s pravilima na Discordu koji se format traži. Nacrt sadržaja (dopun
 6. **Poslovni model** 🟨: licenca po kolegiju ili semestru za fakultete i srednje škole; besplatna proba za
    profesora. Kasnije: tvrtke za obuku novih zaposlenika (hotelski lanci, agencije). Prvi korisnik: FMTU Opatija.
 7. **Što bismo radili dalje:** nove simulacije u istom svijetu (dobavljač, zaštitarska firma…), situacije iz gradiva
-   kolegija, engleski jezik. Već u demou, a dalje ih razrađujemo: ugovori među studentima (L19), radar vještina,
-   simulator unaprijed, karta na profesorovoj ploči, kalibracija troškova (#209), PIN za studente.
+   kolegija, engleski jezik. Sljedeći korak (nije u demou): ugovori među studentima (preusmjeravanje gostiju), radar vještina,
+   simulator unaprijed, karta na profesorovoj ploči, kalibracija troškova prema stvarnim hotelima, PIN za studente.
 8. **Linkovi:** demo, repo, video
 9. **Tim:** Rino (frontend), Leon i Simon (backend i AI); dopuniti tko je što radio.
 10. **Dokumentacija:** [docs/README.md](docs/README.md) (ulaz), [docs/product/PRD.md](docs/product/PRD.md)
