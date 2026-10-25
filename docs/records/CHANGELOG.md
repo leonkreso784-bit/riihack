@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#278](https://github.com/leonkreso784-bit/riihack/pull/278) | 08:21 CET | Leon | graditelj: `README.md` i `CLAUDE.md` više ne upućuju `db:push` na zajedničku bazu, samo na svoju praznu ([ADR-026](DECISIONS.md#adr-026)); Simonov `PREDAJA.md` usklađen s demoom |
+| [#267](https://github.com/leonkreso784-bit/riihack/pull/267) | 08:03 CET | Simon | popravci iz noćnog pregleda: brojke u Tokovima, karta, ponude ugovora, vijesti, mentor i 3 teksta u `situations.json`; 5 Rinovih datoteka minimalno; motor netaknut; Leonovo „pokreni 267" |
+| [#276](https://github.com/leonkreso784-bit/riihack/pull/276) | 08:02 CET | Leon | dokumentacija: baza očišćena, jutro prije žirija |
 | [#275](https://github.com/leonkreso784-bit/riihack/pull/275) | 04:39 CET | Leon | skripta za čišćenje: način `--kodovi` briše točno navedene igre; suhi prolaz je zadan, `KVRNDM` se nikad ne briše |
 | [#274](https://github.com/leonkreso784-bit/riihack/pull/274) | 04:33 CET | Leon | dokumentacija: botovi planiraju (#272), BUG-057 do 059 potvrđeni |
 | [#272](https://github.com/leonkreso784-bit/riihack/pull/272) | 04:24 CET | Leon | plan iz prethodnog mjeseca više se ne prenosi botovima (`withoutBotPlans` u `carryPlansForward`), pa bot opet planira sam svaki mjesec; regresija iz [#241](https://github.com/leonkreso784-bit/riihack/pull/241) (BUG-063); dira `city.ts` po [ADR-054](DECISIONS.md#adr-054) |

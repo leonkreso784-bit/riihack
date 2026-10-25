@@ -6,6 +6,24 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~08:20 CET · obilazak 3 prošao
+
+- **Leon: obilazak žirija 3 prošao odlično** (preneseno preko graditelja).
+- **Spojeno:** [#276](https://github.com/leonkreso784-bit/riihack/pull/276) 08:02 CET (dokumentacija), [#267](https://github.com/leonkreso784-bit/riihack/pull/267) 08:03 CET (Simon: popravci iz noćnog pregleda) i
+  [#278](https://github.com/leonkreso784-bit/riihack/pull/278) 08:21 CET (graditelj: `db:push` samo na svojoj praznoj bazi, `PREDAJA.md` usklađen s demoom).
+  Od ~08:05 nema deploya dok žiri igra ([ADR-056](DECISIONS.md#adr-056)); #278 je ipak spojen prije 09:00 (graditelj je
+  javio „zabrana gotova" pa se minutu kasnije ispravio), deploy samo `.md`, produkcija READY 08:21, rute OK.
+- **Tester ✅ nakon čišćenja:** put od nule (registracija, igra, ulaz, odgovori 5/5 i 4/5, mentor 4,3 s i osvrt 3,6 s,
+  zatvaranje, plan prenesen) i [#267](https://github.com/leonkreso784-bit/riihack/pull/267) (Tokovi, karta, cijena protuponude, vijesti, mentor).
+- **Novi niski bugovi:** [BUG-067](BUGS.md#bug-067--lokalni-smoke-ostavio-5-testnih-igara-u-zajedničkoj-bazi) (smoke
+  ostavio 5 igara u zajedničkoj bazi, graditelj čisti),
+  [BUG-068](BUGS.md#bug-068--mentorov-osvrt-piše-privremene-brojke-prije-obračuna-grada) (osvrt s privremenim
+  brojkama, Simon), [BUG-069](BUGS.md#bug-069--istekla-ponuda-u-pošti-ostaje-nepročitana-bez-oznake-isteka) (istekla
+  ponuda bez oznake, Rino).
+- **[PROCES]** netko je u zajedničkom pregledniku dodao botove u testerovu QA igru i zatvarao mu stranice (nije
+  graditelj ni dokumentarist; 🟨 tko).
+- **Do predaje:** fokus je tekst predaje za Discord.
+
 ## Ned 25.10. ~08:00 CET · baza očišćena, žiri igra
 
 - **Spojeno:** [#274](https://github.com/leonkreso784-bit/riihack/pull/274) 04:33 CET (dokumentacija) i [#275](https://github.com/leonkreso784-bit/riihack/pull/275) 04:39 CET (graditelj:
