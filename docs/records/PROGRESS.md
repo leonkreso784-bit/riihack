@@ -6,6 +6,12 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~04:10 CET · botovi ne planiraju
+
+- **Novi bug:** [BUG-063](BUGS.md#bug-063--botovi-ostaju-na-cijeni-1-mjeseca-jer-im-se-prenosi-plan) (visok): botovi
+  ostaju na cijeni 1. mjeseca jer im se prenosi plan; graditelj popravlja.
+- **Simon:** otvorio [#267](https://github.com/leonkreso784-bit/riihack/pull/267) (popravci prije žirija, A) i [#268](https://github.com/leonkreso784-bit/riihack/pull/268) (botovi, mentor i tekstovi, B).
+
 ## Ned 25.10. ~03:50 CET · projektor
 
 - **Spojeno:** [#263](https://github.com/leonkreso784-bit/riihack/pull/263) 02:40 i [#265](https://github.com/leonkreso784-bit/riihack/pull/265) 03:08 CET (dokumentacija), [#264](https://github.com/leonkreso784-bit/riihack/pull/264) 03:48 CET (projektor: podij

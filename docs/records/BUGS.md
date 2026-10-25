@@ -10,6 +10,19 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-063 · Botovi ostaju na cijeni 1. mjeseca jer im se prenosi plan
+- **Status:** 🟡 u radu (graditelj, PR stiže) · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)
+- **Opis:** našao Simon (u nacrtu PR-a [#268](https://github.com/leonkreso784-bit/riihack/pull/268)), javio graditelj ~04:10 CET: od [#241](https://github.com/leonkreso784-bit/riihack/pull/241) se plan
+  prenosi i botovima, pa bot više ne planira i ostaje na cijeni 1. mjeseca; poticaj botova iz
+  [ADR-044](DECISIONS.md#adr-044) ne radi.
+- **Uzrok:** prijenos plana iz [#241](https://github.com/leonkreso784-bit/riihack/pull/241) ([ADR-050](DECISIONS.md#adr-050)), `carryPlansForward`
+  (`src/lib/game/city.ts:245`), ne razlikuje botove; `playOneBot` planira samo kad plana nema
+  (`src/lib/game/bots.ts:242`).
+- **Rješenje:** graditelj: plan se ne prenosi botovima (`city.ts`); Simonov dodatak u `bots.ts` ([#268](https://github.com/leonkreso784-bit/riihack/pull/268)) tada
+  nije potreban.
+- **Lekcija:** kad se promijeni zajednički korak (otvaranje mjeseca), provjeri sve tipove igrača koji kroz njega
+  prolaze, i botove.
+
 ### BUG-062 · Sitnice sučelja: prazan panel „Odgovor" u Tokovima, natpisi na karti, stari URL situacije
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
 - **Opis:** tester (~02:50 CET, put žirija na probnoj igri `HYSJV5`): (1) panel „Odgovor" u Tokovima situacije je prazan
