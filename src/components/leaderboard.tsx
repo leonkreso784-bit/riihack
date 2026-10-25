@@ -12,6 +12,7 @@ export const MEDALS = [
 
 // Ranked by progress (not money): top `limit`, plus your own row below if you are further down.
 // anonymous (R10, projector): only hotel names, no student names.
+// Money only where the server sends it: the student sees only their own, the professor everyone's (ADR-040).
 export function Leaderboard({ rows, youId, limit = 5, anonymous = false }: { rows: LeaderboardRow[]; youId?: string; limit?: number; anonymous?: boolean }) {
   const ranked = [...rows].sort((a, b) => b.progress - a.progress);
   const youRank = ranked.findIndex((r) => r.companyId === youId);
@@ -56,7 +57,7 @@ function Row({ row, rank, you, anonymous }: { row: LeaderboardRow; rank: number;
       </div>
       <div className="text-right">
         <Delta value={row.progress} className="text-sm" />
-        <p className="text-xs text-muted-foreground tabular-nums">{num(row.cash)} €</p>
+        {row.cash !== undefined && <p className="text-xs text-muted-foreground tabular-nums">{num(row.cash)} €</p>}
       </div>
     </li>
   );

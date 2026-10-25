@@ -272,6 +272,36 @@ describe("toMeResponse s gradom", () => {
   });
 });
 
+describe("tuđi novac (ADR-040)", () => {
+  const a = bundle("a", 1, 20000);
+  const bot = bundle("bot", 3, 31000);
+  bot.company.kind = "bot";
+  const all = [a, bundle("b", 2, 25000), bot];
+
+  it("student na ljestvici i karti vidi samo svoj novac", () => {
+    const me = toMeResponse({ world, ...a, rooms: [], all }, NOW);
+    expect(me.leaderboard.find((r) => r.companyId === "a")?.cash).toBe(20000);
+    for (const id of ["b", "bot"]) {
+      expect(me.leaderboard.find((r) => r.companyId === id)).not.toHaveProperty("cash");
+      expect(me.city.hotels.find((r) => r.companyId === id)).not.toHaveProperty("cash");
+    }
+    expect(JSON.stringify(me)).not.toContain("25000");
+    expect(JSON.stringify(me)).not.toContain("31000");
+  });
+
+  it("poredak ljestvice ostaje isti kao profesorov", () => {
+    const me = toMeResponse({ world, ...a, rooms: [], all }, NOW);
+    const s = toProfState({ world, all }, NOW);
+    expect(me.leaderboard.map((r) => r.companyId)).toEqual(s.players.map((r) => r.companyId));
+  });
+
+  it("profesor vidi novac svih hotela", () => {
+    const s = toProfState({ world, all }, NOW);
+    expect(s.players.map((r) => r.cash)).toEqual([31000, 25000, 20000]);
+    expect(s.city.hotels.map((r) => r.cash)).toEqual([31000, 25000, 20000]);
+  });
+});
+
 describe("toProfState", () => {
   it("kod igre i broj mjesta, igrači redom, bez profesorskog koda", () => {
     const s = toProfState({ world, all: [bundle("a", 1, 20000), bundle("b", 2, 20000)] }, NOW);

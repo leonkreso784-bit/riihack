@@ -342,7 +342,7 @@ async function main() {
     expectStatus(await treci.call("GET", `/api/prof/${world.worldId}/mail`), 403);
   });
 
-  await cityStep(18, "javni profil drugog hotela: bez novca", [2], async () => {
+  await cityStep(18, "javni profil i ljestvica drugog hotela: bez novca; profesor vidi sve (ADR-040)", [2], async () => {
     const r = await ana.call("GET", `/api/world/${world.worldId}/companies/${ivanJoin.companyId}`);
     expectStatus(r, 200);
     expect(r.data.companyId === ivanJoin.companyId, `companyId ${r.data.companyId}`);
@@ -358,6 +358,16 @@ async function main() {
     walk(r.data, "profil");
     expect(found.length === 0, `javni profil ima novac: ${found.join(", ")}`);
     expectStatus(await treci.call("GET", `/api/world/${world.worldId}/companies/${ivanJoin.companyId}`), 401);
+    // ljestvica i karta u /api/me: novac samo na vlastitom retku
+    const me = (await ana.call("GET", "/api/me")).data as MeResponse;
+    for (const rows of [me.leaderboard, me.city.hotels]) {
+      const own = rows.find((h) => h.companyId === me.company.id), other = rows.find((h) => h.companyId === ivanJoin.companyId);
+      expect(own?.cash === me.company.cash, `vlastiti redak: cash ${own?.cash} ≠ ${me.company.cash}`);
+      expect(other && !("cash" in other), `Ana vidi Ivanov novac: ${JSON.stringify(other)}`);
+      expect(rows.every((h) => h.companyId === me.company.id || !("cash" in h)), "tuđi hotel ima cash");
+    }
+    const ps = (await prof.call("GET", `/api/prof/${world.worldId}`)).data as ProfStateResponse;
+    expect(typeof ps.players.find((p) => p.companyId === ivanJoin.companyId)?.cash === "number", "profesor ne vidi Ivanov novac");
   });
 
   await cityStep(19, "profesor s računom vidi svoju igru, drugi račun dobije 403", [], async () => {

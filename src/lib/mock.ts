@@ -94,6 +94,8 @@ const LEADERBOARD: LeaderboardRow[] = [
   { companyId: "c-ivan", hotelName: "Hotel Kvarner", playerName: "Ivan Jurić", place: "Crikvenica", progress: 2, closedRound: 1, cash: 24100, roundGain: -1 },
   { companyId: "c-petra", hotelName: "Villa Petra", playerName: "Petra Novak", place: "Mali Lošinj", progress: -3, closedRound: 0, cash: 17800, roundGain: -3 },
 ];
+// Student sees only their own cash (ADR-040); the professor mock keeps everyone's.
+const STUDENT_LEADERBOARD: LeaderboardRow[] = LEADERBOARD.map(({ cash, ...r }) => (r.companyId === COMPANY.id ? { ...r, cash } : r));
 
 const SITUATIONS: SituationView[] = [
   {
@@ -287,12 +289,12 @@ export const MOCK_ME: MeResponse = {
   world: WORLD,
   company: COMPANY,
   situations: SITUATIONS,
-  leaderboard: LEADERBOARD,
+  leaderboard: STUDENT_LEADERBOARD,
   reports: REPORTS,
   plan: { round: 2, price: 85, marketing: 1000, investments: { maintenance: 1000 } },
   contracts: CONTRACTS,
   finances: FINANCES,
-  city: CITY,
+  city: { ...CITY, hotels: STUDENT_LEADERBOARD },
   news: NEWS,
   departments: DEPARTMENTS,
   mail: MAIL,
