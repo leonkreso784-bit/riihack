@@ -6,6 +6,25 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~04:30 CET · botovi ponovno planiraju
+
+- **Spojeno:** [#273](https://github.com/leonkreso784-bit/riihack/pull/273) 04:22 CET (dokumentacija: projektor potvrđen) i [#272](https://github.com/leonkreso784-bit/riihack/pull/272) 04:24 CET (graditelj: plan
+  se ne prenosi botovima, bot opet planira sam svaki mjesec;
+  [BUG-063](BUGS.md#bug-063--botovi-ostaju-na-cijeni-1-mjeseca-jer-im-se-prenosi-plan), regresija iz [#241](https://github.com/leonkreso784-bit/riihack/pull/241)).
+- **Integrator:** 567 testova, build, smoke 1–18 i 20; CI `main` zelen (`0e024e3`), produkcija READY 04:24 CET.
+- **Tester ✅ [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (produkcija, 04:21–04:28):**
+  [BUG-057](BUGS.md#bug-057--izvještaj-otvoren-dok-profesor-zatvara-mjesec-ostaje-na-privremenim-brojkama) (osvježi se
+  2,1 s nakon zatvaranja), [BUG-058](BUGS.md#bug-058--tokovi-mjeseca-za-kasnog-studenta-obračun-još-nije-gotov-za-mjesec-prije-ulaska) i
+  [BUG-059](BUGS.md#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene) (napomena nestaje
+  2,6 s nakon „Završi sezonu" i nakon ponovnog učitavanja).
+- **Novi bug (nizak, Simon, ujutro):** [BUG-066](BUGS.md#bug-066--javni-pogled-hotela-za-bota-pokazuje-referentnu-cijenu-do-zatvaranja-mjeseca):
+  javni pogled hotela za bota pokazuje referentnu cijenu dok bot ne spremi plan pri zatvaranju mjeseca; stvarna
+  cijena bota je ±5 % od referentne, žiri razliku ne može vidjeti.
+- **Čišćenje baze:** graditeljev suhi prolaz 04:31 CET: 212 igara i 54 računa za brisanje, 21 igra ostaje, `KVRNDM`
+  zaštićena. `--apply` graditelj nije mogao pokrenuti (blokiran), pa ga **Leon pokreće ujutro prije obilaska 3**:
+  `npx tsx scripts/cleanup-test-data.ts --apply`. Za 5 starih igara demo računa stiže PR s načinom `--kodovi`.
+- **Simon:** [#267](https://github.com/leonkreso784-bit/riihack/pull/267) i [#268](https://github.com/leonkreso784-bit/riihack/pull/268) su nacrti.
+
 ## Ned 25.10. ~04:16 CET · projektor potvrđen
 
 - **Spojeno:** [#270](https://github.com/leonkreso784-bit/riihack/pull/270) 04:11 CET (dokumentacija: BUG-063) i [#271](https://github.com/leonkreso784-bit/riihack/pull/271) 04:19 CET (graditelj:

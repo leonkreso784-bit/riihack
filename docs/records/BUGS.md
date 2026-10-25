@@ -10,6 +10,18 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-066 · Javni pogled hotela za bota pokazuje referentnu cijenu do zatvaranja mjeseca
+- **Status:** 🔴 otvoren (Simon, ujutro) · **Težina:** nizak
+- **Opis:** tester (~04:28 CET, produkcija): javni pogled hotela (`/api/world/[worldId]/companies`) za bota pokazuje
+  zadanu (referentnu) cijenu, jer bot plan sprema tek pri zatvaranju mjeseca; npr. Bonavia 94 € uz 100 % popunjenost,
+  a prihod po noćenju raste. Graditelj (~04:31 CET): stvarna cijena bota je ±5 % od referentne, pa žiri razliku ne
+  može vidjeti.
+- **Uzrok:** `loadPublicViews` čita planove tekućeg mjeseca (`src/lib/game/public.ts:85`); bot za tekući mjesec još
+  nema retka, pa `toPlan` vraća referentnu cijenu (`src/lib/game/city.ts:233`); `playOneBot` sprema plan tek pri
+  zatvaranju mjeseca (`src/lib/game/bots.ts:242–245`).
+- **Rješenje:** —
+- **Lekcija:** javni prikaz treba čitati isti podatak koji koristi obračun.
+
 ### BUG-065 · Na 2560 px ploča ostaje 1600 px, a fontovi nemaju `2xl` stupanj
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
 - **Opis:** tester (~04:16 CET, produkcija, projektor 2560 px): na 2560 px sadržaj ploče profesora ostaje 1600 px
@@ -25,19 +37,6 @@ opis · uzrok · rješenje · **lekcija**.
   (`max-w-6xl` u `src/components/site-header.tsx:39`), a ploča ispod njega 1600 px ([#264](https://github.com/leonkreso784-bit/riihack/pull/264)).
 - **Rješenje:** —
 - **Lekcija:** —
-
-### BUG-063 · Botovi ostaju na cijeni 1. mjeseca jer im se prenosi plan
-- **Status:** 🟡 PR [#272](https://github.com/leonkreso784-bit/riihack/pull/272) (graditelj: plan se ne prenosi botovima) čeka spajanje · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)
-- **Opis:** našao Simon (u nacrtu PR-a [#268](https://github.com/leonkreso784-bit/riihack/pull/268)), javio graditelj ~04:10 CET: od [#241](https://github.com/leonkreso784-bit/riihack/pull/241) se plan
-  prenosi i botovima, pa bot više ne planira i ostaje na cijeni 1. mjeseca; poticaj botova iz
-  [ADR-044](DECISIONS.md#adr-044) ne radi.
-- **Uzrok:** prijenos plana iz [#241](https://github.com/leonkreso784-bit/riihack/pull/241) ([ADR-050](DECISIONS.md#adr-050)), `carryPlansForward`
-  (`src/lib/game/city.ts:245`), ne razlikuje botove; `playOneBot` planira samo kad plana nema
-  (`src/lib/game/bots.ts:242`).
-- **Rješenje:** graditelj: plan se ne prenosi botovima (`city.ts`); Simonov dodatak u `bots.ts` ([#268](https://github.com/leonkreso784-bit/riihack/pull/268)) tada
-  nije potreban.
-- **Lekcija:** kad se promijeni zajednički korak (otvaranje mjeseca), provjeri sve tipove igrača koji kroz njega
-  prolaze, i botove.
 
 ### BUG-062 · Sitnice sučelja: prazan panel „Odgovor" u Tokovima, natpisi na karti, stari URL situacije
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
@@ -154,8 +153,21 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-063 · Botovi ostaju na cijeni 1. mjeseca jer im se prenosi plan
+- **Status:** ✅ riješen 25.10. 04:24 CET ([#272](https://github.com/leonkreso784-bit/riihack/pull/272), graditelj) · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)
+- **Opis:** našao Simon (u nacrtu PR-a [#268](https://github.com/leonkreso784-bit/riihack/pull/268)), javio graditelj ~04:10 CET: od [#241](https://github.com/leonkreso784-bit/riihack/pull/241) se plan
+  prenosi i botovima, pa bot više ne planira i ostaje na cijeni 1. mjeseca; poticaj botova iz
+  [ADR-044](DECISIONS.md#adr-044) ne radi.
+- **Uzrok:** prijenos plana iz [#241](https://github.com/leonkreso784-bit/riihack/pull/241) ([ADR-050](DECISIONS.md#adr-050)), `carryPlansForward`
+  (`src/lib/game/city.ts:245`), ne razlikuje botove; `playOneBot` planira samo kad plana nema
+  (`src/lib/game/bots.ts:242`).
+- **Rješenje:** [#272](https://github.com/leonkreso784-bit/riihack/pull/272): plan iz prethodnog mjeseca prenosi se samo studentskim hotelima; bot planira sam svaki
+  mjesec. Simonov dodatak u `bots.ts` ([#268](https://github.com/leonkreso784-bit/riihack/pull/268)) nije potreban.
+- **Lekcija:** kad se promijeni zajednički korak (otvaranje mjeseca), provjeri sve tipove igrača koji kroz njega
+  prolaze, i botove.
+
 ### BUG-059 · Izvještaj 3. mjeseca nakon „Završi sezonu" i dalje piše „Brojke su privremene"
-- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); 🟨 tester provjerava na produkciji · **Težina:** srednji
+- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); tester potvrdio (~04:28 CET): napomena nestaje 2,6 s nakon „Završi sezonu" i nakon ponovnog učitavanja · **Težina:** srednji
 - **Opis:** tester (~02:50 CET, put žirija na probnoj igri `HYSJV5`): nakon „Završi sezonu" izvještaj 3. mjeseca i
   dalje piše „Brojke su privremene; konačne su nakon što profesor zatvori mjesec." Napomenu je uveo [#262](https://github.com/leonkreso784-bit/riihack/pull/262)
   ([BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke)). Tester ponovno potvrdio (~04:16 CET).
@@ -164,7 +176,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-058 · Tokovi mjeseca za kasnog studenta: „Obračun… još nije gotov" za mjesec prije ulaska
-- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); tester potvrdio (~04:28 CET) · **Težina:** nizak
 - **Opis:** tester (~02:45 CET, produkcija): `/igra/izvjestaj/1/tok` za kasnog studenta piše „Obračun za ovaj mjesec
   još nije gotov" za mjesec prije njegova ulaska (`src/app/igra/izvjestaj/[krug]/tok/page.tsx:55–57`); dolazi se samo
   ručnom adresom. Izvještaj istog mjeseca to već kaže točno ([BUG-049](#bug-049--kasni-student-vidi-krug-nije-zatvoren-za-mjesec-prije-svog-ulaska), [#262](https://github.com/leonkreso784-bit/riihack/pull/262)).
@@ -173,7 +185,7 @@ opis · uzrok · rješenje · **lekcija**.
   se dolazi samo adresom.
 
 ### BUG-057 · Izvještaj otvoren dok profesor zatvara mjesec ostaje na privremenim brojkama
-- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Status:** ✅ riješen 25.10. 04:19 CET ([#271](https://github.com/leonkreso784-bit/riihack/pull/271), graditelj); tester potvrdio (~04:28 CET): osvježi se 2,1 s nakon zatvaranja · **Težina:** nizak
 - **Opis:** tester (~02:45 CET, produkcija): izvještaj mjeseca otvoren dok profesor zatvara mjesec zadrži privremene
   brojke do ručnog osvježavanja. Nastavak [BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke).
 - **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:24–25`: izvještaj i stanje igre osvježavaju se svakih 10 min.
