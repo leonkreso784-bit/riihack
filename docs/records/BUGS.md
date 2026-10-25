@@ -80,7 +80,7 @@ opis · uzrok · rješenje · **lekcija**.
 ### BUG-046 · Dvostruki uvoz playbooka udvostruči situacije u igri
 - **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
 - **Opis:** tester (ned 02:18–02:36, produkcija): kad profesor isti playbook uveze dvaput, situacije su u igri
-  dvaput. Graditelj (~02:40): drugi uvoz odbija se s 409.
+  dvaput. Graditelj (~02:40): drugi uvoz odbija se s 409. Tester 02:13 CET: i dalje stvara duplikate.
 - **Rješenje:** —
 - **Lekcija:** uvoz mora biti idempotentan ili odbiti ponavljanje.
 
@@ -108,16 +108,6 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** —
 - **Lekcija:** privremeni podatak mora reći da je privremen.
 
-### BUG-042 · Razgovor s likom: istodobne 6. i 7. poruka obje prođu
-- **Status:** 🟡 popravak spojen ([#249](https://github.com/leonkreso784-bit/riihack/pull/249), 02:38; graditelj, [ADR-053](DECISIONS.md#adr-053)); tester provjerava na produkciji ·
-  **Težina:** srednji
-- **Opis:** tester (ned 02:18–02:36, produkcija): kad se 6. i 7. poruka liku pošalju istodobno (mimo sučelja), obje
-  prođu, pa granica od 6 poruka ne vrijedi. Sučelje je zaštićeno.
-- **Uzrok:** `src/app/api/situations/[id]/chat/route.ts:28` broji poslane poruke iz transkripta pročitanog prije
-  odgovora, a `src/db/queries.ts:69–79` (`appendTranscript`) dopisuje bez provjere granice.
-- **Rješenje:** —
-- **Lekcija:** granica koju provjerava poslužitelj mora se provjeriti u istom upitu kojim se piše.
-
 ### BUG-040 · Test botova „radi istodobno" ovisi o brzini stroja
 - **Status:** 🔴 otvoren · **Težina:** nizak · **Vlasnik:** Simon
 - **Opis:** graditelj (ned ~02:25): test `src/lib/game/bots.test.ts:118` „radi istodobno" mjeri stvarno vrijeme
@@ -128,7 +118,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** test ne smije ovisiti o brzini stroja.
 
 ### BUG-035 · Botovi: „(bot)" dvaput, „Moje igre" ih broji kao studente
-- **Status:** 🟡 dio riješen ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), 02:39); dvostruko „(bot)" Rino · **Težina:** nizak
+- **Status:** 🟡 dio riješen ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), 02:39); broj studenata bez botova: tester potvrdio (02:13 CET); dvostruko „(bot)" Rino · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): bot ima „(bot)" u imenu i uz to značku „bot"; „Moje igre" botove broji
   kao studente.
 - **Rješenje:** graditelj, [#255](https://github.com/leonkreso784-bit/riihack/pull/255): broj studenata u „Moje igre" bez botova. Dvostruko „(bot)" je Rinov prikaz
@@ -174,8 +164,20 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-042 · Razgovor s likom: istodobne 6. i 7. poruka obje prođu
+- **Status:** ✅ riješen 25.10. 02:38 CEST ([#249](https://github.com/leonkreso784-bit/riihack/pull/249), graditelj, [ADR-053](DECISIONS.md#adr-053)); tester potvrdio na produkciji (02:13 CET) ·
+  **Težina:** srednji
+- **Opis:** tester (ned 02:18–02:36, produkcija): kad se 6. i 7. poruka liku pošalju istodobno (mimo sučelja), obje
+  prođu, pa granica od 6 poruka ne vrijedi. Sučelje je zaštićeno.
+- **Uzrok:** `src/app/api/situations/[id]/chat/route.ts:28` broji poslane poruke iz transkripta pročitanog prije
+  odgovora, a `src/db/queries.ts:69–79` (`appendTranscript`) dopisuje bez provjere granice.
+- **Rješenje:** [#249](https://github.com/leonkreso784-bit/riihack/pull/249): granica se provjerava atomično u bazi ([ADR-053](DECISIONS.md#adr-053)). Tester (02:13 CET, produkcija):
+  istodobni zahtjevi 200/409/409, najviše 6 poruka.
+- **Lekcija:** granica koja se provjerava pa upisuje u dva koraka propušta istodobne zahtjeve; provjera i upis moraju
+  biti jedan korak.
+
 ### BUG-041 · „Promijeni ocjenu" za ocjenu 1 krivo za 1× učinak
-- **Status:** ✅ riješen 25.10. 02:59 CEST ([#253](https://github.com/leonkreso784-bit/riihack/pull/253), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Status:** ✅ riješen 25.10. 02:59 CEST ([#253](https://github.com/leonkreso784-bit/riihack/pull/253), graditelj); tester potvrdio na produkciji (02:13 CET) · **Težina:** nizak
 - **Opis:** graditelj (ned ~02:28): kad profesor ručno promijeni ocjenu odgovora („Promijeni ocjenu"), pomak
   pokazatelja je krivo za 1× učinak ako je stara ili nova ocjena 1 (npr. 1 → 4 pomiče 3× umjesto 4× učinak).
 - **Uzrok:** override je računao (nova − stara) × učinak, a od [ADR-046](DECISIONS.md#adr-046) faktori nisu linearni
@@ -184,7 +186,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** kad se tablica faktora promijeni, provjeri sve putanje koje ju koriste (i ručnu promjenu ocjene).
 
 ### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
-- **Status:** ✅ riješen 25.10. 02:59 CEST ([#253](https://github.com/leonkreso784-bit/riihack/pull/253), graditelj, [ADR-052](DECISIONS.md#adr-052)); 🟨 tester provjerava na produkciji · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
+- **Status:** ✅ riješen 25.10. 02:59 CEST ([#253](https://github.com/leonkreso784-bit/riihack/pull/253), graditelj, [ADR-052](DECISIONS.md#adr-052)); tester potvrdio na produkciji (02:13 CET) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
   za općenite odgovore)
 - **Opis:** tester (ned ~00:50, sezona na produkciji): napisan odgovor koji promaši temu dobije kvalitetu 1, isto −2×
   kao propuštena situacija. Student s 8 općenitih odgovora završi na −60,9, gore od studenta koji nije odgovorio
@@ -195,10 +197,12 @@ opis · uzrok · rješenje · **lekcija**.
   Graditelj (~02:28, po tom pravilu): zalijepljen (kopiran) odgovor s ocjenom 1 također ostaje −2×; 0 daje samo
   vlastiti napisan tekst. Kod u [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (pravilo i test za zalijepljen odgovor od
   02:33). Spojeno: motor (`isWrittenAnswer`, `qualityFactor(quality, written)`) i Tokovi pokazuju isto pravilo.
+  Tester (02:13 CET, produkcija): napisan promašaj 0, prazan, zalijepljen i propušten −2×; napredak +1,8 prema
+  −11,1 do −12,4.
 - **Lekcija:** kazna treba razlikovati „nije odgovorio" od „odgovorio slabo".
 
 ### BUG-034 · Ljestvica studentu pokazuje novac tuđih hotela
-- **Status:** ✅ riješen 25.10. 02:58 CEST ([#252](https://github.com/leonkreso784-bit/riihack/pull/252), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Status:** ✅ riješen 25.10. 02:58 CEST ([#252](https://github.com/leonkreso784-bit/riihack/pull/252), graditelj); tester potvrdio na produkciji (02:13 CET) · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): ljestvica studentu pokazuje novac tuđih hotela, a po
   [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci.
 - **Rješenje:** Leon (~01:25): ljestvica i grad pokazuju samo napredak, prihod i dobit tuđih hotela, bez stanja
@@ -208,7 +212,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** privatnost provjeri u odgovoru API-ja, ne samo u prikazu.
 
 ### BUG-029 · Plan se ne prenosi u sljedeći mjesec
-- **Status:** ✅ riješen 25.10. 02:58 CEST ([#241](https://github.com/leonkreso784-bit/riihack/pull/241), graditelj, [ADR-050](DECISIONS.md#adr-050)); 🟨 tester provjerava na produkciji ·
+- **Status:** ✅ riješen 25.10. 02:58 CEST ([#241](https://github.com/leonkreso784-bit/riihack/pull/241), graditelj, [ADR-050](DECISIONS.md#adr-050)); tester potvrdio na produkciji (02:13 CET) ·
   **Težina:** srednji
 - **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
   plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
@@ -219,7 +223,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** novi krug treba naslijediti stanje prethodnog, ne zadane vrijednosti.
 
 ### BUG-039 · „Dodaj iz knjižnice" dodaje situaciju koja je već u igri
-- **Status:** ✅ riješen 25.10. 02:39 ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), graditelj) · **Težina:** nizak
+- **Status:** ✅ riješen 25.10. 02:39 ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), graditelj); tester potvrdio (02:13 CET) · **Težina:** nizak
 - **Opis:** tester (ned ~01:08, produkcija): profesor iz knjižnice može dodati situaciju koja je već u igri, pa je
   igra ima dvaput.
 - **Uzrok:** `copyToWorld` nije provjeravao ima li igra već tu situaciju.
