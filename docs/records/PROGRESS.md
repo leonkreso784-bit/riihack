@@ -15,7 +15,7 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
   prvi ostaje. BUG-068 potvrđen.
 - **Stari mjeseci (nije bug):** mjesec zatvoren prije #280 dobije osvrt pri prvom otvaranju izvještaja (5–6 s, osvrt
   ispred starog odgovora; isto u `KVRNDM`); namjerno, isti mehanizam kao za refleksiju prije obračuna (graditelj
-  ~09:12, [ADR-057](DECISIONS.md#adr-057)).
+  ~09:12, [ADR-057](DECISIONS.md#adr-057)). Za demo: graditelj ~09:20 unaprijed stvara osvrte za 1. mjesec `KVRNDM` (agent otvara izvještaj 1. mjeseca kao 5 posijanih studenata ponovnim ulazom istim imenom i hotelom, ništa drugo ne šalje).
 - **Integrator:** ime prijašnjeg projekta nema na `main`-u (0 datoteka); otvoren samo
   [#209](https://github.com/leonkreso784-bit/riihack/pull/209).
 
