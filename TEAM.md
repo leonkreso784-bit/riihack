@@ -81,12 +81,14 @@ na koga čeka i što smo dogovorili.
 
 ## Stanje main-a (vodi integrator)
 
-- **CI na `main`-u:** ✅ zelen (523 testa; lokalni smoke 1–18 i 20) · produkcija https://riihack.vercel.app READY (ned 01:28), rute 200/401/404 u redu
-- **Zadnja spajanja (ned 01:05–01:33):** #233 animacije čekanja, #237 Mentor u izborniku i „Spremi ocjenu“ (lokalni merge commit: GitHub je vidio dvije zajedničke baze), #235 botovi igraju paralelno, #240 obračun grada u izvještaju, mentoru i podiju (#226), #244 BUG-036/038, #245 brže „Moje igre“ (#227.6), #242 BUG-033/037; dokumentacija #238, #243, #246
-- **Red čekanja:** #241 plan se prenosi i protuponuda bez koristi → 400 (mijenja motor, čeka Leonovo „spoji“; nakon njega graditelj ponovno sije demo i pokreće smoke na produkciji); #209 kalibracija se ne spaja prije predaje (ADR-047)
+- **CI na `main`-u:** ✅ zelen (561 test; lokalni smoke 1–18 i 20) · produkcija https://riihack.vercel.app READY (ned 02:59 CEST), rute 200/401/404 i tri sigurnosna zaglavlja potvrđeni
+- **Zadnja spajanja (ned 02:18–02:59 CEST):** #251 sigurnosna zaglavlja (ADR-053), #250 mentorovo pitanje, #249 granica 6 poruka atomično, #247 granica AI prijedloga, #255 BUG-039/035, #241 plan se prenosi i protuponuda bez koristi → 400, #252 student ne vidi tuđi novac (ADR-040), #253 napisan odgovor s ocjenom 1 = 0 (ADR-052); dokumentacija #248, #254, #256, #257, #258, #259
+- **Odobrenje:** Leon je u 02:42 CEST integratoru izravno dao odobrenje za sva spajanja (ADR-054); integrator spaja sve što prođe provjeru (agent u stablu `riihack-int-agent`: testovi, build, smoke)
+- **Red čekanja:** #209 kalibracija se ne spaja prije predaje (ADR-047); graditelj nakon #241–#253 ponovno sije demo igru i pokreće smoke na produkciji
 - **Env na Vercelu:** `NEXT_PUBLIC_USE_MOCK=0` (Production, Preview), `BETTER_AUTH_SECRET` (Production, Preview) i `BETTER_AUTH_URL` (Production) postavljeni sub ~20:25
-- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne); integratorov smoke ostavio je igre „Smoke …“ za čišćenje (3 do 00:27, još 2 u ~00:50 i ~01:00; graditelj čisti)
-- **Zadnje ažurirano:** ned 01:35
+- **Portovi za lokalni smoke:** graditelj 3107 i 3199, integrator 3917 (korak 19 lokalno se preskače bez auth tajne); integratorovi smoke krugovi ostavljaju igre „Smoke …“ u zajedničkoj bazi (graditelj čisti prije predaje)
+- **Vrijeme:** u 03:00 CEST sat se vratio na 02:00 CET; vremena nakon toga su zimsko vrijeme
+- **Zadnje ažurirano:** ned 02:05 CET
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
