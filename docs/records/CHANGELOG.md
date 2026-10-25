@@ -1,21 +1,26 @@
 # Changelog
 
-Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja (CEST). Priča po sesijama je u
+Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 03:00 CEST, zatim CET (sat vraćen u 03:00 na 02:00). Priča po sesijama je u
 [PROGRESS.md](PROGRESS.md).
 
 ## M3 · Obilazak 3 (rok ned 07:45)
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
-| [#257](https://github.com/leonkreso784-bit/riihack/pull/257) | 02:44 | Leon | dokumentacija: BUG-040 do 050, ADR-054, suženi kriterij karte i vijesti |
-| [#255](https://github.com/leonkreso784-bit/riihack/pull/255) | 02:39 | Leon | „Moje igre" broji studente bez botova (BUG-035, dio), knjižnica bez duplikata (BUG-039) |
-| [#247](https://github.com/leonkreso784-bit/riihack/pull/247) | 02:38 | Leon | granica AI prijedloga: 30 po igri i 5 u minuti (ADR-053) |
-| [#249](https://github.com/leonkreso784-bit/riihack/pull/249) | 02:38 | Leon | granica 6 poruka u razgovoru drži i pod istodobnim zahtjevima (BUG-042, ADR-053) |
-| [#250](https://github.com/leonkreso784-bit/riihack/pull/250) | 02:38 | Simon | mentorovo pitanje s tisućicama se više ne reže, rodno neutralno obraćanje |
-| [#256](https://github.com/leonkreso784-bit/riihack/pull/256) | 02:35 | Leon | dokumentacija: ARHITEKTURA.md §1a, §3 i §9a prema stanju main-a |
-| [#254](https://github.com/leonkreso784-bit/riihack/pull/254) | 02:29 | Leon | dokumentacija: PRD i BACKLOG prema demou |
-| [#251](https://github.com/leonkreso784-bit/riihack/pull/251) | 02:23 | Leon | sigurnosna zaglavlja na svim rutama: `X-Frame-Options`, `nosniff`, `Referrer-Policy` (ADR-053) |
-| [#248](https://github.com/leonkreso784-bit/riihack/pull/248) | 02:18 | Leon | dokumentacija: ADR-053 sigurnost |
+| [#253](https://github.com/leonkreso784-bit/riihack/pull/253) | 02:59 CEST | Leon | napisan vlastiti odgovor s ocjenom 1 vrijedi 0, zalijepljen ostaje −2; „Promijeni ocjenu" računa istim množiteljem kao motor (ADR-052, BUG-030, BUG-041; dira plan i pozivna mjesta u Simonovim Tokovima) |
+| [#252](https://github.com/leonkreso784-bit/riihack/pull/252) | 02:58 CEST | Leon | student ne vidi stanje računa tuđih hotela na ljestvici i karti, Financije „Rang po napretku" (ADR-040, BUG-034; mijenja ugovor `LeaderboardRow.cash?`, dira Rinove datoteke) |
+| [#241](https://github.com/leonkreso784-bit/riihack/pull/241) | 02:58 CEST | Leon | plan mjeseca se prenosi u sljedeći (#227.1), protuponuda bez koristi vraća 400 (#227.3) (ADR-050, BUG-029) |
+| [#259](https://github.com/leonkreso784-bit/riihack/pull/259) | 02:58 CEST | Leon | dokumentacija: projektor 1920/2560 i 1440 px, BUG-051 do 055 |
+| [#258](https://github.com/leonkreso784-bit/riihack/pull/258) | 02:51 CEST | Leon | dokumentacija: spajanja 02:35–02:44, ADR-054 izravno odobrenje, BUG-039 riješen |
+| [#257](https://github.com/leonkreso784-bit/riihack/pull/257) | 02:44 CEST | Leon | dokumentacija: BUG-040 do 050, ADR-054, suženi kriterij karte i vijesti |
+| [#255](https://github.com/leonkreso784-bit/riihack/pull/255) | 02:39 CEST | Leon | „Moje igre" broji studente bez botova (BUG-035, dio), knjižnica bez duplikata (BUG-039) |
+| [#247](https://github.com/leonkreso784-bit/riihack/pull/247) | 02:38 CEST | Leon | granica AI prijedloga: 30 po igri i 5 u minuti (ADR-053) |
+| [#249](https://github.com/leonkreso784-bit/riihack/pull/249) | 02:38 CEST | Leon | granica 6 poruka u razgovoru drži i pod istodobnim zahtjevima (BUG-042, ADR-053) |
+| [#250](https://github.com/leonkreso784-bit/riihack/pull/250) | 02:38 CEST | Simon | mentorovo pitanje s tisućicama se više ne reže, rodno neutralno obraćanje |
+| [#256](https://github.com/leonkreso784-bit/riihack/pull/256) | 02:35 CEST | Leon | dokumentacija: ARHITEKTURA.md §1a, §3 i §9a prema stanju main-a |
+| [#254](https://github.com/leonkreso784-bit/riihack/pull/254) | 02:29 CEST | Leon | dokumentacija: PRD i BACKLOG prema demou |
+| [#251](https://github.com/leonkreso784-bit/riihack/pull/251) | 02:23 CEST | Leon | sigurnosna zaglavlja na svim rutama: `X-Frame-Options`, `nosniff`, `Referrer-Policy` (ADR-053) |
+| [#248](https://github.com/leonkreso784-bit/riihack/pull/248) | 02:18 CEST | Leon | dokumentacija: ADR-053 sigurnost |
 | [#246](https://github.com/leonkreso784-bit/riihack/pull/246) | 01:33 | Leon | dokumentacija: ADR-052, račun tuđih hotela, BUG-033, 036, 037 i 038 riješeni |
 | [#242](https://github.com/leonkreso784-bit/riihack/pull/242) | 01:28 | Simon | mentor prepozna prazan odgovor (BUG-033), množina u Tokovima odjela (BUG-037) |
 | [#245](https://github.com/leonkreso784-bit/riihack/pull/245) | 01:27 | Leon | brže „Moje igre": igre se traže odmah, usporedno sa sesijom (#227.6) |

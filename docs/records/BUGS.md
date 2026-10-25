@@ -118,15 +118,6 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** —
 - **Lekcija:** granica koju provjerava poslužitelj mora se provjeriti u istom upitu kojim se piše.
 
-### BUG-041 · „Promijeni ocjenu" za ocjenu 1 krivo za 1× učinak
-- **Status:** 🟡 PR [#253](https://github.com/leonkreso784-bit/riihack/pull/253) čeka spajanje · **Težina:** nizak
-- **Opis:** graditelj (ned ~02:28): kad profesor ručno promijeni ocjenu odgovora („Promijeni ocjenu"), pomak
-  pokazatelja je krivo za 1× učinak ako je stara ili nova ocjena 1 (npr. 1 → 4 pomiče 3× umjesto 4× učinak).
-- **Uzrok:** override je računao (nova − stara) × učinak, a od [ADR-046](DECISIONS.md#adr-046) faktori nisu linearni
-  (1 → −2×, 2 → 0, 3 → +1×…).
-- **Rješenje:** [#253](https://github.com/leonkreso784-bit/riihack/pull/253): pomak je faktor(nova) × učinak − faktor(stara) × učinak, istim množiteljem kao motor.
-- **Lekcija:** kad se tablica faktora promijeni, provjeri sve putanje koje ju koriste (i ručnu promjenu ocjene).
-
 ### BUG-040 · Test botova „radi istodobno" ovisi o brzini stroja
 - **Status:** 🔴 otvoren · **Težina:** nizak · **Vlasnik:** Simon
 - **Opis:** graditelj (ned ~02:25): test `src/lib/game/bots.test.ts:118` „radi istodobno" mjeri stvarno vrijeme
@@ -144,14 +135,6 @@ opis · uzrok · rješenje · **lekcija**.
   (vlasnik Rino, nije u #255).
 - **Lekcija:** —
 
-### BUG-034 · Ljestvica studentu pokazuje novac tuđih hotela
-- **Status:** 🟡 PR [#252](https://github.com/leonkreso784-bit/riihack/pull/252) čeka Leonovo „spoji" (mijenja ugovor) · **Težina:** nizak
-- **Opis:** tester (ned ~00:55, produkcija): ljestvica studentu pokazuje novac tuđih hotela, a po
-  [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci.
-- **Rješenje:** Leon (~01:25): ljestvica i grad pokazuju samo napredak, prihod i dobit tuđih hotela, bez stanja
-  računa; svoj račun student vidi (ADR-040). Radi graditelj.
-- **Lekcija:** —
-
 ### BUG-031 · Ploča profesora nakon pokretanja opet nema kod igre
 - **Status:** 🔴 otvoren, ne radi se prije predaje ([ADR-051](DECISIONS.md#adr-051)) · **Težina:** nizak (Leon
   ~01:10; bilo visok)
@@ -162,31 +145,6 @@ opis · uzrok · rješenje · **lekcija**.
   `prof-board.tsx` više ne prikazuje `joinCode`; ni otvoreni #237 ga ne vraća.
 - **Rješenje:** Leon (~01:10): kod i QR na ploči nakon pokretanja nisu potrebni, profesor vidi tko je ušao.
 - **Lekcija:** kad se nešto makne sa sučelja, provjeri oslanja li se na to drugi tok (ovdje kasni ulaz).
-
-### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
-- **Status:** 🟡 PR [#253](https://github.com/leonkreso784-bit/riihack/pull/253) čeka Leonovo „spoji" ([ADR-052](DECISIONS.md#adr-052)) · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
-  za općenite odgovore)
-- **Opis:** tester (ned ~00:50, sezona na produkciji): napisan odgovor koji promaši temu dobije kvalitetu 1, isto −2×
-  kao propuštena situacija. Student s 8 općenitih odgovora završi na −60,9, gore od studenta koji nije odgovorio
-  ništa (−54,6) i od botova (+27, +30).
-- **Uzrok:** učinak po kvaliteti iz [ADR-046](DECISIONS.md#adr-046): 1 (loš ili propušten) −2×. 🟨 Zašto je općeniti
-  student gori od onoga bez odgovora, nije utvrđeno.
-- **Rješenje:** Leon (~01:25): napisan odgovor s ocjenom 1 ima množitelj 0; propušten i prazan ostaju −2×.
-  Graditelj (~02:28, po tom pravilu): zalijepljen (kopiran) odgovor s ocjenom 1 također ostaje −2×; 0 daje samo
-  vlastiti napisan tekst. Kod u [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (pravilo i test za zalijepljen odgovor od
-  02:33).
-- **Lekcija:** —
-
-### BUG-029 · Plan se ne prenosi u sljedeći mjesec
-- **Status:** 🟡 PR [#241](https://github.com/leonkreso784-bit/riihack/pull/241) čeka Leonovo „spoji"
-  ([ADR-050](DECISIONS.md#adr-050)) ·
-  **Težina:** srednji
-- **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
-  plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
-  Potvrđeno i u sučelju (~00:55): plan 150/1000 u sljedećem mjesecu postane 172/0.
-- **Uzrok:** `toPlan` bez retka plana za novi mjesec vraća zadani plan (`src/lib/game/city.ts:229-238`).
-- **Rješenje:** #241: pri otvaranju mjeseca plan prethodnog (cijena, marketing) kopira se u novi; ulaganja ne.
-- **Lekcija:** —
 
 ### BUG-028 · Mentor je spor ili ne odgovori
 - **Status:** 🟡 na API-ju brzo ([#231](https://github.com/leonkreso784-bit/riihack/pull/231), 00:28); tester još
@@ -215,6 +173,50 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-041 · „Promijeni ocjenu" za ocjenu 1 krivo za 1× učinak
+- **Status:** ✅ riješen 25.10. 02:59 CEST ([#253](https://github.com/leonkreso784-bit/riihack/pull/253), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** graditelj (ned ~02:28): kad profesor ručno promijeni ocjenu odgovora („Promijeni ocjenu"), pomak
+  pokazatelja je krivo za 1× učinak ako je stara ili nova ocjena 1 (npr. 1 → 4 pomiče 3× umjesto 4× učinak).
+- **Uzrok:** override je računao (nova − stara) × učinak, a od [ADR-046](DECISIONS.md#adr-046) faktori nisu linearni
+  (1 → −2×, 2 → 0, 3 → +1×…).
+- **Rješenje:** [#253](https://github.com/leonkreso784-bit/riihack/pull/253): pomak je faktor(nova) × učinak − faktor(stara) × učinak, istim množiteljem kao motor; test provjerava svih 25 parova ocjena (napisan i nenapisan odgovor).
+- **Lekcija:** kad se tablica faktora promijeni, provjeri sve putanje koje ju koriste (i ručnu promjenu ocjene).
+
+### BUG-030 · Odgovor koji promaši temu kažnjava se kao propušten, pa je gori od šutnje
+- **Status:** ✅ riješen 25.10. 02:59 CEST ([#253](https://github.com/leonkreso784-bit/riihack/pull/253), graditelj, [ADR-052](DECISIONS.md#adr-052)); 🟨 tester provjerava na produkciji · **Težina:** srednji (poruka igre „potrudi se" ne vrijedi
+  za općenite odgovore)
+- **Opis:** tester (ned ~00:50, sezona na produkciji): napisan odgovor koji promaši temu dobije kvalitetu 1, isto −2×
+  kao propuštena situacija. Student s 8 općenitih odgovora završi na −60,9, gore od studenta koji nije odgovorio
+  ništa (−54,6) i od botova (+27, +30).
+- **Uzrok:** učinak po kvaliteti iz [ADR-046](DECISIONS.md#adr-046): 1 (loš ili propušten) −2×. 🟨 Zašto je općeniti
+  student gori od onoga bez odgovora, nije utvrđeno.
+- **Rješenje:** Leon (~01:25): napisan odgovor s ocjenom 1 ima množitelj 0; propušten i prazan ostaju −2×.
+  Graditelj (~02:28, po tom pravilu): zalijepljen (kopiran) odgovor s ocjenom 1 također ostaje −2×; 0 daje samo
+  vlastiti napisan tekst. Kod u [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (pravilo i test za zalijepljen odgovor od
+  02:33). Spojeno: motor (`isWrittenAnswer`, `qualityFactor(quality, written)`) i Tokovi pokazuju isto pravilo.
+- **Lekcija:** kazna treba razlikovati „nije odgovorio" od „odgovorio slabo".
+
+### BUG-034 · Ljestvica studentu pokazuje novac tuđih hotela
+- **Status:** ✅ riješen 25.10. 02:58 CEST ([#252](https://github.com/leonkreso784-bit/riihack/pull/252), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (ned ~00:55, produkcija): ljestvica studentu pokazuje novac tuđih hotela, a po
+  [ADR-040](DECISIONS.md#adr-040) javni su samo prihod i dobit zatvorenih mjeseci.
+- **Rješenje:** Leon (~01:25): ljestvica i grad pokazuju samo napredak, prihod i dobit tuđih hotela, bez stanja
+  računa; svoj račun student vidi (ADR-040). [#252](https://github.com/leonkreso784-bit/riihack/pull/252): odgovor `/api/me` nosi `cash` samo na vlastitom retku
+  ljestvice i karte (`ownCashOnly`), `LeaderboardRow.cash` je neobavezan (ugovor), Financije „Rang po napretku";
+  profesor i dalje vidi novac svih. Smoke korak 18 to provjerava.
+- **Lekcija:** privatnost provjeri u odgovoru API-ja, ne samo u prikazu.
+
+### BUG-029 · Plan se ne prenosi u sljedeći mjesec
+- **Status:** ✅ riješen 25.10. 02:58 CEST ([#241](https://github.com/leonkreso784-bit/riihack/pull/241), graditelj, [ADR-050](DECISIONS.md#adr-050)); 🟨 tester provjerava na produkciji ·
+  **Težina:** srednji
+- **Opis:** tester (ned ~00:50, produkcija, QA igra): marketing 500 € u 1. mjesecu, u 2. mjesecu 0; student mora
+  plan unositi iznova svaki mjesec. Isto je Simon našao u auditu (#227.1).
+  Potvrđeno i u sučelju (~00:55): plan 150/1000 u sljedećem mjesecu postane 172/0.
+- **Uzrok:** `toPlan` bez retka plana za novi mjesec vraća zadani plan (`src/lib/game/city.ts:229-238`).
+- **Rješenje:** #241: pri otvaranju mjeseca plan prethodnog (cijena, marketing) kopira se u novi; ulaganja ne, a plan
+  koji je student već spremio za novi mjesec ostaje. Smoke korak 11 provjerava preneseni plan.
+- **Lekcija:** novi krug treba naslijediti stanje prethodnog, ne zadane vrijednosti.
 
 ### BUG-039 · „Dodaj iz knjižnice" dodaje situaciju koja je već u igri
 - **Status:** ✅ riješen 25.10. 02:39 ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), graditelj) · **Težina:** nizak
