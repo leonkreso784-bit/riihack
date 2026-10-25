@@ -9,6 +9,7 @@ import {
   FIXED_COST_PER_ROOM,
   MARKET_QUALITY_WEIGHTS,
   MARKETING_MAX,
+  MAX_ROUNDS,
   METRIC_LABELS,
   NIGHTS_PER_ROUND,
   ROUND_LABELS,
@@ -80,6 +81,9 @@ export function estimateWhatIf(finance: RoundFinance, rooms: { basePrice: number
   if (!base || !b) return { ok: false, reason: "Ovaj je mjesec obračunat bez detaljne raspodjele, pa ga ne možemo ponovno izračunati." };
   if (finance.nights === 0) return { ok: false, reason: "Ovaj mjesec nisi imao gostiju preko tržišta, pa nema od čega procijeniti kako bi izgledao s drugom cijenom." };
   if (finance.marketSharePct === 0) return { ok: false, reason: "Tvoj udio turista grada bio je manji od 1 %, a iz tako malog broja ne možemo pošteno procijeniti." };
+  // A full hotel served less than its real pull (the rest was turned away), so the stored share underestimates it
+  // and the estimate can even point the wrong way (review GAP1-04). Refuse instead of guessing.
+  if (finance.nights + finance.contractNights >= finance.capacityNights) return { ok: false, reason: "Tvoj hotel je ovaj mjesec bio pun, pa iz njegova udjela ne možemo pošteno procijeniti drugu cijenu." };
 
   const changed = scenario.price !== base.price || scenario.marketing !== base.marketing;
   if (!changed) return { ok: true, changed, finance };
@@ -90,7 +94,8 @@ export function estimateWhatIf(finance: RoundFinance, rooms: { basePrice: number
   const freeTourists = finance.nights / s; // all free tourists in the city, from our own share
   const others = (1 - s) / s; // other hotels' weight, in units of our old weight
   const room = Math.max(0, finance.capacityNights - finance.contractNights);
-  const nights = Math.min(room, Math.floor((freeTourists * r) / (r + others)));
+  // + 1e-9: with an unchanged factor (r = 1) floating point can land just under a whole night (review AI-TOKOVI-09).
+  const nights = Math.min(room, Math.floor((freeTourists * r) / (r + others) + 1e-9));
 
   const market: MarketResult = {
     companyId: "me",
@@ -132,9 +137,17 @@ export function buildMonthFlow(
   const marketing = b.costMarketing;
   const month = ROUND_LABELS[round - 1] ?? `Krug ${round}`;
   const demandBp = SEASON_DEMAND_BP[clamp(round, 1, SEASON_DEMAND_BP.length) - 1];
+  // Without market guests the price cannot be recovered from revenue, so its factor is unknown (review AI-TOKOVI-05).
+  // priceBp(0) would read 0 as the cheapest price and show the best factor, 1,50.
+  const priceKnown = price > 0;
   const pBp = priceBpOf(price, base.ref);
   const mBp = marketingBpOf(marketing);
+  const priceFactor = priceKnown ? `× ${factor(pBp)}` : "nije poznat";
+  const attraction = priceKnown ? `× ${factor(Math.floor((pBp * mBp) / 10000))}` : "nije poznata";
+  const priceCalc = price > base.ref ? `(${num(base.ref)} ÷ ${num(price)})²` : `${num(base.ref)} ÷ ${num(price)}`;
   const effectRaw = f.profit / FINANCE_EFFECT_DIVISOR;
+  // Shown truncated like the rule ("samo cijeli dio"): 3.960 ÷ 2.000 is 1,98, not 2,0 (review AI-TOKOVI-06).
+  const effectShown = `${effectRaw < 0 ? "−" : ""}${(Math.trunc(Math.abs(effectRaw) * 100) / 100).toFixed(2).replace(".", ",")}`;
   const effect = financeEffect(f.profit);
   const effectText = effect > 0 ? `+${effect}` : effect < 0 ? `−${-effect}` : "0";
   const occupied = f.nights + f.contractNights;
@@ -184,10 +197,10 @@ export function buildMonthFlow(
         "Faktor cijene: do prosječne cijene soba = prosječna ÷ tvoja (najviše 1,50); iznad nje (prosječna ÷ tvoja)², a iznad 2,5× prosječne nitko ne dolazi.",
         `Faktor marketinga = 1 + marketing ÷ ${num(2 * MARKETING_MAX)} (najviše 1,50).`,
       ],
-      calc: price > 0 ? `${num(base.ref)} ÷ ${num(price)} → ${factor(pBp)} · 1 + ${num(marketing)} ÷ ${num(2 * MARKETING_MAX)} → ${factor(mBp)}` : undefined,
+      calc: priceKnown ? `${priceCalc} → ${factor(pBp)} · 1 + ${num(marketing)} ÷ ${num(2 * MARKETING_MAX)} → ${factor(mBp)}` : undefined,
       note: "Ovo su tvoje odluke. Sve ostalo slijedi iz pravila. Cijena po noći je izračunata iz prihoda i noćenja tog mjeseca.",
       outputs: [
-        { label: "Faktor cijene", value: `× ${factor(pBp)}` },
+        { label: "Faktor cijene", value: priceFactor },
         { label: "Faktor marketinga", value: `× ${factor(mBp)}`, strong: true },
       ],
     },
@@ -210,17 +223,19 @@ export function buildMonthFlow(
     {
       id: "privlacnost",
       title: "Koliko si zanimljiv turistima",
-      big: `× ${factor(Math.floor((pBp * mBp) / 10000))}`,
+      big: attraction,
       small: "cijena i marketing zajedno",
       inputs: [
         { label: "Ugled", value: "iz koraka Ugled" },
-        { label: "Faktor cijene", value: `× ${factor(pBp)}` },
+        { label: "Faktor cijene", value: priceFactor },
         { label: "Faktor marketinga", value: `× ${factor(mBp)}` },
       ],
       rule: ["Zanimljivost turistima = ugled × faktor cijene × faktor marketinga."],
-      calc: `ugled × ${factor(pBp)} × ${factor(mBp)}`,
-      note: "Igra to zove privlačnost. Bodovi sami ništa ne znače, važno je koliko ih imaš u odnosu na druge hotele. Bodove ostalih hotela ovdje ne znamo.",
-      outputs: [{ label: "Tvoj faktor (bez ugleda)", value: `× ${factor(Math.floor((pBp * mBp) / 10000))}`, strong: true }],
+      calc: priceKnown ? `ugled × ${factor(pBp)} × ${factor(mBp)}` : undefined,
+      note: priceKnown
+        ? "Igra to zove privlačnost. Bodovi sami ništa ne znače, važno je koliko ih imaš u odnosu na druge hotele. Bodove ostalih hotela ovdje ne znamo."
+        : "Ovaj mjesec nisi imao gostiju s tržišta, pa se cijena ne može izračunati iz prihoda. Cijena iznad 2,5× prosječne cijene soba ne dovodi nikoga.",
+      outputs: [{ label: "Tvoj faktor (bez ugleda)", value: attraction, strong: true }],
     },
     {
       id: "trziste",
@@ -315,7 +330,7 @@ export function buildMonthFlow(
         { label: "Dijelimo s", value: eur(FINANCE_EFFECT_DIVISOR) },
       ],
       rule: [`Pokazatelj Financije = dobit ÷ ${num(FINANCE_EFFECT_DIVISOR)}, samo cijeli dio, najviše +${FINANCE_EFFECT_CAP} i najmanje −${FINANCE_EFFECT_CAP}.`],
-      calc: `${num(f.profit)} ÷ ${num(FINANCE_EFFECT_DIVISOR)} = ${effectRaw.toFixed(1).replace(".", ",")} → ${effectText}`,
+      calc: `${num(f.profit)} ÷ ${num(FINANCE_EFFECT_DIVISOR)} = ${effectShown} → ${effectText}`,
       note: "Pokazatelj nije novac. To su bodovi koji ulaze u tvoj ukupni uspjeh. Novac je zaseban račun, vidi sljedeći korak.",
       outputs: [{ label: "Bodovi Financije", value: effectText, strong: true }],
     },
@@ -331,7 +346,7 @@ export function buildMonthFlow(
       ],
       rule: ["Novac poslije = novac prije + dobit."],
       calc: `${num(base.cashBefore)} ${f.profit < 0 ? "−" : "+"} ${num(Math.abs(f.profit))} = ${num(f.cashAfter)}`,
-      note: "Ovaj iznos postaje početno stanje sljedećeg mjeseca.",
+      note: round >= MAX_ROUNDS ? "Ovo je stanje računa na kraju sezone." : "Ovaj iznos postaje početno stanje sljedećeg mjeseca.",
       outputs: [{ label: "Novac na računu", value: eur(f.cashAfter), strong: true }],
     },
   ];
