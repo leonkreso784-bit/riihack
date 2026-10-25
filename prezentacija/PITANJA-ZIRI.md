@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | **Zloupotreba:** student zalijepi odgovor iz ChatGPT-a? | Zalijepljen tekst vrijedi najviše kao klik na ponuđeni odgovor, a profesor vidi da je zalijepljen. Prepisivanje prepoznaju pravila, ne AI. | Pravilo u motoru (udio zalijepljenog teksta), uvid profesora. |
 | **Motivacija:** zašto bi student igrao? | Ocjena je napredak u odnosu na vlastiti početak, a grad je zajednički: tvoja cijena i odgovori gostu mijenjaju tvoju blagajnu i tržište. Mentor nakon svakog mjeseca pita zašto. | Ljestvica po napretku, podij, mentor. |
-| **Novac:** tko plaća? | Hotelska kuća plaća scenarij (regrutacija, obuka), fakultet koristi besplatno. AI košta oko 7 centi po studentu za sezonu. Pilot je besplatan; cijena scenarija (oko 1.500 € po kući po semestru) je naša pretpostavka, još nismo pitali tvrtke. | Izmjereni tokeni, razred od 30 je 2 do 4 $. |
+| **Novac:** tko plaća? | Fakultet plaća licencu po semestru ili godini, u partnerstvu s tvrtkom: hotelska kuća donosi stvarne situacije i put do prakse i posla. Svi ostali mogu igrati u zasebnom predvorju, a studenti ostaju u kontroliranom okruženju kolegija. AI košta oko 7 centi po studentu za sezonu. Pilot je besplatan; cijenu licence još nismo dogovorili ni s jednim fakultetom. | Izmjereni tokeni, razred od 30 je 2 do 4 $. |
 | **Usvajanje:** tko će to prvi koristiti? | FMTU Opatija: već koriste Cesim od 2012., a Cesim nema riječi ni hrvatski. Tražimo jedan kolegij i jednu hotelsku kuću za pilot. | Slajd „Što već postoji", slajd „Tražimo". |
 | **Dizajn:** radi li na mobitelu? | Žiri ga je jutros igrao na svojim mobitelima. | Obilazak 3. |
 
