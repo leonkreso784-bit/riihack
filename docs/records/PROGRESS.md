@@ -6,6 +6,19 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~09:05 CET · prezentacija i predaja spojeni
+
+- **Leon (~09:00) integratoru izravno:** „možeš krenuti sa spajanjem odmah" ([ADR-056](DECISIONS.md#adr-056)).
+- **Spojeno:** [#279](https://github.com/leonkreso784-bit/riihack/pull/279) i [#281](https://github.com/leonkreso784-bit/riihack/pull/281) 09:00 CET (dokumentacija; Simon: predaja), [#277](https://github.com/leonkreso784-bit/riihack/pull/277) i
+  [#280](https://github.com/leonkreso784-bit/riihack/pull/280) 09:01 CET (Simon: prezentacija v6; graditelj: mentor sam piše osvrt nakon obračuna,
+  [ADR-057](DECISIONS.md#adr-057), BUG-068 riješen), [#268](https://github.com/leonkreso784-bit/riihack/pull/268) 09:04 CET (Simon: popravci iz noćnog pregleda,
+  dio B; 🟨 rezultat integratorove provjere nije upisan).
+- **Integrator za #280:** 622 testa, build, smoke 1–18 i 20 (s korakom 11) ✅; CI `main` zelen (`88c40ff`), produkcija
+  READY 09:01 CET. CI `main` za #268 (`7391602`) zelen.
+- **Tester** je ~08:20 završio zadnju provjeru i gotov je do predaje; #280 i #268 ne provjerava.
+- **Otvoreno:** [#209](https://github.com/leonkreso784-bit/riihack/pull/209) (ne spaja se, [ADR-047](DECISIONS.md#adr-047)).
+- **Predaja:** u #prezentacije do 10:15 (rok 10:30); tekst pripremio dokumentarist.
+
 ## Ned 25.10. ~08:20 CET · obilazak 3 prošao
 
 - **Tester, zadnja provjera produkcije (~08:20 CET, API, nakon #278) ✅:** stranice 200, odgovor 5/5 za 2,7 s, mentor 2,1 s
