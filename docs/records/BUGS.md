@@ -10,6 +10,45 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-055 · Sitnice prikaza na projektoru: „Završi sezonu", podij na 2560 px, kartice botova
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): (1) gumb „Završi sezonu" stoji sam u drugom redu (`src/components/prof-board.tsx:179`);
+  (2) podij mjeseca na 2560 px je malen, ograničen na `max-w-4xl` (`src/components/round-podium.tsx:70`);
+  (3) kartice botova u čekaonici režu ime (🟨 potvrditi datoteku).
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-054 · Ploča profesora uživo stisnuta u 1120 px, ljestvica presitna za projektor
+- **Status:** 🟡 u radu (graditelj, po [ADR-054](DECISIONS.md#adr-054); Rinove datoteke navedene u PR-u) · **Težina:** srednji
+- **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): ploča profesora uživo zauzima samo 1120 px širine ekrana (`max-w-6xl` u
+  `src/components/app-frame.tsx:18`), a tekst ljestvice od 12 do 16 px (`src/components/leaderboard.tsx`) je presitan
+  za projektor.
+- **Rješenje:** —
+- **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
+
+### BUG-053 · Podij sezone na 1920×1080 viši od ekrana
+- **Status:** 🟡 u radu (graditelj, po [ADR-054](DECISIONS.md#adr-054); Rinove datoteke navedene u PR-u) · **Težina:** srednji
+- **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): podij sezone (`src/components/round-podium.tsx:53`) na 1920×1080 visok je 1214 px, pa se ispod
+  njega vide samo 3 reda ljestvice.
+- **Rješenje:** —
+- **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
+
+### BUG-052 · Nakon kraja sezone ljestvica ispod podija crvena za mjesta 3–5
+- **Status:** 🟡 u radu (graditelj, po [ADR-054](DECISIONS.md#adr-054); Rinove datoteke navedene u PR-u) · **Težina:** srednji
+- **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): nakon „Završi sezonu" ljestvica ispod podija prikazuje crveni napredak za mjesta 3–5
+  (`src/components/leaderboard.tsx:58`, iz `src/components/prof-board.tsx:98`). Ostatak [BUG-022](#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik): podij je
+  neutralan, ljestvica nije.
+- **Rješenje:** —
+- **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
+
+### BUG-051 · Podij mjeseca: crvena „▼ −0,8" na 3. mjestu
+- **Status:** 🟡 u radu (graditelj, po [ADR-054](DECISIONS.md#adr-054); Rinove datoteke navedene u PR-u) · **Težina:** srednji
+- **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): podij mjeseca na 3. mjestu prikazuje crvenu „▼ −0,8" (`src/components/round-podium.tsx:80`,
+  `Delta` za napredak u krugu). Usp. [BUG-022](#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik): podij sezone je neutralan, podij mjeseca nije.
+- **Rješenje:** —
+- **Lekcija:** projektor je glavni ekran obilaska; provjeravaj ga na stvarnoj rezoluciji (1920 i 2560 px), ne samo
+  na laptopu.
+
 ### BUG-050 · Lik oslovljava studenticu s „Gospodine"
 - **Status:** 🔴 otvoren (Simon, AI) · **Težina:** nizak
 - **Opis:** tester (ned 02:18–02:36, produkcija): lik u razgovoru studenticu oslovljava s „Gospodine".

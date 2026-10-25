@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~02:54 · projektor i 1440 px
+
+- **Tester, produkcija (02:37–~02:54) ✅:** projektor 1920 i 2560 px, studenti na 1440 px, bez vodoravnog scrolla i
+  preklapanja.
+- **Nalazi:** [BUG-051](BUGS.md#bug-051--podij-mjeseca-crvena--08-na-3-mjestu) do
+  [BUG-055](BUGS.md#bug-055--sitnice-prikaza-na-projektoru-završi-sezonu-podij-na-2560-px-kartice-botova); 4 srednja
+  za podij i ploču na projektoru (BUG-051 do 054, Rinove datoteke u `src/components/`) radi graditelj, niski BUG-055
+  ostaje Rinu.
+- **Odluka graditelja (~02:54):** noću se tuđe UI datoteke diraju samo za ono što žiri vidi na projektoru; uz
+  [ADR-054](DECISIONS.md#adr-054), datoteke se navode u PR-u.
+
 ## Ned 25.10. ~02:45 · Leon spava, spajanja do jutra
 
 - **Odobrenje:** Leon je ~02:42 integratoru izravno u njegovoj sesiji napisao „izravno ti dajem odobrenje za svo
