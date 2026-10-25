@@ -173,7 +173,7 @@ export function buildMonthFlow(
     {
       id: "ugled",
       title: "Ugled",
-      small: "Svih pet pokazatelja, gradi se mjesecima",
+      small: "Iznos nije spremljen uz obračun, gradi se mjesecima",
       inputs: [{ label: "Svih pet pokazatelja", value: "nije spremljeno uz obračun" }],
       rule: [
         `Kvaliteta = ponderirani prosjek svih pet pokazatelja (${qualityWeights}), u trenutku zatvaranja mjeseca.`,
@@ -208,7 +208,7 @@ export function buildMonthFlow(
       id: "privlacnost",
       title: "Koliko si zanimljiv turistima",
       big: attraction,
-      small: "cijena i marketing zajedno",
+      small: "cijena × marketing, bez ugleda",
       inputs: [
         { label: "Ugled", value: "iz koraka Ugled" },
         { label: "Faktor cijene", value: priceFactor },
@@ -293,7 +293,7 @@ export function buildMonthFlow(
       id: "troskovi",
       title: "Troškovi",
       big: eur(f.costs),
-      small: "osoblje, sobe, marketing, ugovori, ulaganja",
+      small: `osoblje ${num(b.costStaff)} · sobe ${num(b.costRooms)} · marketing ${num(b.costMarketing)} · ugovori ${num(b.costContracts)}${b.costInvestments > 0 ? ` · ulaganja ${num(b.costInvestments)}` : ""}`,
       inputs: [
         { label: "Plaće osoblja", value: eur(b.costStaff) },
         { label: `Sobe: ${num(base.roomsCount)} × ${eur(FIXED_COST_PER_ROOM)}`, value: eur(b.costRooms) },

@@ -35,7 +35,7 @@ const POS: Record<StepId, { x: number; y: number; w?: number }> = {
   plan: { x: 190, y: 260, w: 208 },
   privlacnost: { x: 458, y: 170 },
   ugovori: { x: 458, y: 470 },
-  troskovi: { x: 458, y: 680 },
+  troskovi: { x: 458, y: 680, w: 208 },
   trziste: { x: 690, y: 170 },
   nocenja: { x: 922, y: 170 },
   prihod: { x: 1154, y: 170 },
