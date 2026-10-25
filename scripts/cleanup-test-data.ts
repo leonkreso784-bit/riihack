@@ -6,6 +6,9 @@
 // Način --stare (npx tsx scripts/cleanup-test-data.ts --stare [--apply]) briše stare ručne testne igre
 // s popisa OLD_TEST_WORLD_NAMES (točna imena). Računi se u tom načinu ne brišu. Uz demo igru su zaštićene
 // i igre "Hoteljerstvo", igre koje počinju s "QA " ili ih ima račun qa-…, a igre mlađe od 60 minuta se preskaču.
+// Način --kodovi (npx tsx scripts/cleanup-test-data.ts --kodovi A1B2C3,D4E5F6 [--apply]) briše TOČNO igre s navedenim
+// pristupnim kodovima, istim kaskadnim brisanjem. Samo tu i samo za navedene kodove zaštita igara DEMO_PROF_EMAIL se zaobilazi
+// (npr. stare igre demo profesora). DEMO_JOIN_CODE se nikad ne briše (prekid ako je naveden); nepoznati kodovi se prijave i preskoče.
 import { config } from "dotenv";
 config({ path: ".env.local" });
 import { count, eq, inArray, or, type SQL } from "drizzle-orm";
@@ -43,6 +46,11 @@ const MIN_AGE_MS = 60 * 60 * 1000;
 
 const STARE = process.argv.includes("--stare");
 const APPLY = process.argv.includes("--apply");
+const KODOVI_IDX = process.argv.indexOf("--kodovi");
+const KODOVI: string[] | null =
+  KODOVI_IDX >= 0
+    ? [...new Set((process.argv[KODOVI_IDX + 1] ?? "").split(",").map((c) => c.trim().toUpperCase()).filter(Boolean))]
+    : null;
 const DEMO_JOIN_CODE = (process.env.DEMO_JOIN_CODE || "KVRNDM").trim().toUpperCase();
 const DEMO_PROF_EMAIL = process.env.DEMO_PROF_EMAIL?.trim().toLowerCase() || null;
 
@@ -260,6 +268,74 @@ async function mainStare(): Promise<void> {
   console.log(demoAfter ? `\nDemo igra netaknuta (${demoAfter.companies} hotela). Gotovo.` : "\nGotovo (demo igre nema).");
 }
 
+function maskEmail(email: string): string {
+  const at = email.lastIndexOf("@");
+  return at >= 0 ? `***${email.slice(at)}` : "***";
+}
+
+async function mainKodovi(codes: string[]): Promise<void> {
+  console.log(APPLY ? "Način: KODOVI, BRISANJE (--kodovi --apply)\n" : "Način: KODOVI, SUHI PROLAZ (za brisanje dodaj --apply)\n");
+  if (codes.length === 0) fail("nakon --kodovi navedi pristupne kodove odvojene zarezom (npr. --kodovi AAAAAA,BBBBBB).");
+  if (codes.includes(DEMO_JOIN_CODE)) fail(`demo igra (kod ${DEMO_JOIN_CODE}) se nikad ne briše.`);
+
+  const demoBefore = await demoState();
+  console.log(demoBefore ? `Demo igra postoji (${demoBefore.companies} hotela).` : "Upozorenje: demo igra ne postoji u bazi.");
+
+  const found = await db
+    .select({
+      id: worlds.id, name: worlds.name, joinCode: worlds.joinCode, createdAt: worlds.createdAt, ownerId: worlds.ownerId,
+      status: worlds.status, round: worlds.round,
+    })
+    .from(worlds)
+    .where(inArray(worlds.joinCode, codes));
+  const users = await db.select({ id: user.id, email: user.email }).from(user);
+  const emailById = new Map(users.map((u) => [u.id, u.email]));
+  const chosen = [...found].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+  const worldIds = chosen.map((w) => w.id);
+
+  // Demo igra nikad, bez obzira na način (kod je već odbijen gore; ovo je pojas i naramenice)
+  const demoRows = await db.select({ id: worlds.id }).from(worlds).where(eq(worlds.joinCode, DEMO_JOIN_CODE));
+  if (demoRows.some((w) => worldIds.includes(w.id))) fail("demo igra je u skupu za brisanje.");
+
+  console.log(`\nIgre za brisanje: ${chosen.length}`);
+  for (const w of chosen) {
+    const owner = w.ownerId ? maskEmail(emailById.get(w.ownerId) ?? "") : "(bez vlasnika)";
+    console.log(`  - [${w.joinCode}] ${w.name}  vlasnik ${owner}  status ${w.status}  krug ${w.round}  ${fmtDate(w.createdAt)}`);
+  }
+  const unknown = codes.filter((c) => !chosen.some((w) => w.joinCode === c));
+  if (unknown.length) console.log(`Nepoznati kodovi (preskočeni): ${unknown.join(", ")}`);
+
+  const targets = worldIds.length ? worldTargets(worldIds) : [];
+  console.log("\nRetci po tablici:");
+  for (const t of targets) console.log(`  ${t.label.padEnd(20)} ${await countWhere(t.table, t.where)}`);
+
+  if (targets.length === 0) {
+    console.log("\nNema igara za navedene kodove. Gotovo.");
+    return;
+  }
+  if (!APPLY) {
+    console.log("\nSuhi prolaz: ništa nije obrisano. Za brisanje pokreni s --kodovi ... --apply.");
+    return;
+  }
+
+  const before = await tableTotals();
+  const deletes = targets.map((t) => db.delete(t.table).where(t.where) as BatchItem<"pg">);
+  await db.batch([deletes[0], ...deletes.slice(1)]);
+  const after = await tableTotals();
+
+  console.log("\nTablica               prije    poslije");
+  for (const t of ALL_TABLES) {
+    console.log(`  ${t.label.padEnd(20)} ${String(before.get(t.label)).padStart(6)} ${String(after.get(t.label)).padStart(9)}`);
+  }
+
+  const demoAfter = await demoState();
+  if (demoBefore && (!demoAfter || demoAfter.id !== demoBefore.id || demoAfter.companies !== demoBefore.companies)) {
+    console.error("\nUPOZORENJE: demo igra se promijenila! Provjeri bazu.");
+    process.exit(1);
+  }
+  console.log(demoAfter ? `\nDemo igra netaknuta (${demoAfter.companies} hotela). Gotovo.` : "\nGotovo (demo igre nema).");
+}
+
 async function main(): Promise<void> {
   console.log(APPLY ? "Način: BRISANJE (--apply)\n" : "Način: SUHI PROLAZ (ništa se ne briše; za brisanje dodaj --apply)\n");
   console.log(`Zaštićena demo igra: kod ${DEMO_JOIN_CODE}`);
@@ -339,7 +415,7 @@ async function main(): Promise<void> {
   console.log(demoAfter ? `\nDemo igra netaknuta (${demoAfter.companies} hotela). Gotovo.` : "\nGotovo (demo igre nema).");
 }
 
-(STARE ? mainStare() : main()).catch((err: unknown) => {
+(KODOVI ? mainKodovi(KODOVI) : STARE ? mainStare() : main()).catch((err: unknown) => {
   console.error("Greška:", err instanceof Error ? err.message : String(err));
   process.exit(1);
 });
