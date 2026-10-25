@@ -6,6 +6,17 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~04:16 CET · projektor potvrđen
+
+- **Tester ✅ [#264](https://github.com/leonkreso784-bit/riihack/pull/264) (produkcija):** ploča profesora 1600 px na 1920, ljestvica 20/18/14 px; podij mjeseca
+  bez crvenog na 1280/1920/2560; kraj sezone: podij uz ljestvicu, 12/12 redova na 1080 i 8 na 720, bez crvenog;
+  studentski ekrani nepromijenjeni. BUG-051 do 054 i BUG-060 potvrđeni.
+- **Sudac usput:** 5/5 i 5/5 za 2,5–2,7 s.
+- **Novi bugovi (nizak, Rino):** [BUG-064](BUGS.md#bug-064--zaglavlje-ploče-profesora-ostaje-1152-px-a-ploča-1600-px) (zaglavlje 1152 px, ploča 1600 px) i
+  [BUG-065](BUGS.md#bug-065--na-2560-px-ploča-ostaje-1600-px-a-fontovi-nemaju-2xl-stupanj) (na 2560 px sve sitno, nema `2xl`).
+- **Ostaje:** [BUG-059](BUGS.md#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene)
+  (s BUG-057 i 058 u [#271](https://github.com/leonkreso784-bit/riihack/pull/271), čeka spajanje), BUG-064 i 065 nisko.
+
 ## Ned 25.10. ~04:10 CET · botovi ne planiraju
 
 - **Novi bug:** [BUG-063](BUGS.md#bug-063--botovi-ostaju-na-cijeni-1-mjeseca-jer-im-se-prenosi-plan) (visok): botovi

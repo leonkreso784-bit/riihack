@@ -10,6 +10,22 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-065 · Na 2560 px ploča ostaje 1600 px, a fontovi nemaju `2xl` stupanj
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (~04:16 CET, produkcija, projektor 2560 px): na 2560 px sadržaj ploče profesora ostaje 1600 px
+  (`xl:max-w-[1600px]` u `src/components/app-frame.tsx:21`), a veličine slova nemaju `2xl` stupanj
+  (`src/components/leaderboard.tsx`, `src/components/round-podium.tsx`), pa je sve sitno. Usp.
+  [BUG-055](#bug-055--sitnice-prikaza-na-projektoru-završi-sezonu-podij-na-2560-px-kartice-botova) (2).
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-064 · Zaglavlje ploče profesora ostaje 1152 px, a ploča 1600 px
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (~04:16 CET, produkcija, projektor 1920 px): na `/profesor/[worldId]` zaglavlje ostaje 1152 px
+  (`max-w-6xl` u `src/components/site-header.tsx:39`), a ploča ispod njega 1600 px ([#264](https://github.com/leonkreso784-bit/riihack/pull/264)).
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-063 · Botovi ostaju na cijeni 1. mjeseca jer im se prenosi plan
 - **Status:** 🟡 u radu (graditelj, PR stiže) · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)
 - **Opis:** našao Simon (u nacrtu PR-a [#268](https://github.com/leonkreso784-bit/riihack/pull/268)), javio graditelj ~04:10 CET: od [#241](https://github.com/leonkreso784-bit/riihack/pull/241) se plan
@@ -45,16 +61,16 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** —
 
 ### BUG-059 · Izvještaj 3. mjeseca nakon „Završi sezonu" i dalje piše „Brojke su privremene"
-- **Status:** 🟡 u radu (graditelj, PR stiže) · **Težina:** srednji
+- **Status:** 🟡 PR [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (graditelj) čeka spajanje · **Težina:** srednji
 - **Opis:** tester (~02:50 CET, put žirija na probnoj igri `HYSJV5`): nakon „Završi sezonu" izvještaj 3. mjeseca i
   dalje piše „Brojke su privremene; konačne su nakon što profesor zatvori mjesec." Napomenu je uveo [#262](https://github.com/leonkreso784-bit/riihack/pull/262)
-  ([BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke)).
+  ([BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke)). Tester ponovno potvrdio (~04:16 CET).
 - **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:49` gleda samo `world.round === round`, ne i kraj sezone.
 - **Rješenje:** —
 - **Lekcija:** —
 
 ### BUG-058 · Tokovi mjeseca za kasnog studenta: „Obračun… još nije gotov" za mjesec prije ulaska
-- **Status:** 🟡 u radu (graditelj, PR stiže) · **Težina:** nizak
+- **Status:** 🟡 PR [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (graditelj) čeka spajanje · **Težina:** nizak
 - **Opis:** tester (~02:45 CET, produkcija): `/igra/izvjestaj/1/tok` za kasnog studenta piše „Obračun za ovaj mjesec
   još nije gotov" za mjesec prije njegova ulaska (`src/app/igra/izvjestaj/[krug]/tok/page.tsx:55–57`); dolazi se samo
   ručnom adresom. Izvještaj istog mjeseca to već kaže točno ([BUG-049](#bug-049--kasni-student-vidi-krug-nije-zatvoren-za-mjesec-prije-svog-ulaska), [#262](https://github.com/leonkreso784-bit/riihack/pull/262)).
@@ -63,7 +79,7 @@ opis · uzrok · rješenje · **lekcija**.
   se dolazi samo adresom.
 
 ### BUG-057 · Izvještaj otvoren dok profesor zatvara mjesec ostaje na privremenim brojkama
-- **Status:** 🟡 u radu (graditelj, PR stiže) · **Težina:** nizak
+- **Status:** 🟡 PR [#271](https://github.com/leonkreso784-bit/riihack/pull/271) (graditelj) čeka spajanje · **Težina:** nizak
 - **Opis:** tester (~02:45 CET, produkcija): izvještaj mjeseca otvoren dok profesor zatvara mjesec zadrži privremene
   brojke do ručnog osvježavanja. Nastavak [BUG-043](#bug-043--izvještaj-mjeseca-odmah-nakon-završi-pokazuje-privremene-brojke).
 - **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:24–25`: izvještaj i stanje igre osvježavaju se svakih 10 min.
@@ -165,7 +181,7 @@ opis · uzrok · rješenje · **lekcija**.
 ## Riješeni
 
 ### BUG-060 · Podij „Skok mjeseca": 2. i 3. mjesto crveno kad padnu
-- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); 🟨 tester provjerava na projektoru (1920/2560) · **Težina:** srednji
+- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); tester potvrdio na projektoru (~04:16 CET) · **Težina:** srednji
 - **Opis:** tester (~02:50 CET, put žirija na probnoj igri `HYSJV5`): na podiju „Skok mjeseca" 2. i 3. mjesto
   prikazuju crveni pad (`src/components/round-podium.tsx:44` poziva podij po `roundGain`, `Delta` na `:80`). Isto kao
   [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
@@ -173,7 +189,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
 
 ### BUG-054 · Ploča profesora uživo stisnuta u 1120 px, ljestvica presitna za projektor
-- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); 🟨 tester provjerava na projektoru (1920/2560) · **Težina:** srednji
+- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); tester potvrdio na projektoru (~04:16 CET) · **Težina:** srednji
 - **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): ploča profesora uživo zauzima samo 1120 px širine ekrana (`max-w-6xl` u
   `src/components/app-frame.tsx:18`), a tekst ljestvice od 12 do 16 px (`src/components/leaderboard.tsx`) je presitan
   za projektor.
@@ -181,14 +197,14 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
 
 ### BUG-053 · Podij sezone na 1920×1080 viši od ekrana
-- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); 🟨 tester provjerava na projektoru (1920/2560) · **Težina:** srednji
+- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); tester potvrdio na projektoru (~04:16 CET) · **Težina:** srednji
 - **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): podij sezone (`src/components/round-podium.tsx:53`) na 1920×1080 visok je 1214 px, pa se ispod
   njega vide samo 3 reda ljestvice.
 - **Rješenje:** [#264](https://github.com/leonkreso784-bit/riihack/pull/264): kompaktniji podij sezone; na `xl:` podij (`sticky`) i ljestvica stoje u dva stupca. Na 1920×960 podij je visok 444 px i stane oko 12 redova ljestvice.
 - **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
 
 ### BUG-052 · Nakon kraja sezone ljestvica ispod podija crvena za mjesta 3–5
-- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); 🟨 tester provjerava na projektoru (1920/2560) · **Težina:** srednji
+- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); tester potvrdio na projektoru (~04:16 CET) · **Težina:** srednji
 - **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): nakon „Završi sezonu" ljestvica ispod podija prikazuje crveni napredak za mjesta 3–5
   (`src/components/leaderboard.tsx:58`, iz `src/components/prof-board.tsx:98`). Ostatak [BUG-022](#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik): podij je
   neutralan, ljestvica nije.
@@ -196,7 +212,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** vidi [BUG-051](#bug-051--podij-mjeseca-crvena--08-na-3-mjestu).
 
 ### BUG-051 · Podij mjeseca: crvena „▼ −0,8" na 3. mjestu
-- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); 🟨 tester provjerava na projektoru (1920/2560) · **Težina:** srednji
+- **Status:** ✅ riješen 25.10. 03:48 CET ([#264](https://github.com/leonkreso784-bit/riihack/pull/264), graditelj); tester potvrdio na projektoru (~04:16 CET) · **Težina:** srednji
 - **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): podij mjeseca na 3. mjestu prikazuje crvenu „▼ −0,8" (`src/components/round-podium.tsx:80`,
   `Delta` za napredak u krugu). Usp. [BUG-022](#bug-022--kraj-sezone-na-projektoru-nema-podija-pobjednik-izgleda-kao-gubitnik): podij sezone je neutralan, podij mjeseca nije.
 - **Rješenje:** [#264](https://github.com/leonkreso784-bit/riihack/pull/264): `Delta` dobiva opcionalni `neutral` (zadano `false`); na podiju se vrijednost prikazuje bez strelice, tamnim slovima na bijeloj pilulici.
