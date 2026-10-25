@@ -28,22 +28,20 @@ Za demo su dvije vrste tvrtki:
 5. **Svaki student dobije drukčiji hotel** iz banke hotela (§5): drugo mjesto, broj i vrste soba, drukčije
    raspoređene snage. Ime hotela je studentovo, a hotel ima **sve svoje sobe koje se mogu pregledati** (§5b).
 
-### 1a · Što je stvarno, što je sučelje, što je plan
+### 1a · Što je stvarno, što je sljedeći korak
 
-Ne gradimo proizvod koji radi do kraja. U bazu i backend ulazi samo ono najbitnije, a ostalo je
-sučelje na lažnim podacima ili samo plan za pitch.
+Stanje u nedjelju 25.10. ujutro. Sve u prvom redu radi na pravoj bazi, API-ju i AI pozivima. Ništa u aplikaciji nije lažni ekran.
 
 | Razina | Što | Kako |
 | --- | --- | --- |
-| **Radi** (baza + backend) | profesor stvara igru s brojem studenata, kod igre, ulaz s imenom i imenom hotela, dodjela hotela iz banke, sobe hotela, krugovi, situacije, klik i vlastiti odgovor s AI presudom, razgovor s likom, zatvaranje kruga i pokazatelji, profesorova ploča uživo; **ekonomija grada**: zajedničko tržište turista, plan kruga (cijena noćenja, marketing), novac (prihod, troškovi, dobit, račun), ugovori s gradskim tvrtkama, karta grada i vijesti (§5c) | prave tablice, API rute i AI pozivi |
-| **Samo sučelje** (lažni podaci) | radar vještina, simulator unaprijed | ekrani čitaju pripremljene podatke s oznakom „primjer" |
-| **Planirano** (dokumentacija i pitch) | studenti vode i druge vrste tvrtki (agencija, dobavljač, zaštitarska firma), ugovori između studenata, banka i krediti, više gradova i država, šok gumb, novine, glas, replay sezone, profesor sam dodaje situacije | opisano u ovom dokumentu i na slajdu „Što dalje" |
+| **Radi** (baza + backend) | profesorski računi (prijava, registracija, popis igara); igra s brojem studenata, kod igre, ulaz s imenom i imenom hotela, kasni ulaz, dodjela hotela iz banke, sobe hotela, krugovi, situacije, klik i vlastiti odgovor s AI presudom, razgovor s likom, zatvaranje kruga i pokazatelji, profesorova ploča uživo; **ekonomija grada**: zajedničko tržište turista s namirom na kraju mjeseca, plan mjeseca (cijena noćenja, marketing), odjeli i ulaganja, novac (prihod, troškovi, dobit, račun), ugovori s gradskim tvrtkama (agencija nudi, hotel prihvaća, odbija ili daje protuponudu), pošta između hotela, javni profil hotela, karta grada i vijesti (§5c); **knjižnica situacija** (profesor bira gotove ili piše svoje) i **AI prijedlog situacije** koji profesor pregleda; botovi koji popune prazna mjesta; ekrani „Tokovi" koji objašnjavaju odgovor, mjesec i odjele; ograničenja AI poziva ([ADR-053](docs/records/DECISIONS.md#adr-053)) | prave tablice, API rute i AI pozivi |
+| **Sljedeći korak** (nije u aplikaciji) | radar vještina (komponenta postoji, ali nije spojena jer za nju još nema pravih podataka), simulator unaprijed, profesorova karta razreda, suradnja hotela, kalibracija troškova ([ADR-047](docs/records/DECISIONS.md#adr-047)) | opisano u ovom dokumentu i na slajdu „Što dalje" |
+| **Planirano** (dokumentacija i pitch) | studenti vode i druge vrste tvrtki (dobavljač, zaštitarska firma), banka i krediti, više gradova i država, šok gumb, novine, glas, replay sezone | opisano u ovom dokumentu i na slajdu „Što dalje" |
 
 **Oblik:** web platforma, **responsive za sve uređaje** (mobitel, tablet, računalo, projektor). Simulacija
 hotela je **pojednostavljena** (vidi §5a); izgled je u §9.
 
-**Što NE radimo u 24 h:** račune i lozinke, više jezika, pravu ekonomiju tržišta, zajedničko tržište gostiju,
-generiranje situacija AI-jem, mobilnu aplikaciju.
+**Što NE radimo u 24 h:** račune studenata (račune imaju samo profesori), više jezika, mobilnu aplikaciju.
 
 ## 2 · Načela
 
@@ -61,7 +59,7 @@ generiranje situacija AI-jem, mobilnu aplikaciju.
 | --- | --- | --- |
 | Aplikacija | **Next.js** (App Router) + TypeScript + Tailwind | jedan projekt za sučelje i API, zadano u RADNI-DOGOVOR |
 | API | Next.js route handleri pod `app/api/*` | nema zasebnog servera ni CORS-a |
-| Baza | **Neon Postgres + Drizzle ORM**, samo s poslužitelja | iz Simonovog startera koji je već isproban na Vercelu ([reference/starter](https://github.com/leonkreso784-bit/ri-hack-4/tree/main/reference/starter)); **Better Auth izbacujemo** jer nema računa |
+| Baza | **Neon Postgres + Drizzle ORM**, samo s poslužitelja | iz Simonovog startera koji je već isproban na Vercelu ([reference/starter](https://github.com/leonkreso784-bit/ri-hack-4/tree/main/reference/starter)); **Better Auth** služi za profesorske račune (studenti ulaze kodom, bez računa) |
 | Osvježavanje | **polling svake 3 s** | najjednostavnije i pouzdano na Vercelu |
 | AI | **Claude preko AI SDK-a** (`@ai-sdk/anthropic`) | lik: `claude-haiku-5-5` (brz, stream); presuda i mentor: `claude-sonnet-5-5` (strukturirani izlaz) |
 | Deploy | **Vercel**, `main` se deploya sam | javni link od prvog sata |
@@ -271,9 +269,9 @@ Svaki broj ima ime i jedinicu (€, %, /100).
 
 Ono što žiri pamti. Svaka stavka gradi se na podacima koje glavni tok već ima, pa ne traži novu arhitekturu.
 **Rez opsega (24.10.):** do predaje je ~22 h, pa glavni tok mora raditi do 2. obilaska žirija (sub 19:00).
-- **Radi stvarno:** W1-b sokratski mentor i W1-c lik zna kad prepisuješ (uz sobe iz §5b, koje su glavni tok).
-- **Samo sučelje** (lažni podaci, spaja se na prave ako ostane vremena): W1-a živa karta i W1-e radar vještina.
-- **Plan** (pitch, „Što dalje"): W1-d simulator unaprijed, W2-a šok gumb, W2-b novine, W2-c glas.
+- **Radi stvarno:** W1-a karta grada (na pravim podacima), W1-b sokratski mentor i W1-c lik zna kad prepisuješ (uz sobe iz §5b, koje su glavni tok). Vijesti na karti (dio W2-b) rade; AI novine s naslovnicom nisu gotove.
+- **Sljedeći korak:** W1-e radar vještina (komponenta postoji, nije spojena) i W1-d simulator unaprijed.
+- **Plan** (pitch, „Što dalje"): W2-a šok gumb, W2-b AI novine, W2-c glas.
 
 Izvorna podjela W1 i W2 ostaje u tablici radi opisa.
 
