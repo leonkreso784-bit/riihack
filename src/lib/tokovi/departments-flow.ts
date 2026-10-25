@@ -18,6 +18,15 @@ import type { DepartmentInvestments, MetricKey, Metrics, RoomStatus, SituationVi
 import { activeEffects, departmentsForMetric, metricDelta, signed } from "@/lib/tokovi/answer-flow";
 import { eur } from "@/lib/tokovi/month-flow";
 
+/** Pokazatelji u akuzativu, za rečenice poput "situacija koja dira operativu" (pregled JEZIK-07). METRIC_LABELS su nominativ. */
+export const METRIC_ACCUSATIVE: Record<MetricKey, string> = {
+  guests: "zadovoljstvo gostiju",
+  reviews: "recenzije",
+  staff: "zaposlenike",
+  operations: "operativu",
+  finance: "financije",
+};
+
 export type DeptStepId = "ljudi" | "upozorenja" | "ulaganje" | "pravilo" | "situacije" | "pokazatelj" | "trosak";
 export type DeptRow = { label: string; value: string; strong?: boolean };
 export type DeptStep = {
