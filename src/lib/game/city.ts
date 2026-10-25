@@ -4,7 +4,7 @@ import { and, eq, lt, sql, type SQL } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { db } from "@/db";
-import { companies, contracts, events, finances, roundReports, worlds } from "@/db/schema";
+import { companies, contracts, events, finances, plans, roundReports, worlds } from "@/db/schema";
 import type { ContractRow, EventRow, FinanceRow, PlanRow, WorldRow } from "@/db/schema";
 import {
   getContractForCompany,
@@ -231,6 +231,20 @@ export function metricsPlus(column: AnyPgColumn, delta: Partial<Record<MetricKey
 export function toPlan(round: number, row: PlanRow | null, rooms: { basePrice: number }[]): RoundPlan {
   if (row) return { round, price: row.price, marketing: row.marketing, investments: row.investments ?? {} };
   return { round, price: refPrice(rooms), marketing: 0, investments: {} };
+}
+
+/** #227.1: planovi prošlog mjeseca kao zadani planovi novog (cijena i marketing; ulaganja su jednokratna, pa ne). */
+export function carryOverPlans(rows: PlanRow[], round: number): (typeof plans.$inferInsert)[] {
+  return rows.map((r) => ({ companyId: r.companyId, round, price: r.price, marketing: r.marketing, investments: {} }));
+}
+
+/**
+ * Pri otvaranju mjeseca `round` prepiše svaki plan mjeseca `round − 1` u novi mjesec. Plan koji je student već
+ * spremio za novi mjesec ostaje (onConflictDoNothing), a hotel bez plana i dalje dobije zadani (referentna cijena).
+ */
+export async function carryPlansForward(worldId: string, round: number): Promise<void> {
+  const rows = carryOverPlans(await listPlans(worldId, round - 1), round);
+  if (rows.length) await db.insert(plans).values(rows).onConflictDoNothing();
 }
 
 /** Plan tvrtke za krug (spremljeni ili zadani). */

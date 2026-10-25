@@ -1,7 +1,7 @@
 import { PgDialect } from "drizzle-orm/pg-core";
 import { describe, expect, it } from "vitest";
 import { companies, roundReports } from "@/db/schema";
-import type { ContractRow } from "@/db/schema";
+import type { ContractRow, PlanRow } from "@/db/schema";
 import { CITY, CONTRACTS, getBusiness } from "@/content";
 import { HttpError } from "@/lib/http";
 import { MARKETING_MAX, PRICE_MAX, PRICE_MIN } from "@/lib/rules";
@@ -9,6 +9,7 @@ import type { LeaderboardRow } from "@/lib/types";
 import {
   activeTemplates,
   buildNews,
+  carryOverPlans,
   contractTerms,
   metricsPlus,
   parsePlan,
@@ -265,5 +266,19 @@ describe("metricsPlus (#226: obračun ide i u tvrtku i u izvještaj mjeseca)", (
   it("preskače nule i nepoznate ključeve", () => {
     const q = dialect.sqlToQuery(metricsPlus(roundReports.metricsAfter, { finance: 0 }));
     expect(q.sql).not.toContain("jsonb_set");
+  });
+});
+
+describe("carryOverPlans (#227.1: plan prošlog mjeseca je zadani plan novog)", () => {
+  const prev = { id: "p1", companyId: "ana", round: 2, price: 150, marketing: 2000, investments: { kitchen: 3000 } } as PlanRow;
+
+  it("prenese cijenu i marketing u novi krug, bez ulaganja", () => {
+    expect(carryOverPlans([prev], 3)).toEqual([
+      { companyId: "ana", round: 3, price: 150, marketing: 2000, investments: {} },
+    ]);
+  });
+
+  it("bez prošlih planova nema ništa", () => {
+    expect(carryOverPlans([], 3)).toEqual([]);
   });
 });

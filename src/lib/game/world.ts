@@ -33,7 +33,7 @@ import type {
   ProfStateResponse,
 } from "@/lib/types";
 import { playBots } from "./bots";
-import { createOffers, listNewsEvents, settleCityRound } from "./city";
+import { carryPlansForward, createOffers, listNewsEvents, settleCityRound } from "./city";
 import { MAIL_LIMIT, countUnreadMail, listMailRows } from "./mail";
 import { closeRoundForAll, openRound } from "./round";
 import { listBank, listDispatches, loadTemplates } from "./situations";
@@ -161,7 +161,7 @@ export async function openNextRound(world: WorldRow, req: OpenRoundRequest): Pro
   if (!next) return (await getWorld(world.id)) ?? world; // drugi istodobni klik: krug je već otvoren
 
   const opened = await openRound(next, k + 1, deadlineMinutes);
-  await createOffers(opened, k + 1);
+  await Promise.all([createOffers(opened, k + 1), carryPlansForward(opened.id, k + 1)]);
   return opened;
 }
 

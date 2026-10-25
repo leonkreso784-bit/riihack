@@ -66,8 +66,12 @@ describe("counterError", () => {
     expect(counterError(agency, { pricePerNight: 80, message: "x".repeat(1001) })).not.toBeNull();
   });
 
-  it("ista cijena kao ponuda je ispravna (prihvaćeno po ponudi)", () => {
-    expect(counterError(agency, { pricePerNight: 70 })).toBeNull();
-    expect(negotiate(agency, { pricePerNight: 70 }).outcome).toBe("accepted");
+  it("#227.3: protuponuda koja nije u korist hotela je greška, da se pregovor ne potroši", () => {
+    expect(counterError(agency, { pricePerNight: 70 })).toMatch(/nije u korist hotela/);
+    expect(counterError(agency, { pricePerNight: 60 })).toMatch(/višu od 70 €/);
+    expect(counterError(laundry, { monthlyCost: 1500 })).toMatch(/nižu od 1500 €/);
+    expect(counterError(laundry, { monthlyCost: 1600 })).not.toBeNull();
+    expect(counterError(agency, { pricePerNight: 71 })).toBeNull();
+    expect(counterError(laundry, { monthlyCost: 1499 })).toBeNull();
   });
 });

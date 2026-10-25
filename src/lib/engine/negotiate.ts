@@ -10,7 +10,7 @@ export type NegotiationDeal = { outcome: NegotiationOutcome; pricePerNight: numb
 const COUNTER_MAX = 100000;
 const isAmount = (v: unknown): v is number => typeof v === "number" && Number.isInteger(v) && v >= 1 && v <= COUNTER_MAX;
 
-/** Greška protuponude na hrvatskom ili null: točno jedno polje, cijeli broj, i to polje koje ponuda ima. */
+/** Greška protuponude na hrvatskom ili null: točno jedno polje, cijeli broj, polje koje ponuda ima, u korist hotela. */
 export function counterError(offer: NegotiationOffer, c: CounterOfferRequest): string | null {
   const hasPrice = c.pricePerNight !== undefined;
   const hasCost = c.monthlyCost !== undefined;
@@ -18,6 +18,12 @@ export function counterError(offer: NegotiationOffer, c: CounterOfferRequest): s
   if (hasPrice && offer.nights <= 0) return "Ova ponuda nema noćenja, predloži mjesečnu naknadu";
   if (hasCost && offer.monthlyCost <= 0) return "Ova ponuda nema naknadu, predloži cijenu noćenja";
   if (!isAmount(hasPrice ? c.pricePerNight : c.monthlyCost)) return `Iznos mora biti cijeli broj od 1 do ${COUNTER_MAX} €`;
+  // #227.3: ista ili lošija ponuda nije pregovor; bez ove greške potroši jedini pregovor i sklopi ugovor po ponudi
+  if (hasPrice ? (c.pricePerNight as number) <= offer.pricePerNight : (c.monthlyCost as number) >= offer.monthlyCost) {
+    return hasPrice
+      ? `Protuponuda nije u korist hotela: predloži cijenu noćenja višu od ${offer.pricePerNight} €`
+      : `Protuponuda nije u korist hotela: predloži naknadu nižu od ${offer.monthlyCost} €`;
+  }
   if (c.message !== undefined && (typeof c.message !== "string" || c.message.length > MAIL_BODY_MAX)) {
     return `Poruka smije imati najviše ${MAIL_BODY_MAX} znakova`;
   }
