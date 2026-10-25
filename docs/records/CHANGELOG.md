@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#264](https://github.com/leonkreso784-bit/riihack/pull/264) | 03:48 CET | Leon | projektor: podij mjeseca i ljestvica nakon kraja sezone bez crvenog (`Delta` i `Leaderboard` dobivaju `neutral`), kompaktni podij sezone uz ljestvicu u dva stupca na `xl:`, ploča profesora do 1600 px s većom ljestvicom (BUG-051 do 054, BUG-060); dira 5 Rinovih komponenti po [ADR-054](DECISIONS.md#adr-054); rebase zbog sukoba s [#252](https://github.com/leonkreso784-bit/riihack/pull/252) |
+| [#265](https://github.com/leonkreso784-bit/riihack/pull/265) | 03:08 CET | Leon | dokumentacija: #262 potvrđen, BUG-057 do 062 |
+| [#263](https://github.com/leonkreso784-bit/riihack/pull/263) | 02:40 CET | Leon | dokumentacija: sitni ispravci (#262), demo ponovno posijan |
 | [#262](https://github.com/leonkreso784-bit/riihack/pull/262) | 02:31 CET | Leon | dvostruki uvoz playbooka preskače situacije koje su već u igri (BUG-046), „Soba je spremljena" (BUG-047), „Uvezeno N situacija" s množinom (BUG-045), napomena „Brojke su privremene…" u izvještaju (BUG-043), kasni student za raniji mjesec dobiva 404 „U tom mjesecu još nisi bio u igri" (BUG-049); dira Rinove `situacije/page.tsx` i `izvjestaj/[krug]/page.tsx` ([ADR-054](DECISIONS.md#adr-054)) |
 | [#261](https://github.com/leonkreso784-bit/riihack/pull/261) | 02:18 CET | Leon | dokumentacija: tester potvrdio ispravke |
 | [#260](https://github.com/leonkreso784-bit/riihack/pull/260) | 02:10 CET | Leon | dokumentacija: plan, račun i ocjena spojeni; promjena sata |

@@ -98,7 +98,7 @@ ono što demo obećava) · 🟨 potvrditi.
 - ✅ Mentor iz brojki jezgre objašnjava što se dogodilo u krugu i kako svijet radi. Izvor: #111, #231, #240.
 - 🔶 Podij kruga i ljestvica čitljivi su na projektoru. Napravljeno (#196, #211); provjereno 1920/2560
   (tester ~02:54): radi bez scrolla, ali crvene strelice i visina podija sezone
-  ([BUG-051 do 054](../records/BUGS.md#bug-051--podij-mjeseca-crvena--08-na-3-mjestu)).
+  (popravci spojeni u [#264](https://github.com/leonkreso784-bit/riihack/pull/264) (03:48 CET), čeka provjeru testera).
 - ✅ Svaki ekran radi na 375 px, 768 px i 1440 px širine. Tester: 375 i 768 px bez vodoravnog scrolla (PROGRESS.md,
   ned ~01:08), 1440 px ~02:54.
 
