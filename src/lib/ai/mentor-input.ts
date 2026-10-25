@@ -25,7 +25,9 @@ export async function buildMentorInput(report: RoundReportRow, hotelName: string
 
   const items: MentorItem[] = await Promise.all(rows.map(async ({ situation, answer }) => {
     const template = await getTemplate(company.worldId, situation.templateId);
-    if (!answer) {
+    // closeCompanyRound stores a 'none' answer (no verdict) for every situation left open, so 'none' is the normal
+    // shape of a skipped situation; without this every rubric criterion was lost from the prompt (review AI-TOKOVI-03).
+    if (!answer || answer.mode === "none") {
       return { title: template.title, mode: "none" as AnswerMode, quality: MISSED_QUALITY as Quality, criteriaMissed: template.rubric.map((c) => c.text) };
     }
     const met =

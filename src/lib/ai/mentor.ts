@@ -24,7 +24,8 @@ const noRawKeys = (text: string) => !new RegExp(`\\b(${metricKeys.join("|")})\\b
 const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
 
 const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
-const MODE_LABELS = { click: "odabrao ponuđenu opciju", own: "napisao vlastiti odgovor", none: "nije odgovorio" } as const;
+/** Whole predicate after "Student": "Student je nije odgovorio" was ungrammatical (review AI-TOKOVI-03). */
+const MODE_LABELS = { click: "je odabrao ponuđenu opciju", own: "je napisao vlastiti odgovor", none: "nije odgovorio" } as const;
 /** An own answer with no text (ADR-049 allows it): the mentor must not talk about "your answer". */
 const emptyOwn = (i: MentorItem) => i.mode === "own" && !i.answerText?.trim();
 const looksLikeId = (s: string) => /^[a-z]{0,2}\d+$/i.test(s.trim());
@@ -40,7 +41,8 @@ const eur = (n: number) => `${n.toLocaleString("hr-HR")} €`;
 export function financeBlock(f: RoundFinance): string {
   return [
     "Obračun mjeseca (izračunala ga je jezgra igre):",
-    `- Noćenja: ${f.nights} od ${f.capacityNights} mogućih, popunjenost ${f.occupancyPct} %; od toga ${f.contractNights} po ugovorima`,
+    // f.nights are market nights only; occupancy counts contract nights too (review AI-TOKOVI-04).
+    `- Noćenja: ${f.nights + f.contractNights} od ${f.capacityNights} mogućih, popunjenost ${f.occupancyPct} %; od toga ${f.contractNights} po ugovorima`,
     `- Tržišni udio: ${f.marketSharePct} %`,
     `- Prihod: ${eur(f.revenue)}; troškovi: ${eur(f.costs)}; dobit: ${eur(f.profit)}`,
     `- Novac nakon mjeseca: ${eur(f.cashAfter)}`,
@@ -65,7 +67,7 @@ export function factsBlock(input: MentorInput): string {
         `- Situacija: ${clean(i.title)}${i === weakest ? " (NAJSLABIJA ODLUKA)" : ""}`,
         emptyOwn(i)
           ? `  Student je poslao PRAZAN odgovor (ništa nije napisao); kvaliteta ${i.quality} od 5. Nema odgovora o kojem bi se pričalo.`
-          : `  Student je ${MODE_LABELS[i.mode]}; kvaliteta ${i.quality} od 5.`,
+          : `  Student ${MODE_LABELS[i.mode]}; kvaliteta ${i.quality} od 5.`,
       ];
       if (i.answerText?.trim()) lines.push(`  <odgovor_studenta>${clean(i.answerText)}</odgovor_studenta>`);
       if (missed.length) lines.push(`  Što je nedostajalo: ${missed.map(clean).join("; ")}`);
@@ -136,7 +138,10 @@ export function splitSentences(text: string): string[] {
   const out: string[] = [];
   for (const part of parts) {
     const prev = out[out.length - 1];
-    const glue = prev !== undefined && (ABBREVIATIONS.test(prev) || /^[\p{Ll}\d(]/u.test(part));
+    // A sentence that already ended with "?" or "!" is closed: text after it is a new sentence even when it starts with a
+    // lowercase letter, a digit or "(" (review PR-INTEGRACIJA-02: "…u srpnju? (Razmisli o konkurenciji.)" gave no question).
+    const closed = prev !== undefined && /[?!]["”“»]?$/.test(prev);
+    const glue = prev !== undefined && !closed && (ABBREVIATIONS.test(prev) || /^[\p{Ll}\d(]/u.test(part));
     if (glue) out[out.length - 1] = `${prev} ${part}`;
     else out.push(part);
   }

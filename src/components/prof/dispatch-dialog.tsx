@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { toast } from "sonner";
 import { api } from "@/lib/client";
+import { plural } from "@/lib/format";
 import { MAX_ROUNDS, ROUND_LABELS } from "@/lib/rules";
 import type { DispatchRequest, LeaderboardRow, SituationSummary, WorldView } from "@/lib/types";
 import { Field, FormError, SubmitButton } from "@/components/form";
@@ -67,7 +68,7 @@ function DispatchBody({ worldId, situation, world, players, onClose, onSent }: {
     setBusy(true);
     try {
       await api.dispatch(worldId, req);
-      const to = everyone ? "svim studentima" : `${picked.length} ${picked.length === 1 ? "studentu" : "studenata"}`;
+      const to = everyone ? "svim studentima" : `${picked.length} ${plural(picked.length, "studentu", "studentima", "studentima")}`;
       toast.success(when === "now" ? `Poslano ${to}: ${situation.title}` : `Zakazano, mjesec ${ROUND_LABELS[Number(when) - 1]} (${to}): ${situation.title}`);
       onSent();
       onClose();

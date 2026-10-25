@@ -24,7 +24,7 @@ export function fallbackDebrief(input: MentorInput): string {
   const parts: string[] = [];
   if (best.delta > 0) parts.push(`Najviše je porastao pokazatelj ${lower(best.key)} (${signed(best.delta)}/100).`);
   if (worst.delta < 0) parts.push(`Najviše je pao pokazatelj ${lower(worst.key)} (${signed(worst.delta)}/100).`);
-  if (parts.length === 0) return "U ovom krugu se pokazatelji nisu promijenili. Što bi sljedeći put pokušao drukčije?";
+  if (parts.length === 0) return "U ovom krugu se pokazatelji nisu promijenili. Što bi sljedeći put bilo drukčije?";
   if (worst.delta < 0) parts.push(`Što bi sljedeći put bilo drukčije da pokazatelj ${lower(worst.key)} ne padne?`);
   return parts.join(" ");
 }
@@ -35,7 +35,7 @@ const PROPOSAL_TEMPLATES: Record<MetricKey, Template> = {
   guests: {
     title: "Gost nezadovoljan boravkom",
     text: "Gost na recepciji kaže da mu je boravak razočaravajući: soba nije bila spremna u dogovoreno vrijeme, a nitko mu se nije javio. Traži da mu hotel nekako nadoknadi neugodnost.",
-    area: "recepcija",
+    area: "Recepcija i smještaj",
     character: { name: "Ivan Marić", role: "gost", personality: "uljudan, ali razočaran i nestrpljiv", goal: "da ga hotel ozbiljno shvati i nadoknadi neugodnost" },
     rubric: [
       { id: "c1", skill: "empathy", text: "Prizna neugodnost i ispriča se bez prebacivanja krivnje [npr. \"razumijem da vam je bilo neugodno čekati\"]" },
@@ -46,7 +46,7 @@ const PROPOSAL_TEMPLATES: Record<MetricKey, Template> = {
   reviews: {
     title: "Loša recenzija na internetu",
     text: "Gost je na internetskoj stranici objavio recenziju od jedne zvjezdice zbog buke i hladnog doručka. Voditelj traži da napišeš javni odgovor koji će vidjeti budući gosti.",
-    area: "recenzije",
+    area: "Ugled i recenzije",
     character: { name: "Ana Perić", role: "voditeljica recepcije", personality: "praktična i pod pritiskom", goal: "javni odgovor koji štiti ugled hotela, a ne zvuči obrambeno" },
     rubric: [
       { id: "c1", skill: "empathy", text: "Zahvali na povratnoj informaciji i prizna gostovo nezadovoljstvo [npr. \"žao nam je što vam je boravak bio bučan\"]" },
@@ -57,7 +57,7 @@ const PROPOSAL_TEMPLATES: Record<MetricKey, Template> = {
   staff: {
     title: "Zaposlenik traži slobodan dan",
     text: "Sobarica te na početku smjene moli za slobodan dan jer joj je obitelj u nevolji, a hotel je sutra gotovo pun. Ostali zaposlenici već rade prekovremeno.",
-    area: "osoblje",
+    area: "Osoblje i smjene",
     character: { name: "Marija Kovač", role: "sobarica", personality: "vrijedna, umorna i zabrinuta", goal: "slobodan dan, ali ne želi ostaviti kolege na cjedilu" },
     rubric: [
       { id: "c1", skill: "empathy", text: "Pokaže razumijevanje za njezinu situaciju [npr. pita kako je i treba li joj što]" },
@@ -68,7 +68,7 @@ const PROPOSAL_TEMPLATES: Record<MetricKey, Template> = {
   operations: {
     title: "Kvar u punom hotelu",
     text: "U subotu popodne u hotelu je otkazala perilica rublja, a sutra stiže grupa gostiju. Voditelj održavanja kaže da će popravak trajati barem dva dana i traži odluku što dalje.",
-    area: "održavanje",
+    area: "Održavanje i tehnika",
     character: { name: "Josip Babić", role: "voditelj održavanja", personality: "miran, stručan i kratak", goal: "brza odluka koja ne zaustavlja rad hotela" },
     rubric: [
       { id: "c1", skill: "problemSolving", text: "Predloži privremeno rješenje za rublje [npr. vanjska praonica, posudba opreme]" },
@@ -79,7 +79,7 @@ const PROPOSAL_TEMPLATES: Record<MetricKey, Template> = {
   finance: {
     title: "Gost traži popust na cijenu",
     text: "Gost koji je rezervirao tri noći traži popust od trideset posto jer je našao jeftiniju ponudu drugdje. Hotel je tog tjedna napola prazan, ali previše popusta bi pojelo zaradu.",
-    area: "rezervacije",
+    area: "Recepcija i rezervacije",
     character: { name: "Petar Horvat", role: "gost", personality: "uporan pregovarač, ali pošten", goal: "što niža cijena, uz ostanak u hotelu" },
     rubric: [
       { id: "c1", skill: "finance", text: "Ponudi popust ili pogodnost koja štiti zaradu hotela [npr. manji popust, besplatan doručak umjesto sniženja]" },
@@ -93,6 +93,11 @@ const PROPOSAL_TEMPLATES: Record<MetricKey, Template> = {
 export function weakestMetric(metrics: Metrics): MetricKey {
   const keys = Object.keys(METRIC_LABELS) as MetricKey[];
   return keys.reduce((w, k) => (metrics[k] < metrics[w] ? k : w), keys[0]);
+}
+
+/** True for the fixed draft below, so the form can say it is not an AI draft (review UI-PROF-12). */
+export function isFallbackProposal(draft: Pick<SituationDraft, "title">): boolean {
+  return Object.values(PROPOSAL_TEMPLATES).some((t) => t.title === draft.title);
 }
 
 /** Simple valid draft for the weakest metric, used when the AI is off, slow or twice invalid. Own answer only, no options. */

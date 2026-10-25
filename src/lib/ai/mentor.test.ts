@@ -179,9 +179,11 @@ describe("factsBlock with an empty own answer (BUG-033)", () => {
 
 describe("factsBlock with finance", () => {
   it("adds the month's accounts in euros and percent, and omits them otherwise", () => {
-    const finance = { round: 1, nights: 120, contractNights: 20, capacityNights: 480, occupancyPct: 25, marketSharePct: 14, revenue: 9500, costs: 7000, profit: 2500, cashAfter: 12500 };
+    // Engine semantics: nights are market nights only, occupancy (100 + 20) / 480 = 25 %.
+    const finance = { round: 1, nights: 100, contractNights: 20, capacityNights: 480, occupancyPct: 25, marketSharePct: 14, revenue: 9500, costs: 7000, profit: 2500, cashAfter: 12500 };
     const facts = factsBlock({ ...input, finance });
     expect(facts).toContain("Obračun mjeseca");
+    expect(facts).toContain("Noćenja: 120 od 480");
     expect(facts).toContain("popunjenost 25 %");
     expect(facts).toMatch(/dobit: 2\D?500 €/);
     expect(factsBlock(input)).not.toContain("Obračun mjeseca");

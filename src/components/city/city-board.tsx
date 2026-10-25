@@ -3,6 +3,7 @@
 // Karta grada kao izometrijska društvena igra (smjer D). Čisti React + SVG + CSS, bez ovisnosti.
 // Teren je statičan (board-geometry.ts), zgrade, natpisi, ugovori i animacije su React.
 import { memo, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { plural } from "@/lib/format";
 import type { CityView, LeaderboardRow } from "@/lib/types";
 import { BIZ_META, DISTRICTS, HOTEL_HALF, businessLots, cityTier, districtById, growth, hotelHeight, fmtDec, visibleBusinesses, type Lot, type PublicProfile } from "@/lib/karta";
 import { cn } from "@/lib/utils";
@@ -673,7 +674,7 @@ export function CityBoard({ city, youId, profiles, lots, selectedId, onSelect }:
 
         <div className={cn("pointer-events-none absolute left-3 right-3 top-3 z-10 flex flex-wrap items-center gap-1.5", selectedId && "max-md:hidden")}>
           <div className="pointer-events-auto hidden rounded-full bg-card px-3.5 py-1.5 text-[13px] shadow-card md:block">
-            <b>Simpolis</b> <span className="text-muted-foreground">· {hotelsN} {hotelsN === 1 ? "hotel" : "hotela"}</span>
+            <b>Simpolis</b> <span className="text-muted-foreground">· {hotelsN} {plural(hotelsN, "hotel", "hotela", "hotela")}</span>
           </div>
           {LAYERS.map(([k, label]) => (
             <button key={k} aria-pressed={on[k]} onClick={() => setOn((s) => ({ ...s, [k]: !s[k] }))} className={cn("pointer-events-auto rounded-full px-3 py-1.5 text-[13px] font-bold shadow-card", on[k] ? "bg-secondary text-primary" : "bg-card text-foreground")}>

@@ -259,7 +259,7 @@ function DispatchRow({ d }: { d: DispatchView }) {
       <div className="min-w-0 flex-1 basis-60">
         <p className="text-base font-bold">{d.title}</p>
         <p className="text-sm text-muted-foreground">
-          {ROUND_LABELS[d.round - 1] ?? `Krug ${d.round}`} (krug {d.round}) · {d.companyIds === null ? "svi studenti" : `${d.companyIds.length} ${d.companyIds.length === 1 ? "student" : "studenata"}`}
+          {ROUND_LABELS[d.round - 1] ?? `Krug ${d.round}`} (krug {d.round}) · {d.companyIds === null ? "svi studenti" : `${d.companyIds.length} ${plural(d.companyIds.length, "student", "studenta", "studenata")}`}
         </p>
       </div>
       <Pill tone={d.status === "sent" ? "up" : "warn"}>{d.status === "sent" ? "Poslano" : "Zakazano"}</Pill>

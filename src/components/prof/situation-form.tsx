@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import { Plus, Sparkles, Trash2 } from "lucide-react";
+import { isFallbackProposal } from "@/lib/ai/fallbacks";
 import { api } from "@/lib/client";
 import { METRIC_LABELS } from "@/lib/rules";
 import type { LeaderboardRow, MetricKey, Skill, SituationDraft, SituationSummary } from "@/lib/types";
@@ -140,6 +141,7 @@ export function SituationForm({ worldId, players = [], onCreated, onCancel }: { 
   const [serverError, setServerError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [aiSource, setAiSource] = useState(false);
+  const [fallbackDraft, setFallbackDraft] = useState(false);
   const [hint, setHint] = useState("");
   const [companyId, setCompanyId] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -168,7 +170,10 @@ export function SituationForm({ worldId, players = [], onCreated, onCancel }: { 
       setNextCriterion(draft.rubric.length + 1);
       setNextOption(draft.options.length + 1);
       setErrors([]);
-      setAiSource(true);
+      // The fixed fallback (AI off, slow or twice invalid) is not an AI draft: label and store it as the professor's.
+      const fallback = isFallbackProposal(draft);
+      setAiSource(!fallback);
+      setFallbackDraft(fallback);
     } catch (err) {
       setAiError((err as Error).message);
     }
@@ -212,6 +217,7 @@ export function SituationForm({ worldId, players = [], onCreated, onCancel }: { 
           </button>
           {generating && <span role="status" className="text-sm text-muted-foreground">Može potrajati i 15 sekundi.</span>}
           {aiSource && !generating && <Pill tone="warn">AI nacrt, provjeri prije spremanja</Pill>}
+          {fallbackDraft && !generating && <Pill tone="warn">AI nije odgovorio: rezervni nacrt, provjeri prije spremanja</Pill>}
         </div>
         {aiError && <div className="mt-3"><FormError>{aiError}</FormError></div>}
       </Panel>
