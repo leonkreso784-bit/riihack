@@ -10,6 +10,38 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-075 · Mentorov odgovor na refleksiju napisanu prije obračuna citira privremene brojke
+- **Status:** 🔴 otvoren (Simon, AI; poslije natjecanja) · **Težina:** srednji
+- **Opis:** tester (~09:58 CET, produkcija; raspodjela graditelja ~10:00): mentorov odgovor na refleksiju napisanu prije
+  obračuna grada citira privremene brojke i poslije se ne mijenja (srpanj 87/+18 i 39/+6, a motor nakon obračuna
+  89/+20 i 44/+11). Automatski osvrt iz [#280](https://github.com/leonkreso784-bit/riihack/pull/280) ima točne brojke.
+  Srodno: [BUG-068](#bug-068--mentorov-osvrt-piše-privremene-brojke-prije-obračuna-grada),
+  [ADR-057](DECISIONS.md#adr-057).
+- **Prijedlog:** mentor odgovara na refleksiju tek nakon obračuna ili bez apsolutnih brojki.
+- **Rješenje:** —
+- **Lekcija:** svaki AI tekst koji navodi brojke mora čekati konačne brojke, ne samo jedan od njih.
+
+### BUG-076 · `/igra/mentor` dok se učitava piše „smišlja pitanje"
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (~09:58 CET, produkcija; raspodjela graditelja ~10:00): stranica `/igra/mentor` dok se učitava
+  piše „smišlja pitanje".
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-077 · Financije › Obračun na 375 px odreže zadnji stupac
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (~09:58 CET, produkcija; raspodjela graditelja ~10:00): na 375 px u Financije › Obračun zadnji
+  stupac tablice je odrezan, bez naznake da se tablica može pomicati.
+- **Rješenje:** —
+- **Lekcija:** —
+
+### BUG-078 · Na `/igra` (375 px) prozirno zaglavlje preklapa „Završi mjesec"
+- **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
+- **Opis:** tester (~09:58 CET, produkcija; raspodjela graditelja ~10:00): na `/igra` na 375 px prozirno zaglavlje
+  preklapa gumb „Završi mjesec".
+- **Rješenje:** —
+- **Lekcija:** —
+
 ### BUG-069 · Istekla ponuda u Pošti ostaje „nepročitana" bez oznake isteka
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
 - **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): ponuda kojoj je istekao rok ostaje u Pošti označena kao „nepročitana", bez
