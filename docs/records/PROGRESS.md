@@ -6,6 +6,16 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~09:35 CET · mentor na svojoj stranici
+
+- **Spojeno:** [#286](https://github.com/leonkreso784-bit/riihack/pull/286) 09:30 CET (Leon: promo video 1080p) i [#285](https://github.com/leonkreso784-bit/riihack/pull/285) 09:33 CET (Rino: stranica
+  `/igra/mentor`, Financije u dvije kartice, objašnjenja „?", raspored Hotela; BUG-070 do 074). Samo sučelje na postojećem API-ju,
+  osvrt iz [#280](https://github.com/leonkreso784-bit/riihack/pull/280) i dalje vidljiv; 647 testova, build.
+- **Provjera:** CI `main` zelen (`55d774a`), produkcija READY ~09:34 CET, `/igra/mentor` vraća 200.
+- **Poslije:** Simonov [#287](https://github.com/leonkreso784-bit/riihack/pull/287) (zum i pristupačnost u Tokovima) spojen 09:43 CET na Leonovo izravno „spoji 287";
+  674 testa, build; CI `main` zelen (`95e00db`), produkcija READY ~09:43 CET. Otvoren je samo
+  [#209](https://github.com/leonkreso784-bit/riihack/pull/209) i ne spaja se.
+
 ## Ned 25.10. ~09:10 CET · mentor sam piše osvrt potvrđen
 
 - **Spojeno:** [#268](https://github.com/leonkreso784-bit/riihack/pull/268) 09:04 CET (Simon: mentor i tekstovi; 647 testova) i

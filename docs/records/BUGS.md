@@ -167,6 +167,36 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Riješeni
 
+### BUG-070 · Nova stranica `/igra/mentor`
+- **Status:** ✅ riješen 25.10. 09:33 CET ([#285](https://github.com/leonkreso784-bit/riihack/pull/285), Rino) · **Težina:** nizak
+- **Opis:** svi razgovori s mentorom po mjesecima, najnoviji gore, odgovor na pitanje koje čeka; bez promjene baze i API-ja (opis #285). Oznaku je dao Rino u #285 (dorada sučelja, ne prijava s testa).
+- **Rješenje:** `/igra/mentor`; izbornik „Mentor" (ispod Pošte, nakon prvog mjeseca) vodi tamo, izvještaj mjeseca ima poveznicu „Razgovor s mentorom".
+- **Lekcija:** —
+
+### BUG-071 · Financije u dvije kartice
+- **Status:** ✅ riješen 25.10. 09:33 CET ([#285](https://github.com/leonkreso784-bit/riihack/pull/285), Rino) · **Težina:** nizak
+- **Opis:** Financije podijeljene na Pregled i Obračun po mjesecima (opis #285). Oznaku je dao Rino u #285 (dorada sučelja, ne prijava s testa).
+- **Rješenje:** **Pregled** (kartice i stanje kroz sezonu) i **Obračun po mjesecima** (sažetak i „Kako je izračunat mjesec").
+- **Lekcija:** —
+
+### BUG-072 · Objašnjenja „?" uz nazive
+- **Status:** ✅ riješen 25.10. 09:33 CET ([#285](https://github.com/leonkreso784-bit/riihack/pull/285), Rino) · **Težina:** nizak
+- **Opis:** „?" uz naziv na Hotelu, Financijama i izvještaju, otvara se klikom ili Enterom, radi na mobitelu (opis #285). 🟨 Leon pregledava tekstove. Oznaku je dao Rino u #285 (dorada sučelja, ne prijava s testa).
+- **Rješenje:** komponenta `Hint`, svi tekstovi u `src/lib/hints.ts`.
+- **Lekcija:** —
+
+### BUG-073 · Hotel u dva stupca, bez rupe ispod Pokazatelja
+- **Status:** ✅ riješen 25.10. 09:33 CET ([#285](https://github.com/leonkreso784-bit/riihack/pull/285), Rino) · **Težina:** nizak
+- **Opis:** raspored Hotela od xl imao je rupu ispod Pokazatelja (opis #285). Oznaku je dao Rino u #285 (dorada sučelja, ne prijava s testa).
+- **Rješenje:** dva neovisna stupca od xl, na mobitelu isti redoslijed kao prije; „Ponude grada" vodi u Poštu.
+- **Lekcija:** —
+
+### BUG-074 · „Rast prihoda" za prvi mjesec
+- **Status:** ✅ riješen 25.10. 09:33 CET ([#285](https://github.com/leonkreso784-bit/riihack/pull/285), Rino) · **Težina:** nizak
+- **Opis:** „Rast prihoda" za prvi mjesec pisao je „·" (opis #285). Oznaku je dao Rino u #285 (dorada sučelja, ne prijava s testa).
+- **Rješenje:** za prvi mjesec piše „prvi mjesec".
+- **Lekcija:** —
+
 ### BUG-068 · Mentorov osvrt piše privremene brojke prije obračuna grada
 - **Status:** ✅ riješen 25.10. 09:01 CET ([#280](https://github.com/leonkreso784-bit/riihack/pull/280), [ADR-057](DECISIONS.md#adr-057): osvrt se piše tek nakon obračuna); tester potvrdio #280 (09:08 CET) · **Težina:** nizak
 - **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): mentorov osvrt nastaje prije obračuna grada, pa piše privremene brojke; u
