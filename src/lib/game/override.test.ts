@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { AnswerRow } from "@/db/schema";
 import { applyRound } from "@/lib/engine/round";
 import { HttpError } from "@/lib/http";
-import type { Metrics } from "@/lib/types";
+import type { Metrics, Quality } from "@/lib/types";
 import { overrideDelta, parseQualityOverride, shiftMetrics } from "./override";
 import { toAnswerView } from "./views";
 
@@ -25,13 +25,32 @@ describe("parseQualityOverride", () => {
 });
 
 describe("overrideDelta", () => {
-  it("(nova − stara) × učinak za svaki ključ učinaka", () => {
-    expect(overrideDelta(5, 1, { guests: 4, finance: 3 })).toEqual({ guests: -16, finance: -12 });
+  it("(množitelj nove − množitelj stare) × učinak za svaki ključ učinaka, kao applyRound", () => {
+    expect(overrideDelta(5, 1, { guests: 4, finance: 3 })).toEqual({ guests: -20, finance: -15 });
     expect(overrideDelta(2, 5, { reviews: 2 })).toEqual({ reviews: 6 });
   });
 
   it("ključevi bez učinka ostaju bez pomaka", () => {
-    expect(overrideDelta(1, 4, { staff: 5 })).toEqual({ staff: 15 });
+    expect(overrideDelta(1, 4, { staff: 5 })).toEqual({ staff: 20 });
+  });
+
+  it("napisan odgovor: 1 vrijedi 0, pa 1 → 3 pomakne samo za +1 × učinak (ADR-046)", () => {
+    expect(overrideDelta(1, 3, { guests: 4 }, true)).toEqual({ guests: 4 });
+    expect(overrideDelta(3, 1, { guests: 4 }, true)).toEqual({ guests: -4 });
+    expect(overrideDelta(1, 3, { guests: 4 }, false)).toEqual({ guests: 12 });
+  });
+
+  it("zatvaranje sa starom ocjenom + pomak = zatvaranje s novom, za sve parove, napisan i ne", () => {
+    const effects = { guests: 3, operations: 2 };
+    for (const written of [true, false]) {
+      for (const from of [1, 2, 3, 4, 5] as Quality[]) {
+        for (const to of [1, 2, 3, 4, 5] as Quality[]) {
+          const closedOld = applyRound(M, [{ quality: from, effects, written }]);
+          const closedNew = applyRound(M, [{ quality: to, effects, written }]);
+          expect(shiftMetrics(closedOld, overrideDelta(from, to, effects, written))).toEqual(closedNew);
+        }
+      }
+    }
   });
 });
 

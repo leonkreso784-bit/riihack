@@ -1,12 +1,12 @@
 // Profesor mijenja ocjenu mentora (L12, M3): profesor ima zadnju riječ o kvaliteti odgovora, a brojke i dalje računa
-// motor. Ako je krug tvrtke već obračunat, pokazatelji se pomaknu za (nova − stara) × učinak predloška, rezano na
-// 0–100, isto kao zatvaranje kruga (applyRound); ako krug još traje, mijenja se samo ocjena i zatvaranje uzme novu.
+// motor. Ako je krug tvrtke već obračunat, pokazatelji se pomaknu za (množitelj nove − množitelj stare) × učinak
+// predloška, rezano na 0–100, isto kao zatvaranje kruga (applyRound, qualityFactor s napisanim odgovorom, ADR-046); ako krug još traje, mijenja se samo ocjena i zatvaranje uzme novu.
 import { and, eq, sql } from "drizzle-orm";
 import { db } from "@/db";
 import { answers, companies, situations } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
 import { isUuid } from "@/db/queries";
-import { roomStatusAfter } from "@/lib/engine/round";
+import { isWrittenAnswer, qualityFactor, roomStatusAfter } from "@/lib/engine/round";
 import { HttpError } from "@/lib/http";
 import type { AnswerView, MetricKey, Metrics, Quality } from "@/lib/types";
 import { getTemplate } from "./situations";
@@ -27,16 +27,20 @@ export function parseQualityOverride(body: Record<string, unknown>): Quality {
   return q as Quality;
 }
 
-/** Pomak pokazatelja kad se ocjena promijeni: (nova − stara) × učinak, za svaki ključ učinaka predloška. */
+/**
+ * Pomak pokazatelja kad se ocjena promijeni: zatvaranje s novom ocjenom − zatvaranje sa starom, za svaki ključ učinaka
+ * predloška, s istim množiteljem kao applyRound. `written` = napisan svoj tekst (napisan odgovor s ocjenom 1 vrijedi 0).
+ */
 export function overrideDelta(
   from: Quality,
   to: Quality,
   effects: Partial<Record<MetricKey, number>>,
+  written = false,
 ): Partial<Record<MetricKey, number>> {
   const delta: Partial<Record<MetricKey, number>> = {};
   for (const k of KEYS) {
     const e = effects[k];
-    if (e) delta[k] = Math.round((to - from) * e);
+    if (e) delta[k] = Math.round(qualityFactor(to, written) * e) - Math.round(qualityFactor(from, written) * e);
   }
   return delta;
 }
@@ -89,7 +93,7 @@ export async function overrideQuality(world: WorldRow, situationId: string, qual
   if (from === to) return toAnswerView(answer);
 
   const template = await getTemplate(world.id, situation.templateId);
-  const delta = overrideDelta(from, to, template.effects);
+  const delta = overrideDelta(from, to, template.effects, isWrittenAnswer(answer));
   const room =
     template.room && situation.roomNumber
       ? { number: situation.roomNumber, status: roomStatusAfter(to, template.room.problemStatus) }
