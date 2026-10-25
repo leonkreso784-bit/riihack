@@ -6,6 +6,19 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~02:55 CET · #262 potvrđen, put žirija prošao
+
+- **Tester (produkcija, ~02:45 CET):** ✅ svih pet ispravaka iz [#262](https://github.com/leonkreso784-bit/riihack/pull/262) (BUG-043, 045, 046, 047, 049) i BUG-056
+  potvrđen. Novo (nisko): izvještaj otvoren tijekom zatvaranja ostaje privremen (BUG-057), Tokovi mjeseca za kasnog
+  studenta (BUG-058); graditelj ih radi.
+- **Put žirija (probna igra `HYSJV5`, ~02:50 CET) 7/7 ✅:** kasni ulaz, [ADR-052](DECISIONS.md#adr-052), plan se
+  prenosi, tuđi račun skriven, mentor piše pravi tekst, 375 px. Novo: „Brojke su privremene" nakon kraja sezone
+  (BUG-059, srednji, graditelj), crveni „Skok mjeseca" (BUG-060, srednji, u [#264](https://github.com/leonkreso784-bit/riihack/pull/264)), sitni tekstovi (BUG-061, Simon)
+  i sučelje (BUG-062, Rino).
+- **[BALANS]:** kasni 4★ hotel pobijedi sezonu u 2 mjeseca (+53,7, popunjenost 100 %, 47.680 €, Recenzije 73 → 100);
+  ide uz [ADR-047](DECISIONS.md#adr-047) kao kalibracija poslije predaje. Uvid u studenta 7,3 s, AI prijedlog 22 s: za
+  odluku (graditelj skuplja za Leona).
+
 ## Ned 25.10. ~02:35 CET · demo ponovno posijan, sitni ispravci
 
 - **Spojeno:** [#260](https://github.com/leonkreso784-bit/riihack/pull/260) 02:10 i [#261](https://github.com/leonkreso784-bit/riihack/pull/261) 02:18 CET (dokumentacija), [#262](https://github.com/leonkreso784-bit/riihack/pull/262) 02:31 CET (dvostruki uvoz
