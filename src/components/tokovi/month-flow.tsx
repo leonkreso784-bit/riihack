@@ -9,7 +9,7 @@ import type { RoundFinance } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Panel } from "@/components/panel";
 import { Delta } from "@/components/metric-bar";
-import { Slider } from "@/components/tokovi/flow-ui";
+import { Slider, ZoomCanvas } from "@/components/tokovi/flow-ui";
 import { buildMonthFlow, ESTIMATE_LABEL, eur, estimateWhatIf, type FlowStep, type StepId } from "@/lib/tokovi/month-flow";
 
 const ICONS: Record<StepId, LucideIcon> = {
@@ -35,7 +35,7 @@ const POS: Record<StepId, { x: number; y: number; w?: number }> = {
   plan: { x: 190, y: 260, w: 208 },
   privlacnost: { x: 458, y: 170 },
   ugovori: { x: 458, y: 470 },
-  troskovi: { x: 458, y: 680 },
+  troskovi: { x: 458, y: 680, w: 208 },
   trziste: { x: 690, y: 170 },
   nocenja: { x: 922, y: 170 },
   prihod: { x: 1154, y: 170 },
@@ -68,7 +68,8 @@ function MoneyDelta({ value }: { value: number }) {
   return <span className={cn("font-bold whitespace-nowrap tabular-nums", tone)}>{text}</span>;
 }
 
-function StepCard({ step, selected, onSelect, className, style, controls }: { step: FlowStep; selected: boolean; onSelect: () => void; className?: string; style?: React.CSSProperties; controls?: string }) {
+// n i total: redni broj koraka (značka na kartici, a čitač ekrana čuje "Korak n od total"); from: naslovi koraka koji ulaze u ovaj.
+function StepCard({ step, n, total, from, selected, onSelect, className, style, controls }: { step: FlowStep; n: number; total: number; from: string[]; selected: boolean; onSelect: () => void; className?: string; style?: React.CSSProperties; controls?: string }) {
   const Icon = ICONS[step.id];
   const dark = step.tone === "dark";
   return (
@@ -79,12 +80,16 @@ function StepCard({ step, selected, onSelect, className, style, controls }: { st
       aria-controls={controls}
       style={style}
       className={cn(
-        "rounded-[var(--radius)] p-3.5 text-left outline-offset-2 motion-safe:transition-shadow focus-visible:outline-2 focus-visible:outline-primary",
+        "relative rounded-[var(--radius)] p-3.5 text-left outline-offset-2 motion-safe:transition-shadow focus-visible:outline-2 focus-visible:outline-primary",
         TONES[step.tone ?? "plain"],
         selected && "outline-2 outline-primary hover:shadow-lg",
         className,
       )}
     >
+      <span aria-hidden className="absolute -top-3.5 left-3 grid size-7 place-items-center rounded-full border-2 border-white bg-night text-sm font-extrabold text-white tabular-nums">
+        {n}
+      </span>
+      <span className="sr-only">{`Korak ${n} od ${total}: `}</span>
       <span className="mb-2 flex items-center gap-2">
         <span className={cn("grid size-7 shrink-0 place-items-center rounded-lg", dark ? "bg-white/15" : "bg-secondary text-secondary-foreground")}>
           <Icon className="size-4" aria-hidden />
@@ -93,6 +98,7 @@ function StepCard({ step, selected, onSelect, className, style, controls }: { st
       </span>
       {step.big && <span className={cn("block text-2xl leading-tight font-extrabold tracking-tight whitespace-nowrap tabular-nums", step.tone === "up" && "text-up", step.tone === "down" && "text-down")}>{step.big}</span>}
       <span className={cn("mt-1 block text-[0.85rem] leading-snug font-medium", dark ? "text-white/70" : "text-muted-foreground")}>{step.small}</span>
+      {from.length > 0 && <span className="sr-only">{` Prima od: ${from.join(", ")}.`}</span>}
     </button>
   );
 }
@@ -143,19 +149,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
   const [scenario, setScenario] = useState<{ price: number; marketing: number }>();
   const [selected, setSelected] = useState<StepId>();
 
-  const wrap = useRef<HTMLDivElement>(null);
-  const [scrolls, setScrolls] = useState(false);
   const detail = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const el = wrap.current;
-    if (!el) return;
-    const fit = () => setScrolls(el.scrollWidth > el.clientWidth + 1);
-    fit();
-    const ro = new ResizeObserver(fit);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [real]);
-
   useEffect(() => {
     if (!selected) return;
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -189,6 +183,8 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
   const effect = (p: number) => financeEffect(p) + 0; // same rule as the engine, not a copy of its numbers
 
   const lit = (a: StepId, b: StepId) => selected === a || selected === b;
+  const feeders = (id: StepId) => EDGES.filter(([, b]) => b === id).map(([a]) => byId[a].title);
+  const panelId = `${uid}-panel`;
 
   return (
     <div className="space-y-5">
@@ -239,55 +235,48 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
         </div>
       </Panel>
 
-      <p className="text-sm text-muted-foreground">Klikni korak da vidiš što je ušlo, koje je pravilo primijenjeno i što je izašlo.</p>
+      <p className="text-base font-semibold">
+        Kako čitati: korake redom, od 1 do {steps.length}. Linija znači da rezultat jednog koraka ulazi u sljedeći. Tok počinje s „Profesor zatvara mjesec“, a završava s „Novac na računu“. Klikni korak da vidiš što je ušlo, koje je pravilo primijenjeno i što je izašlo.
+      </p>
 
       {/* Desktop: cards in columns joined by lines; the open step opens its panel (Ulaz, Pravilo, Izlaz) right under the flow. */}
       <div className="hidden space-y-5 md:block">
-          {scrolls && <p className="text-sm font-semibold text-muted-foreground">Povuci vodoravno za cijeli tok →</p>}
-          <div className="relative min-w-0">
-          <div ref={wrap} className="min-w-0 overflow-x-auto pb-2">
-          <div style={{ width: CANVAS.w, height: CANVAS.h }} className="relative">
-            <div style={{ width: CANVAS.w, height: CANVAS.h }} className="absolute top-0 left-0">
-              <svg width={CANVAS.w} height={CANVAS.h} className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
-                {EDGES.map(([a, b]) => {
-                  const A = POS[a];
-                  const B = POS[b];
-                  const vertical = A.x === B.x;
-                  const x1 = vertical ? A.x + CARD_W / 2 : A.x + (A.w ?? CARD_W);
-                  const y1 = vertical ? A.y + HALF_H : A.y;
-                  const x2 = vertical ? B.x + CARD_W / 2 : B.x;
-                  const y2 = vertical ? B.y - HALF_H : B.y;
-                  const mx = (x1 + x2) / 2;
-                  const d = vertical ? `M${x1} ${y1} L${x2} ${y2}` : `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`;
-                  return <path key={`${a}-${b}`} d={d} fill="none" strokeWidth={2.5} strokeLinecap="round" className={cn("motion-safe:transition-[stroke]", lit(a, b) ? "stroke-primary" : "stroke-[#c3d0e6]")} />;
-                })}
-              </svg>
-              {steps.map((s) => {
-                const p = POS[s.id];
-                return (
-                  <StepCard
-                    key={s.id}
-                    step={s}
-                    selected={selected === s.id}
-                    onSelect={() => setSelected(selected === s.id ? undefined : s.id)}
-                    className="absolute -translate-y-1/2"
-                    style={{ left: p.x, top: p.y, width: p.w ?? CARD_W }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </div>
-          {scrolls && (
-            <>
-              <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent" />
-              <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
-            </>
-          )}
-          </div>
+        <ZoomCanvas width={CANVAS.w} height={CANVAS.h} label="Tok mjeseca" scrollHint="Tok je širi od ekrana: Dobit i Novac su desno. Pomakni ga mišem uz Shift + kotačić, dvama prstima na touchpadu ili tipkom Tab. →">
+          <svg width={CANVAS.w} height={CANVAS.h} className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
+            {EDGES.map(([a, b]) => {
+              const A = POS[a];
+              const B = POS[b];
+              const vertical = A.x === B.x;
+              const x1 = vertical ? A.x + CARD_W / 2 : A.x + (A.w ?? CARD_W);
+              const y1 = vertical ? A.y + HALF_H : A.y;
+              const x2 = vertical ? B.x + CARD_W / 2 : B.x;
+              const y2 = vertical ? B.y - HALF_H : B.y;
+              const mx = (x1 + x2) / 2;
+              const d = vertical ? `M${x1} ${y1} L${x2} ${y2}` : `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`;
+              return <path key={`${a}-${b}`} d={d} fill="none" strokeWidth={2.5} strokeLinecap="round" className={cn("motion-safe:transition-[stroke]", lit(a, b) ? "stroke-primary" : "stroke-[#7585a8]")} />;
+            })}
+          </svg>
+          {steps.map((s) => {
+            const p = POS[s.id];
+            return (
+              <StepCard
+                key={s.id}
+                step={s}
+                n={steps.indexOf(s) + 1}
+                total={steps.length}
+                from={feeders(s.id)}
+                selected={selected === s.id}
+                onSelect={() => setSelected(selected === s.id ? undefined : s.id)}
+                controls={selected === s.id ? panelId : undefined}
+                className="absolute -translate-y-1/2"
+                style={{ left: p.x, top: p.y, width: p.w ?? CARD_W }}
+              />
+            );
+          })}
+        </ZoomCanvas>
 
         {shown && (
-          <aside aria-label="Kako je izračunat korak" ref={detail} className="surface relative scroll-mt-4 rounded-[var(--radius)] p-6">
+          <aside id={panelId} aria-label={`Kako je izračunat korak: ${shown.title}`} ref={detail} className="surface relative scroll-mt-4 rounded-[var(--radius)] p-6">
             <button type="button" onClick={() => setSelected(undefined)} aria-label="Zatvori" className="absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-muted text-muted-foreground outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary">
               <X className="size-5" aria-hidden />
             </button>
@@ -304,10 +293,10 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
           <li key={s.id}>
             {i > 0 && (
               <div aria-hidden className="mx-auto flex h-7 w-6 justify-center">
-                <span className="h-full w-0.5 rounded-full bg-[#c3d0e6]" />
+                <span className="h-full w-0.5 rounded-full bg-[#7585a8]" />
               </div>
             )}
-            <StepCard step={s} selected={selected === s.id} onSelect={() => setSelected(selected === s.id ? undefined : s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />
+            <StepCard step={s} n={i + 1} total={steps.length} from={feeders(s.id)} selected={selected === s.id} onSelect={() => setSelected(selected === s.id ? undefined : s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />
             {selected === s.id && (
               <div id={`${uid}-${s.id}`} className="mt-2 rounded-[var(--radius)] border bg-card p-4">
                 <StepDetail step={s} />

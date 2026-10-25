@@ -127,7 +127,7 @@ describe("buildMonthFlow", () => {
   it("lists the twelve steps with the exact numbers from the finance row", () => {
     const flow = buildMonthFlow(real, MY_ROOMS, 4, 2)!;
     expect(flow.steps.map((s) => s.id)).toEqual([
-      "start", "ugled", "plan", "ugovori", "privlacnost", "trziste", "nocenja", "prihod", "troskovi", "dobit", "financije", "novac",
+      "start", "ugled", "plan", "privlacnost", "ugovori", "trziste", "nocenja", "prihod", "troskovi", "dobit", "financije", "novac",
     ]);
     const by = Object.fromEntries(flow.steps.map((s) => [s.id, s]));
     expect(by.dobit.big).toContain(String(Math.abs(real.profit)).slice(0, 1));

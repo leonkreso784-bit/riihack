@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AlertTriangle, ArrowDown, CheckCircle2, CircleSlash, Gauge, HandCoins, MessagesSquare, Sparkles, X } from "lucide-react";
-import { INVEST_EFFECT_CAP, INVEST_EFFECT_DIVISOR, INVEST_MAX } from "@/lib/rules";
+import { INVEST_EFFECT_CAP, INVEST_EFFECT_DIVISOR, INVEST_MAX, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { StaffDepartment } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { plural } from "@/lib/format";
@@ -302,6 +302,7 @@ function Lane({ lane, result, openKey, onOpen, highlight, laneRef }: { lane: Dep
           <ArrowDown className={cn("size-5", toneText(lane.contribution))} />
         </div>
         <ResultCard r={result} compact selected={openKey === `rez:${result.metric}`} onOpen={() => onOpen({ key: `rez:${result.metric}`, step: result.detail, eyebrow: "Pokazatelj" })} />
+        {result.departments.length > 1 && <p className="mt-1.5 px-1 text-xs text-muted-foreground">Isti pokazatelj hrane {result.departments.map((d) => STAFF_DEPARTMENT_LABELS[d]).join(" te ")}. Učinci se zbrajaju jednom, ne dvaput.</p>}
       </div>
     </div>
   );
@@ -346,7 +347,7 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
       const x2 = rb.left - box.left;
       const y2 = rb.top + rb.height / 2 - box.top;
       const mx = (x1 + x2) / 2;
-      out.push({ key: lane.department, d: `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`, tone: lane.contribution, label: lane.contribution !== 0 ? signed(lane.contribution) : undefined, lx: mx, ly: (y1 + y2) / 2 });
+      out.push({ key: lane.department, d: `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`, tone: lane.contribution, label: signed(lane.contribution), lx: mx, ly: (y1 + y2) / 2 });
     }
     setWires(out);
   }, [lanes]);
@@ -400,8 +401,11 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
 
       <section aria-label="Odjeli kao staze" className="surface rounded-[var(--radius)] p-3 md:p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-          <p className="text-sm text-muted-foreground">Svaka staza je jedan odjel. Klikni bilo koju karticu za detalje.</p>
+          <p className="text-sm font-semibold">
+            Kako čitati: slijeva nadesno, od odjela do pokazatelja (na mobitelu odozgo prema dolje). Broj na liniji je koliko bodova odjel šalje pokazatelju. Klikni karticu za detalje.
+          </p>
           <ul className="flex flex-wrap gap-3 text-xs font-semibold text-muted-foreground" aria-label="Legenda">
+            <li className="flex items-center gap-1.5"><span className="h-0.5 w-5 rounded-full bg-[#7585a8]" aria-hidden /> Linija: bodovi odjela u pokazatelj</li>
             <li className="flex items-center gap-1.5"><span className="size-3 rounded-full border border-[#e6c98f] bg-[#fdf1d8]" aria-hidden /> Što muči odjel</li>
             <li className="flex items-center gap-1.5"><span className="size-3 rounded-full border-2 border-up/45 bg-[#f1faf4]" aria-hidden /> Dobar odgovor</li>
             <li className="flex items-center gap-1.5"><span className="size-3 rounded-full border-2 border-down/45 bg-[#fff5f5]" aria-hidden /> Loš odgovor</li>
@@ -449,7 +453,7 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
                 pathLength={1}
                 strokeDasharray={1}
                 strokeDashoffset={drawn ? 0 : 1}
-                className={cn("motion-safe:transition-[stroke-dashoffset] motion-safe:duration-1000 motion-safe:ease-out motion-reduce:[stroke-dashoffset:0]", wi.tone > 0 ? "stroke-up" : wi.tone < 0 ? "stroke-down" : "stroke-[#c3d0e6]")}
+                className={cn("motion-safe:transition-[stroke-dashoffset] motion-safe:duration-1000 motion-safe:ease-out motion-reduce:[stroke-dashoffset:0]", wi.tone > 0 ? "stroke-up" : wi.tone < 0 ? "stroke-down" : "stroke-[#7585a8]")}
               />
             ))}
           </svg>
@@ -504,7 +508,7 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
           </div>
         </div>
         <p className="mt-5 border-t border-white/15 pt-4 text-sm text-white/80">
-          Pravilo: ulaganje daje bodove tek od {eur(INVEST_EFFECT_DIVISOR)}. Svakih {eur(INVEST_EFFECT_DIVISOR)} je +1 na pokazatelj odjela, najviše {signed(INVEST_EFFECT_CAP)} po odjelu, do {eur(INVEST_MAX)} mjesečno.
+          Pravilo: ulaganje daje bodove tek od {eur(INVEST_EFFECT_DIVISOR)}. Svakih {eur(INVEST_EFFECT_DIVISOR)} je +1 na pokazatelj odjela, najviše {signed(INVEST_EFFECT_CAP)} po odjelu, do {eur(INVEST_MAX)} mjesečno. Financije nemaju svoj odjel: njih pomiče dobit mjeseca.
         </p>
       </section>
 
