@@ -6,6 +6,20 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~08:00 CET · baza očišćena, žiri igra
+
+- **Spojeno:** [#274](https://github.com/leonkreso784-bit/riihack/pull/274) 04:33 CET (dokumentacija) i [#275](https://github.com/leonkreso784-bit/riihack/pull/275) 04:39 CET (graditelj:
+  skripta za čišćenje dobiva način `--kodovi` za točno navedene igre; suhi prolaz zadano, `KVRNDM` nikad).
+- **Čišćenje baze:** graditelj je ~08:00 po Leonovoj naredbi očistio bazu: igre 240 → 17, računi 69 → 10; obrisano je
+  i 5 starih igara demo računa (`--kodovi`, [#275](https://github.com/leonkreso784-bit/riihack/pull/275)). `KVRNDM` netaknuta.
+- **Leonova uputa testiranju:** najviše 3 testne igre na produkciji i ponovno ih koristiti
+  ([ADR-055](DECISIONS.md#adr-055)).
+- **Simon:** Leon je odobrio [#267](https://github.com/leonkreso784-bit/riihack/pull/267) (popravci iz noćnog pregleda) za spajanje prije žirija;
+  integrator spaja.
+- **Otvoreno:** [#267](https://github.com/leonkreso784-bit/riihack/pull/267), [#268](https://github.com/leonkreso784-bit/riihack/pull/268) (Simon) i
+  [#209](https://github.com/leonkreso784-bit/riihack/pull/209) (ne spaja se, [ADR-047](DECISIONS.md#adr-047)).
+- **Žiri:** 08:00–09:00 sam igra aplikaciju (obilazak 3).
+
 ## Ned 25.10. ~04:30 CET · botovi ponovno planiraju
 
 - **Spojeno:** [#273](https://github.com/leonkreso784-bit/riihack/pull/273) 04:22 CET (dokumentacija: projektor potvrđen) i [#272](https://github.com/leonkreso784-bit/riihack/pull/272) 04:24 CET (graditelj: plan

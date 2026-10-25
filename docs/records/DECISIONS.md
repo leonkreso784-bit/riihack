@@ -8,6 +8,15 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-055"></a>
+## ADR-055 · Testiranje na produkciji: najviše 3 testne igre
+**Datum:** 25.10. ~08:00 · **Status:** ✅ (Leon, preneseno preko graditelja) · **Vezano:** [ADR-030](#adr-030)
+
+**Kontekst.** Noćno testiranje ostavilo je 240 igara i 69 računa, pa je baza očišćena prije žirija (igre 240 → 17,
+računi 69 → 10, [#275](https://github.com/leonkreso784-bit/riihack/pull/275)).
+**Odluka.** Tester i ostale sesije koriste najviše 3 testne igre na produkciji i ponovno ih koriste.
+**Posljedice.** Popis igara profesora i baza ostaju čisti dok žiri igra.
+
 <a id="adr-054"></a>
 ## ADR-054 · Leon spava; graditelj do jutra traži spajanja u njegovo ime
 **Datum:** 25.10. ~02:38 · **Status:** ✅ (Leon, preneseno preko graditelja, doslovno) ·
