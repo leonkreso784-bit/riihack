@@ -7,6 +7,10 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#287](https://github.com/leonkreso784-bit/riihack/pull/287) | 09:43 CET | Simon | Tokovi: zum ploče (50–150 %, zadano 100 % bez promjene za pitch) i audit stavke S1–S6 (upute, brojevi koraka, pristupačni nazivi, kontrast linija, tekstovi kartica); samo `src/components/tokovi/*`, `src/lib/tokovi/*`; 674 testa, build |
+| [#285](https://github.com/leonkreso784-bit/riihack/pull/285) | 09:33 CET | Rino | stranica `/igra/mentor` sa svim razgovorima s mentorom, Financije u dvije kartice, objašnjenja „?" uz nazive, raspored Hotela (BUG-070 do 074; zatvara #284); bez promjene baze i API-ja; 647 testova, build |
+| [#286](https://github.com/leonkreso784-bit/riihack/pull/286) | 09:30 CET | Leon | prezentacija: promo video Simpolis 1080p (56 s, `prezentacija/video/simpolis-promo-1080p.mp4`); 4K verzija u prilozima izdanja **promo-video** |
+| [#283](https://github.com/leonkreso784-bit/riihack/pull/283) | 09:12 CET | Leon | dokumentacija: #280 potvrđen |
 | [#282](https://github.com/leonkreso784-bit/riihack/pull/282) | 09:07 CET | Leon | dokumentacija: mentor sam piše osvrt (#280), prezentacija, predaja |
 | [#268](https://github.com/leonkreso784-bit/riihack/pull/268) | 09:04 CET | Simon | popravci iz noćnog pregleda (dio B): ulaz mentora za preskočene situacije, `firstQuestion` i rezervni tekstovi (`src/lib/ai/*`), oznaka rezervnog nacrta u profesorskom obrascu, tekstovi u gradu i Tokovima; dira Rinove datoteke |
 | [#280](https://github.com/leonkreso784-bit/riihack/pull/280) | 09:01 CET | Leon | graditelj: mentor sam piše osvrt mjeseca nakon obračuna ([ADR-057](DECISIONS.md#adr-057), BUG-068) |
