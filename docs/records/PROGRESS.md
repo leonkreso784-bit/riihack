@@ -8,6 +8,8 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ## Ned 25.10. ~08:20 CET · obilazak 3 prošao
 
+- **Tester, zadnja provjera produkcije (~08:20 CET, API, nakon #278) ✅:** stranice 200, odgovor 5/5 za 2,7 s, mentor 2,1 s
+  i osvrt 4,7 s, zatvaranje mjeseca 3,8 s, plan se prenosi, skok mjeseca točan; bez novih bugova. Tester gotov do predaje.
 - **Leon: obilazak žirija 3 prošao odlično** (preneseno preko graditelja).
 - **Spojeno:** [#276](https://github.com/leonkreso784-bit/riihack/pull/276) 08:02 CET (dokumentacija), [#267](https://github.com/leonkreso784-bit/riihack/pull/267) 08:03 CET (Simon: popravci iz noćnog pregleda) i
   [#278](https://github.com/leonkreso784-bit/riihack/pull/278) 08:21 CET (graditelj: `db:push` samo na svojoj praznoj bazi, `PREDAJA.md` usklađen s demoom).

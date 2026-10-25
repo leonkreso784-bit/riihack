@@ -8,6 +8,20 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-057"></a>
+## ADR-057 · Mentor sam piše osvrt mjeseca nakon obračuna
+**Datum:** 25.10. ~08:24 · **Status:** ✅ (Leon, preneseno preko graditelja); kod 🟨 u radu · **Vezano:**
+[ADR-052](#adr-052), [BUG-068](BUGS.md#bug-068--mentorov-osvrt-piše-privremene-brojke-prije-obračuna-grada)
+
+**Kontekst.** Osvrt mentora student dobiva tek kad odgovori na mentorovo pitanje, a dosad je mogao biti pisan iz
+privremenih brojki prije obračuna grada (BUG-068).
+**Odluka.** Kad je mjesec obračunat, mentor sam napiše kratak osvrt: što je bilo dobro, što nije i jedan savjet, iz
+brojki motora i studentovih odgovora, bez da ga student pita. Pitanje i refleksija ostaju kao nastavak, a osvrt se
+dopisuje.
+**Posljedice.** Radi graditeljev agent: osvrt se stvara pri prvom otvaranju izvještaja nakon obračuna (`mentorText`),
+bez promjene sheme; aditivno dira Simonov `mentor.ts` i minimalno Rinov izvještaj. Rok je PR do 09:40, inače ide nakon
+natjecanja.
+
 <a id="adr-056"></a>
 ## ADR-056 · Dok žiri igra, nema deploya
 **Datum:** 25.10. ~08:05 · **Status:** ✅ (Leon, preneseno preko graditelja) · **Vezano:** [ADR-031](#adr-031),

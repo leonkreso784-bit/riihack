@@ -80,6 +80,7 @@ na koga čeka i što smo dogovorili.
 | 25.10. ~02:38 | Leon spava; graditelj do jutra traži spajanja u njegovo ime; ~02:42 Leon integratoru izravno: odobrenje za svo spajanje ([ADR-054](docs/records/DECISIONS.md#adr-054)) | Leon |
 | 25.10. ~08:00 | Testiranje na produkciji: najviše 3 testne igre, ponovno ih koristiti ([ADR-055](docs/records/DECISIONS.md#adr-055)) | Leon |
 | 25.10. ~08:05 | Dok žiri igra (do 09:00) nema deploya ni spajanja ([ADR-056](docs/records/DECISIONS.md#adr-056)) | Leon |
+| 25.10. ~08:24 | Mentor nakon obračuna mjeseca sam piše kratak osvrt (dobro, loše, jedan savjet); pitanje i refleksija ostaju ([ADR-057](docs/records/DECISIONS.md#adr-057)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
