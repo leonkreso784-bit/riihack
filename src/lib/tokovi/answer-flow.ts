@@ -101,7 +101,7 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
   let judgeNote: string | undefined;
   const judgeRule = ["AI samo označava koje je kriterije tvoj odgovor ispunio. Ne daje bodove i ne odlučuje o ocjeni."];
   if (mode === "own" && answer.verdict) {
-    judgeSmall = `Ispunjeno kriterija: ${met.length}`;
+    judgeSmall = hasRubric ? `Ispunjeno ${met.length} od ${rubric.length} kriterija` : `Ispunjeno kriterija: ${met.length}`;
     if (hasRubric) {
       const byId = new Map(rubric.map((c) => [c.id, c.text]));
       rubric.forEach((c, i) => judgeOut.push({ label: criterionLabel(c.id, i), value: `${met.includes(c.id) ? "Ispunjeno" : "Nije ispunjeno"}: ${c.text}` }));
@@ -186,21 +186,23 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
     small: rows.map((r) => `${METRIC_LABELS[r.k]} ${signed(r.d)}`).join(", "),
     inputs: [{ label: "Kvaliteta", value: `${q} / 5` }, ...rows.map((r) => ({ label: `Učinak: ${METRIC_LABELS[r.k]}`, value: String(r.e) }))],
     rule: ["Promjena pokazatelja = množitelj kvalitete × učinak situacije (1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3). Napisan svoj tekst (ne zalijepljen) s kvalitetom 1 vrijedi 0.", "Pokazatelj ostaje između 0 i 100."],
-    calc: rows.map((r) => `${signed(qualityFactor(q, written))} × ${r.e} = ${signed(r.d)}`).join("  ·  "),
+    calc: rows.map((r) => `${METRIC_LABELS[r.k]}: ${signed(qualityFactor(q, written))} × ${r.e} = ${signed(r.d)}`).join("  ·  "),
     outputs: rows.map((r) => ({ label: METRIC_LABELS[r.k], value: signed(r.d), strong: true })),
     note: CLOSE_NOTE,
   });
 
   // 5. Odjeli
   const out: AnswerRow[] = [];
+  const who: string[] = []; // kratak opis za karticu: "Uprava +6, Financije (bez odjela) −4"
   for (const r of rows) {
     const deps = departmentsForMetric(r.k).map((d) => STAFF_DEPARTMENT_LABELS[d]);
     out.push({ label: METRIC_LABELS[r.k], value: deps.length ? `${deps.join(", ")} (${signed(r.d)})` : `Nema svog odjela (${signed(r.d)})` });
+    who.push(`${deps.length ? deps.join(" te ") : `${METRIC_LABELS[r.k]} (bez odjela)`} ${signed(r.d)}`);
   }
   steps.push({
     id: "odjeli",
     title: "Odjeli",
-    small: "Tko to osjeti u hotelu",
+    small: who.join(", "),
     inputs: rows.map((r) => ({ label: METRIC_LABELS[r.k], value: signed(r.d) })),
     rule: ["Svaki odjel prati jedan pokazatelj. Što se promijeni u pokazatelju, osjeti odjel koji ga prati."],
     outputs: out,

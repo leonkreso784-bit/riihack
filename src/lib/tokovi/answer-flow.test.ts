@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyRound } from "@/lib/engine/round";
 import { qualityFromVerdict } from "@/lib/engine/quality";
-import { DEPARTMENT_METRIC } from "@/lib/rules";
+import { DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { AnswerView, Metrics, Quality, RubricCriterion, SituationView } from "@/lib/types";
 import { buildAnswerFlow, flowInputFromSituation, metricDelta, NO_EFFECTS_TEXT, CLOSE_NOTE, type AnswerFlowInput } from "./answer-flow";
 
@@ -78,6 +78,18 @@ describe("buildAnswerFlow", () => {
     const expected = Object.entries(DEPARTMENT_METRIC).filter(([, m]) => m === "guests").length;
     expect(guests.value.split(",").length).toBe(expected);
     expect(dep.find((o) => o.label === "Financije")!.value).toMatch(/Nema svog odjela/);
+  });
+
+  it("kartice kažu koliko je kriterija ispunjeno od koliko, koji broj je koji pokazatelj i tko ga osjeti", () => {
+    const steps = flow({ answer: own(["c1", "c2", "c3", "c4"]), rubric: RUBRIC, effects: { ...EFFECTS, finance: 2 } });
+    expect(step(steps, "sudac").small).toBe("Ispunjeno 4 od 5 kriterija");
+    expect(step(flow({ answer: own(["c1", "c2"]) }), "sudac").small).toBe("Ispunjeno kriterija: 2"); // bez rubrike ne znamo "od koliko"
+    expect(step(steps, "ucinak").calc).toContain("Zadovoljstvo gostiju: +2 × 3 = +6");
+    expect(step(steps, "ucinak").calc).toContain("Financije: +2 × 2 = +4");
+    const guestsDeps = (Object.keys(DEPARTMENT_METRIC) as (keyof typeof DEPARTMENT_METRIC)[]).filter((d) => DEPARTMENT_METRIC[d] === "guests").map((d) => STAFF_DEPARTMENT_LABELS[d]);
+    const small = step(steps, "odjeli").small;
+    expect(small).toContain(`${guestsDeps.join(" te ")} +6`);
+    expect(small).toContain("Financije (bez odjela) +4");
   });
 
   it("ocjena koju je promijenio profesor", () => {
