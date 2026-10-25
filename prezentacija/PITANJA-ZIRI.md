@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | **Zloupotreba:** student zalijepi odgovor iz ChatGPT-a? | Zalijepljen tekst vrijedi najviše kao klik na ponuđeni odgovor, a profesor vidi da je zalijepljen. Prepisivanje prepoznaju pravila, ne AI. | Pravilo u motoru (udio zalijepljenog teksta), uvid profesora. |
 | **Motivacija:** zašto bi student igrao? | Ocjena je napredak u odnosu na vlastiti početak, a grad je zajednički: tvoja cijena i odgovori gostu mijenjaju tvoju blagajnu i tržište. Mentor nakon svakog mjeseca pita zašto. | Ljestvica po napretku, podij, mentor. |
-| **Novac:** tko plaća? | Fakultet plaća licencu po semestru ili godini, u partnerstvu s tvrtkom: hotelska kuća donosi stvarne situacije i put do prakse i posla. Svi ostali mogu igrati u zasebnom predvorju, a studenti ostaju u kontroliranom okruženju kolegija. AI košta oko 7 centi po studentu za sezonu. Pilot je besplatan; cijenu licence još nismo dogovorili ni s jednim fakultetom. | Izmjereni tokeni, razred od 30 je 2 do 4 $. |
+| **Novac:** tko plaća? | Fakultet plaća licencu po semestru ili godini, u partnerstvu s tvrtkom: hotelska kuća donosi stvarne situacije i put do prakse i posla. Svi ostali mogu igrati u zasebnom predvorju, a studenti ostaju u kontroliranom okruženju kolegija. AI košta oko 7 centi po studentu za sezonu. Ciljamo oko 1.000 € po kolegiju za semestar (oko 11 € po studentu; slični simulatori 11 do 139 $ po studentu), a naš trošak je oko 100 $ po fakultetu za semestar. Pilot je besplatan; cijenu još nismo provjerili ni s jednim fakultetom. | Izmjereni tokeni, razred od 30 je 2 do 4 $. |
 | **Usvajanje:** tko će to prvi koristiti? | FMTU Opatija: već koriste Cesim od 2012., a Cesim nema riječi ni hrvatski. Tražimo jedan kolegij i jednu hotelsku kuću za pilot. | Slajd „Što već postoji", slajd „Tražimo". |
 | **Dizajn:** radi li na mobitelu? | Žiri ga je jutros igrao na svojim mobitelima. | Obilazak 3. |
 
@@ -32,7 +32,7 @@
 - **Koliko je ekonomija realna?** Danas pojednostavljena pravila. Kalibracija prema javnim izvješćima Liburnije, Jadrana i Valamara je izrađena (PDV, provizija, materijal, osoblje po zvjezdicama) i ide u igru nakon natjecanja. Ne reći da je već u igri.
 - **Samo hoteli?** Ne: isti motor, sudac i Tokovi, mijenja se paket sadržaja (slajd 7, koncept).
 - **Što je napravljeno prije natjecanja?** Istraživanje i plan; sav kod je napisan na natjecanju (prvi commit na natjecanju).
-- **Koliko ste koristili AI za kod?** Puno, otvoreno: agenti pišu kod, mi odlučujemo, pregledavamo i testiramo (505 testova, smoke na produkciji, audit gumba na mobitelu i desktopu).
+- **Koliko ste koristili AI za kod?** Puno, otvoreno: agenti pišu kod, mi odlučujemo, pregledavamo i testiramo (preko 550 testova, smoke na produkciji, audit gumba na mobitelu i desktopu).
 
 ## Ako ne znamo
 
