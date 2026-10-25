@@ -19,7 +19,9 @@ privremenih brojki prije obračuna grada (BUG-068).
 brojki motora i studentovih odgovora, bez da ga student pita. Pitanje i refleksija ostaju kao nastavak, a osvrt se
 dopisuje.
 **Posljedice.** Radi graditeljev agent: osvrt se stvara pri prvom otvaranju izvještaja nakon obračuna (`mentorText`),
-bez promjene sheme; aditivno dira Simonov `mentor.ts` i minimalno Rinov izvještaj.
+bez promjene sheme; aditivno dira Simonov `mentor.ts` i minimalno Rinov izvještaj. Namjerno: i mjesec zatvoren prije
+[#280](https://github.com/leonkreso784-bit/riihack/pull/280) dobije osvrt pri prvom otvaranju izvještaja (5–6 s, osvrt ispred starog odgovora; isto u
+`KVRNDM`) — isti mehanizam kao za refleksiju prije obračuna (graditelj ~09:12; tester 09:08). Za demo: graditelj ~09:20 unaprijed stvara osvrte za 1. mjesec `KVRNDM` (agent otvara izvještaj 1. mjeseca kao 5 posijanih studenata ponovnim ulazom istim imenom i hotelom, ništa drugo ne šalje).
 
 <a id="adr-056"></a>
 ## ADR-056 · Dok žiri igra, nema deploya

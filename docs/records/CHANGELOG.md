@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#282](https://github.com/leonkreso784-bit/riihack/pull/282) | 09:07 CET | Leon | dokumentacija: mentor sam piše osvrt (#280), prezentacija, predaja |
 | [#268](https://github.com/leonkreso784-bit/riihack/pull/268) | 09:04 CET | Simon | popravci iz noćnog pregleda (dio B): ulaz mentora za preskočene situacije, `firstQuestion` i rezervni tekstovi (`src/lib/ai/*`), oznaka rezervnog nacrta u profesorskom obrascu, tekstovi u gradu i Tokovima; dira Rinove datoteke |
 | [#280](https://github.com/leonkreso784-bit/riihack/pull/280) | 09:01 CET | Leon | graditelj: mentor sam piše osvrt mjeseca nakon obračuna ([ADR-057](DECISIONS.md#adr-057), BUG-068) |
 | [#277](https://github.com/leonkreso784-bit/riihack/pull/277) | 09:01 CET | Simon | prezentacija v6: deck, PDF, video, skripta i pitanja žirija |
