@@ -6,6 +6,38 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~02:40 · rubni slučajevi
+
+- **Tester, rubni slučajevi na produkciji (02:18–02:36) ✅:** klik-odgovor, granica 6 poruka u sučelju, 2000/2001
+  znakova, lijepljenje ≤ 4, Financije, ulaganja, dvoklik zatvaranja, playbook, povratak istim kodom.
+- **Novi bugovi:** BUG-042 do 050; najteži [BUG-042](BUGS.md#bug-042--razgovor-s-likom-istodobne-6-i-7-poruka-obje-prođu)
+  (istodobne 6. i 7. poruka liku obje prođu, vjerojatno rješava #249). Graditelj jednim PR-om: BUG-043, 045, 046,
+  047, 049; Rino: BUG-044, 048; Simon: BUG-050.
+- **Balans (tester):** recepcija + kuhinja donose +6 gostiju mjesečno; uz referentnu cijenu 172 € (4 zvjezdice, 17 soba) račun naraste s 20.000 na 98.280 € u 2 mjeseca (dobit 27.390 + 50.890 €); kasni
+  student kreće s 20.000 €, ostali su na 60–98 tisuća. Odluka graditelja (~02:40): ne mijenja se prije predaje, ide
+  uz [ADR-047](DECISIONS.md#adr-047) kao kalibracija, sljedeći korak.
+- **Odluka:** Leon spava; graditelj do jutra traži spajanja u njegovo ime ([ADR-054](DECISIONS.md#adr-054); prihvaća
+  li integrator prenesenu ovlast, 🟨 potvrditi).
+
+## Ned 25.10. ~02:30 · zaglavlja spojena, ocjena 1, skriveni račun
+
+- **Spojeno:** dokumentacija #248 (02:18, ADR-053), graditeljeva sigurnosna zaglavlja #251 (02:23; produkcija READY
+  02:23, integrator potvrdio zaglavlja curlom), dokumentacija #254 (02:29, PRD i BACKLOG prema demou).
+- **Integrator** je stajao ~01:45–02:16 na Leonovo „stani" i nastavio na njegovo „nastavi" u svojoj sesiji.
+- **Čeka Leonovo „spoji":** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)), #252 (skriven novac tuđih hotela,
+  BUG-034; mijenja ugovor i dira Rinove datoteke), #253 (napisan odgovor s ocjenom 1 vrijedi 0, BUG-030 i BUG-041;
+  mijenja brojke).
+- **Provjerava integrator:** #247 (granica AI prijedloga), #249 (granica poruka), #250 (Simon: mentorovo pitanje).
+  Graditeljev #255 (BUG-035 broj studenata bez botova, BUG-039 duplikat iz knjižnice) otvoren ~02:32, čeka spajanje.
+- **Odluke:** zalijepljen odgovor s ocjenom 1 ostaje −2× (graditelj po [ADR-052](DECISIONS.md#adr-052), ~02:28,
+  #253); radar vještina se ne radi, sljedeći korak (graditelj ~02:30; PRD i BACKLOG u #254); karta i vijesti grada:
+  kriterij u PRD-u sužen na studente, profesor ima ploču, ljestvicu i uvid, a karta i vijesti na profesorovoj ploči
+  su sljedeći korak (graditelj ~02:32). BUG-035 i 039 preuzeo graditelj; dvostruko „(bot)" ostaje Rinu.
+- **Novi bugovi:** BUG-040 (test botova ovisi o brzini stroja, Simon), BUG-041 („Promijeni ocjenu" za ocjenu 1,
+  popravak u #253).
+- **Pravilo komunikacije (Leon ~02:25, preko graditelja):** pitanja i odluke drugih sesija idu graditelju, on ih
+  skuplja za Leona.
+
 ## Ned 25.10. ~01:35 · sigurnost
 
 - **Spojeno:** dokumentacija #246 (01:33).

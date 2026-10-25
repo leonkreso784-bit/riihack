@@ -62,8 +62,9 @@ ono što demo obećava) · 🟨 potvrditi.
   `PRICE_MIN`, `PRICE_MAX`, `MARKETING_MAX` u `rules.ts`.
 - ✅ Kad profesor zatvori mjesec, student vidi noćenja, prihod, troškove, dobit i stanje računa (`/igra/financije`), a jeftiniji ili bolje ocijenjen hotel uzme goste drugima.
   Izvor: #68, #88, #194, #213, smoke koraci 11 i 12.
-- 🔶 Svi vide kartu grada s hotelima i gradskim tvrtkama. Studenti da (`/igra/grad`, #128, #215); profesorova ploča
-  nema kartu (`src/components/prof-board.tsx`).
+- ✅ Studenti vide kartu grada s hotelima i gradskim tvrtkama (`/igra/grad`); profesor ima ploču, ljestvicu i uvid.
+  Izvor: #128, #215; kriterij sužen (graditelj ~02:32), karta na profesorovoj ploči je sljedeći korak
+  ([BACKLOG.md](../records/BACKLOG.md)).
 - ✅ Profesor vidi ploču uživo (krug, tvrtke, tko je zatvorio krug, ljestvica) i može otvoriti sljedeći krug. Izvor:
   #108, #211.
 - ✅ Student vidi osoblje svog hotela (`/igra/osoblje`). Izvor: #113.
@@ -77,8 +78,9 @@ ono što demo obećava) · 🟨 potvrditi.
 
 - ✅ Hotel dobije ponudu ugovora gradske tvrtke i može je prihvatiti ili odbiti; ugovor se vidi na karti. Izvor: #88,
   #164 (Pošta), sloj „Ugovori" na karti (#128), smoke korak 13.
-- 🔶 Svi vide vijesti grada iz događaja („Kolovoz: Hotel … najpopunjeniji"). Studenti da (`/igra/grad`, #88);
-  profesorova ploča nema vijesti (`src/components/prof-board.tsx`).
+- ✅ Studenti vide vijesti grada iz događaja („Kolovoz: Hotel … najpopunjeniji") (`/igra/grad`); profesor ima ploču,
+  ljestvicu i uvid. Izvor: #88; kriterij sužen (graditelj ~02:32), vijesti na profesorovoj ploči su sljedeći korak
+  ([BACKLOG.md](../records/BACKLOG.md)).
 - ✅ Student može zatvoriti krug i vidi izvještaj s promjenama pokazatelja i pitanjem sokratskog mentora (`/igra/izvjestaj/[krug]`).
   Izvor: #79, #152, #160, #240, smoke korak 9.
 - ✅ Profesor može otvoriti uvid u razmišljanje jednog studenta: odgovori, razgovori, presude (`/profesor/[worldId]/tvrtka/[id]`).
