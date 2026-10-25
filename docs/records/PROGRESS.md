@@ -6,6 +6,17 @@ Vremena su lokalna (CEST).
 
 ---
 
+## Ned 25.10. ~01:35 · sigurnost
+
+- **Spojeno:** dokumentacija #246 (01:33).
+- **Odluka (Leon, ~01:20, nakon Simonovog sigurnosnog pregleda):** granice AI prijedloga, atomična granica poruka s
+  likom, tri sigurnosna zaglavlja bez CSP-a, PIN poslije natjecanja ([ADR-053](DECISIONS.md#adr-053)). Graditelj:
+  #247 (granica AI prijedloga) i #249 (granica poruka) otvoreni, PR za zaglavlja stiže.
+- **Tester, provjera spojenog na produkciji (01:33–01:40) ✅:** BUG-032 (podij = ljestvica, izvještaj uključuje
+  obračun), BUG-033, 036, 037 i 038; #237; #245 („Moje igre" 1,2 s, hladni start 7,4 s); #235 (5 botova, zatvaranje
+  mjeseca 3,2–7,0 s). BUG-029 se provjerava nakon spajanja #241.
+- **Otvoreno:** #241 (plan se prenosi, čeka Leonovo „spoji"), #247, #249.
+
 ## Ned 25.10. ~01:25 · ocjena 1 za napisan odgovor, račun tuđih hotela
 
 - **Spojeno:** dokumentacija #243 (01:16).
@@ -13,7 +24,7 @@ Vremena su lokalna (CEST).
   ([ADR-052](DECISIONS.md#adr-052), BUG-030); ljestvica i grad bez stanja računa tuđih hotela (potvrđen
   [ADR-040](DECISIONS.md#adr-040), BUG-034). Gradi graditelj.
 - **Spojeno poslije (01:27–01:28):** Rinov #244 (BUG-036 i 038), graditeljev #245 (brže „Moje igre", #227.6), Simonov
-  #242 (BUG-033 i 037); četiri niska buga riješena. Integrator ih je spojio sam (bugovi u vlasnikovim datotekama):
+  #242 (BUG-033 i 037); četiri niska buga riješena. Integrator ih je spojio sam, po svojim pravilima:
   zajedno 523 testa, lint, build; CI `main` zelen (`da0d211`), produkcija READY 01:28.
 - **Otvoreno:** #241 (plan se prenosi, [ADR-050](DECISIONS.md#adr-050)).
 

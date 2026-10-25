@@ -15,6 +15,8 @@ Zadaci koji **jesu** u demou žive u [planu izvedbe](../superpowers/plans/2026-1
   podatak igre umjesto `MAX_ROUNDS`, tjedna krivulja potražnje, troškovi i kapacitet skalirani s 7/30, trajanje ugovora
   u tjednima, 1 situacija po tjednu, oznake poput „Tjedan 7 · srpanj".
 - Više gradova i država.
+- Ponovni ulaz studenta s PIN-om, ne samo imenom ([ADR-053](DECISIONS.md#adr-053)).
+- Stroga CSP ([ADR-053](DECISIONS.md#adr-053)).
 - Šok gumb, novine, glas, replay sezone.
 - Značke iz kriterija rubrike (npr. „Smirivač gostiju"), [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md) (L5, gamifikacija).
 
