@@ -127,8 +127,9 @@ export default function FinancePage() {
           <>
             <FlowLink href={`/igra/izvjestaj/${finances[finances.length - 1].round}/tok`} title="Kako je izračunat mjesec" hint="Obračun korak po korak i „Što ako?“" />
             <Panel title="Financijski sažetak">
-              <div className="-mx-1 overflow-x-auto">
-                <table className="w-full min-w-[22rem] text-sm">
+              {/* overflow-y-hidden: the "?" buttons' larger tap area poked 2 px out and gave the table a vertical scrollbar. */}
+              <div className="-mx-1 overflow-x-auto overflow-y-hidden">
+                <table className="w-full text-sm">
                   <thead>
                     <tr className="text-muted-foreground">
                       <th scope="col" className="py-2 text-left font-semibold"><span className="sr-only">Stavka</span></th>
