@@ -136,3 +136,52 @@ export function agencyReplyFallback(i: AgencyFallbackInput): string {
       return `Poštovani,\n\nnažalost, vaš je prijedlog predaleko od naše ponude, pa ovaj put odustajemo od suradnje.\n\n${sign}`;
   }
 }
+
+/** "Ponudi naknadu [npr. popust]" → "ponudi naknadu": the bracketed examples are for the judge, not for the student. */
+const criterionPhrase = (text: string) => {
+  const plain = text.replace(/\s*\[[^\]]*\]/g, "").trim().replace(/[.;:]+$/, "");
+  return plain.charAt(0).toLowerCase() + plain.slice(1);
+};
+const isId = (s: string) => /^[a-z]{0,2}\d+$/i.test(s.trim());
+
+/**
+ * Automatic month review built only from the engine's numbers (no AI): what went well (best decision or biggest
+ * rise), what did not (biggest fall and the weakest decision), one tip from a missed criterion, then the question.
+ */
+export function fallbackReview(input: MentorInput & { question?: string }): string {
+  const deltas = (Object.keys(input.metricsAfter) as MetricKey[]).map((key) => ({
+    key,
+    delta: input.metricsAfter[key] - input.metricsBefore[key],
+  }));
+  const best = deltas.reduce((a, b) => (b.delta > a.delta ? b : a));
+  const worst = deltas.reduce((a, b) => (b.delta < a.delta ? b : a));
+  const answered = input.items.filter((i) => i.mode !== "none");
+  const top = answered.reduce<MentorInput["items"][number] | undefined>((t, i) => (!t || i.quality > t.quality ? i : t), undefined);
+  const weak = input.items.reduce<MentorInput["items"][number] | undefined>((w, i) => (!w || i.quality < w.quality ? i : w), undefined);
+
+  const parts: string[] = [];
+  if (top && top.quality >= 4) parts.push(`Dobro je riješena situacija „${top.title}“, kvaliteta ${top.quality} od 5.`);
+  else if (best.delta > 0) parts.push(`Dobro je što je pokazatelj ${lower(best.key)} porastao (${signed(best.delta)}/100).`);
+  else parts.push("Ovaj mjesec nijedan pokazatelj nije porastao.");
+
+  if (worst.delta < 0) parts.push(`Najviše je pao pokazatelj ${lower(worst.key)} (${signed(worst.delta)}/100).`);
+  if (input.finance) {
+    const f = input.finance;
+    parts.push(`Popunjenost je bila ${f.occupancyPct} %, a dobit mjeseca ${f.profit.toLocaleString("hr-HR")} €.`);
+  }
+
+  const missed = weak?.criteriaMissed.filter((m) => !isId(m)) ?? [];
+  if (weak && weak !== top && weak.quality <= 3) {
+    const why = weak.mode === "none" ? "nije bilo odgovora" : `kvaliteta ${weak.quality} od 5`;
+    parts.push(`Najslabija odluka je „${weak.title}“ (${why}).`);
+  }
+  if (weak && missed.length > 0 && weak.quality <= 3) {
+    parts.push(`Savjet za sljedeći mjesec: u sličnoj situaciji ${criterionPhrase(missed[0])}.`);
+  } else if (worst.delta < 0) {
+    parts.push(`Savjet za sljedeći mjesec: kod svake odluke prvo se zapitaj kako će djelovati na pokazatelj ${lower(worst.key)}.`);
+  } else {
+    parts.push("Savjet za sljedeći mjesec: kod svake odluke prvo se zapitaj koji će pokazatelj najviše dotaknuti.");
+  }
+  if (input.question?.trim()) parts.push(input.question.trim());
+  return parts.join(" ");
+}

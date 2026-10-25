@@ -5,6 +5,7 @@ import { GraduationCap } from "lucide-react";
 import { api } from "@/lib/client";
 import { MAX_OWN_ANSWER_CHARS, MIN_OWN_ANSWER_CHARS } from "@/lib/rules";
 import type { RoundReportView } from "@/lib/types";
+import { splitMentorText } from "@/lib/mentor-text";
 import { cn } from "@/lib/utils";
 import { charsLeft } from "@/lib/format";
 import { FormError, SubmitButton } from "./form";
@@ -27,6 +28,7 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
   const sending = useRef(false);
   const length = text.trim().length;
   const short = length < MIN_OWN_ANSWER_CHARS;
+  const { review, debrief } = splitMentorText(report.mentorText, report.reflection !== undefined);
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
@@ -51,12 +53,18 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
       <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
         <GraduationCap className="size-5 text-secondary-foreground" aria-hidden /> Mentor ne daje odgovore. Pita, a ti razmisliš.
       </p>
-      {report.mentorQuestion ? <Bubble who="Mentor">{report.mentorQuestion}</Bubble> : <Thinking who="Mentor" text="smišlja pitanje" />}
+      {/* The automatic review after the month is settled; it already ends with the question, so that is not repeated. */}
+      {review && <Bubble who="Mentor">{review}</Bubble>}
+      {report.mentorQuestion ? (
+        !review?.includes(report.mentorQuestion) && <Bubble who="Mentor">{report.mentorQuestion}</Bubble>
+      ) : (
+        <Thinking who="Mentor" text="smišlja pitanje" />
+      )}
 
       {report.reflection ? (
         <>
           <Bubble who="Ti" mine>{report.reflection}</Bubble>
-          {report.mentorText && <Bubble who="Mentor">{report.mentorText}</Bubble>}
+          {debrief && <Bubble who="Mentor">{debrief}</Bubble>}
         </>
       ) : busy ? (
         <>

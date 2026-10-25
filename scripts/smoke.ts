@@ -158,7 +158,7 @@ async function main() {
     CITY ? step(n, name, needs, fn) : skipped(n, name);
   const finances = async (u: User) => ((await u.call("GET", "/api/me")).data as MeResponse).finances;
 
-  await cityStep(11, "cijena 60 € daje Ani više noćenja nego Ivanu po 300 €; plan se prenosi (#227.1)", [10], async () => {
+  await cityStep(11, "cijena 60 € daje Ani više noćenja nego Ivanu po 300 €; plan se prenosi (#227.1); mentor sam napiše osvrt", [10], async () => {
     expectStatus(await ana.call("POST", "/api/me/plan", { price: 60, marketing: 0 }), 200);
     expectStatus(await ivan.call("POST", "/api/me/plan", { price: 300, marketing: 0 }), 200);
     expectStatus(await prof.call("POST", `/api/prof/${world.worldId}/round`, {}), 200);
@@ -168,6 +168,9 @@ async function main() {
     // #227.1: plan mjeseca 2 je zadani plan mjeseca 3
     const plan = ((await ana.call("GET", "/api/me")).data as MeResponse).plan;
     expect(plan.round === 3 && plan.price === 60 && plan.marketing === 0, `plan mjeseca 3: ${JSON.stringify(plan)}`);
+    // Mentor sam napiše osvrt kad profesor zatvori mjesec (bez AI-ja iz brojki), bez studentove refleksije.
+    const rep = await ana.call("GET", "/api/me/report/2"); expectStatus(rep, 200);
+    expect(((rep.data as RoundReportView).mentorText ?? "").trim().length > 0, "mentorText mjeseca 2 prazan nakon zatvaranja");
   });
 
   await cityStep(12, "cash = početni račun + dobit iz finances; izvještaj mjeseca vidi obračun (#226)", [11], async () => {
