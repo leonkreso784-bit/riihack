@@ -70,7 +70,7 @@ opis · uzrok · rješenje · **lekcija**.
 - **Lekcija:** privremeni podatak mora reći da je privremen.
 
 ### BUG-042 · Razgovor s likom: istodobne 6. i 7. poruka obje prođu
-- **Status:** 🟡 vjerojatno rješava PR [#249](https://github.com/leonkreso784-bit/riihack/pull/249) (graditelj, [ADR-053](DECISIONS.md#adr-053)), čeka spajanje ·
+- **Status:** 🟡 popravak spojen ([#249](https://github.com/leonkreso784-bit/riihack/pull/249), 02:38; graditelj, [ADR-053](DECISIONS.md#adr-053)); tester provjerava na produkciji ·
   **Težina:** srednji
 - **Opis:** tester (ned 02:18–02:36, produkcija): kad se 6. i 7. poruka liku pošalju istodobno (mimo sučelja), obje
   prođu, pa granica od 6 poruka ne vrijedi. Sučelje je zaštićeno.
@@ -97,15 +97,8 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** —
 - **Lekcija:** test ne smije ovisiti o brzini stroja.
 
-### BUG-039 · „Dodaj iz knjižnice" dodaje situaciju koja je već u igri
-- **Status:** 🟡 PR [#255](https://github.com/leonkreso784-bit/riihack/pull/255) čeka spajanje · **Težina:** nizak
-- **Opis:** tester (ned ~01:08, produkcija): profesor iz knjižnice može dodati situaciju koja je već u igri, pa je
-  igra ima dvaput.
-- **Rješenje:** graditelj, [#255](https://github.com/leonkreso784-bit/riihack/pull/255) (duplikat iz knjižnice).
-- **Lekcija:** —
-
 ### BUG-035 · Botovi: „(bot)" dvaput, „Moje igre" ih broji kao studente
-- **Status:** 🟡 PR [#255](https://github.com/leonkreso784-bit/riihack/pull/255) čeka spajanje · **Težina:** nizak
+- **Status:** 🟡 dio riješen ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), 02:39); dvostruko „(bot)" Rino · **Težina:** nizak
 - **Opis:** tester (ned ~00:55, produkcija): bot ima „(bot)" u imenu i uz to značku „bot"; „Moje igre" botove broji
   kao studente.
 - **Rješenje:** graditelj, [#255](https://github.com/leonkreso784-bit/riihack/pull/255): broj studenata u „Moje igre" bez botova. Dvostruko „(bot)" je Rinov prikaz
@@ -183,6 +176,15 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-039 · „Dodaj iz knjižnice" dodaje situaciju koja je već u igri
+- **Status:** ✅ riješen 25.10. 02:39 ([#255](https://github.com/leonkreso784-bit/riihack/pull/255), graditelj) · **Težina:** nizak
+- **Opis:** tester (ned ~01:08, produkcija): profesor iz knjižnice može dodati situaciju koja je već u igri, pa je
+  igra ima dvaput.
+- **Uzrok:** `copyToWorld` nije provjeravao ima li igra već tu situaciju.
+- **Rješenje:** `copyToWorld` vraća 409 „Ta situacija je već u igri" ako igra već ima situaciju istog naslova
+  (bez razlike u slovima i razmacima; `hasSituationTitle`, 2 testa).
+- **Lekcija:** kopiranje u igru provjeri na duplikat prije upisa.
 
 ### BUG-038 · Situacija na mobitelu sama skrola i skrije naslov
 - **Status:** ✅ riješen 25.10. 01:27 ([#244](https://github.com/leonkreso784-bit/riihack/pull/244), Rino) · **Težina:** nizak
