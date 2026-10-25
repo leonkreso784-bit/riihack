@@ -1,13 +1,12 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, ChevronRight, Flag, GraduationCap, Hourglass } from "lucide-react";
+import { CheckCircle2, Flag, Hourglass } from "lucide-react";
 import { api } from "@/lib/client";
 import { plural } from "@/lib/format";
 import { MISSED_QUALITY, ROUND_LABELS } from "@/lib/rules";
-import type { CompanyView, RoundReportView, SituationView, WorldView } from "@/lib/types";
+import type { CompanyView, SituationView, WorldView } from "@/lib/types";
 import { FormError } from "./form";
 import { Dots } from "./loading";
 
@@ -17,34 +16,9 @@ const ofSituations = (n: number) => `${n} ${n % 10 >= 1 && n % 10 <= 4 && !(n % 
 
 // R4: the student says "I'm done with this month". The professor sees it on the board and opens the next month for
 // everyone (the city settles all hotels together), so after closing the student waits. Closing opens the month's
-// report, where the mentor asks a question (R7); earlier reports stay linked below.
-export function CloseRound(props: { world: WorldView; company: CompanyView; situations: SituationView[]; reports: RoundReportView[] }) {
-  return (
-    <div className="space-y-3">
-      <Status {...props} />
-      <Reports reports={props.reports} />
-    </div>
-  );
-}
-
-function Reports({ reports }: { reports: RoundReportView[] }) {
-  if (!reports.length) return null;
-  return (
-    <ul className="flex flex-wrap gap-2" aria-label="Izvještaji zatvorenih mjeseci">
-      {[...reports].sort((a, b) => a.round - b.round).map((r) => (
-        <li key={r.round}>
-          <Link
-            href={`/igra/izvjestaj/${r.round}`}
-            className="flex min-h-11 items-center gap-2 rounded-xl bg-card px-3 text-sm font-semibold shadow-sm ring-1 ring-border hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary"
-          >
-            <GraduationCap className="size-4 text-secondary-foreground" aria-hidden />
-            {ROUND_LABELS[r.round - 1] ?? `Krug ${r.round}`}: {r.reflection ? "mentor" : "mentor te pita"}
-            <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
-          </Link>
-        </li>
-      ))}
-    </ul>
-  );
+// report; the mentor's question and all past conversations live on /igra/mentor (BUG-070).
+export function CloseRound(props: { world: WorldView; company: CompanyView; situations: SituationView[] }) {
+  return <Status {...props} />;
 }
 
 function Status({ world, company, situations }: { world: WorldView; company: CompanyView; situations: SituationView[] }) {

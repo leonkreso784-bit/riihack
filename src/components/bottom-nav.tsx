@@ -24,19 +24,18 @@ const ITEMS = [
 const MAIL = { href: "/igra/posta", label: t.nav.mail, icon: Mail };
 
 // Unread mail and the mentor for the nav; slower than the pages' own 3 s poll of /api/me.
-// The mentor appears after the first closed month and opens the latest month's conversation; the badge says a question waits.
+// The mentor appears after the first closed month and opens its page (BUG-070); the badge says a question waits.
 function useNavState() {
   const me = usePoll(api.me, 5_000).data;
   const reports = me?.reports ?? [];
-  const latest = reports.reduce((m, r) => Math.max(m, r.round), 0);
-  const mentor = latest ? { href: `/igra/izvjestaj/${latest}#mentor`, label: "Mentor", icon: GraduationCap } : null;
+  const mentor = reports.length ? { href: "/igra/mentor", label: "Mentor", icon: GraduationCap } : null;
   const mentorWaiting = reports.some((r) => r.mentorQuestion && !r.reflection);
   return { unread: me?.unreadMail ?? 0, mentor, mentorWaiting };
 }
 
 
 function isActive(pathname: string, href: string) {
-  if (href.startsWith("/igra/izvjestaj/")) return pathname.startsWith("/igra/izvjestaj/");
+  if (href === "/igra/mentor") return pathname.startsWith(href) || pathname.startsWith("/igra/izvjestaj/");
   return href === "/igra" ? pathname === href : pathname.startsWith(href);
 }
 

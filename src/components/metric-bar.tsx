@@ -2,6 +2,7 @@ import { Coins, MessageSquare, Settings, User, Users, type LucideIcon } from "lu
 import type { MetricKey } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { num } from "@/lib/format";
+import { Hint } from "./hint";
 
 export const METRIC_ICONS: Record<MetricKey, LucideIcon> = {
   guests: User,
@@ -26,6 +27,7 @@ export function MetricBar({
   now,
   icon: Icon,
   order = 0,
+  hint,
 }: {
   label: string;
   start: number;
@@ -33,6 +35,7 @@ export function MetricBar({
   icon?: LucideIcon;
   /** Position in a list, staggers the grow-in animation. */
   order?: number;
+  hint?: string;
 }) {
   const delta = now - start;
   return (
@@ -44,7 +47,10 @@ export function MetricBar({
       ) : (
         <span />
       )}
-      <span className="text-sm font-semibold">{label}</span>
+      <span className="flex items-center gap-2 text-sm font-semibold">
+        {label}
+        {hint && <Hint label={label} text={hint} />}
+      </span>
       <span className="flex items-baseline gap-3 text-sm">
         <span className="tabular-nums">
           <strong className="text-base font-extrabold">{now}</strong>
