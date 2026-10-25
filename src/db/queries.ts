@@ -251,6 +251,22 @@ export async function logEvent(e: {
   });
 }
 
+/** Koliko događaja vrste `type` igra ima ukupno i koliko u zadnjih `windowSeconds` sekundi (jedan upit). */
+export async function countEvents(
+  worldId: string,
+  type: string,
+  windowSeconds: number,
+): Promise<{ total: number; recent: number }> {
+  const rows = await db
+    .select({
+      total: count(),
+      recent: sql<number>`count(*) filter (where ${events.at} > now() - make_interval(secs => ${windowSeconds}))`.mapWith(Number),
+    })
+    .from(events)
+    .where(and(eq(events.worldId, worldId), eq(events.type, type)));
+  return { total: rows[0]?.total ?? 0, recent: rows[0]?.recent ?? 0 };
+}
+
 // ---------- Grad (L11): planovi kruga, obračuni, ugovori, vijesti ----------
 
 export async function getPlanRow(companyId: string, round: number): Promise<PlanRow | null> {

@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 import type { FinanceRow, RoomRow } from "@/db/schema";
 import { HOTELS } from "@/content";
 import { HttpError } from "@/lib/http";
-import { MAX_HINT, ideaFromBank, ideaFromCompany, parseGenerateRequest } from "./idea";
+import {
+  AI_PROPOSALS_PER_GAME,
+  AI_PROPOSALS_PER_MINUTE,
+  MAX_HINT,
+  checkProposalLimit,
+  ideaFromBank,
+  ideaFromCompany,
+  parseGenerateRequest,
+} from "./idea";
 
 const HOTEL = HOTELS[0];
 const METRICS = { guests: 40, reviews: 60, staff: 50, operations: 55, finance: 30 };
@@ -72,5 +80,32 @@ describe("ideaFromBank", () => {
     expect(input.metrics).toEqual(HOTEL.startMetrics);
     expect(input.rooms).toHaveLength(HOTEL.rooms.length);
     expect(input.rooms[0].id).toBe(HOTEL.rooms[0].number);
+  });
+});
+
+describe("checkProposalLimit", () => {
+  it("ispod obje granice → null", () => {
+    expect(checkProposalLimit(0, 0)).toBeNull();
+    expect(checkProposalLimit(AI_PROPOSALS_PER_GAME - 1, AI_PROPOSALS_PER_MINUTE - 1)).toBeNull();
+  });
+
+  it("dosegnut broj prijedloga za igru → poruka", () => {
+    expect(checkProposalLimit(AI_PROPOSALS_PER_GAME, 0)).toBe("Dosegnut je broj AI prijedloga za ovu igru");
+    expect(checkProposalLimit(AI_PROPOSALS_PER_GAME + 5, 0)).toBe("Dosegnut je broj AI prijedloga za ovu igru");
+  });
+
+  it("previše prijedloga u zadnjoj minuti → poruka o čekanju", () => {
+    expect(checkProposalLimit(AI_PROPOSALS_PER_MINUTE, AI_PROPOSALS_PER_MINUTE)).toMatch(/minut/);
+  });
+
+  it("granica igre ima prednost pred minutnom", () => {
+    expect(checkProposalLimit(AI_PROPOSALS_PER_GAME, AI_PROPOSALS_PER_MINUTE)).toBe(
+      "Dosegnut je broj AI prijedloga za ovu igru",
+    );
+  });
+
+  it("granice su razumne: minutna manja od ukupne", () => {
+    expect(AI_PROPOSALS_PER_GAME).toBe(30);
+    expect(AI_PROPOSALS_PER_MINUTE).toBeLessThan(AI_PROPOSALS_PER_GAME);
   });
 });
