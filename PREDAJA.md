@@ -16,11 +16,11 @@ Predaja u #prezentacije do ned 25.10. u 10:30: prezentacija (PDF) i GitHub link.
    [ARHITEKTURA.md](ARHITEKTURA.md).
 5. **Uloga AI-ja:** AI glumi likove, provjerava koje kriterije rubrike odgovor ispunjava i piše mentorov osvrt.
    **Bodove računaju pravila igre**, uvijek jednako, pa je ocjena fer i provjerljiva.
-6. **Poslovni model:** hotelska kuća plaća scenarij (regrutacija i obuka), fakultet ga koristi besplatno, a student
-   sam bira hoće li pokazati rezultat tvrtki. Pilot je besplatan: jedan kolegij i jedna hotelska kuća. Cijena
-   scenarija oko 1.500 € po kući po semestru naša je pretpostavka; tvrtke još nismo pitali. Ako nema sponzora:
-   licenca po kolegiju za fakultete. AI košta oko 0,07 $ po studentu za cijelu sezonu (procjena). Ciljani prvi
-   pilot: jedan kolegij (npr. FMTU Opatija) i jedna hotelska kuća; još nikoga nismo pitali.
+6. **Poslovni model:** prvi korisnici su fakulteti u partnerstvu s tvrtkama (npr. hotelska kuća donosi stvarne
+   situacije i put do prakse i posla). Fakultet plaća licencu za korištenje po semestru ili godini. Uz to svi ostali
+   mogu igrati u zasebnom predvorju, odvojeno od studenata koji igraju u kontroliranom okruženju kolegija. Cijenu
+   licence još nismo dogovorili; AI košta oko 0,07 $ po studentu za cijelu sezonu (procjena). Ciljani prvi pilot:
+   jedan kolegij (npr. FMTU Opatija) i jedna hotelska kuća; još nikoga nismo pitali.
 7. **Što bismo radili dalje:** nove simulacije u istom svijetu (dobavljač, agencija…), situacije iz gradiva
    kolegija, ulaz iz Merlina (LTI), engleski jezik. Sljedeći korak (nije u demou): ugovori među studentima (preusmjeravanje gostiju), radar vještina,
    simulator unaprijed, karta na profesorovoj ploči, kalibracija troškova prema stvarnim hotelima, PIN za studente.
