@@ -42,6 +42,10 @@ export type DepartmentsFlowInput = {
   situations: SituationView[] | null;
   /** Tekući mjesec (world.round). */
   round: number;
+  /** Student je zatvorio tekući mjesec: odgovori na situacije već su upisani u metrics (closeCompanyRound). */
+  closed?: boolean;
+  /** Grad je obračunao tekući mjesec: i ulaganja su već upisana u metrics (writeSettlement). */
+  settled?: boolean;
 };
 
 export type DepartmentFlow = {
@@ -61,6 +65,7 @@ export type DepartmentFlow = {
 
 export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava kriterije.";
 export const CLOSE_NOTE = "Primjenjuje se tek kad se mjesec zatvori. Do tada pokazatelj ostaje isti.";
+export const APPLIED_NOTE = "Već je upisano u pokazatelj: zatvorio si mjesec, pa se ovo ne zbraja ponovno.";
 export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3. Napisan svoj tekst (ne zalijepljen) s kvalitetom 1 vrijedi 0.";
 export const WHATIF_LABEL = "Procjena: mijenjaš samo ulaganje ovog odjela, sve ostalo ostaje kako je u planu.";
 
@@ -106,14 +111,14 @@ export function situationDeltas(situations: SituationView[], round: number, metr
 }
 
 /** Što ako: ulaganje odjela je `amount` (ostali odjeli kao u planu). */
-export function whatIfDepartment(input: Pick<DepartmentsFlowInput, "metrics" | "plan" | "situations" | "round">, department: StaffDepartment, amount: number) {
+export function whatIfDepartment(input: Pick<DepartmentsFlowInput, "metrics" | "plan" | "situations" | "round" | "closed" | "settled">, department: StaffDepartment, amount: number) {
   const metric = DEPARTMENT_METRIC[department];
   const value = input.metrics[metric];
   const withAmount: DepartmentInvestments = { ...input.plan, [department]: amount };
   const delta = (inv: DepartmentInvestments) => {
     const eff = investmentEffects(inv)[metric] ?? 0;
-    const sit = input.situations ? situationDeltas(input.situations, input.round, metric).reduce((s, r) => s + r.delta, 0) : 0;
-    return { eff, expected: clampPct(value + eff + sit) };
+    const sit = input.situations && !input.closed ? situationDeltas(input.situations, input.round, metric).reduce((s, r) => s + r.delta, 0) : 0;
+    return { eff, expected: clampPct(value + (input.settled ? 0 : eff) + sit) };
   };
   const now = delta(input.plan);
   const next = delta(withAmount);
@@ -154,7 +159,10 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
     const totalEffect = effectsAll[metric] ?? 0;
     const sit = input.situations ? situationDeltas(input.situations, input.round, metric) : [];
     const sitSum = sit.reduce((s, r) => s + r.delta, 0);
-    const expected = clampPct(value + totalEffect + sitSum);
+    // What is still to come: after the student's close the answers are in `value`, after the settlement the investments too.
+    const investToCome = input.settled ? 0 : totalEffect;
+    const sitToCome = input.closed ? 0 : sitSum;
+    const expected = clampPct(value + investToCome + sitToCome);
     const change = expected - value;
     const steps: DeptStep[] = [];
 
@@ -257,7 +265,11 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
       rule: [FACTOR_RULE, "Računaju se samo odgovorene situacije koje imaju učinak na ovaj pokazatelj."],
       calc: sit.length ? sit.map((r) => `${signed(qualityFactor(r.quality, r.written))} × ${r.effect} = ${signed(r.delta)}`).join("  ·  ") : undefined,
       outputs: sit.length ? [...sit.map((r) => ({ label: r.title, value: `kvaliteta ${r.quality}/5, ${signed(r.delta)}` })), { label: "Zbroj", value: signed(sitSum), strong: true }] : [{ label: "Zbroj", value: "0", strong: true }],
-      note: noEffects > 0 ? `Situacije kojima učinak još nije poznat (${noEffects}) ne brojimo.` : undefined,
+      note: [
+        input.closed && sit.length ? APPLIED_NOTE : "",
+        !input.closed && thisMonth.some((s) => !s.answer && s.state === "open") ? "Situacija bez odgovora pri zatvaranju dobiva ocjenu 1, a to je −2 × njezin učinak." : "",
+        noEffects > 0 ? `Situacije kojima učinak još nije poznat (${noEffects}) ne brojimo.` : "",
+      ].filter(Boolean).join(" ") || undefined,
     });
 
     // 6. Pokazatelj odjela
@@ -265,15 +277,15 @@ export function buildDepartmentFlows(input: DepartmentsFlowInput): DepartmentFlo
       id: "pokazatelj",
       title: "Pokazatelj odjela",
       big: `${value} → ${expected}`,
-      small: `${metricLabel}, očekivano po zatvaranju`,
+      small: input.settled ? `${metricLabel}, mjesec je obračunat` : `${metricLabel}, očekivano po zatvaranju`,
       tone: change > 0 ? "up" : change < 0 ? "down" : undefined,
       inputs: [
         { label: "Sada", value: `${value}/100` },
-        { label: "Ulaganja na pokazatelju", value: signed(totalEffect) },
-        { label: "Situacije", value: signed(sitSum) },
+        { label: "Ulaganja na pokazatelju", value: input.settled ? `${signed(totalEffect)} (već upisano)` : signed(totalEffect) },
+        { label: "Situacije", value: input.closed ? `${signed(sitSum)} (već upisano)` : signed(sitSum) },
       ],
-      rule: ["Nova vrijednost = sadašnja + učinak ulaganja + promjene iz situacija.", "Pokazatelj ostaje između 0 i 100.", CLOSE_NOTE],
-      calc: `${value} ${totalEffect < 0 ? "−" : "+"} ${Math.abs(totalEffect)} ${sitSum < 0 ? "−" : "+"} ${Math.abs(sitSum)} = ${expected}`,
+      rule: ["Nova vrijednost = sadašnja + učinak ulaganja + promjene iz situacija.", "Pokazatelj ostaje između 0 i 100.", input.closed ? APPLIED_NOTE : CLOSE_NOTE],
+      calc: `${value} ${investToCome < 0 ? "−" : "+"} ${Math.abs(investToCome)} ${sitToCome < 0 ? "−" : "+"} ${Math.abs(sitToCome)} = ${expected}`,
       outputs: [
         { label: "Očekivana promjena", value: signed(change), strong: true },
         { label: "Očekivana vrijednost", value: `${expected}/100`, strong: true },
@@ -462,7 +474,8 @@ export function buildDepartmentsBoard(input: DepartmentsFlowInput): DepartmentsB
       ownEffect: f.ownEffect,
       nextAt,
       situations: sits,
-      contribution: f.ownEffect + sits.reduce((a, r) => a + r.delta, 0),
+      // After the close (answers) and the settlement (investments) these are already inside the metric: do not send them again.
+      contribution: (input.settled ? 0 : f.ownEffect) + (input.closed ? 0 : sits.reduce((a, r) => a + r.delta, 0)),
       details: {
         ljudi: step("ljudi"),
         upozorenja: step("upozorenja"),
@@ -483,8 +496,8 @@ export function buildDepartmentsBoard(input: DepartmentsFlowInput): DepartmentsB
   const results: MetricResult[] = metricsInLanes.map((metric) => {
     const deps = LANE_ORDER.filter((d) => DEPARTMENT_METRIC[d] === metric);
     const f = byDept[deps[0]];
-    const invest = effectsAll[metric] ?? 0;
-    const sits = f.situationsDelta;
+    const invest = input.settled ? 0 : (effectsAll[metric] ?? 0);
+    const sits = input.closed ? 0 : f.situationsDelta;
     const pok = f.steps.find((s) => s.id === "pokazatelj")!;
     return {
       metric,
@@ -508,7 +521,8 @@ export function buildDepartmentsBoard(input: DepartmentsFlowInput): DepartmentsB
   const unknownEffects = answered.filter((s) => activeEffects(s.effects).length === 0).length;
   const withEffect = answered.length - unknownEffects;
   const waiting = thisMonth.filter((s) => !s.answer && s.state === "open").length;
-  const empty = totalCost === 0 && withEffect === 0;
+  const waitingWithEffect = thisMonth.filter((s) => !s.answer && s.state === "open" && activeEffects(s.effects).length > 0).length;
+  const empty = totalCost === 0 && withEffect === 0 && waitingWithEffect === 0;
 
   return {
     lanes,
@@ -539,7 +553,7 @@ export function buildDepartmentsBoard(input: DepartmentsFlowInput): DepartmentsB
           { label: "Trošak ulaganja", value: eur(totalCost), strong: true },
           ...(moves.length ? moves.map((m) => ({ label: m.label, value: signed(m.change) })) : [{ label: "Pokazatelji", value: "Još se ništa ne mijenja" }]),
         ],
-        note: CLOSE_NOTE,
+        note: input.closed ? APPLIED_NOTE : CLOSE_NOTE,
       },
     },
   };
