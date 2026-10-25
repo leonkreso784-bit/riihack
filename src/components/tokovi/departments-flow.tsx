@@ -400,7 +400,9 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
 
       <section aria-label="Odjeli kao staze" className="surface rounded-[var(--radius)] p-3 md:p-4">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 px-1">
-          <p className="text-sm text-muted-foreground">Svaka staza je jedan odjel. Klikni bilo koju karticu za detalje.</p>
+          <p className="text-sm font-semibold">
+            Kako čitati: slijeva nadesno, od odjela do pokazatelja (na mobitelu odozgo prema dolje). Broj na liniji je koliko bodova odjel šalje pokazatelju. Klikni karticu za detalje.
+          </p>
           <ul className="flex flex-wrap gap-3 text-xs font-semibold text-muted-foreground" aria-label="Legenda">
             <li className="flex items-center gap-1.5"><span className="size-3 rounded-full border border-[#e6c98f] bg-[#fdf1d8]" aria-hidden /> Što muči odjel</li>
             <li className="flex items-center gap-1.5"><span className="size-3 rounded-full border-2 border-up/45 bg-[#f1faf4]" aria-hidden /> Dobar odgovor</li>

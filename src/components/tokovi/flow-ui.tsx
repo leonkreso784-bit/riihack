@@ -138,6 +138,9 @@ function storeZoom(key: string, zoom: number) {
   }
 }
 
+// Povlačenje mišem ne pomiče platno, pa uputa govori što stvarno radi: Shift + kotačić, dva prsta na touchpadu, Tab.
+const DEFAULT_SCROLL_HINT = "Tok je širi od ekrana. Pomakni ga mišem uz Shift + kotačić, dvama prstima na touchpadu ili tipkom Tab. →";
+
 const TOOL_BUTTON =
   "inline-flex min-h-10 min-w-10 items-center justify-center gap-1.5 rounded-full border bg-card px-3.5 text-sm font-bold text-secondary-foreground outline-offset-2 hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:bg-card";
 
@@ -148,7 +151,7 @@ const TOOL_BUTTON =
  * Zadano je 100 % (bez transforma, kao prije); izabrani zoom pamti se po stranici u sessionStorageu.
  * Promjena zooma je odmah, bez animacije, pa vrijedi i za prefers-reduced-motion.
  */
-export function ZoomCanvas({ width, height, label, storageKey, children }: { width: number; height: number; label: string; storageKey?: string; children: ReactNode }) {
+export function ZoomCanvas({ width, height, label, storageKey, scrollHint = DEFAULT_SCROLL_HINT, children }: { width: number; height: number; label: string; storageKey?: string; scrollHint?: string; children: ReactNode }) {
   const pathname = usePathname();
   const key = ZOOM_STORAGE_PREFIX + (storageKey ?? pathname ?? "");
   const [zoom, setZoom] = useState(ZOOM_DEFAULT);
@@ -254,7 +257,7 @@ export function ZoomCanvas({ width, height, label, storageKey, children }: { wid
             100 %
           </button>
         </div>
-        {scrolls && <p className="text-sm font-semibold text-muted-foreground">Povuci vodoravno za cijeli tok →</p>}
+        {scrolls && <p className="text-sm font-semibold text-muted-foreground">{scrollHint}</p>}
       </div>
 
       <div className="relative min-w-0">
@@ -297,7 +300,9 @@ export function StepFlow({ steps, icons, perRow = steps.length }: { steps: FlowS
 
   return (
     <>
-      <p className="text-sm text-muted-foreground">Klikni korak da vidiš što je ušlo, koje je pravilo primijenjeno i što je izašlo.</p>
+      <p className="text-base font-semibold">
+        Kako čitati: korake redom, od 1 do {steps.length} (slijeva nadesno, na mobitelu odozgo prema dolje). Strelica znači da rezultat jednog koraka ulazi u sljedeći. Klikni korak da vidiš što je ušlo, koje je pravilo primijenjeno i što je izašlo.
+      </p>
 
       {/* Desktop: steps in a row joined by arrows; the open step shows Ulaz, Pravilo, Izlaz right under the row. */}
       <div className="hidden space-y-5 md:block">

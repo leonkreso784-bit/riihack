@@ -227,11 +227,13 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
         </div>
       </Panel>
 
-      <p className="text-sm text-muted-foreground">Klikni korak da vidiš što je ušlo, koje je pravilo primijenjeno i što je izašlo.</p>
+      <p className="text-base font-semibold">
+        Kako čitati: korake redom, od 1 do {steps.length}. Linija znači da rezultat jednog koraka ulazi u sljedeći. Tok počinje s „Profesor zatvara mjesec“, a završava s „Novac na računu“. Klikni korak da vidiš što je ušlo, koje je pravilo primijenjeno i što je izašlo.
+      </p>
 
       {/* Desktop: cards in columns joined by lines; the open step opens its panel (Ulaz, Pravilo, Izlaz) right under the flow. */}
       <div className="hidden space-y-5 md:block">
-        <ZoomCanvas width={CANVAS.w} height={CANVAS.h} label="Tok mjeseca">
+        <ZoomCanvas width={CANVAS.w} height={CANVAS.h} label="Tok mjeseca" scrollHint="Tok je širi od ekrana: Dobit i Novac su desno. Pomakni ga mišem uz Shift + kotačić, dvama prstima na touchpadu ili tipkom Tab. →">
           <svg width={CANVAS.w} height={CANVAS.h} className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
             {EDGES.map(([a, b]) => {
               const A = POS[a];
