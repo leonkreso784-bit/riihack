@@ -40,7 +40,7 @@ const LINES: (Line | string)[] = [
   { label: "Prihod po noćenju", value: (m) => { const n = m.f.nights + m.f.contractNights; return n ? eur(Math.round(m.f.revenue / n)) : "·"; } },
 ];
 
-// Hotel money: where it stands, rank in class, and a month-by-month statement (revenue and cost items, result,
+// Hotel money: where it stands, rank in class by progress (others' cash is private, ADR-040), and a month-by-month statement (revenue and cost items, result,
 // operations). Items come from finance-view.ts, which rebuilds the engine's sums.
 export default function FinancePage() {
   const { data, error } = usePoll(api.me);
@@ -52,7 +52,8 @@ export default function FinancePage() {
   const months: Month[] = finances.map((f, i) => ({ f, b: breakdown(f, company, contracts), growth: growthPct(finances[i - 1]?.revenue, f.revenue) }));
   const totalProfit = finances.reduce((s, f) => s + f.profit, 0);
   const avgOccupancy = finances.length ? Math.round(finances.reduce((s, f) => s + f.occupancyPct, 0) / finances.length) : null;
-  const rank = [...leaderboard].sort((a, b) => b.cash - a.cash).findIndex((r) => r.companyId === company.id) + 1;
+  // Tuđi novac se ne vidi (ADR-040), pa rang ide po javnom napretku, kao na ljestvici.
+  const rank = [...leaderboard].sort((a, b) => b.progress - a.progress).findIndex((r) => r.companyId === company.id) + 1;
   const maxCash = Math.max(company.startCash, ...finances.map((f) => f.cashAfter));
 
   return (
@@ -66,7 +67,7 @@ export default function FinancePage() {
         <StatCard icon={Wallet} label="Stanje računa" value={num(company.cash)} unit="€" tone="accent" note={`${diff >= 0 ? "+" : "−"}${eur(Math.abs(diff))} od početnih ${eur(company.startCash)}`} />
         <StatCard icon={ChartColumn} label="Dobit sezone" value={num(totalProfit)} unit="€" tone={totalProfit < 0 ? "down" : "up"} note={`${finances.length} ${plural(finances.length, "obračunat mjesec", "obračunata mjeseca", "obračunatih mjeseci")}`} />
         <StatCard icon={Percent} label="Prosječna popunjenost" value={avgOccupancy ?? "—"} unit={avgOccupancy === null ? "" : "%"} />
-        <StatCard icon={Trophy} label="Rang po novcu" value={rank ? `${rank}.` : "—"} unit="" note={`od ${leaderboard.length} hotela`} />
+        <StatCard icon={Trophy} label="Rang po napretku" value={rank ? `${rank}.` : "—"} unit="" note={`od ${leaderboard.length} hotela`} />
       </div>
 
       {months.length === 0 ? (

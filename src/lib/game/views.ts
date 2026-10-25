@@ -131,6 +131,7 @@ export function toLeaderboard(all: CompanyWithPlayer[], reports: RoundReportRow[
   return all
     .map(({ company, player }) => ({
       joinIndex: company.joinIndex,
+      cash: company.cash,
       row: {
         companyId: company.id,
         hotelName: company.name,
@@ -143,8 +144,13 @@ export function toLeaderboard(all: CompanyWithPlayer[], reports: RoundReportRow[
         ...(company.kind === "bot" && { isBot: true }), // ADR-044
       } satisfies LeaderboardRow,
     }))
-    .sort((a, b) => b.row.progress - a.row.progress || b.row.cash - a.row.cash || a.joinIndex - b.joinIndex)
+    .sort((a, b) => b.row.progress - a.row.progress || b.cash - a.cash || a.joinIndex - b.joinIndex)
     .map((x) => x.row);
+}
+
+/** Ljestvica za studenta: novac samo na vlastitom retku, tuđi hoteli (i botovi) bez `cash` (ADR-040). */
+export function ownCashOnly(rows: LeaderboardRow[], companyId: string): LeaderboardRow[] {
+  return rows.map(({ cash, ...rest }) => (rest.companyId === companyId ? { ...rest, cash } : rest));
 }
 
 /** Predložak s upisanim {soba} i {hotel} u naslovu, tekstu i opcijama (kriteriji ostaju; samo za poslužitelj). */
@@ -254,7 +260,7 @@ export function toMeResponse(
 ): MeResponse {
   const { world, company, player, rooms, all, situations = [], reports = [] } = input;
   const { plan = null, finances = [], contracts = [], events = [], mail = [], unreadMail = 0 } = input;
-  const leaderboard = toLeaderboard(all, reports);
+  const leaderboard = ownCashOnly(toLeaderboard(all, reports), company.id);
   const current = situations.filter((s) => s.situation.round === world.round);
   const roundPlan = toPlan(world.round, plan, rooms);
   return {
