@@ -94,13 +94,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim (02:35):** sesija graditelja 5, Leon doma; sve preko agenata. Otvoreni moji PR-ovi: #241 (#227.1 plan se prenosi, #227.3 protuponuda 400), #247 (granica AI prijedloga), #249 (granica poruka atomično), #251 (sigurna zaglavlja), #252 (student vidi samo svoj račun, ADR-040), #253 (napisan odgovor s ocjenom 1 → 0, ADR-052), #255 (BUG-035, BUG-039), #256 (ARHITEKTURA §1a). Spojeno u ovoj sesiji: #240 (#226), #245 (#227.6).
-- **Sljedeće:** nakon spajanja #241/#252/#253 jedan seed demo igre KVRNDM i smoke na produkciji (uz najavu testeru); prije predaje čišćenje baze (igre „Smoke …", „QA …", testni računi) i provjera imena
-- **Čekam od drugih:** Leon: „spoji" za #241, #252, #253 u sesiji integratora
+- **Sad radim (08:10):** žiri igra 08:00–09:00; do 09:00 bez deploya (Leon). Noću spojeno i potvrđeno na produkciji: #240, #241, #245, #247, #249, #251, #252, #253, #255, #256, #262, #264, #271, #272, #275, Simonov #267 (08:03). Demo KVRNDM: 2. mjesec, 5 hotela, 15 mjesta, smoke 20/20, put žirija ✅. Baza očišćena 08:00 (240 → 18 igara).
+- **Sljedeće:** #278 (docs: README/CLAUDE bez db:push, PREDAJA usklađena) → integrator; predaja 10:15 (Leon i Simon); nakon natjecanja: Simonov #268, #209 kalibracija, Rinovi niski UI nalazi (BUGS.md).
+- **Čekam od drugih:** Simon: #268 i balans; Rino: niski UI nalazi.
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #241, #247, #249, #251, #252, #253, #255, #256
+- **Otvoreno:** #278
 - **Spojeno:** L0–L18, L8 demo, kasni ulaz (#221), balans cijene i kvalitete (#194, #213, #214), bez donje granice odgovora (#225). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** ned 02:35
+- **Zadnje ažurirano:** ned 08:10
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S12)
 
