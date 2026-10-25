@@ -21,8 +21,13 @@ const back = (
 // The question is generated on the first read (AI, a few seconds) and saved, so this loads once, not every 3 s.
 export default function ReportPage() {
   const round = Number(useParams<{ krug: string }>().krug);
-  const { data, error } = usePoll(() => api.report(round), 10 * 60_000);
-  const world = usePoll(api.me, 10 * 60_000).data?.world;
+  // Dok mjesec traje brojke su privremene pa se osvježavaju češće (profesor može zatvoriti mjesec dok je stranica otvorena).
+  const [provisional, setProvisional] = useState(true);
+  const pollMs = provisional ? 15_000 : 10 * 60_000;
+  const { data, error } = usePoll(() => api.report(round), pollMs);
+  const world = usePoll(api.me, pollMs).data?.world;
+  const isProvisional = world?.round === round && world.status !== "finished";
+  if (world && provisional !== isProvisional) setProvisional(isProvisional);
   const [answered, setAnswered] = useState<RoundReportView>();
   const month = ROUND_LABELS[round - 1] ?? `Krug ${round}`;
 
@@ -46,7 +51,7 @@ export default function ReportPage() {
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-start">
         <Panel title="Što se promijenilo">
-          {report && world?.round === round && (
+          {report && isProvisional && (
             <p className="mb-2 text-sm text-muted-foreground">Brojke su privremene; konačne su nakon što profesor zatvori mjesec.</p>
           )}
           {report ? (

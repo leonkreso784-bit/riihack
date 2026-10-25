@@ -40,6 +40,8 @@ export default function MonthFlowPage() {
     );
 
   const finance = data?.me.finances.find((f) => f.round === round);
+  // Kasni ulaz: tvrtka ulazi s closedRound = tekući krug − 1 i nema obračun za mjesece prije ulaska.
+  const beforeJoin = !!data && !finance && round <= data.me.company.closedRound;
 
   return (
     <div className="space-y-5 pt-4 md:pt-0">
@@ -54,7 +56,7 @@ export default function MonthFlowPage() {
         <div className="h-80 animate-pulse rounded-[var(--radius)] bg-muted" aria-busy="true" aria-label="Učitavam" />
       ) : !finance ? (
         <Panel tone="sand">
-          <p className="text-sm">Obračun za ovaj mjesec još nije gotov. Stiže kad profesor zatvori mjesec, a onda ovdje vidiš korak po korak kako je nastao.</p>
+          <p className="text-sm">{beforeJoin ? "U tom mjesecu još nisi bio u igri." : "Obračun za ovaj mjesec još nije gotov. Stiže kad profesor zatvori mjesec, a onda ovdje vidiš korak po korak kako je nastao."}</p>
         </Panel>
       ) : (
         <MonthFlow finance={finance} rooms={data.rooms} hotelsInCity={data.me.city.hotels.length} round={round} />
