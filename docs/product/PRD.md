@@ -96,9 +96,9 @@ ono što demo obećava) · 🟨 potvrditi.
 - ✅ Profesor može zatražiti od AI-ja prijedlog situacije iz stanja hotela, pregledati ga i spremiti; bez njegova spremanja nijedan student ga ne dobije.
   Izvor: #111, #118, #129 ([ADR-024](../records/DECISIONS.md#adr-024)).
 - ✅ Mentor iz brojki jezgre objašnjava što se dogodilo u krugu i kako svijet radi. Izvor: #111, #231, #240.
-- 🔶 Podij kruga i ljestvica čitljivi su na projektoru. Napravljeno (#196, #211); provjereno 1920/2560
-  (tester ~02:54): radi bez scrolla, ali crvene strelice i visina podija sezone
-  (popravci spojeni u [#264](https://github.com/leonkreso784-bit/riihack/pull/264) (03:48 CET), čeka provjeru testera).
+- ✅ Podij kruga i ljestvica čitljivi su na projektoru. Izvor: #196, #211, [#264](https://github.com/leonkreso784-bit/riihack/pull/264), tester ~04:16 CET
+  (1280/1920/2560). Ostaju niske sitnice: [BUG-064](../records/BUGS.md#bug-064--zaglavlje-ploče-profesora-ostaje-1152-px-a-ploča-1600-px) i
+  [BUG-065](../records/BUGS.md#bug-065--na-2560-px-ploča-ostaje-1600-px-a-fontovi-nemaju-2xl-stupanj).
 - ✅ Svaki ekran radi na 375 px, 768 px i 1440 px širine. Tester: 375 i 768 px bez vodoravnog scrolla (PROGRESS.md,
   ned ~01:08), 1440 px ~02:54.
 
