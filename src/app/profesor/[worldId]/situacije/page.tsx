@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { toast } from "sonner";
 import { BookmarkPlus, Download, Library, Plus, Send, Upload } from "lucide-react";
 import { api, isUnauthorized, usePoll } from "@/lib/client";
+import { plural } from "@/lib/format";
 import { ROUND_LABELS } from "@/lib/rules";
 import type { DispatchView, Playbook, ProfStateResponse, SituationSource, SituationSummary } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
@@ -104,7 +105,7 @@ export default function ProfSituations() {
       const pb = parsed as Partial<Playbook> | null;
       if (!pb || pb.version !== 1 || !Array.isArray(pb.situations)) throw new Error("Ovo nije playbook (očekujem version 1 i popis situacija).");
       await api.importPlaybook(worldId, pb as Playbook);
-      toast.success(`Uvezeno ${pb.situations.length} situacija`);
+      toast.success(`Uvezeno ${pb.situations.length} ${plural(pb.situations.length, "situacija", "situacije", "situacija")}`);
       refresh();
     } catch (err) {
       setPlaybookError((err as Error).message);

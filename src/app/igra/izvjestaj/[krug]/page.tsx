@@ -22,6 +22,7 @@ const back = (
 export default function ReportPage() {
   const round = Number(useParams<{ krug: string }>().krug);
   const { data, error } = usePoll(() => api.report(round), 10 * 60_000);
+  const world = usePoll(api.me, 10 * 60_000).data?.world;
   const [answered, setAnswered] = useState<RoundReportView>();
   const month = ROUND_LABELS[round - 1] ?? `Krug ${round}`;
 
@@ -45,6 +46,9 @@ export default function ReportPage() {
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-start">
         <Panel title="Što se promijenilo">
+          {report && world?.round === round && (
+            <p className="mb-2 text-sm text-muted-foreground">Brojke su privremene; konačne su nakon što profesor zatvori mjesec.</p>
+          )}
           {report ? (
             <ul className="divide-y">
               {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k) => {
