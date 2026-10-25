@@ -28,7 +28,7 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
   const sending = useRef(false);
   const length = text.trim().length;
   const short = length < MIN_OWN_ANSWER_CHARS;
-  const { review, debrief } = splitMentorText(report.mentorText, Boolean(report.reflection));
+  const { review, debrief } = splitMentorText(report.mentorText, report.reflection !== undefined);
 
   async function send(e: React.FormEvent) {
     e.preventDefault();

@@ -3,20 +3,39 @@
 
 export const MENTOR_SEPARATOR = "\n\n";
 
-/** The review is written only when the month's numbers are final: the professor closed it or the game ended. */
+/** A review is always the first paragraph; a debrief alone never has a blank line, so the separator marks a review. */
+export function hasReview(mentorText: string | null | undefined, hasReflection: boolean): boolean {
+  const text = mentorText?.trim();
+  if (!text) return false;
+  return hasReflection ? text.includes(MENTOR_SEPARATOR) : true;
+}
+
+/**
+ * The review is written only when the month's numbers are final (the professor closed it or the game ended) and
+ * there is no review yet: either no text at all, or only the debrief of a reflection sent before the month was closed.
+ */
 export function reviewDue(
   world: { round: number; settledRound: number; status: string },
   round: number,
   mentorText: string | null | undefined,
+  hasReflection = false,
 ): boolean {
-  if (mentorText) return false;
+  if (hasReview(mentorText, hasReflection)) return false;
   return world.status === "finished" || world.settledRound >= round || world.round > round;
 }
+
+/** A debrief is one block: inner blank lines would read as the review separator. */
+const oneBlock = (text: string) => text.trim().replace(/\n\s*\n+/g, "\n");
 
 /** Appends the debrief below an existing review; never overwrites it. */
 export function appendDebrief(current: string | null | undefined, debrief: string): string {
   const review = current?.trim();
-  return review ? `${review}${MENTOR_SEPARATOR}${debrief}` : debrief;
+  return review ? `${review}${MENTOR_SEPARATOR}${oneBlock(debrief)}` : oneBlock(debrief);
+}
+
+/** Puts the review first; an earlier debrief (reflection before the month was closed) stays below it. */
+export function withReview(review: string, previous: string | null | undefined): string {
+  return previous?.trim() ? `${oneBlock(review)}${MENTOR_SEPARATOR}${oneBlock(previous)}` : oneBlock(review);
 }
 
 /**

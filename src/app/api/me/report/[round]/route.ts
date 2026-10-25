@@ -4,7 +4,7 @@ import { getReport, saveMentorQuestion, saveMentorReview } from "@/db/queries";
 import { mentorQuestion, mentorReview } from "@/lib/ai";
 import { buildMentorInput } from "@/lib/ai/mentor-input";
 import { HttpError, route } from "@/lib/http";
-import { reviewDue } from "@/lib/mentor-text";
+import { reviewDue, withReview } from "@/lib/mentor-text";
 import { requirePlayer } from "@/lib/session";
 import type { RoundReportView } from "@/lib/types";
 
@@ -20,7 +20,8 @@ export const GET = route(async (_req, ctx): Promise<RoundReportView> => {
 
   let question = report.mentorQuestion ?? undefined;
   let mentorText = report.mentorText ?? undefined;
-  const needsReview = reviewDue(world, round, report.mentorText);
+  let reflection = report.reflection ?? undefined;
+  const needsReview = reviewDue(world, round, report.mentorText, report.reflection !== null);
   if (!question || needsReview) {
     const input = await buildMentorInput(report, company.name);
     if (!question) {
@@ -29,17 +30,22 @@ export const GET = route(async (_req, ctx): Promise<RoundReportView> => {
       question = (await getReport(company.id, round))?.mentorQuestion ?? question;
     }
     // Before settlement the numbers are provisional (#226/#271), so the review waits for the professor to close the month.
-    if (needsReview) await saveMentorReview(company.id, round, await mentorReview({ ...input, question }));
+    // A reflection sent before the month was closed left only a debrief: the review goes first, the debrief stays below.
+    if (needsReview) {
+      const review = await mentorReview({ ...input, question });
+      await saveMentorReview(company.id, round, withReview(review, report.mentorText), report.mentorText);
+    }
     const saved = await getReport(company.id, round);
     question = saved?.mentorQuestion ?? question;
     mentorText = saved?.mentorText ?? mentorText;
+    reflection = saved?.reflection ?? reflection;
   }
   return {
     round,
     metricsBefore: report.metricsBefore,
     metricsAfter: report.metricsAfter,
     mentorQuestion: question,
-    reflection: report.reflection ?? undefined,
+    reflection,
     mentorText,
   };
 });
