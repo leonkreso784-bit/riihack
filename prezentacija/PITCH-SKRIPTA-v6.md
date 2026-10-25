@@ -4,6 +4,7 @@
 
 **TL;DR**
 - **285 s: govor završava u 4:35, stojimo do 4:45, 15 s rezerve** (v5 je trošio svih 300 s). Pet minuta je gornja granica, ne cilj.
+- **Novo 09:10:** ime u uvodu (Rino, slajd 2: „simulacija i polis, grčki grad"); poslovni model na slajdu 8 (fakultet plaća licencu, tvrtka je partner, ostali u zasebnom predvorju).
 - **Uloge:** Rino otvara i zatvara (udica, problem, tko plaća, poziv) i drži štopericu, Simon vodi demo i temu, Leon klika demo, mijenja slajdove i ima 28 s tehnike. Promijenite ako netko drugi bolje otvara; tekst ostaje isti.
 - **Svaka rečenica u demu kaže samo ono što ekran pokazuje.** Što ekran ne pokazuje uvijek („Skok mjeseca", „napunio se"), govori se samo ako je vidljivo.
 - **Tema (35 bodova):** slajd 6 imenuje četiri elementa iz teksta teme, a izgovara se i pravilo: gotov odgovor najviše 4 od 5, vlastite riječi do 5.
@@ -49,7 +50,7 @@ Navodnici znače izgovoreno doslovno. Tekst bez navodnika je radnja na ekranu. K
 | Vrijeme | Tko | Slajd / ekran | Što govori (doslovno) | Znak za predaju | v6 |
 | --- | --- | --- | --- | --- | --- |
 | 0:00 do 0:12 | klip | 1 · uvodni klip (12 s, Leon ga pokrene s ←, vidi „Start klipa") | Tišina, klip: AI napiše savršen odgovor, student klikne „Kopiraj", „A što je student naučio?" | kraj klipa | |
-| 0:12 do 0:25 | **Rino** | 2 · „Zamislite Sims" | „Zamislite Sims, ali za pravi posao. Vodiš hotel, a svaka odluka se osjeti." *(cilj 10 s, prozor 13 s je jedino mjesto za dah)* | | E2 odbačen |
+| 0:12 do 0:25 | **Rino** | 2 · „Zamislite Sims" | „Zamislite Sims, ali za pravi posao. Zato se zovemo Simpolis: simulacija i polis, grčki grad. Svaki student vodi hotel u istom gradu, i svaka odluka se osjeti." *(25 riječi, oko 11 s; prozor 13 s)* | | E2 odbačen |
 | 0:25 do 0:47 | **Rino** | 3 · Ana, 17 % | „Ana studira hotelijerstvo, kao Leon iz našeg tima. S ljutim gostom prvi put razgovara tek na praksi, a do tada joj AI piše odgovore. Tko vježba uz AI koji daje gotove odgovore, na ispitu bez njega prođe 17 % lošije od vršnjaka koji su vježbali sami." *(potvrditi: Leon odobrava rečenicu „kao Leon iz našeg tima" i da studira hotelijerstvo, FMTU Opatija prema TEAM.md; ne ide na slajd)* | | E1, E19 |
 | 0:47 do 1:01 | **Rino** | 4 · QR „Izvadite mobitele" | „Izvadite mobitele i skenirajte. Ovo je naš grad, uđite kao studenti, kao u Kahootu. Kod i adresa su na ekranu." *(1 s pauze, ne čitati kod naglas)* „Simon će vam pokazati što se događa." | QR na ekranu 14 s | E3 |
 | 1:01 do 1:13 | **Simon** (Leon klika) | profesorova ploča | „Ovo vidi profesor. Broj hotela raste, i svaki je netko od vas." *(ne čekati ulaske, rezerve R3 niže)* | | E4 |
