@@ -7,6 +7,9 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#262](https://github.com/leonkreso784-bit/riihack/pull/262) | 02:31 CET | Leon | dvostruki uvoz playbooka preskače situacije koje su već u igri (BUG-046), „Soba je spremljena" (BUG-047), „Uvezeno N situacija" s množinom (BUG-045), napomena „Brojke su privremene…" u izvještaju (BUG-043), kasni student za raniji mjesec dobiva 404 „U tom mjesecu još nisi bio u igri" (BUG-049); dira Rinove `situacije/page.tsx` i `izvjestaj/[krug]/page.tsx` ([ADR-054](DECISIONS.md#adr-054)) |
+| [#261](https://github.com/leonkreso784-bit/riihack/pull/261) | 02:18 CET | Leon | dokumentacija: tester potvrdio ispravke |
+| [#260](https://github.com/leonkreso784-bit/riihack/pull/260) | 02:10 CET | Leon | dokumentacija: plan, račun i ocjena spojeni; promjena sata |
 | [#253](https://github.com/leonkreso784-bit/riihack/pull/253) | 02:59 CEST | Leon | napisan vlastiti odgovor s ocjenom 1 vrijedi 0, zalijepljen ostaje −2; „Promijeni ocjenu" računa istim množiteljem kao motor (ADR-052, BUG-030, BUG-041; dira plan i pozivna mjesta u Simonovim Tokovima) |
 | [#252](https://github.com/leonkreso784-bit/riihack/pull/252) | 02:58 CEST | Leon | student ne vidi stanje računa tuđih hotela na ljestvici i karti, Financije „Rang po napretku" (ADR-040, BUG-034; mijenja ugovor `LeaderboardRow.cash?`, dira Rinove datoteke) |
 | [#241](https://github.com/leonkreso784-bit/riihack/pull/241) | 02:58 CEST | Leon | plan mjeseca se prenosi u sljedeći (#227.1), protuponuda bez koristi vraća 400 (#227.3) (ADR-050, BUG-029) |

@@ -10,6 +10,15 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-056 · Ponovni uvoz playbooka javlja „Uvezeno 5 situacija" iako nije dodana nijedna
+- **Status:** 🔴 otvoren (Rino ili graditelj ako bude vremena) · **Težina:** nizak
+- **Opis:** graditelj (~02:35 CET): ponovni uvoz istog playbooka javlja „Uvezeno 5 situacija", a dodano je 0. Nastavak
+  [BUG-046](#bug-046--dvostruki-uvoz-playbooka-udvostruči-situacije-u-igri) (riješen u [#262](https://github.com/leonkreso784-bit/riihack/pull/262)).
+- **Uzrok:** `src/app/profesor/[worldId]/situacije/page.tsx:108` broji `pb.situations.length`; broj preskočenih
+  (`skipped`) ide samo u događaj `playbook.imported`, odgovor ga ne nosi.
+- **Rješenje:** — (prijedlog: brojati razliku broja situacija prije i poslije uvoza)
+- **Lekcija:** —
+
 ### BUG-055 · Sitnice prikaza na projektoru: „Završi sezonu", podij na 2560 px, kartice botova
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
 - **Opis:** tester (ned 02:37–~02:54, produkcija, projektor 1920 i 2560 px): (1) gumb „Završi sezonu" stoji sam u drugom redu (`src/components/prof-board.tsx:179`);
@@ -55,41 +64,12 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** —
 - **Lekcija:** —
 
-### BUG-049 · Kasni student vidi „Krug nije zatvoren" za mjesec prije svog ulaska
-- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
-- **Opis:** tester (ned 02:18–02:36, produkcija): student koji je ušao kasnije za mjesec prije svog ulaska vidi
-  „Krug nije zatvoren". Graditelj (~02:40): umjesto toga poruka „Nisi bio u igri".
-- **Rješenje:** —
-- **Lekcija:** —
-
 ### BUG-048 · Kartica „Agencije" u Pošti prikazuje i praonicu i zaštitare
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
 - **Opis:** tester (ned 02:18–02:36, produkcija): kartica „Agencije" u Pošti uz agencije prikazuje i praonicu i
   zaštitare.
 - **Rješenje:** —
 - **Lekcija:** —
-
-### BUG-047 · Tipfeler „Soba je spremana" u sadržaju situacija
-- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
-- **Opis:** tester (ned 02:18–02:36, produkcija): u ponuđenom odgovoru piše „Soba je spremana"; ispravak
-  „spremljena". Sadržaj situacija spaja se samo na Leonovo „spoji" ([ADR-017](DECISIONS.md#adr-017)).
-- **Uzrok:** `src/content/situations.json:44`.
-- **Rješenje:** —
-- **Lekcija:** —
-
-### BUG-046 · Dvostruki uvoz playbooka udvostruči situacije u igri
-- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
-- **Opis:** tester (ned 02:18–02:36, produkcija): kad profesor isti playbook uveze dvaput, situacije su u igri
-  dvaput. Graditelj (~02:40): drugi uvoz odbija se s 409. Tester 02:13 CET: i dalje stvara duplikate.
-- **Rješenje:** —
-- **Lekcija:** uvoz mora biti idempotentan ili odbiti ponavljanje.
-
-### BUG-045 · „Uvezeno 2 situacija" (množina)
-- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
-- **Opis:** tester (ned 02:18–02:36, produkcija): nakon uvoza playbooka poruka piše „Uvezeno 2 situacija".
-- **Uzrok:** `src/app/profesor/[worldId]/situacije/page.tsx:107`, broj bez sklanjanja imenice.
-- **Rješenje:** —
-- **Lekcija:** svaki tekst s brojem ide kroz istu funkciju za množinu.
 
 ### BUG-044 · `/igra/sobe`: podnaslov ne broji sobu na čišćenju, množina kriva
 - **Status:** 🔴 otvoren (Rino) · **Težina:** nizak
@@ -98,15 +78,6 @@ opis · uzrok · rješenje · **lekcija**.
 - **Uzrok:** `src/app/igra/sobe/page.tsx:29` (podnaslov broji samo zauzete, slobodne i u kvaru; fiksni oblici riječi).
 - **Rješenje:** —
 - **Lekcija:** svaki tekst s brojem ide kroz istu funkciju za množinu.
-
-### BUG-043 · Izvještaj mjeseca odmah nakon „Završi" pokazuje privremene brojke
-- **Status:** 🟡 u radu (graditelj) · **Težina:** nizak
-- **Opis:** tester (ned 02:18–02:36, produkcija): izvještaj otvoren odmah nakon „Završi" pokazuje brojke prije
-  obračuna grada, bez napomene da nisu konačne. Graditelj (~02:40): napomena „konačno nakon obračuna mjeseca".
-- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:47–53` (ploča „Što se promijenilo" prikazuje brojke izvještaja
-  bez obzira na to je li mjesec obračunat).
-- **Rješenje:** —
-- **Lekcija:** privremeni podatak mora reći da je privremen.
 
 ### BUG-040 · Test botova „radi istodobno" ovisi o brzini stroja
 - **Status:** 🔴 otvoren · **Težina:** nizak · **Vlasnik:** Simon
@@ -163,6 +134,44 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-049 · Kasni student vidi „Krug nije zatvoren" za mjesec prije svog ulaska
+- **Status:** ✅ riješen 25.10. 02:31 CET ([#262](https://github.com/leonkreso784-bit/riihack/pull/262), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): student koji je ušao kasnije za mjesec prije svog ulaska vidi
+  „Krug nije zatvoren". Graditelj (~02:40): umjesto toga poruka „Nisi bio u igri".
+- **Rješenje:** [#262](https://github.com/leonkreso784-bit/riihack/pull/262): ako izvještaja nema, a mjesec je ≤ `closedRound` tvrtke (kasni ulaz postavlja `closedRound = krug − 1`), API vraća 404 „U tom mjesecu još nisi bio u igri"; bez promjene sheme.
+- **Lekcija:** poruka o grešci mora reći pravi razlog, ne prvi koji kod nađe.
+
+### BUG-047 · Tipfeler „Soba je spremana" u sadržaju situacija
+- **Status:** ✅ riješen 25.10. 02:31 CET ([#262](https://github.com/leonkreso784-bit/riihack/pull/262), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): u ponuđenom odgovoru piše „Soba je spremana"; ispravak
+  „spremljena". Sadržaj situacija spaja se samo na Leonovo „spoji" ([ADR-017](DECISIONS.md#adr-017)).
+- **Uzrok:** `src/content/situations.json:44`.
+- **Rješenje:** [#262](https://github.com/leonkreso784-bit/riihack/pull/262): u `src/content/situations.json` „Soba je spremljena" (tekst se nigdje drugdje ne koristi).
+- **Lekcija:** sadržaj koji vidi student treba proći pravopisnu provjeru kao i kod.
+
+### BUG-046 · Dvostruki uvoz playbooka udvostruči situacije u igri
+- **Status:** ✅ riješen 25.10. 02:31 CET ([#262](https://github.com/leonkreso784-bit/riihack/pull/262), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): kad profesor isti playbook uveze dvaput, situacije su u igri
+  dvaput. Graditelj (~02:40): drugi uvoz odbija se s 409. Tester 02:13 CET: i dalje stvara duplikate.
+- **Rješenje:** [#262](https://github.com/leonkreso784-bit/riihack/pull/262): uvoz preskače situacije čiji naslov već postoji u igri (isti `hasSituationTitle` kao knjižnica, [#255](https://github.com/leonkreso784-bit/riihack/pull/255)) i uvozi ostale; broj preskočenih ide u događaj `playbook.imported` (`skipped`). Poruka „Uvezeno N" i dalje broji sve situacije iz datoteke ([BUG-056](#bug-056--ponovni-uvoz-playbooka-javlja-uvezeno-5-situacija-iako-nije-dodana-nijedna)).
+- **Lekcija:** uvoz mora biti idempotentan ili odbiti ponavljanje.
+
+### BUG-045 · „Uvezeno 2 situacija" (množina)
+- **Status:** ✅ riješen 25.10. 02:31 CET ([#262](https://github.com/leonkreso784-bit/riihack/pull/262), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): nakon uvoza playbooka poruka piše „Uvezeno 2 situacija".
+- **Uzrok:** `src/app/profesor/[worldId]/situacije/page.tsx:107`, broj bez sklanjanja imenice.
+- **Rješenje:** [#262](https://github.com/leonkreso784-bit/riihack/pull/262): poruka ide kroz `plural()` (1 situacija, 2 situacije, 5 situacija).
+- **Lekcija:** svaki tekst s brojem ide kroz istu funkciju za množinu.
+
+### BUG-043 · Izvještaj mjeseca odmah nakon „Završi" pokazuje privremene brojke
+- **Status:** ✅ riješen 25.10. 02:31 CET ([#262](https://github.com/leonkreso784-bit/riihack/pull/262), graditelj); 🟨 tester provjerava na produkciji · **Težina:** nizak
+- **Opis:** tester (ned 02:18–02:36, produkcija): izvještaj otvoren odmah nakon „Završi" pokazuje brojke prije
+  obračuna grada, bez napomene da nisu konačne. Graditelj (~02:40): napomena „konačno nakon obračuna mjeseca".
+- **Uzrok:** `src/app/igra/izvjestaj/[krug]/page.tsx:47–53` (ploča „Što se promijenilo" prikazuje brojke izvještaja
+  bez obzira na to je li mjesec obračunat).
+- **Rješenje:** [#262](https://github.com/leonkreso784-bit/riihack/pull/262): dok mjesec traje (`world.round === round`) izvještaj piše „Brojke su privremene; konačne su nakon što profesor zatvori mjesec."
+- **Lekcija:** privremeni podatak mora reći da je privremen.
 
 ### BUG-042 · Razgovor s likom: istodobne 6. i 7. poruka obje prođu
 - **Status:** ✅ riješen 25.10. 02:38 CEST ([#249](https://github.com/leonkreso784-bit/riihack/pull/249), graditelj, [ADR-053](DECISIONS.md#adr-053)); tester potvrdio na produkciji (02:13 CET) ·
