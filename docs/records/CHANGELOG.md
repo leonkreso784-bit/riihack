@@ -7,6 +7,11 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#268](https://github.com/leonkreso784-bit/riihack/pull/268) | 09:04 CET | Simon | popravci iz noćnog pregleda (dio B): ulaz mentora za preskočene situacije, `firstQuestion` i rezervni tekstovi (`src/lib/ai/*`), oznaka rezervnog nacrta u profesorskom obrascu, tekstovi u gradu i Tokovima; dira Rinove datoteke |
+| [#280](https://github.com/leonkreso784-bit/riihack/pull/280) | 09:01 CET | Leon | graditelj: mentor sam piše osvrt mjeseca nakon obračuna ([ADR-057](DECISIONS.md#adr-057), BUG-068) |
+| [#277](https://github.com/leonkreso784-bit/riihack/pull/277) | 09:01 CET | Simon | prezentacija v6: deck, PDF, video, skripta i pitanja žirija |
+| [#281](https://github.com/leonkreso784-bit/riihack/pull/281) | 09:00 CET | Simon | predaja: `PREDAJA.md`, `PROMISE.md` i `README.md` usklađeni s aplikacijom |
+| [#279](https://github.com/leonkreso784-bit/riihack/pull/279) | 09:00 CET | Leon | dokumentacija: obilazak 3 prošao, jutarnji nalazi |
 | [#278](https://github.com/leonkreso784-bit/riihack/pull/278) | 08:21 CET | Leon | graditelj: `README.md` i `CLAUDE.md` više ne upućuju `db:push` na zajedničku bazu, samo na svoju praznu ([ADR-026](DECISIONS.md#adr-026)); Simonov `PREDAJA.md` usklađen s demoom |
 | [#267](https://github.com/leonkreso784-bit/riihack/pull/267) | 08:03 CET | Simon | popravci iz noćnog pregleda: brojke u Tokovima, karta, ponude ugovora, vijesti, mentor i 3 teksta u `situations.json`; 5 Rinovih datoteka minimalno; motor netaknut; Leonovo „pokreni 267" |
 | [#276](https://github.com/leonkreso784-bit/riihack/pull/276) | 08:02 CET | Leon | dokumentacija: baza očišćena, jutro prije žirija |

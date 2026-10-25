@@ -17,15 +17,6 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** —
 - **Lekcija:** —
 
-### BUG-068 · Mentorov osvrt piše privremene brojke prije obračuna grada
-- **Status:** 🔴 otvoren (Simon) · **Težina:** nizak
-- **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): mentorov osvrt nastaje prije obračuna grada, pa piše privremene brojke; u
-  osvrtu „Financije 28/100 (+4)", a konačni izvještaj 24 → 33 (+9). Usp.
-  [BUG-032](#bug-032--izvještaj-mjeseca-mentor-i-podij-ne-vide-obračun-grada) i
-  [BUG-059](#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene).
-- **Rješenje:** — (prijedlog: napomena uz osvrt da su brojke privremene ili mentor tek nakon obračuna)
-- **Lekcija:** —
-
 ### BUG-067 · Lokalni smoke ostavio 5 testnih igara u zajedničkoj bazi
 - **Status:** 🔴 otvoren (graditelj čisti) · **Težina:** nizak
 - **Opis:** integratorov agent je u 08:01 CET lokalnim smokeom ostavio 5 igara „Smoke …" u zajedničkoj bazi, preko
@@ -175,6 +166,15 @@ opis · uzrok · rješenje · **lekcija**.
   sheme pročitaj kao SQL prije upisa i radi samo dodavanja.
 
 ## Riješeni
+
+### BUG-068 · Mentorov osvrt piše privremene brojke prije obračuna grada
+- **Status:** ✅ riješen 25.10. 09:01 CET ([#280](https://github.com/leonkreso784-bit/riihack/pull/280), [ADR-057](DECISIONS.md#adr-057): osvrt se piše tek nakon obračuna); 🟨 tester ne provjerava (gotov do predaje) · **Težina:** nizak
+- **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): mentorov osvrt nastaje prije obračuna grada, pa piše privremene brojke; u
+  osvrtu „Financije 28/100 (+4)", a konačni izvještaj 24 → 33 (+9). Usp.
+  [BUG-032](#bug-032--izvještaj-mjeseca-mentor-i-podij-ne-vide-obračun-grada) i
+  [BUG-059](#bug-059--izvještaj-3-mjeseca-nakon-završi-sezonu-i-dalje-piše-brojke-su-privremene).
+- **Rješenje:** [#280](https://github.com/leonkreso784-bit/riihack/pull/280): mentor sam piše osvrt kad je mjesec obračunat, iz konačnih brojki motora.
+- **Lekcija:** tekst koji opisuje brojke piši tek kad su brojke konačne.
 
 ### BUG-063 · Botovi ostaju na cijeni 1. mjeseca jer im se prenosi plan
 - **Status:** ✅ riješen 25.10. 04:24 CET ([#272](https://github.com/leonkreso784-bit/riihack/pull/272), graditelj) · **Težina:** visok (igre s botovima; žiri dodaje botove u čekaonici)

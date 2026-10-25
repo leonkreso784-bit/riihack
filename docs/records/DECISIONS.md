@@ -10,7 +10,7 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 <a id="adr-057"></a>
 ## ADR-057 · Mentor sam piše osvrt mjeseca nakon obračuna
-**Datum:** 25.10. ~08:24 · **Status:** ✅ (Leon, preneseno preko graditelja); kod 🟨 u radu · **Vezano:**
+**Datum:** 25.10. ~08:24 · **Status:** ✅ (Leon, preneseno preko graditelja); spojeno [#280](https://github.com/leonkreso784-bit/riihack/pull/280) (09:01) · **Vezano:**
 [ADR-052](#adr-052), [BUG-068](BUGS.md#bug-068--mentorov-osvrt-piše-privremene-brojke-prije-obračuna-grada)
 
 **Kontekst.** Osvrt mentora student dobiva tek kad odgovori na mentorovo pitanje, a dosad je mogao biti pisan iz
@@ -19,8 +19,7 @@ privremenih brojki prije obračuna grada (BUG-068).
 brojki motora i studentovih odgovora, bez da ga student pita. Pitanje i refleksija ostaju kao nastavak, a osvrt se
 dopisuje.
 **Posljedice.** Radi graditeljev agent: osvrt se stvara pri prvom otvaranju izvještaja nakon obračuna (`mentorText`),
-bez promjene sheme; aditivno dira Simonov `mentor.ts` i minimalno Rinov izvještaj. Rok je PR do 09:40, inače ide nakon
-natjecanja.
+bez promjene sheme; aditivno dira Simonov `mentor.ts` i minimalno Rinov izvještaj.
 
 <a id="adr-056"></a>
 ## ADR-056 · Dok žiri igra, nema deploya
@@ -31,7 +30,8 @@ natjecanja.
 **Odluka.** Do 09:00 nema deploya ni spajanja; nitko ne otvara preglednik na produkciji dok žiri igra.
 **Posljedice.** [#278](https://github.com/leonkreso784-bit/riihack/pull/278) je ipak spojen u 08:21 CET, prije 09:00:
 graditelj je javio „zabrana gotova" pa se minutu kasnije ispravio; deploy usred igre žirija, ali samo `.md`
-(produkcija READY 08:21, rute OK). Dokumentacija jutra spaja se nakon 09:00.
+(produkcija READY 08:21, rute OK). Dokumentacija jutra spaja se nakon 09:00. Leon je ~09:00 integratoru izravno
+javio „možeš krenuti sa spajanjem odmah".
 
 <a id="adr-055"></a>
 ## ADR-055 · Testiranje na produkciji: najviše 3 testne igre
