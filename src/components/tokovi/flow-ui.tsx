@@ -2,9 +2,12 @@
 
 // Zajednički dijelovi Tokova: kartica koraka, detalj (Ulaz, Pravilo, Izlaz), klizač i raspored koraka
 // (desktop red sa strelicama, mobilni okomiti popis). Koristi ih skica 2 (odgovor) i skica 3 (odjeli).
-import { useEffect, useId, useRef, useState } from "react";
-import { ArrowDown, ArrowRight, X, type LucideIcon } from "lucide-react";
+// ZoomCanvas drži široko platno toka (mjesec) s alatnom trakom za zumiranje.
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
+import { ArrowDown, ArrowRight, Maximize2, Minus, Plus, X, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ZOOM_DEFAULT, anchoredScroll, canStep, clampZoom, fitZoom, parseStoredZoom, stepZoom, wheelStep, zoomLabel } from "@/lib/tokovi/zoom";
 
 export type FlowRowData = { label: string; value: string; strong?: boolean };
 export type FlowStepData = {
@@ -112,6 +115,162 @@ export function Slider({ id, label, value, min, max, step, onChange, disabled, f
       <div className="flex justify-between text-xs text-muted-foreground tabular-nums">
         <span>{format(min)}</span>
         <span>{format(max)}</span>
+      </div>
+    </div>
+  );
+}
+
+const ZOOM_STORAGE_PREFIX = "tokovi-zoom:";
+
+function readStoredZoom(key: string): number | null {
+  try {
+    return parseStoredZoom(window.sessionStorage.getItem(key));
+  } catch {
+    return null; // privatni način ili blokiran storage: zoom samo ne ostaje zapamćen
+  }
+}
+
+function storeZoom(key: string, zoom: number) {
+  try {
+    window.sessionStorage.setItem(key, String(zoom));
+  } catch {
+    // vidi gore
+  }
+}
+
+const TOOL_BUTTON =
+  "inline-flex min-h-10 min-w-10 items-center justify-center gap-1.5 rounded-full border bg-card px-3.5 text-sm font-bold text-secondary-foreground outline-offset-2 hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary aria-disabled:cursor-not-allowed aria-disabled:opacity-50 aria-disabled:hover:bg-card";
+
+/**
+ * Široko platno s apsolutno postavljenim karticama i SVG linijama (npr. tok mjeseca), s alatnom trakom za zumiranje.
+ * Zoom je CSS transform od gornjeg lijevog kuta, a vanjska kutija ima širinu i visinu puta zoom, pa se klizanje
+ * i linije ponašaju ispravno. Raspon 50 do 150 %, korak 10 %, Ctrl ili Cmd + kotačić zumira pod pokazivačem.
+ * Zadano je 100 % (bez transforma, kao prije); izabrani zoom pamti se po stranici u sessionStorageu.
+ * Promjena zooma je odmah, bez animacije, pa vrijedi i za prefers-reduced-motion.
+ */
+export function ZoomCanvas({ width, height, label, storageKey, children }: { width: number; height: number; label: string; storageKey?: string; children: ReactNode }) {
+  const pathname = usePathname();
+  const key = ZOOM_STORAGE_PREFIX + (storageKey ?? pathname ?? "");
+  const [zoom, setZoom] = useState(ZOOM_DEFAULT);
+  const zoomRef = useRef(ZOOM_DEFAULT); // zadnji zoom za native wheel listener, koji ne vidi novi state
+  const wrap = useRef<HTMLDivElement>(null);
+  const after = useRef<{ scrollLeft: number; pageDy: number } | null>(null); // scroll koji se postavlja tek kad se kutija prelomi
+  const wheel = useRef({ sum: 0, at: 0 });
+  const [scrolls, setScrolls] = useState(false);
+
+  /** Postavi zoom i zapamti ga. Sidro (px od lijevog ruba prozora) ostaje na istoj točki platna, zadano je sredina. */
+  const apply = useCallback(
+    (next: number, anchor?: { x: number; pageDy?: number }) => {
+      const from = zoomRef.current;
+      const to = clampZoom(next);
+      if (to === from) return;
+      const el = wrap.current;
+      if (el) after.current = { scrollLeft: anchoredScroll(el.scrollLeft, anchor?.x ?? el.clientWidth / 2, from, to), pageDy: anchor?.pageDy ?? 0 };
+      zoomRef.current = to;
+      setZoom(to);
+      storeZoom(key, to);
+    },
+    [key],
+  );
+
+  // Vrati zapamćeni zoom ove stranice (nakon mounta, da server i klijent prvo nacrtaju isto).
+  useEffect(() => {
+    const saved = readStoredZoom(key);
+    if (saved !== null && saved !== zoomRef.current) {
+      zoomRef.current = saved;
+      setZoom(saved);
+    }
+  }, [key]);
+
+  // Scroll se smije postaviti tek nakon što je kutija dobila novu veličinu, inače ga preglednik skrati.
+  useLayoutEffect(() => {
+    const pending = after.current;
+    if (!pending) return;
+    after.current = null;
+    if (wrap.current) wrap.current.scrollLeft = pending.scrollLeft;
+    if (pending.pageDy) window.scrollBy({ top: pending.pageDy, left: 0, behavior: "instant" });
+  }, [zoom]);
+
+  // Pokaži uputu i rubne sjene samo dok platno zaista klizi (zoom ili širina prozora to mijenjaju).
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const check = () => setScrolls(el.scrollWidth > el.clientWidth + 1);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [zoom, width]);
+
+  // Ctrl ili Cmd + kotačić (i stisak prstiju na touchpadu). Mora biti native listener: React-ov onWheel je pasivan i ne smije preventDefault.
+  useEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault(); // inače preglednik zumira cijelu stranicu
+      const w = wheel.current;
+      if (e.timeStamp - w.at > 300) w.sum = 0;
+      w.at = e.timeStamp;
+      const r = wheelStep(w.sum, e.deltaY, e.deltaMode);
+      w.sum = r.pending;
+      if (r.direction === 0) return;
+      const from = zoomRef.current;
+      const to = stepZoom(from, r.direction);
+      if (to === from) return;
+      const rect = el.getBoundingClientRect();
+      apply(to, { x: e.clientX - rect.left, pageDy: (e.clientY - rect.top) * (to / from - 1) });
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [apply]);
+
+  const fit = () => {
+    const el = wrap.current;
+    if (el) apply(fitZoom(el.clientWidth, width));
+  };
+  const step = (direction: 1 | -1) => {
+    if (canStep(zoomRef.current, direction)) apply(stepZoom(zoomRef.current, direction));
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <div role="group" aria-label={`Zumiranje: ${label}`} className="inline-flex flex-wrap items-center gap-2">
+          <button type="button" onClick={() => step(-1)} aria-label="Smanji" aria-disabled={!canStep(zoom, -1)} title="Smanji (ili Ctrl + kotačić miša)" className={TOOL_BUTTON}>
+            <Minus className="size-4" aria-hidden />
+          </button>
+          <span role="status" aria-live="polite" aria-atomic="true" className="min-w-14 text-center text-sm font-extrabold whitespace-nowrap tabular-nums">
+            <span className="sr-only">Zumiranje </span>
+            {zoomLabel(zoom)}
+          </span>
+          <button type="button" onClick={() => step(1)} aria-label="Povećaj" aria-disabled={!canStep(zoom, 1)} title="Povećaj (ili Ctrl + kotačić miša)" className={TOOL_BUTTON}>
+            <Plus className="size-4" aria-hidden />
+          </button>
+          <button type="button" onClick={fit} title="Prilagodi tok širini prozora" className={TOOL_BUTTON}>
+            <Maximize2 className="size-4" aria-hidden /> Cijeli tok
+          </button>
+          <button type="button" onClick={() => apply(ZOOM_DEFAULT)} aria-label="Vrati zumiranje na 100 %" title="Vrati na 100 %" className={TOOL_BUTTON}>
+            100 %
+          </button>
+        </div>
+        {scrolls && <p className="text-sm font-semibold text-muted-foreground">Povuci vodoravno za cijeli tok →</p>}
+      </div>
+
+      <div className="relative min-w-0">
+        <div ref={wrap} className="min-w-0 overflow-x-auto pb-2">
+          <div style={{ width: (width * zoom) / 100, height: (height * zoom) / 100 }} className="relative">
+            <div style={{ width, height, transform: zoom === ZOOM_DEFAULT ? undefined : `scale(${zoom / 100})`, transformOrigin: "0 0" }} className="absolute top-0 left-0">
+              {children}
+            </div>
+          </div>
+        </div>
+        {scrolls && (
+          <>
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent" />
+            <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
+          </>
+        )}
       </div>
     </div>
   );

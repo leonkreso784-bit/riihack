@@ -9,7 +9,7 @@ import type { RoundFinance } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Panel } from "@/components/panel";
 import { Delta } from "@/components/metric-bar";
-import { Slider } from "@/components/tokovi/flow-ui";
+import { Slider, ZoomCanvas } from "@/components/tokovi/flow-ui";
 import { buildMonthFlow, ESTIMATE_LABEL, eur, estimateWhatIf, type FlowStep, type StepId } from "@/lib/tokovi/month-flow";
 
 const ICONS: Record<StepId, LucideIcon> = {
@@ -143,19 +143,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
   const [scenario, setScenario] = useState<{ price: number; marketing: number }>();
   const [selected, setSelected] = useState<StepId>();
 
-  const wrap = useRef<HTMLDivElement>(null);
-  const [scrolls, setScrolls] = useState(false);
   const detail = useRef<HTMLElement>(null);
-  useEffect(() => {
-    const el = wrap.current;
-    if (!el) return;
-    const fit = () => setScrolls(el.scrollWidth > el.clientWidth + 1);
-    fit();
-    const ro = new ResizeObserver(fit);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [real]);
-
   useEffect(() => {
     if (!selected) return;
     const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -243,48 +231,35 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
 
       {/* Desktop: cards in columns joined by lines; the open step opens its panel (Ulaz, Pravilo, Izlaz) right under the flow. */}
       <div className="hidden space-y-5 md:block">
-          {scrolls && <p className="text-sm font-semibold text-muted-foreground">Povuci vodoravno za cijeli tok →</p>}
-          <div className="relative min-w-0">
-          <div ref={wrap} className="min-w-0 overflow-x-auto pb-2">
-          <div style={{ width: CANVAS.w, height: CANVAS.h }} className="relative">
-            <div style={{ width: CANVAS.w, height: CANVAS.h }} className="absolute top-0 left-0">
-              <svg width={CANVAS.w} height={CANVAS.h} className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
-                {EDGES.map(([a, b]) => {
-                  const A = POS[a];
-                  const B = POS[b];
-                  const vertical = A.x === B.x;
-                  const x1 = vertical ? A.x + CARD_W / 2 : A.x + (A.w ?? CARD_W);
-                  const y1 = vertical ? A.y + HALF_H : A.y;
-                  const x2 = vertical ? B.x + CARD_W / 2 : B.x;
-                  const y2 = vertical ? B.y - HALF_H : B.y;
-                  const mx = (x1 + x2) / 2;
-                  const d = vertical ? `M${x1} ${y1} L${x2} ${y2}` : `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`;
-                  return <path key={`${a}-${b}`} d={d} fill="none" strokeWidth={2.5} strokeLinecap="round" className={cn("motion-safe:transition-[stroke]", lit(a, b) ? "stroke-primary" : "stroke-[#c3d0e6]")} />;
-                })}
-              </svg>
-              {steps.map((s) => {
-                const p = POS[s.id];
-                return (
-                  <StepCard
-                    key={s.id}
-                    step={s}
-                    selected={selected === s.id}
-                    onSelect={() => setSelected(selected === s.id ? undefined : s.id)}
-                    className="absolute -translate-y-1/2"
-                    style={{ left: p.x, top: p.y, width: p.w ?? CARD_W }}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        </div>
-          {scrolls && (
-            <>
-              <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-background to-transparent" />
-              <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent" />
-            </>
-          )}
-          </div>
+        <ZoomCanvas width={CANVAS.w} height={CANVAS.h} label="Tok mjeseca">
+          <svg width={CANVAS.w} height={CANVAS.h} className="pointer-events-none absolute inset-0 overflow-visible" aria-hidden>
+            {EDGES.map(([a, b]) => {
+              const A = POS[a];
+              const B = POS[b];
+              const vertical = A.x === B.x;
+              const x1 = vertical ? A.x + CARD_W / 2 : A.x + (A.w ?? CARD_W);
+              const y1 = vertical ? A.y + HALF_H : A.y;
+              const x2 = vertical ? B.x + CARD_W / 2 : B.x;
+              const y2 = vertical ? B.y - HALF_H : B.y;
+              const mx = (x1 + x2) / 2;
+              const d = vertical ? `M${x1} ${y1} L${x2} ${y2}` : `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`;
+              return <path key={`${a}-${b}`} d={d} fill="none" strokeWidth={2.5} strokeLinecap="round" className={cn("motion-safe:transition-[stroke]", lit(a, b) ? "stroke-primary" : "stroke-[#c3d0e6]")} />;
+            })}
+          </svg>
+          {steps.map((s) => {
+            const p = POS[s.id];
+            return (
+              <StepCard
+                key={s.id}
+                step={s}
+                selected={selected === s.id}
+                onSelect={() => setSelected(selected === s.id ? undefined : s.id)}
+                className="absolute -translate-y-1/2"
+                style={{ left: p.x, top: p.y, width: p.w ?? CARD_W }}
+              />
+            );
+          })}
+        </ZoomCanvas>
 
         {shown && (
           <aside aria-label="Kako je izračunat korak" ref={detail} className="surface relative scroll-mt-4 rounded-[var(--radius)] p-6">
