@@ -238,12 +238,20 @@ export function carryOverPlans(rows: PlanRow[], round: number): (typeof plans.$i
   return rows.map((r) => ({ companyId: r.companyId, round, price: r.price, marketing: r.marketing, investments: {} }));
 }
 
+/** Planovi bez botova (ADR-044): bot svaki mjesec planira sam, samo kad za taj mjesec nema retka (playOneBot). */
+export function withoutBotPlans(rows: PlanRow[], all: { id: string; kind: string }[]): PlanRow[] {
+  const bots = new Set(all.filter((c) => c.kind === "bot").map((c) => c.id));
+  return rows.filter((r) => !bots.has(r.companyId));
+}
+
 /**
- * Pri otvaranju mjeseca `round` prepiše svaki plan mjeseca `round − 1` u novi mjesec. Plan koji je student već
- * spremio za novi mjesec ostaje (onConflictDoNothing), a hotel bez plana i dalje dobije zadani (referentna cijena).
+ * Pri otvaranju mjeseca `round` prepiše plan mjeseca `round − 1` svakog studentskog hotela u novi mjesec. Plan koji je
+ * student već spremio za novi mjesec ostaje (onConflictDoNothing), a hotel bez plana i dalje dobije zadani.
  */
 export async function carryPlansForward(worldId: string, round: number): Promise<void> {
-  const rows = carryOverPlans(await listPlans(worldId, round - 1), round);
+  const [prev, all] = await Promise.all([listPlans(worldId, round - 1), listCompanies(worldId)]);
+  // botovi planiraju sami svaki mjesec (ADR-044), pa im se plan ne prenosi
+  const rows = carryOverPlans(withoutBotPlans(prev, all.map((c) => c.company)), round);
   if (rows.length) await db.insert(plans).values(rows).onConflictDoNothing();
 }
 

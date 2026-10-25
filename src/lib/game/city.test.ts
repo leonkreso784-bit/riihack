@@ -18,6 +18,7 @@ import {
   toCityView,
   toContractView,
   toPlan,
+  withoutBotPlans,
   type NewsEvent,
 } from "./city";
 
@@ -280,5 +281,29 @@ describe("carryOverPlans (#227.1: plan prošlog mjeseca je zadani plan novog)", 
 
   it("bez prošlih planova nema ništa", () => {
     expect(carryOverPlans([], 3)).toEqual([]);
+  });
+});
+
+describe("withoutBotPlans (regresija iz #241: botovi ne smiju dobiti preneseni plan)", () => {
+  const plan = (companyId: string) => ({ id: `p-${companyId}`, companyId, round: 2, price: 150, marketing: 1000, investments: {} }) as PlanRow;
+  const all = [
+    { id: "ana", kind: "hotel" },
+    { id: "bot1", kind: "bot" },
+    { id: "ivo", kind: "hotel" },
+  ];
+
+  it("izbaci planove botova, a studentske zadrži redom", () => {
+    expect(withoutBotPlans([plan("ana"), plan("bot1"), plan("ivo")], all).map((r) => r.companyId)).toEqual(["ana", "ivo"]);
+  });
+
+  it("bez botova vrati sve planove, a prazno ostaje prazno", () => {
+    const rows = [plan("ana"), plan("ivo")];
+    expect(withoutBotPlans(rows, all.filter((c) => c.kind !== "bot"))).toEqual(rows);
+    expect(withoutBotPlans([], all)).toEqual([]);
+  });
+
+  it("s carryOverPlans bot nema redak za novi mjesec, pa ga playOneBot planira sam", () => {
+    const rows = carryOverPlans(withoutBotPlans([plan("ana"), plan("bot1")], all), 3);
+    expect(rows.map((r) => r.companyId)).toEqual(["ana"]);
   });
 });
