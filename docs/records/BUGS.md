@@ -168,7 +168,7 @@ opis · uzrok · rješenje · **lekcija**.
 ## Riješeni
 
 ### BUG-068 · Mentorov osvrt piše privremene brojke prije obračuna grada
-- **Status:** ✅ riješen 25.10. 09:01 CET ([#280](https://github.com/leonkreso784-bit/riihack/pull/280), [ADR-057](DECISIONS.md#adr-057): osvrt se piše tek nakon obračuna); 🟨 tester ne provjerava (gotov do predaje) · **Težina:** nizak
+- **Status:** ✅ riješen 25.10. 09:01 CET ([#280](https://github.com/leonkreso784-bit/riihack/pull/280), [ADR-057](DECISIONS.md#adr-057): osvrt se piše tek nakon obračuna); tester potvrdio #280 (09:08 CET) · **Težina:** nizak
 - **Opis:** tester (jutro nakon čišćenja, produkcija; 🟨 točno vrijeme): mentorov osvrt nastaje prije obračuna grada, pa piše privremene brojke; u
   osvrtu „Financije 28/100 (+4)", a konačni izvještaj 24 → 33 (+9). Usp.
   [BUG-032](#bug-032--izvještaj-mjeseca-mentor-i-podij-ne-vide-obračun-grada) i

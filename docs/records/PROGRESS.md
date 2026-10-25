@@ -6,6 +6,19 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~09:10 CET · mentor sam piše osvrt potvrđen
+
+- **Spojeno:** [#268](https://github.com/leonkreso784-bit/riihack/pull/268) 09:04 CET (Simon: mentor i tekstovi; 647 testova) i
+  [#282](https://github.com/leonkreso784-bit/riihack/pull/282) 09:07 CET (dokumentacija).
+- **Tester ✅ [#280](https://github.com/leonkreso784-bit/riihack/pull/280) (09:05–09:08 CET):** automatski osvrt nakon profesorova zatvaranja bez refleksije
+  (prvi GET 7,3 s, pravi tekst s brojkama kolovoza), „Mentor" iznad polja za odgovor, refleksija dopiše novi osvrt i
+  prvi ostaje. BUG-068 potvrđen.
+- **Stari mjeseci (nije bug):** mjesec zatvoren prije #280 dobije osvrt pri prvom otvaranju izvještaja (5–6 s, osvrt
+  ispred starog odgovora; isto u `KVRNDM`); namjerno, isti mehanizam kao za refleksiju prije obračuna (graditelj
+  ~09:12, [ADR-057](DECISIONS.md#adr-057)).
+- **Integrator:** ime prijašnjeg projekta nema na `main`-u (0 datoteka); otvoren samo
+  [#209](https://github.com/leonkreso784-bit/riihack/pull/209).
+
 ## Ned 25.10. ~09:05 CET · prezentacija i predaja spojeni
 
 - **Leon (~09:00) integratoru izravno:** „možeš krenuti sa spajanjem odmah" ([ADR-056](DECISIONS.md#adr-056)).
