@@ -7,8 +7,11 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#272](https://github.com/leonkreso784-bit/riihack/pull/272) | 04:24 CET | Leon | plan iz prethodnog mjeseca više se ne prenosi botovima (`withoutBotPlans` u `carryPlansForward`), pa bot opet planira sam svaki mjesec; regresija iz [#241](https://github.com/leonkreso784-bit/riihack/pull/241) (BUG-063); dira `city.ts` po [ADR-054](DECISIONS.md#adr-054) |
+| [#273](https://github.com/leonkreso784-bit/riihack/pull/273) | 04:22 CET | Leon | dokumentacija: projektor potvrđen |
 | [#271](https://github.com/leonkreso784-bit/riihack/pull/271) | 04:19 CET | Leon | izvještaj se osvježava svakih 15 s dok je mjesec privremen, napomena „Brojke su privremene…" samo tada (BUG-057, BUG-059); Tokovi kasnog studenta za mjesec prije ulaska „U tom mjesecu još nisi bio u igri" (BUG-058); dira Rinov `izvjestaj/[krug]/page.tsx` i Simonov `tok/page.tsx` po [ADR-054](DECISIONS.md#adr-054) |
 | [#270](https://github.com/leonkreso784-bit/riihack/pull/270) | 04:11 CET | Leon | dokumentacija: BUG-063 botovi ne planiraju |
+| [#269](https://github.com/leonkreso784-bit/riihack/pull/269) | 04:06 CET | Leon | dokumentacija: projektor spojen (#264) |
 | [#264](https://github.com/leonkreso784-bit/riihack/pull/264) | 03:48 CET | Leon | projektor: podij mjeseca i ljestvica nakon kraja sezone bez crvenog (`Delta` i `Leaderboard` dobivaju `neutral`), kompaktni podij sezone uz ljestvicu u dva stupca na `xl:`, ploča profesora do 1600 px s većom ljestvicom (BUG-051 do 054, BUG-060); dira 5 Rinovih komponenti po [ADR-054](DECISIONS.md#adr-054); rebase zbog sukoba s [#252](https://github.com/leonkreso784-bit/riihack/pull/252) |
 | [#265](https://github.com/leonkreso784-bit/riihack/pull/265) | 03:08 CET | Leon | dokumentacija: #262 potvrđen, BUG-057 do 062 |
 | [#263](https://github.com/leonkreso784-bit/riihack/pull/263) | 02:40 CET | Leon | dokumentacija: sitni ispravci (#262), demo ponovno posijan |
