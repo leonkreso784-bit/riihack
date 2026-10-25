@@ -37,7 +37,7 @@ se samo na Leonovo „spoji" ([ADR-017](records/DECISIONS.md#adr-017)); spaja sa
 | ideja, tema, ime | [IDEJA.md](../IDEJA.md) | linkaju |
 | problem, korisnik, tri obećanja | [PROMISE.md](../PROMISE.md) | PRD linka |
 | tehnika: stack, podaci, motor, AI, API, ekrani | [ARHITEKTURA.md](../ARHITEKTURA.md) | linkaju |
-| zadaci, ugovor tipova, prekretnice | [plan izvedbe](superpowers/plans/2026-10-24-simpolis.md) | linkaju |
+| zadaci, ugovor tipova, prekretnice | [plan izvedbe](superpowers/plans/2026-10-24-simpolis.md), [plan vala 3](superpowers/plans/2026-10-24-simpolis-val-3.md) | linkaju |
 | kriteriji prihvaćanja demoa | [product/PRD.md](product/PRD.md) | |
 | tko što radi **sada**, tko na koga čeka | [TEAM.md](../TEAM.md) (ploča) | dnevnik to ne ponavlja |
 | **zašto** je nešto tako | [records/DECISIONS.md](records/DECISIONS.md) (ADR) | ostali linkaju ADR |
