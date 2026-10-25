@@ -56,6 +56,14 @@ describe("applyRound", () => {
     expect(isWrittenAnswer({ mode: "click", text: "prepisana opcija" })).toBe(false);
     expect(isWrittenAnswer({ mode: "none", text: null })).toBe(false);
     expect(isWrittenAnswer(undefined)).toBe(false);
+    expect(isWrittenAnswer({ mode: "own", text: "zalijepljen tekst", copied: true })).toBe(false);
+    expect(isWrittenAnswer({ mode: "own", text: "svoj tekst", copied: false })).toBe(true);
+  });
+  it("zalijepljen odgovor: q=1 ostaje −2, q=3 nepromijenjen", () => {
+    const eff = { guests: 3 };
+    const pasted = { mode: "own", text: "zalijepljen tekst", copied: true };
+    expect(applyRound(all50, [{ quality: 1, effects: eff, written: isWrittenAnswer(pasted) }]).guests).toBe(44);
+    expect(applyRound(all50, [{ quality: 3, effects: eff, written: isWrittenAnswer(pasted) }]).guests).toBe(53);
   });
   it("reže na 100", () => {
     expect(applyRound({ ...all50, guests: 99 }, [{ quality: 5, effects: { guests: 4 } }]).guests).toBe(100);

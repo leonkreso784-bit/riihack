@@ -17,9 +17,12 @@ export function qualityFactor(quality: number, written = false): number {
   return quality - 2;
 }
 
-/** Napisan odgovor: svoj tekst (mode "own") koji nije prazan. Klik, propušten i prazan odgovor nisu napisani. */
-export function isWrittenAnswer(answer: { mode: string; text?: string | null } | null | undefined): boolean {
-  return answer?.mode === "own" && (answer.text ?? "").trim() !== "";
+/**
+ * Napisan odgovor: svoj tekst (mode "own") koji nije prazan i nije zalijepljen. Klik, propušten, prazan i zalijepljen
+ * (`copied`) odgovor nisu napisani: lijepljenje nije vlastiti rad, pa zalijepljen s kvalitetom 1 ostaje −2.
+ */
+export function isWrittenAnswer(answer: { mode: string; text?: string | null; copied?: boolean } | null | undefined): boolean {
+  return answer?.mode === "own" && !answer.copied && (answer.text ?? "").trim() !== "";
 }
 
 // Za svaki rezultat qualityFactor(kvaliteta, napisan) × učinak, cijeli brojevi, rezanje na 0–100.

@@ -61,7 +61,7 @@ export type DepartmentFlow = {
 
 export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava kriterije.";
 export const CLOSE_NOTE = "Primjenjuje se tek kad se mjesec zatvori. Do tada pokazatelj ostaje isti.";
-export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3. Napisan svoj tekst s kvalitetom 1 vrijedi 0.";
+export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3. Napisan svoj tekst (ne zalijepljen) s kvalitetom 1 vrijedi 0.";
 export const WHATIF_LABEL = "Procjena: mijenjaš samo ulaganje ovog odjela, sve ostalo ostaje kako je u planu.";
 
 const DEPARTMENTS = Object.keys(STAFF_DEPARTMENT_LABELS) as StaffDepartment[];

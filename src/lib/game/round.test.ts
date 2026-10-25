@@ -8,13 +8,14 @@ const answer = (a: Partial<AnswerRow>) => ({ mode: "own", text: null, quality: 1
 const templates = [{ id: "t1", effects: { guests: 3 } }] as unknown as SituationTemplate[];
 
 describe("roundResults", () => {
-  it("napisan svoj tekst nosi written, prazan, klik i propušten ne (ADR-046)", () => {
+  it("napisan svoj tekst nosi written, prazan, klik, propušten i zalijepljen ne (ADR-046)", () => {
     const out = roundResults(
       [
         { situation: situation("s1", "t1"), answer: answer({ text: "Ispričat ću se i ponuditi popust." }) },
         { situation: situation("s2", "t1"), answer: answer({ text: "" }) },
         { situation: situation("s3", "t1"), answer: answer({ mode: "click", text: null, quality: 2 }) },
         { situation: situation("s4", "t1"), answer: null },
+        { situation: situation("s5", "t1"), answer: answer({ text: "Zalijepljeno.", copied: true }) },
       ],
       templates,
     );
@@ -22,6 +23,7 @@ describe("roundResults", () => {
       { quality: 1, effects: { guests: 3 }, written: true },
       { quality: 1, effects: { guests: 3 }, written: false },
       { quality: 2, effects: { guests: 3 }, written: false },
+      { quality: 1, effects: { guests: 3 }, written: false },
       { quality: 1, effects: { guests: 3 }, written: false },
     ]);
   });

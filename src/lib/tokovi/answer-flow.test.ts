@@ -117,6 +117,10 @@ describe("buildAnswerFlow", () => {
     expect(empty.calc).toContain("−2 × 4 = −8");
     const none = step(flow({ answer: { mode: "none", quality: 1, copied: false }, effects: EFFECTS }), "ucinak");
     expect(none.calc).toContain("−2 × 4 = −8");
+    const pasted = step(flow({ answer: own([], { text: "Zalijepljeno.", copied: true }), rubric: RUBRIC, effects: EFFECTS }), "ucinak");
+    expect(pasted.calc).toContain("−2 × 4 = −8");
+    const pasted3 = step(flow({ answer: own(["c1", "c2", "c3"], { text: "Zalijepljeno.", copied: true }), rubric: RUBRIC, effects: EFFECTS }), "ucinak");
+    expect(pasted3.calc).toContain("+1 × 4 = +4");
     expect(metricDelta(1, 4, true)).toBe(0);
     expect(metricDelta(1, 4)).toBe(-8);
   });
