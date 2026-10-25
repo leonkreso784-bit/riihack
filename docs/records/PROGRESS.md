@@ -6,6 +6,17 @@ Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
 
+## Ned 25.10. ~02:35 CET · demo ponovno posijan, sitni ispravci
+
+- **Spojeno:** [#260](https://github.com/leonkreso784-bit/riihack/pull/260) 02:10 i [#261](https://github.com/leonkreso784-bit/riihack/pull/261) 02:18 CET (dokumentacija), [#262](https://github.com/leonkreso784-bit/riihack/pull/262) 02:31 CET (dvostruki uvoz
+  playbooka se preskače, „spremljena", „Uvezeno N situacija", napomena o privremenim brojkama u izvještaju, kasni
+  student 404 „U tom mjesecu još nisi bio u igri"; BUG-043, 045, 046, 047 i 049).
+- **Integrator za #262:** 564 testa, build, smoke 1–18 i 20.
+- **Demo:** graditelj ponovno posijao demo igru `KVRNDM` s noćnim ispravcima; smoke na produkciji 20/20 (`7f0d431`).
+- **U bazi je 101 igra „Smoke …":** čišćenje prije predaje (graditelj, uz najavu testeru).
+- **Novo (nisko):** ponovni uvoz istog playbooka javlja „Uvezeno 5 situacija" iako je dodano 0 (BUG-056).
+- **Otvoreno:** graditeljev PR za projektor (BUG-051 do 054); tester provjerava #262 na produkciji.
+
 ## Ned 25.10. ~02:15 CET · tester potvrdio ispravke
 
 - **Tester (produkcija, API, QA igra, 02:05–02:13 CET):** ✅ BUG-029 (plan se prenosi), BUG-030 i BUG-041 (napisan
