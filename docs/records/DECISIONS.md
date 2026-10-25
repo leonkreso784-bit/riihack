@@ -40,8 +40,8 @@ Dopuna (graditelj po Leonovom pravilu iz ove odluke, ~02:28, [#253](https://gith
 ostaje −2×; samo vlastiti napisan tekst s ocjenom 1 daje 0.**
 **Posljedice.** Odgovoriti je uvijek barem jednako dobro kao ne odgovoriti, kako ADR-046 i obećava. Mijenja brojke:
 radi graditelj, spaja se na Leonovo „spoji", pa ponovni seed demo igre i smoke. Kod je [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (otvoren ~02:28),
-čeka spajanje; isti PR popravlja „Promijeni ocjenu" ([BUG-041](BUGS.md#bug-041--promijeni-ocjenu-za-ocjenu-1-krivo-za-1-učinak)). 🟨 potvrditi: opis #253 (jedan commit,
-02:27) zalijepljen tekst još broji kao napisan (0), pa uvjet za zalijepljen odgovor treba biti u PR-u prije spajanja.
+čeka spajanje; isti PR popravlja „Promijeni ocjenu" ([BUG-041](BUGS.md#bug-041--promijeni-ocjenu-za-ocjenu-1-krivo-za-1-učinak)). Pravilo za zalijepljen
+odgovor je u #253 od drugog commita (02:33, `isWrittenAnswer`, uz test).
 
 <a id="adr-051"></a>
 ## ADR-051 · Kod igre na ploči nakon pokretanja nije potreban

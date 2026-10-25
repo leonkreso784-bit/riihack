@@ -72,8 +72,8 @@ opis · uzrok · rješenje · **lekcija**.
   student gori od onoga bez odgovora, nije utvrđeno.
 - **Rješenje:** Leon (~01:25): napisan odgovor s ocjenom 1 ima množitelj 0; propušten i prazan ostaju −2×.
   Graditelj (~02:28, po tom pravilu): zalijepljen (kopiran) odgovor s ocjenom 1 također ostaje −2×; 0 daje samo
-  vlastiti napisan tekst. Kod u [#253](https://github.com/leonkreso784-bit/riihack/pull/253); 🟨 potvrditi da PR to već radi (opis #253 zalijepljen tekst broji kao
-  napisan).
+  vlastiti napisan tekst. Kod u [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (pravilo i test za zalijepljen odgovor od
+  02:33).
 - **Lekcija:** —
 
 ### BUG-029 · Plan se ne prenosi u sljedeći mjesec
