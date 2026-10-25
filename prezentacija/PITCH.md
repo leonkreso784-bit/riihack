@@ -1,3 +1,5 @@
+> **Zastarjelo (nacrt 4).** Aktualno: [PITCH-SKRIPTA-v6.md](PITCH-SKRIPTA-v6.md), deck u [deck/](deck/index.html) i [Simpolis-pitch-v6.pdf](Simpolis-pitch-v6.pdf).
+
 # Pitch: Simpolis (nacrt 4, sub 24.10. ~16:45)
 
 **TL;DR:** 5 minuta, jednostavno. Jedna studentica (Ana), jedan broj (17 %), demo od četiri koraka, jedan wow (grad se

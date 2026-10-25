@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="hr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Simpolis · pitch v6</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f8fd;--ink:#14213d;--mut:#5b6b86;--acc:#246bfd;--ok:#0f7a3c;--bad:#c42626;--warn:#a16207;--sand:#f4e8d5;--mint:#d8f0ee;--line:#dde5f2}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:#0d1530;font-family:"Plus Jakarta Sans",system-ui,sans-serif;color:var(--ink)}
+.deck{position:fixed;inset:0;display:grid;place-items:center}
+.slide{display:none;width:min(100vw,177.78vh);height:min(56.25vw,100vh);background:var(--bg);position:relative;overflow:hidden;padding:4.2% 5.5%;font-size:min(2.1vw,3.73vh)}
+.slide.on{display:flex;flex-direction:column}
+h1{font-size:2.9em;line-height:1.05;margin:0 0 .3em;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.9em;margin:0 0 .55em;font-weight:800;letter-spacing:-.01em}
+p{margin:.3em 0}.mut{color:var(--mut)}.acc{color:var(--acc)}.big{font-size:1.25em}
+.tag{display:inline-block;align-self:flex-start;font-size:.62em;font-weight:700;padding:.25em .8em;border-radius:999px;background:#e3ecff;color:var(--acc);margin-bottom:.8em;letter-spacing:.04em;text-transform:uppercase}
+.foot{position:absolute;left:5.5%;right:5.5%;bottom:3.2%;display:flex;justify-content:space-between;font-size:.55em;color:var(--mut)}
+.card{background:#fff;border-radius:.9em;padding:.8em 1em;box-shadow:0 .1em .4em rgba(20,33,61,.06)}
+.row{display:flex;gap:1.1em;align-items:stretch}.col{flex:1;min-width:0}
+.num{font-size:4.6em;font-weight:800;line-height:1;color:var(--bad);letter-spacing:-.03em}
+.logo{display:flex;align-items:center;gap:.5em;font-weight:800;font-size:1.1em}.logo img{width:1.7em;height:1.7em}.brand-big{width:5.5em;height:5.5em;position:absolute;right:6%;top:50%;transform:translateY(-50%)}
+img.shot{width:100%;border-radius:.6em;box-shadow:0 .2em .9em rgba(20,33,61,.15);display:block}
+table{border-collapse:collapse;width:100%;font-size:.6em}th,td{padding:.42em .55em;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}th{font-weight:700;color:var(--mut);font-size:.9em}
+tr.us td{background:#e9f0ff;font-weight:700}tr.us td:first-child{border-radius:.5em 0 0 .5em}tr.us td:last-child{border-radius:0 .5em .5em 0}
+.y{color:var(--ok);font-weight:800}.n{color:var(--bad);font-weight:800}.p{color:var(--warn);font-weight:800}
+.promise{display:flex;gap:.8em;align-items:flex-start;margin:.35em 0}.promise b{display:block;font-size:1.05em}.promise .n1{min-width:1.6em;height:1.6em;border-radius:50%;background:var(--acc);color:#fff;display:grid;place-items:center;font-weight:800}
+.pill{display:inline-block;font-size:.6em;font-weight:700;padding:.2em .7em;border-radius:999px;margin-left:.4em;vertical-align:.2em}.pok{background:#e2f3e8;color:var(--ok)}.pwip{background:#fbefd9;color:var(--warn)}
+.flow{display:flex;align-items:center;gap:.5em;margin-top:.6em}.flow .st{flex:1;background:#fff;border-radius:.8em;padding:.7em .8em;text-align:center;font-weight:700;font-size:.8em;box-shadow:0 .1em .4em rgba(20,33,61,.06)}.flow .st small{display:block;font-weight:400;color:var(--mut);margin-top:.25em}.flow .ar{color:var(--mut);font-weight:800}
+.ai{border:3px dashed var(--acc)}.engine{background:var(--ink)!important;color:#fff}.engine small{color:#b7c3dd!important}
+.phone{width:100%;border-radius:1.1em;border:.35em solid #14213d;box-shadow:0 .3em 1em rgba(20,33,61,.2);display:block;background:#fff}
+.ux td,.ux th{font-size:1em}.usp{display:grid;grid-template-columns:repeat(2,1fr);gap:.8em}.usp .card b{display:block;font-size:1.05em;margin-bottom:.15em}.usp .card span{color:var(--mut);font-size:.85em}
+.nav{position:fixed;bottom:10px;right:14px;color:#8fa0c4;font:12px system-ui}
+.q{font-size:1.7em;font-weight:800;line-height:1.2;margin-top:.4em}
+.browser{border-radius:.7em;overflow:hidden;box-shadow:0 .4em 1.6em rgba(20,33,61,.22);background:#fff;border:1px solid #dde5f2}.browser .bar{display:flex;gap:.3em;align-items:center;padding:.35em .6em;background:#eef2f8;font-size:.45em;color:#5b6b86}.browser .bar i{width:.8em;height:.8em;border-radius:50%;background:#cfd8e6;display:inline-block}.browser .bar span{margin-left:.8em;background:#fff;border-radius:999px;padding:.1em .9em}.browser img{display:block;width:100%}
+.phone2{position:absolute;right:-1.2em;bottom:-.4em;width:22%;border-radius:1em;border:.3em solid #14213d;box-shadow:0 .4em 1.4em rgba(20,33,61,.3);background:#fff}
+</style></head><body>
+<style>
+.huge{font-size:3.4em;font-weight:800;line-height:1.02;letter-spacing:-.03em;margin:0}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:1em;margin-top:1em}
+.three .card{text-align:center;padding:1.1em .8em}.three .card .v{font-size:2.6em;font-weight:800;line-height:1}.three .card b{display:block;margin-top:.3em}
+.lines p{font-size:1.45em;font-weight:700;margin:.35em 0}.lines p span{color:var(--mut);font-weight:400}
+.mk{position:absolute;top:4.2%;right:5.5%;width:1.8em;height:1.8em}
+.lines.tema p{text-wrap:balance}
+</style>
+<div class="deck">
+
+<section class="slide on" style="padding:0;background:#f5f8fd"><video class="clip" src="img/uvod.mp4" poster="img/uvod-poster.png" muted playsinline preload="auto" style="width:100%;height:100%;object-fit:contain;display:block"></video></section>
+
+<section class="slide">
+ <div class="logo"><img src="img/logo.svg" alt="">Simpolis</div>
+ <img class="brand-big" src="img/logo.svg" alt="Simpolis logo">
+ <div style="margin:auto 0;max-width:70%">
+  <span class="tag">Ri-Hack 4.0 · tim Pojedinci</span>
+  <h1 class="huge">Zamislite Sims,<br><span class="acc">ali za pravi posao.</span></h1>
+  <p class="big mut" style="margin-top:.6em">Vodiš hotel. Svaka odluka se osjeti.</p>
+  <p class="mut" style="margin-top:1.1em;font-size:.95em"><b style="color:var(--ink)">Sim</b>ulacija + <b style="color:var(--ink)">polis</b>, grčki grad: svi hoteli u istom gradu.</p>
+ </div>
+ <div class="foot"><span>Leon Kreso · Simon Seifert · Rino Tomić</span><span>riihack.vercel.app</span></div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Problem</span>
+ <div class="row" style="flex:1;align-items:center;gap:2em">
+  <div class="col"><p class="huge" style="font-size:2.1em">Ana studira hotelijerstvo.</p><p class="big" style="margin-top:.5em">S ljutim gostom prvi put razgovara tek na praksi.<br>Do tada joj AI piše odgovore.</p></div>
+  <div class="col card" style="text-align:center;padding:1.4em"><div class="num" style="font-size:5.5em">17 %</div><p class="big"><b>lošije na ispitu bez AI-ja</b></p><p class="mut">kad je AI davao gotove odgovore</p><p class="mut" style="font-size:.55em">Bastani i sur., PNAS 2025: gotovo 1.000 srednjoškolaca, matematika; ispit bez AI-ja, usporedba s vršnjacima koji su vježbali bez AI-ja.</p></div>
+ </div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Uživo · uđite sada</span>
+ <div class="row" style="flex:1;align-items:center;gap:2em">
+  <div style="flex:1.2"><h1 style="font-size:2.7em">Izvadite mobitele.</h1>
+   <p class="mut big" style="margin-top:.2em">Jutros ste igrali sami.<br>Sad uđite u naš grad, kao u Kahootu.</p>
+   <p style="margin-top:.9em;font-size:.7em;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.06em">Kod igre</p>
+   <div id="jkod" style="font-size:3.6em;font-weight:800;letter-spacing:.06em;color:var(--acc);line-height:1">KOD</div>
+   <p id="jurl" class="mut" style="font-weight:700;margin-top:.3em">riihack.vercel.app/ulaz</p></div>
+  <div id="jqr" style="flex:none;width:12.5em;height:12.5em;background:#fff;border-radius:.9em;padding:.5em;box-shadow:0 .3em 1.4em rgba(20,33,61,.15)"></div>
+ </div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Tokovi</span>
+ <h2 style="font-size:1.9em;margin-bottom:.25em">AI ne misli umjesto studenta.</h2>
+ <p class="mut" style="margin:0 0 .5em;font-size:.8em">Svaki broj računaju pravila igre. Otvori bilo koji rezultat i vidi zašto, korak po korak. Tokovi postoje na tri ekrana: mjesec, odgovor kroz hotel, odjeli.</p>
+ <div class="row" style="flex:1;align-items:center;justify-content:center;gap:1em">
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/tok-mjesec.png" style="height:9.6em;width:auto" alt="Kako je izračunat mjesec"><figcaption style="font-size:.6em;font-weight:700;margin-top:.5em">Kako je izračunat mjesec</figcaption></figure>
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/tok-odgovor.png" style="height:9.6em;width:auto" alt="Kako je odgovor prošao kroz hotel"><figcaption style="font-size:.6em;font-weight:700;margin-top:.5em">Kako je tvoj odgovor prošao kroz hotel</figcaption></figure>
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/tok-odjeli.png" style="height:9.6em;width:auto" alt="Kako odjeli utječu na hotel"><figcaption style="font-size:.6em;font-weight:700;margin-top:.5em">Kako odjeli utječu na hotel</figcaption></figure>
+ </div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Tema: kako potiče učenje</span>
+ <div class="lines tema" style="margin:auto 0">
+  <p>Elementi igre <span>· hotel, grad, blagajna, podij</span></p>
+  <p>Interaktivni izazovi <span>· razgovor s gostom, vlastite riječi</span></p>
+  <p>Personalizirani sadržaj <span>· profesor slaže situacije za svoj kolegij</span></p>
+  <p>Praćenje napretka <span>· napredak prema sebi, mentor pita</span></p>
+  <p style="margin-top:1.2em;font-size:1.2em" class="acc">Gotov odgovor vrijedi najviše 4 od 5, vlastite riječi do 5.<br>Bodove računaju pravila, AI samo glumi ljude.</p>
+ </div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Tehnika</span>
+ <h2 style="font-size:1.7em;margin-bottom:.4em">Napravljeno za 24 sata.</h2>
+ <div class="row" style="flex:1;align-items:center;gap:1.2em;min-height:0">
+  <div style="flex:1.7;min-width:0"><video class="clip" src="img/kako-radi.mp4" poster="img/kako-radi-poster.png" muted playsinline preload="auto" style="width:100%;border-radius:.8em;box-shadow:0 .2em .9em rgba(20,33,61,.15);display:block;background:#f5f8fd"></video></div>
+  <div style="flex:1;display:flex;flex-direction:column;gap:.5em">
+   <div class="card" style="padding:.55em .9em;line-height:1.15"><b style="font-size:1.3em;display:block">preko 550</b><span class="mut" style="font-size:.62em">commitova za 24 sata</span></div>
+   <div class="card" style="padding:.55em .9em;line-height:1.15"><b style="font-size:1.3em;display:block">preko 550</b><span class="mut" style="font-size:.62em">testova, regresija na produkciji za 1 minutu</span></div>
+   <div class="card" style="padding:.55em .9em;line-height:1.15"><b style="font-size:1.3em;display:block">37</b><span class="mut" style="font-size:.62em">API ruta pregledano; igra traži kolačić studenta ili profesora</span></div>
+   <!-- (U) "5 od 5": iz SIGURNOST.md, nije ponovno pokrenuto. Skriveno dok Leon ne potvrdi u probi 1 (09:20); nakon potvrde samo ukloniti atribut hidden. -->
+   <div class="card" hidden style="padding:.55em .9em;line-height:1.15"><b style="font-size:1.3em;display:block">5 od 5</b><span class="mut" style="font-size:.62em">pokušaja prevariti AI suca nije uspjelo</span></div>
+   <p class="mut" style="font-size:.45em;margin:.1em 0 0">Next.js, TypeScript, Neon Postgres, Claude (Haiku i Sonnet), Vercel&nbsp;· <span style="white-space:nowrap">preko 200 spojenih PR-ova</span></p>
+  </div>
+ </div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Tko plaća</span>
+ <h2 style="font-size:2.2em">Fakultet plaća licencu, tvrtka je partner.</h2>
+ <div class="three">
+  <div class="card"><b class="big">Fakultet</b><p class="mut">licenca po semestru ili godini</p></div>
+  <div class="card"><b class="big">Tvrtka partner</b><p class="mut">donosi stvarne situacije i put do prakse</p></div>
+  <div class="card"><b class="big">Svi ostali</b><p class="mut">igraju u zasebnom predvorju; studenti ostaju u kontroliranom okruženju</p></div>
+ </div>
+ <p style="margin-top:1em;font-size:.8em"><b>≈ 0,07 $</b> <span class="mut">AI po studentu za cijelu sezonu (procjena).</span></p>
+ <p class="mut" style="margin-top:.4em;font-size:.7em">Cijenu licence još nismo dogovorili ni s jednim fakultetom.</p>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag">Sljedeće · koncept</span>
+ <h2 style="font-size:1.75em;margin-bottom:.35em">Isti motor, drugi fakultet.</h2>
+ <p class="mut" style="font-size:.7em;margin:0 0 .7em">Sudac s rubrikom, pravila i Tokovi ostaju. Mijenja se samo paket sadržaja: tvrtka, odjeli, pokazatelji, situacije.</p>
+ <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:.9em;flex:1;min-height:0;align-items:start">
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/var-fmtu.jpg" style="max-height:13.6em;width:auto;margin:0 auto" alt="Hotel"><figcaption style="font-size:.6em;margin-top:.4em"><b>FMTU</b> · hotel <span class="pill pok" style="font-size:.85em;margin-left:.2em">radi danas</span></figcaption></figure>
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/var-fidit.jpg" style="max-height:13.6em;width:auto;margin:0 auto" alt="Softverska agencija"><figcaption style="font-size:.6em;margin-top:.4em"><b>FIDIT</b> · softverska agencija</figcaption></figure>
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/var-medri.jpg" style="max-height:13.6em;width:auto;margin:0 auto" alt="Poliklinika"><figcaption style="font-size:.6em;margin-top:.4em"><b>Medri</b> · poliklinika</figcaption></figure>
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/var-gradri.jpg" style="max-height:13.6em;width:auto;margin:0 auto" alt="Građevinska tvrtka"><figcaption style="font-size:.6em;margin-top:.4em"><b>Gradri</b> · građevinska tvrtka</figcaption></figure>
+  <figure style="margin:0;text-align:center"><img class="shot" src="img/var-obrt.jpg" style="max-height:13.6em;width:auto;margin:0 auto" alt="Brijačnica"><figcaption style="font-size:.6em;margin-top:.4em"><b>Strukovne škole</b> · brijačnica</figcaption></figure>
+ </div>
+ <p class="mut" style="font-size:.5em;margin:.5em 0 0">Koncept: hotel je izrađen, ostali paketi su primjer sadržaja. Imena tvrtki su izmišljena.</p>
+</section>
+
+<section class="slide">
+ <div class="row" style="flex:1">
+  <div class="col" style="display:flex;flex-direction:column;justify-content:center"><span class="tag">Tražimo</span><h2 style="font-size:2.2em">Jedan kolegij<br>i jednu hotelsku kuću<br><span class="acc">za pilot.</span></h2>
+   <div style="display:flex;align-items:center;gap:.6em;margin-top:.4em"><img src="img/qr.svg" style="width:3.6em;background:#fff;border-radius:.4em;padding:.2em" alt="QR"><b>riihack.vercel.app/ulaz</b></div>
+   <p class="mut" style="font-size:.62em;margin-top:.9em"><b style="color:var(--ink)">Sljedeće:</b> ulaz izravno iz Merlina (LTI) i prijava AAI@EduHr računom, bez kodova i lozinki.</p>
+   <p class="mut" style="font-size:.62em;margin-top:.4em"><b style="color:var(--ink)">Profesor je voditelj igre, kao u D&amp;D-u:</b> piše situacije i šalje ih odabranim studentima, odmah ili za određeni mjesec, i dodaje botove (Lako, Srednje, Teško) pa i mali razred ima tržište.</p></div>
+  <div class="col card" style="display:flex;flex-direction:column;justify-content:center;background:var(--ink);color:#fff"><div class="q" style="font-size:1.55em">Cesim su brojke.<br>ChatGPT je razgovor.<br><span style="color:#8fb3ff">Simpolis je oboje:</span><br>ono što kažeš gostu vidiš u blagajni.</div></div>
+ </div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag" style="background:#fbefd9;color:#a16207">Dodatak za pitanja</span>
+ <h2 style="font-size:1.9em">Realno, a jeftino.</h2>
+ <div class="row" style="flex:1;align-items:center;gap:1.4em">
+  <div class="col card" style="padding:1.2em"><p class="mut" style="font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Realno</p><p class="big" style="font-weight:700">Sljedeći korak, pripremljen kao prijedlog: kalibracija prema javnim izvješćima kvarnerskih hotela (Liburnia, Jadran, Valamar)</p><p class="num" style="font-size:2.4em;color:var(--ok);margin-top:.3em;white-space:nowrap">43,6 % <span class="mut" style="font-size:.4em;letter-spacing:0">ljeto</span></p><p class="num" style="font-size:2.4em;white-space:nowrap">-40 % <span class="mut" style="font-size:.4em;letter-spacing:0">zima</span></p><p class="mut" style="font-size:.6em">EBITDA Liburnije, 3. kvartal 2025. i 1. kvartal 2026.</p></div>
+  <div class="col card" style="padding:1.2em"><p class="mut" style="font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Jeftino</p><p class="num" style="font-size:3.4em;color:var(--acc)">≈ 0,07 $</p><p class="big" style="font-weight:700">AI po studentu za cijelu sezonu</p><p class="big" style="margin-top:.5em"><b>Razred od 30: 2 do 4 $</b></p></div>
+ </div>
+ <p class="mut" style="font-size:.5em;margin:.8em 0 0">Izvori: Liburnia Riviera Hoteli, kvartalna izvješća (ZSE); Jadran d.d. i Valamar, godišnja izvješća 2025.; simpolis-research/hotel-financije.md. Trošak: izmjerena potrošnja tokena i Anthropic cijene (23.10.2026.), rezerva ×2 u gornjoj granici; simpolis-research/troskovi-burn-rate.md.</p>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag" style="background:#fbefd9;color:#a16207">Rezerva za demo</span>
+ <h2 style="font-size:1.6em">Profesor odlučuje što razred vježba.</h2>
+ <div style="display:grid;place-items:center;flex:1"><img class="shot" src="img/prof-situacije.png" style="max-height:17em;width:auto;max-width:100%" alt="Profesorove situacije"></div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag" style="background:#fbefd9;color:#a16207">Rezerva za demo</span>
+ <h2 style="font-size:1.6em">Isti ljuti gost, tri odgovora.</h2>
+ <div style="display:grid;place-items:center;flex:1"><img class="shot" src="img/sudac-cards.png" style="width:100%;max-height:13.5em;object-fit:contain;background:#f5f8fd" alt="AI sudac"></div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag" style="background:#fbefd9;color:#a16207">Rezerva za demo</span>
+ <h2 style="font-size:1.6em">Svi hoteli dijele isti grad.</h2>
+ <div style="display:grid;place-items:center;flex:1"><img class="shot" src="img/desk-7-grad.jpg" style="max-height:17em;width:auto;max-width:100%" alt="Grad"></div>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag" style="background:#fbefd9;color:#a16207">Dodatak za pitanja</span>
+ <h2 style="font-size:1.6em">Što već postoji</h2>
+ <table style="font-size:.75em">
+  <tr><th></th><th>Odluke riječima</th><th>Posljedice u poslovanju</th><th>Za razred</th><th>Hrvatski</th></tr>
+  <tr><td><b>Cesim Hospitality</b> <span class="mut">(FMTU od 2012.)</span></td><td class="n">ne, tablice brojeva</td><td class="y">da</td><td class="y">da</td><td class="n">ne</td></tr>
+  <tr><td><b>CompanyGame AI</b></td><td class="p">chat uz obrasce</td><td class="y">da</td><td class="mut">nije javno opisano</td><td class="n">ne</td></tr>
+  <tr><td><b>ChatGPT kao gost</b></td><td class="y">da</td><td class="n">ne</td><td class="n">ne</td><td class="y">da</td></tr>
+  <tr class="us"><td>Simpolis</td><td class="y">da</td><td class="y">da</td><td class="y">da</td><td class="y">da</td></tr>
+ </table>
+</section>
+
+<section class="slide"><img class="mk" src="img/logo.svg" alt="">
+ <span class="tag" style="background:#fbefd9;color:#a16207">Dodatak za pitanja</span>
+ <h2 style="font-size:1.6em">Ako AI zakaže</h2>
+ <div class="lines" style="font-size:.85em">
+  <p>Igra ide dalje. <span>Bodove računaju pravila.</span></p>
+  <p>Odgovor bez suca <span>dobije srednju ocjenu.</span></p>
+  <p>Prepisivanje <span>prepoznaju pravila, ne AI.</span></p>
+  <p>Trošak <span>AI-ja 2 do 4 $ po razredu od 30 (procjena).</span></p>
+ </div>
+</section>
+
+</div>
+<script src="qrlib.js"></script>
+<div class="nav">← → · <span id="n"></span></div>
+<script>
+const s=[...document.querySelectorAll('.slide')];let i=0;const n=document.getElementById('n');
+function go(k){s[i].classList.remove('on');s[i].querySelectorAll('video').forEach(v=>{v.pause()});i=Math.max(0,Math.min(s.length-1,k));s[i].classList.add('on');s[i].querySelectorAll('video').forEach(v=>{v.currentTime=0;v.play().catch(()=>{})});n.textContent=(i+1)+' / '+s.length;history.replaceState(null,'','#'+(i+1))}
+document.addEventListener('keydown',e=>{if(['ArrowRight','PageDown',' ','Enter'].includes(e.key))go(i+1);if(['ArrowLeft','PageUp','Backspace'].includes(e.key))go(i-1);if(e.key==='f')document.documentElement.requestFullscreen?.()});
+document.addEventListener('click',e=>{go(e.clientX>innerWidth/3?i+1:i-1)});
+go(parseInt(location.hash.slice(1)||'1')-1);
+(function(){var m=(location.search.match(/[?&]kod=([A-Za-z0-9]+)/)||[])[1];var kod=m?m.toUpperCase():'';var base='https://riihack.vercel.app/ulaz';var link=kod?base+'?kod='+kod:base;
+if(typeof qrcode!=='function')return;var q=qrcode(0,'M');q.addData(link);q.make();var nn=q.getModuleCount(),b=2,sz=nn+2*b,d='';
+for(var r=0;r<nn;r++)for(var c=0;c<nn;c++)if(q.isDark(r,c))d+='M'+(c+b)+' '+(r+b)+'h1v1h-1z';
+var el=document.getElementById('jqr');if(el)el.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+sz+' '+sz+'" shape-rendering="crispEdges" style="width:100%;height:100%;display:block"><rect width="'+sz+'" height="'+sz+'" fill="#fff"/><path d="'+d+'" fill="#14213d"/></svg>';
+var jk=document.getElementById('jkod');if(jk)jk.textContent=kod||'dobit ćete ga od nas';if(!kod&&jk)jk.style.fontSize='1.6em';
+var ju=document.getElementById('jurl');if(ju)ju.textContent=link.replace('https://','');})();
+
+</script></body></html>
