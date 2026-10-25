@@ -8,7 +8,9 @@ stvori svijet i vodi krugove. Tema: *Poticanje ljudi na učenje u doba umjetne i
 
 ## Najvažnije (1 min)
 
-Žiri 3 puta (sub 14:00, sub 19:00, ned 08:00), boduje napredak od prvih 3 obećanja. Pobjeđuje aplikacija koja radi, za stvaran problem Rijeke. Pitch ~7 min ned od 10:45. Više u [RESEARCH.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/RESEARCH.md).
+**Demo uživo:** <https://riihack.vercel.app> (student ulazi kodom na `/ulaz`, profesor s računom na `/profesor`). Predaja: [PREDAJA.md](PREDAJA.md).
+
+Žiri 3 puta (sub 14:00, sub 19:00, ned 08:00), boduje napredak od prvih 3 obećanja. Pobjeđuje aplikacija koja radi, za stvaran problem Rijeke. Pitch 5 min ned od 10:45 ([prezentacija/](prezentacija/README.md)). Više u [RESEARCH.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/RESEARCH.md).
 
 ## Osnovno
 
