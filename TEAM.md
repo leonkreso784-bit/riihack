@@ -89,13 +89,13 @@ na koga čeka i što smo dogovorili.
 
 ## Leon · temelj, baza, motor, API, sadržaj, deploy (L0–L19)
 
-- **Sad radim (01:05):** sesija graditelja 5. Gotovo: #240 (#226 izvještaj, mentor i podij vide obračun grada) i #241 (#227.1 plan se prenosi, #227.3 protuponuda bez koristi → 400); oba zelena, čekaju Leonovo „spoji"
-- **Sljedeće:** nakon spajanja jedan seed demo igre KVRNDM i smoke na produkciji (uz najavu testeru); #227.6 brže „Moje igre"; prije predaje čišćenje baze (i 2 igre „Smoke …" integratora) i provjera imena
-- **Čekam od drugih:** Leon: „spoji" za #240 i #241; odluka o balansu općenitog odgovora (q=1 = kao propuštena situacija) i o stanju računa tuđih hotela na ljestvici; sigurna zaglavlja
+- **Sad radim (02:35):** sesija graditelja 5, Leon doma; sve preko agenata. Otvoreni moji PR-ovi: #241 (#227.1 plan se prenosi, #227.3 protuponuda 400), #247 (granica AI prijedloga), #249 (granica poruka atomično), #251 (sigurna zaglavlja), #252 (student vidi samo svoj račun, ADR-040), #253 (napisan odgovor s ocjenom 1 → 0, ADR-052), #255 (BUG-035, BUG-039), #256 (ARHITEKTURA §1a). Spojeno u ovoj sesiji: #240 (#226), #245 (#227.6).
+- **Sljedeće:** nakon spajanja #241/#252/#253 jedan seed demo igre KVRNDM i smoke na produkciji (uz najavu testeru); prije predaje čišćenje baze (igre „Smoke …", „QA …", testni računi) i provjera imena
+- **Čekam od drugih:** Leon: „spoji" za #241, #252, #253 u sesiji integratora
 - **Drugi čekaju od mene:** —
-- **Otvoreno:** #240, #241
+- **Otvoreno:** #241, #247, #249, #251, #252, #253, #255, #256
 - **Spojeno:** L0–L18, L8 demo, kasni ulaz (#221), balans cijene i kvalitete (#194, #213, #214), bez donje granice odgovora (#225). **Pravila:** nitko ne pokreće `npm run db:push`; nova ovisnost samo preko `scripts/lock-merge.py`; ime prijašnjeg projekta se nigdje ne piše
-- **Zadnje ažurirano:** ned 01:05
+- **Zadnje ažurirano:** ned 02:35
 
 ## Simon · AI sloj, karta grada, plan i financije, pitch, profesorove situacije (S0–S12)
 
