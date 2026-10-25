@@ -11,9 +11,11 @@ export const METRIC_ICONS: Record<MetricKey, LucideIcon> = {
   finance: Coins,
 };
 
-export function Delta({ value, className }: { value: number; className?: string }) {
-  const tone = value > 0 ? "text-up" : value < 0 ? "text-down" : "text-muted-foreground";
-  const text = value > 0 ? `▲ +${num(value)}` : value < 0 ? `▼ −${num(-value)}` : "±0"; // hr-HR: 19,3
+// neutral (podium, season end on the projector): the plain value, no green/red arrow, so a winner never looks like a loser.
+export function Delta({ value, className, neutral = false }: { value: number; className?: string; neutral?: boolean }) {
+  const tone = neutral ? "text-foreground" : value > 0 ? "text-up" : value < 0 ? "text-down" : "text-muted-foreground";
+  const arrow = neutral ? "" : value > 0 ? "▲ " : "▼ ";
+  const text = value > 0 ? `${arrow}+${num(value)}` : value < 0 ? `${arrow}−${num(-value)}` : "±0"; // hr-HR: 19,3
   return <span className={cn("font-bold whitespace-nowrap tabular-nums", tone, className)}>{text}</span>;
 }
 

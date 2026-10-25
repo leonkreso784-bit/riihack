@@ -44,9 +44,12 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
   const toggle = "flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-primary";
 
   return (
-    <div className="space-y-6">
+    // Season end on xl (1920×1080 projector): podium and leaderboard side by side, so the ranking is above the fold.
+    <div className={cn("space-y-6", finished && "xl:grid xl:grid-cols-2 xl:items-start xl:gap-6 xl:space-y-0")}>
       {finished ? (
-        <SeasonPodium rows={players} name={world.name} anonymous={anonymous} />
+        <div className="xl:sticky xl:top-22">
+          <SeasonPodium rows={players} name={world.name} anonymous={anonymous} />
+        </div>
       ) : (
         <>
           <RoundBanner world={world} syncedAt={syncedAt} size="xl" />
@@ -95,7 +98,8 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
             </div>
           }
         >
-          <Leaderboard rows={players} limit={players.length} anonymous={anonymous} />
+          {/* BUG-022: at season end (and under the month podium) nobody is red: the whole economy can drift down */}
+          <Leaderboard rows={players} limit={players.length} anonymous={anonymous} big neutral={finished || !!podium} />
         </Panel>
       </div>
 
