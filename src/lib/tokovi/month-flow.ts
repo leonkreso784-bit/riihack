@@ -205,22 +205,6 @@ export function buildMonthFlow(
       ],
     },
     {
-      id: "ugovori",
-      title: "Ugovori",
-      big: `${num(f.contractNights)} noći`,
-      small: `prihod ${eur(b.revenueContracts)} · trošak ${eur(b.costContracts)}`,
-      inputs: [
-        { label: "Ugovorena noćenja", value: num(f.contractNights) },
-        { label: "Prihod ugovora", value: eur(b.revenueContracts) },
-        { label: "Mjesečni trošak ugovora", value: eur(b.costContracts) },
-      ],
-      rule: ["Ugovorena noćenja popune se prva, prije ostalih turista.", "Prihod ugovora = noćenja × cijena ugovora. Trošak ugovora plaća se svaki mjesec."],
-      outputs: [
-        { label: "Prihod ugovora", value: eur(b.revenueContracts) },
-        { label: "Trošak ugovora", value: eur(b.costContracts) },
-      ],
-    },
-    {
       id: "privlacnost",
       title: "Koliko si zanimljiv turistima",
       big: attraction,
@@ -236,6 +220,22 @@ export function buildMonthFlow(
         ? "Igra to zove privlačnost. Bodovi sami ništa ne znače, važno je koliko ih imaš u odnosu na druge hotele. Bodove ostalih hotela ovdje ne znamo."
         : "Ovaj mjesec nisi imao gostiju s tržišta, pa se cijena ne može izračunati iz prihoda. Cijena iznad 2,5× prosječne cijene soba ne dovodi nikoga.",
       outputs: [{ label: "Tvoj faktor (bez ugleda)", value: attraction, strong: true }],
+    },
+    {
+      id: "ugovori",
+      title: "Ugovori",
+      big: `${num(f.contractNights)} noći`,
+      small: `prihod ${eur(b.revenueContracts)} · trošak ${eur(b.costContracts)}`,
+      inputs: [
+        { label: "Ugovorena noćenja", value: num(f.contractNights) },
+        { label: "Prihod ugovora", value: eur(b.revenueContracts) },
+        { label: "Mjesečni trošak ugovora", value: eur(b.costContracts) },
+      ],
+      rule: ["Ugovorena noćenja popune se prva, prije ostalih turista.", "Prihod ugovora = noćenja × cijena ugovora. Trošak ugovora plaća se svaki mjesec."],
+      outputs: [
+        { label: "Prihod ugovora", value: eur(b.revenueContracts) },
+        { label: "Trošak ugovora", value: eur(b.costContracts) },
+      ],
     },
     {
       id: "trziste",

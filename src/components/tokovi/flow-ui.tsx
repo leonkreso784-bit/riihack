@@ -25,7 +25,8 @@ export type FlowStepData = {
 
 const TONES = { plain: "surface", dark: "gloss-night", up: "border border-mint bg-mint", down: "border border-sand bg-sand" } as const;
 
-export function StepCard({ step, icon: Icon, selected, onSelect, controls, className }: { step: FlowStepData; icon: LucideIcon; selected: boolean; onSelect: () => void; controls?: string; className?: string }) {
+// n i total: redni broj koraka (značka na kartici, a čitač ekrana čuje "Korak n od total").
+export function StepCard({ step, n, total, icon: Icon, selected, onSelect, controls, className }: { step: FlowStepData; n: number; total: number; icon: LucideIcon; selected: boolean; onSelect: () => void; controls?: string; className?: string }) {
   const dark = step.tone === "dark";
   return (
     <button
@@ -34,12 +35,16 @@ export function StepCard({ step, icon: Icon, selected, onSelect, controls, class
       aria-pressed={selected}
       aria-controls={controls}
       className={cn(
-        "rounded-[var(--radius)] p-4 text-left outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary motion-safe:transition-shadow",
+        "relative rounded-[var(--radius)] p-4 text-left outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary motion-safe:transition-shadow",
         TONES[step.tone ?? "plain"],
         selected && "outline-2 outline-primary",
         className,
       )}
     >
+      <span aria-hidden className="absolute -top-3.5 left-3 grid size-7 place-items-center rounded-full border-2 border-white bg-night text-sm font-extrabold text-white tabular-nums">
+        {n}
+      </span>
+      <span className="sr-only">{`Korak ${n} od ${total}: `}</span>
       <span className="mb-2 flex items-center gap-2">
         <span className={cn("grid size-8 shrink-0 place-items-center rounded-lg", dark ? "bg-white/15" : "bg-secondary text-secondary-foreground")}>
           <Icon className="size-4" aria-hidden />
@@ -283,6 +288,7 @@ export function ZoomCanvas({ width, height, label, storageKey, scrollHint = DEFA
 export function StepFlow({ steps, icons, perRow = steps.length }: { steps: FlowStepData[]; icons: Record<string, LucideIcon>; perRow?: number }) {
   const rows = Array.from({ length: Math.ceil(steps.length / perRow) }, (_, r) => steps.slice(r * perRow, (r + 1) * perRow));
   const uid = useId();
+  const panelId = `${uid}-panel`;
   const [selected, setSelected] = useState<string>();
   const detail = useRef<HTMLElement>(null);
   const shown = steps.find((s) => s.id === selected);
@@ -323,7 +329,7 @@ export function StepFlow({ steps, icons, perRow = steps.length }: { steps: FlowS
                         <ArrowRight className={cn("size-5", selected && (selected === s.id || selected === prev.id) && "text-primary")} />
                       </span>
                     )}
-                    <StepCard step={s} icon={icons[s.id]} selected={selected === s.id} onSelect={() => toggle(s.id)} className="min-w-0 flex-1" />
+                    <StepCard step={s} n={r * perRow + i + 1} total={steps.length} icon={icons[s.id]} selected={selected === s.id} onSelect={() => toggle(s.id)} controls={selected === s.id ? panelId : undefined} className="min-w-0 flex-1" />
                   </li>
                 );
               })}
@@ -331,7 +337,7 @@ export function StepFlow({ steps, icons, perRow = steps.length }: { steps: FlowS
           </div>
         ))}
         {shown && (
-          <aside aria-label="Kako je izračunat korak" ref={detail} className="surface relative scroll-mt-4 rounded-[var(--radius)] p-6">
+          <aside id={panelId} aria-label={`Kako je izračunat korak: ${shown.title}`} ref={detail} className="surface relative scroll-mt-4 rounded-[var(--radius)] p-6">
             <button type="button" onClick={() => setSelected(undefined)} aria-label="Zatvori" className="absolute top-3 right-3 grid size-11 place-items-center rounded-full bg-muted text-muted-foreground outline-offset-2 focus-visible:outline-2 focus-visible:outline-primary">
               <X className="size-5" aria-hidden />
             </button>
@@ -351,7 +357,7 @@ export function StepFlow({ steps, icons, perRow = steps.length }: { steps: FlowS
                 <span className="h-full w-0.5 rounded-full bg-[#c3d0e6]" />
               </div>
             )}
-            <StepCard step={s} icon={icons[s.id]} selected={selected === s.id} onSelect={() => toggle(s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />
+            <StepCard step={s} n={i + 1} total={steps.length} icon={icons[s.id]} selected={selected === s.id} onSelect={() => toggle(s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />
             {selected === s.id && (
               <div id={`${uid}-${s.id}`} className="mt-2 rounded-[var(--radius)] border bg-card p-4">
                 <StepDetail step={s} />
