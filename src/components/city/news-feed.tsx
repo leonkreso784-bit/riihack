@@ -15,7 +15,8 @@ export function NewsFeed({ items }: { items: NewsItem[] }) {
           <time dateTime={n.at} className="w-12 shrink-0 pt-0.5 text-xs font-bold text-muted-foreground tabular-nums">
             {time(n.at)}
           </time>
-          <p className="min-w-0 flex-1 text-sm">{n.text}</p>
+          {/* wrap-anywhere: a hotel name of 40 letters without spaces must not widen the page (review STUDENT-07) */}
+          <p className="min-w-0 flex-1 text-sm wrap-anywhere">{n.text}</p>
         </li>
       ))}
     </ul>
