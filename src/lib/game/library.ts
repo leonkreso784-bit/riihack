@@ -34,6 +34,13 @@ export function prepareLibraryEntry(
   return { id, source: librarySource(source), template: toTemplate(id, draft) };
 }
 
+/** Naslov već postoji među situacijama igre (bez razlike u velikim/malim slovima i razmacima). Nema izvornog id-a, pa se uspoređuje naslov. */
+export function hasSituationTitle(existingTitles: string[], title: string): boolean {
+  const norm = (t: string) => t.trim().replace(/\s+/g, " ").toLowerCase();
+  const wanted = norm(title);
+  return existingTitles.some((t) => norm(t) === wanted);
+}
+
 /** Redak knjižnice kao LibraryItem; id uvijek iz retka. */
 export function toLibraryItem(row: Pick<LibrarySituationRow, "id" | "source" | "template" | "createdAt">): LibraryItem {
   const t = row.template;
@@ -77,7 +84,12 @@ export async function copyToWorld(ownerId: string, itemId: string, world: WorldR
     .where(and(eq(librarySituations.id, itemId), eq(librarySituations.ownerId, ownerId)))
     .limit(1);
   if (!row) throw new HttpError(404, "Te situacije nema u tvojoj knjižnici");
-  return createCustomSituation(world, rowToDraft(row), "custom");
+  const draft = rowToDraft(row);
+  const existing = await db.select({ template: customSituations.template }).from(customSituations).where(eq(customSituations.worldId, world.id));
+  if (hasSituationTitle(existing.map((e) => e.template.title), draft.title)) {
+    throw new HttpError(409, "Ta situacija je već u igri");
+  }
+  return createCustomSituation(world, draft, "custom");
 }
 
 /** POST /api/prof/[worldId]/situations/[templateId]/save: profesorova situacija igre u knjižnicu (izvor ostaje). */

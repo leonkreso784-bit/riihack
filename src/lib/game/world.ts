@@ -1,5 +1,5 @@
 // Igra (svijet) na poslužitelju: stvaranje, prijava profesora, pokretanje, krugovi, kraj sezone i stanja za ekrane.
-import { and, count, desc, eq, isNotNull, lte } from "drizzle-orm";
+import { and, count, desc, eq, isNotNull, lte, ne } from "drizzle-orm";
 import { db } from "@/db";
 import { companies, players, worlds } from "@/db/schema";
 import type { WorldRow } from "@/db/schema";
@@ -77,7 +77,7 @@ export async function listProfGames(ownerId: string): Promise<ProfGameSummary[]>
     .select({ world: worlds, players: count(players.id) })
     .from(worlds)
     .leftJoin(companies, eq(companies.worldId, worlds.id))
-    .leftJoin(players, eq(players.companyId, companies.id))
+    .leftJoin(players, and(eq(players.companyId, companies.id), ne(companies.kind, "bot"))) // botovi nisu studenti (ADR-044)
     .where(eq(worlds.ownerId, ownerId))
     .groupBy(worlds.id)
     .orderBy(desc(worlds.createdAt));
