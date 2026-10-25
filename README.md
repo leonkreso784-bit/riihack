@@ -43,7 +43,7 @@ Treba Node 24 i npm.
 ```bash
 npm install
 cp .env.example .env.local   # vrijednosti dobiješ od Leona, nikad u git
-npm run db:push              # shema na zajedničku Neon bazu
+npm run db:push              # samo na svojoj praznoj bazi; zajednička baza: ručni aditivni SQL (ADR-026)
 npm run dev                  # http://localhost:3000
 ```
 

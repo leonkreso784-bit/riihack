@@ -56,4 +56,4 @@ Svatko radi s više agenata usporedno. Pravila su u [planu izvedbe](docs/superpo
 
 ## Stack
 
-Next.js + TypeScript + Tailwind, Neon Postgres + Drizzle, Claude preko AI SDK-a, Vercel ([ARHITEKTURA.md](ARHITEKTURA.md) §3). Podjela po mapama je u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md). Pokretanje: `npm install`, `cp .env.example .env.local` (vrijednosti od Leona), `npm run db:push`, `npm run dev`. Lažni podaci za sučelje: `NEXT_PUBLIC_USE_MOCK=1`.
+Next.js + TypeScript + Tailwind, Neon Postgres + Drizzle, Claude preko AI SDK-a, Vercel ([ARHITEKTURA.md](ARHITEKTURA.md) §3). Podjela po mapama je u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md). Pokretanje: `npm install`, `cp .env.example .env.local` (vrijednosti od Leona), `npm run dev` (shema: `npm run db:push` samo na svojoj praznoj bazi; zajednička baza ručni aditivni SQL, ADR-026). Lažni podaci za sučelje: `NEXT_PUBLIC_USE_MOCK=1`.
