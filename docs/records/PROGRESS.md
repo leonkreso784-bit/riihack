@@ -13,7 +13,7 @@ Vremena su lokalna (CEST).
 - **Novi bugovi:** BUG-042 do 050; najteži [BUG-042](BUGS.md#bug-042--razgovor-s-likom-istodobne-6-i-7-poruka-obje-prođu)
   (istodobne 6. i 7. poruka liku obje prođu, vjerojatno rješava #249). Graditelj jednim PR-om: BUG-043, 045, 046,
   047, 049; Rino: BUG-044, 048; Simon: BUG-050.
-- **Balans (tester):** recepcija + kuhinja donose +6 gostiju mjesečno; račun 172 € → 98.280 € u 2 mjeseca; kasni
+- **Balans (tester):** recepcija + kuhinja donose +6 gostiju mjesečno; račun naraste do 98.280 € u 2 mjeseca (🟨 tester piše „172 € → 98.280 €": što je 172 €, potvrditi); kasni
   student kreće s 20.000 €, ostali su na 60–98 tisuća. Odluka graditelja (~02:40): ne mijenja se prije predaje, ide
   uz [ADR-047](DECISIONS.md#adr-047) kao kalibracija, sljedeći korak.
 - **Odluka:** Leon spava; graditelj do jutra traži spajanja u njegovo ime ([ADR-054](DECISIONS.md#adr-054); prihvaća
