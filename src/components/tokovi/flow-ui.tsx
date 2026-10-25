@@ -354,7 +354,7 @@ export function StepFlow({ steps, icons, perRow = steps.length }: { steps: FlowS
           <li key={s.id}>
             {i > 0 && (
               <div aria-hidden className="mx-auto flex h-7 w-6 justify-center">
-                <span className="h-full w-0.5 rounded-full bg-[#c3d0e6]" />
+                <span className="h-full w-0.5 rounded-full bg-[#7585a8]" />
               </div>
             )}
             <StepCard step={s} n={i + 1} total={steps.length} icon={icons[s.id]} selected={selected === s.id} onSelect={() => toggle(s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />

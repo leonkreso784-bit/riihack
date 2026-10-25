@@ -253,7 +253,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
               const y2 = vertical ? B.y - HALF_H : B.y;
               const mx = (x1 + x2) / 2;
               const d = vertical ? `M${x1} ${y1} L${x2} ${y2}` : `M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}`;
-              return <path key={`${a}-${b}`} d={d} fill="none" strokeWidth={2.5} strokeLinecap="round" className={cn("motion-safe:transition-[stroke]", lit(a, b) ? "stroke-primary" : "stroke-[#c3d0e6]")} />;
+              return <path key={`${a}-${b}`} d={d} fill="none" strokeWidth={2.5} strokeLinecap="round" className={cn("motion-safe:transition-[stroke]", lit(a, b) ? "stroke-primary" : "stroke-[#7585a8]")} />;
             })}
           </svg>
           {steps.map((s) => {
@@ -293,7 +293,7 @@ export function MonthFlow({ finance, rooms, hotelsInCity, round }: { finance: Ro
           <li key={s.id}>
             {i > 0 && (
               <div aria-hidden className="mx-auto flex h-7 w-6 justify-center">
-                <span className="h-full w-0.5 rounded-full bg-[#c3d0e6]" />
+                <span className="h-full w-0.5 rounded-full bg-[#7585a8]" />
               </div>
             )}
             <StepCard step={s} n={i + 1} total={steps.length} from={feeders(s.id)} selected={selected === s.id} onSelect={() => setSelected(selected === s.id ? undefined : s.id)} controls={selected === s.id ? `${uid}-${s.id}` : undefined} className="w-full" />

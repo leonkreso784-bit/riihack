@@ -451,7 +451,7 @@ export function DepartmentsFlow({ input }: { input: DepartmentsFlowInput }) {
                 pathLength={1}
                 strokeDasharray={1}
                 strokeDashoffset={drawn ? 0 : 1}
-                className={cn("motion-safe:transition-[stroke-dashoffset] motion-safe:duration-1000 motion-safe:ease-out motion-reduce:[stroke-dashoffset:0]", wi.tone > 0 ? "stroke-up" : wi.tone < 0 ? "stroke-down" : "stroke-[#c3d0e6]")}
+                className={cn("motion-safe:transition-[stroke-dashoffset] motion-safe:duration-1000 motion-safe:ease-out motion-reduce:[stroke-dashoffset:0]", wi.tone > 0 ? "stroke-up" : wi.tone < 0 ? "stroke-down" : "stroke-[#7585a8]")}
               />
             ))}
           </svg>
