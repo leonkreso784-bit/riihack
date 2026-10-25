@@ -18,6 +18,8 @@ const SLASH_GENDER = /\p{L}+\/\p{L}+/u; // "ispričao/la"; "€/noć" and "58/10
 const metricKeys = Object.keys(METRIC_LABELS) as MetricKey[];
 
 const noSlashGender = (text: string) => !SLASH_GENDER.test(text.replace(/\bi\/ili\b/gi, ""));
+// The model once wrote Cyrillic letters inside a Croatian word ("mog" + Cyrillic "lo", review SVJEZEOCI-03); the text here is Latin only.
+const noCyrillic = (text: string) => !/[\u0400-\u04FF]/.test(text);
 const noRawKeys = (text: string) => !new RegExp(`\\b(${metricKeys.join("|")})\\b`).test(text) && !/\bcent[ia]?\b/i.test(text);
 const wordCount = (text: string) => text.trim().split(/\s+/).filter(Boolean).length;
 
@@ -107,6 +109,7 @@ function questionOk(q: string | null): q is string {
     wordCount(q) >= MIN_QUESTION_WORDS &&
     wordCount(q) <= MAX_QUESTION_WORDS &&
     noSlashGender(q) &&
+    noCyrillic(q) &&
     !LEAKED_ID.test(q) &&
     noRawKeys(q)
   );
@@ -171,6 +174,7 @@ export function debriefProblem(text: string): string | null {
   if (n < 3 || n > 5) return `sentences:${n}`;
   if (text.length > MAX_DEBRIEF_CHARS) return `length:${text.length}`;
   if (!noSlashGender(text)) return "slash-gender";
+  if (!noCyrillic(text)) return "cyrillic";
   if (LEAKED_ID.test(text)) return "leaked-id";
   if (!noRawKeys(text)) return "raw-key";
   return null;
