@@ -53,8 +53,8 @@ općenitim odgovorima završio sezonu gore od studenta koji nije odgovorio ništ
 Dopuna (graditelj po Leonovom pravilu iz ove odluke, ~02:28, [#253](https://github.com/leonkreso784-bit/riihack/pull/253)): **zalijepljen (kopiran) odgovor s ocjenom 1
 ostaje −2×; samo vlastiti napisan tekst s ocjenom 1 daje 0.**
 **Posljedice.** Odgovoriti je uvijek barem jednako dobro kao ne odgovoriti, kako ADR-046 i obećava. Mijenja brojke:
-radi graditelj, spaja se na Leonovo „spoji", pa ponovni seed demo igre i smoke. Kod je [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (otvoren ~02:28),
-čeka spajanje; isti PR popravlja „Promijeni ocjenu" ([BUG-041](BUGS.md#bug-041--promijeni-ocjenu-za-ocjenu-1-krivo-za-1-učinak)). Pravilo za zalijepljen
+radi graditelj, pa ponovni seed demo igre i smoke. Kod je [#253](https://github.com/leonkreso784-bit/riihack/pull/253) (otvoren ~02:28).
+Spojeno #253 (02:59 CEST, po Leonovom izravnom odobrenju integratoru, [ADR-054](#adr-054)); isti PR popravlja „Promijeni ocjenu" ([BUG-041](BUGS.md#bug-041--promijeni-ocjenu-za-ocjenu-1-krivo-za-1-učinak)). Pravilo za zalijepljen
 odgovor je u #253 od drugog commita (02:33, `isWrittenAnswer`, uz test).
 
 <a id="adr-051"></a>
@@ -69,8 +69,8 @@ odgovor je u #253 od drugog commita (02:33, `isWrittenAnswer`, uz test).
 
 <a id="adr-050"></a>
 ## ADR-050 · Plan mjeseca se prenosi; protuponuda bez koristi se odbija
-**Datum:** 25.10. ~01:05 · **Status:** 🟨 prijedlog graditelja, čeka Leonovo „spoji" za
-[#241](https://github.com/leonkreso784-bit/riihack/pull/241) · **Vezano:**
+**Datum:** 25.10. ~01:05 · **Status:** ✅ spojeno [#241](https://github.com/leonkreso784-bit/riihack/pull/241), 02:58 CEST, po Leonovom izravnom odobrenju
+integratoru ~02:42 ([ADR-054](#adr-054)) · **Vezano:**
 [BUG-029](BUGS.md#bug-029--plan-se-ne-prenosi-u-sljedeći-mjesec), [ADR-033](#adr-033), issue
 [#227](https://github.com/leonkreso784-bit/riihack/issues/227) (točke 1 i 3)
 
@@ -79,7 +79,7 @@ plan iznova (Simonov audit, tester na produkciji). Protuponuda s istom ili loši
 **Odluka.** Pri otvaranju sljedećeg mjeseca plan (cijena, marketing) prenosi se kao zadani; ulaganja ne, jer su
 jednokratna. Plan koji je student već spremio za novi mjesec ostaje. Protuponuda koja nije u korist hotela je greška
 motora (400), a pregovor ostaje neiskorišten.
-**Posljedice.** Mijenja brojke, pa se spaja na Leonovo „spoji" i nakon toga ide ponovni seed demo igre i smoke.
+**Posljedice.** Mijenja brojke, pa nakon spajanja ide ponovni seed demo igre i smoke.
 
 <a id="adr-049"></a>
 ## ADR-049 · Bez minimalne duljine odgovora; prazan odgovor ocjenjuje motor
@@ -221,6 +221,7 @@ kao i odgovori i ocjene.
 privatno. Kod je [#184](https://github.com/leonkreso784-bit/riihack/pull/184) (21:51, Leonovo „spoji" jer dira ugovor).
 Leon je 25.10. ~01:25 potvrdio: ljestvica i grad ne pokazuju stanje računa tuđih hotela, samo napredak, prihod i
 dobit; svoj račun student vidi ([BUG-034](BUGS.md#bug-034--ljestvica-studentu-pokazuje-novac-tuđih-hotela)).
+Spojeno [#252](https://github.com/leonkreso784-bit/riihack/pull/252) (02:58 CEST; `LeaderboardRow.cash` neobavezan u ugovoru).
 
 <a id="adr-039"></a>
 ## ADR-039 · Redoslijed do predaje: demo i smoke prvo

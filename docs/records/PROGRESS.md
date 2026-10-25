@@ -2,9 +2,22 @@
 
 Najnovije gore. Svaki unos: što je napravljeno, što je provjereno, što slijedi. Tko što radi **sada** je na ploči u
 [TEAM.md](../../TEAM.md), ne ovdje. Spojeni PR-ovi po prekretnicama: [CHANGELOG.md](CHANGELOG.md).
-Vremena su lokalna (CEST).
+Vremena su lokalna: CEST do ned 03:00, zatim CET.
 
 ---
+
+## Ned 25.10. ~02:05 CET · plan, račun i ocjena spojeni; sat vraćen
+
+- **Promjena sata:** u 03:00 CEST sat je vraćen na 02:00 CET; od ovog unosa vremena su CET. Rokovi obilaska 3
+  (07:45) i predaje (10:15, rok 10:30) su po lokalnom satu (CET).
+- **Spojeno:** [#241](https://github.com/leonkreso784-bit/riihack/pull/241) 02:58 CEST (plan se prenosi, protuponuda bez koristi 400; BUG-029, ADR-050),
+  [#252](https://github.com/leonkreso784-bit/riihack/pull/252) 02:58 CEST (skriven tuđi račun; BUG-034, ADR-040), [#253](https://github.com/leonkreso784-bit/riihack/pull/253) 02:59 CEST (napisan
+  odgovor s ocjenom 1 vrijedi 0, „Promijeni ocjenu"; BUG-030, BUG-041, ADR-052); dokumentacija #258 02:51 i #259
+  02:58 CEST.
+- **Integrator:** sva tri zajedno 561 test, build, smoke 1–18 i 20; uz #252 student ne vidi tuđe stanje računa (smoke
+  korak 18), uz #253 testovi faktora. CI `main` zelen (`7f0d431`), produkcija READY 02:59 CEST, rute OK.
+- **Sljedeće:** ponovni seed demo igre `KVRNDM` i smoke (graditelj); tester provjerava BUG-029, 030, 034, 041 i 042;
+  graditeljev PR za projektor (BUG-051 do 054).
 
 ## Ned 25.10. ~02:54 · projektor i 1440 px
 
