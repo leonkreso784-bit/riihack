@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Tone } from "./pill";
+import { Hint } from "./hint";
 
 const VALUE_TONES: Record<Tone, string> = {
   neutral: "text-foreground",
@@ -18,6 +19,7 @@ export function StatCard({
   tone = "neutral",
   icon: Icon,
   note,
+  hint,
 }: {
   label: string;
   value: React.ReactNode;
@@ -25,6 +27,8 @@ export function StatCard({
   tone?: Tone;
   icon?: LucideIcon;
   note?: string;
+  /** Short Croatian explanation behind a "?" (BUG-072). */
+  hint?: string;
 }) {
   return (
     <div className="surface lift rounded-[var(--radius)] p-4">
@@ -35,6 +39,7 @@ export function StatCard({
           </span>
         )}
         {label}
+        {hint && <Hint label={label} text={hint} className="ml-auto" />}
       </div>
       <p className={cn("mt-3 text-[1.7rem] leading-none font-extrabold tracking-tight tabular-nums", VALUE_TONES[tone])}>
         {value}

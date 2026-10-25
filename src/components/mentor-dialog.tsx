@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { GraduationCap } from "lucide-react";
 import { api } from "@/lib/client";
 import { MAX_OWN_ANSWER_CHARS, MIN_OWN_ANSWER_CHARS } from "@/lib/rules";
 import type { RoundReportView } from "@/lib/types";
@@ -50,9 +49,6 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
 
   return (
     <div className="space-y-4">
-      <p className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-        <GraduationCap className="size-5 text-secondary-foreground" aria-hidden /> Mentor ne daje odgovore. Pita, a ti razmisliš.
-      </p>
       {/* The automatic review after the month is settled; it already ends with the question, so that is not repeated. */}
       {review && <Bubble who="Mentor">{review}</Bubble>}
       {report.mentorQuestion ? (
@@ -74,9 +70,9 @@ export function MentorDialog({ report, onAnswered }: { report: RoundReportView; 
       ) : (
         report.mentorQuestion && (
           <form onSubmit={send} className="space-y-2">
-            <label htmlFor="reflection" className="text-sm font-semibold">Tvoj odgovor mentoru</label>
+            <label htmlFor={`reflection-${report.round}`} className="text-sm font-semibold">Tvoj odgovor mentoru</label>
             <textarea
-              id="reflection"
+              id={`reflection-${report.round}`}
               rows={4}
               value={text}
               maxLength={MAX_OWN_ANSWER_CHARS}

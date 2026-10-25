@@ -1,15 +1,15 @@
 import Link from "next/link";
-import { ChevronRight, Workflow } from "lucide-react";
+import { ChevronRight, Workflow, type LucideIcon } from "lucide-react";
 
 // One look for every "Kako …" link to Simon's flow pages (Tokovi): a small card, not a bare text link.
-export function FlowLink({ href, title, hint }: { href: string; title: string; hint: string }) {
+export function FlowLink({ href, title, hint, icon: Icon = Workflow }: { href: string; title: string; hint: string; icon?: LucideIcon }) {
   return (
     <Link
       href={href}
       className="group surface flex w-full items-center gap-3 rounded-[var(--radius)] px-4 py-3 transition-shadow hover:ring-2 hover:ring-primary/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-fit sm:min-w-80"
     >
       <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-secondary text-secondary-foreground">
-        <Workflow className="size-5" aria-hidden />
+        <Icon className="size-5" aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
         <span className="block font-bold">{title}</span>

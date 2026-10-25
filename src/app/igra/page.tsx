@@ -15,6 +15,8 @@ import { CountUp } from "@/components/count-up";
 import { CloseRound } from "@/components/close-round";
 import { plural, starsLabel } from "@/lib/format";
 import { BackLink } from "@/components/back-link";
+import { Hint } from "@/components/hint";
+import { HINTS, METRIC_HINTS } from "@/lib/hints";
 
 // Hotel dashboard (R0, R4): metrics, money, this month's situations, ranking, and "Završi mjesec".
 export default function GamePage() {
@@ -48,7 +50,9 @@ export default function GamePage() {
           </p>
         </div>
         <div className="hidden text-right sm:block">
-          <p className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Napredak</p>
+          <p className="flex items-center justify-end gap-1.5 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+            Napredak <Hint label="Napredak" text={HINTS.progress} />
+          </p>
           <Delta value={company.progress} className="text-2xl" />
         </div>
       </header>
@@ -58,47 +62,50 @@ export default function GamePage() {
       </div>
 
       <div className="anim-rise [--i:1]">
-        <CloseRound world={world} company={company} situations={data.situations} reports={data.reports} />
+        <CloseRound world={world} company={company} situations={data.situations} />
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start">
-        <Panel className="anim-rise [--i:2]" title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0–100 · od početka</span>}>
-          {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k, i) => (
-            <MetricBar key={k} order={i} icon={METRIC_ICONS[k]} label={METRIC_LABELS[k]} start={company.startMetrics[k]} now={company.metrics[k]} />
-          ))}
-        </Panel>
+      {/* BUG-073: two independent columns from xl, so a short left column leaves no hole; below xl `contents` + order
+          interleaves them into one column with the money and situations right after the metrics. */}
+      <div className="flex flex-col gap-5 xl:grid xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start">
+        <div className="contents xl:flex xl:flex-col xl:gap-5">
+          <Panel className="anim-rise order-1 [--i:2]" title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0–100 · od početka</span>}>
+            {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k, i) => (
+              <MetricBar key={k} order={i} icon={METRIC_ICONS[k]} label={METRIC_LABELS[k]} hint={METRIC_HINTS[k]} start={company.startMetrics[k]} now={company.metrics[k]} />
+            ))}
+          </Panel>
+          <Panel className="anim-rise order-4 [--i:5]" title="Ljestvica razreda" action={<span className="text-xs text-muted-foreground">po napretku</span>}>
+            <Leaderboard rows={data.leaderboard} youId={company.id} />
+          </Panel>
+        </div>
 
-        <div className="space-y-5">
-          <div className="anim-rise grid grid-cols-2 gap-3 [--i:3]">
-            <StatCard icon={Wallet} label="Stanje računa" value={<CountUp value={company.cash} />} unit="€" tone="accent" note={world.status === "finished" ? "konačno stanje, sezona je gotova" : "obračun kad profesor zatvori mjesec"} />
-            <StatCard icon={BedDouble} label="Popunjenost" value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note={settled} />
-            <StatCard icon={ChartColumn} label="Dobit" value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note={settled} />
-            <StatCard icon={Moon} label="Noćenja" value={june ? <CountUp value={june.nights + june.contractNights} /> : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />
+        <div className="contents xl:flex xl:flex-col xl:gap-5">
+          <div className="anim-rise order-2 grid grid-cols-2 gap-3 [--i:3]">
+            <StatCard icon={Wallet} label="Stanje računa" hint={HINTS.cash} value={<CountUp value={company.cash} />} unit="€" tone="accent" note={world.status === "finished" ? "konačno stanje, sezona je gotova" : "obračun kad profesor zatvori mjesec"} />
+            <StatCard icon={BedDouble} label="Popunjenost" hint={HINTS.occupancy} value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note={settled} />
+            <StatCard icon={ChartColumn} label="Dobit" hint={HINTS.profit} value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note={settled} />
+            <StatCard icon={Moon} label="Noćenja" hint={HINTS.nights} value={june ? <CountUp value={june.nights + june.contractNights} /> : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />
           </div>
 
-          <Panel className="anim-rise [--i:4]" title="Situacije ovog kruga" pad="list">
+          <Panel className="anim-rise order-3 [--i:4]" title="Situacije ovog kruga" pad="list">
             <ul className="divide-y">
               {data.situations.map((s) => (
                 <SituationRow key={s.id} s={s} />
               ))}
             </ul>
           </Panel>
-        </div>
-      </div>
 
-      <div className="grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-[1.15fr_1fr] lg:items-start">
-        <Panel className="anim-rise [--i:5]" title="Ljestvica razreda" action={<span className="text-xs text-muted-foreground">po napretku</span>}>
-          <Leaderboard rows={data.leaderboard} youId={company.id} />
-        </Panel>
-        <Panel className="anim-rise [--i:6]" title="Ponude grada" tone="sand">
-          <div className="flex items-start gap-3 text-sm">
-            <Store className="mt-0.5 size-5 shrink-0" aria-hidden />
-            <p>
-              {offered} {plural(offered, "nova ponuda", "nove ponude", "novih ponuda")} i {accepted}{" "}
-              {plural(accepted, "aktivan ugovor", "aktivna ugovora", "aktivnih ugovora")}.
-            </p>
-          </div>
-        </Panel>
+          <Panel className="anim-rise order-5 [--i:6]" title="Ponude grada" tone="sand">
+            <Link href="/igra/posta" className="-m-2 flex items-start gap-3 rounded-xl p-2 text-sm transition-colors hover:bg-white/50 focus-visible:outline-2 focus-visible:outline-primary">
+              <Store className="mt-0.5 size-5 shrink-0" aria-hidden />
+              <p className="flex-1">
+                {offered} {plural(offered, "nova ponuda", "nove ponude", "novih ponuda")} i {accepted}{" "}
+                {plural(accepted, "aktivan ugovor", "aktivna ugovora", "aktivnih ugovora")}.
+              </p>
+              <ChevronRight className="size-4 shrink-0 self-center text-muted-foreground" aria-hidden />
+            </Link>
+          </Panel>
+        </div>
       </div>
     </div>
   );
@@ -120,7 +127,7 @@ function SituationRow({ s }: { s: SituationView }) {
             {s.character.name} · {s.character.role}
           </span>
         </span>
-        {s.source && s.source !== "bank" && <Pill tone="warn">od profesora</Pill>}
+        {s.source && s.source !== "bank" && <Pill tone="warn" className="hidden sm:inline-flex">od profesora</Pill>}
         {s.answer ? <Pill tone="up">{s.answer.quality} / 5</Pill> : <Pill tone="accent">Otvorena</Pill>}
         <ChevronRight className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       </Link>
