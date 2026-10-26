@@ -12,11 +12,13 @@ export function VerdictCard({
   options,
   character,
   expired,
+  rubricLength,
 }: {
   answer: AnswerView;
   options: { id: string; text: string }[];
   character: { name: string; role: string };
   expired?: boolean; // situation state "expired": the deadline passed without an answer
+  rubricLength?: number; // SituationView.rubric.length (arrives after answering); with it "3 od 4" explains why 3 of 4 is not 3 / 5
 }) {
   const option = options.find((o) => o.id === answer.optionId);
   const met = answer.verdict?.criteriaMet.length;
@@ -42,7 +44,7 @@ export function VerdictCard({
         <div className="space-y-2">
           {met !== undefined && (
             <p className="flex items-center gap-2 font-bold">
-              <CheckCircle2 className="size-5 text-up" aria-hidden /> Ispunjeno kriterija: {met}
+              <CheckCircle2 className="size-5 text-up" aria-hidden /> {rubricLength ? `Ispunjeno kriterija: ${met} od ${rubricLength}` : `Ispunjeno kriterija: ${met}`}
             </p>
           )}
           <p className="text-muted-foreground">{answer.verdict.reasoning}</p>

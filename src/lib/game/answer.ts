@@ -82,7 +82,7 @@ export async function gradeAnswer(
   const { template } = input;
   if (parsed.kind === "click") {
     const option = template.options.find((o) => o.id === parsed.optionId)!;
-    return { mode: "click", optionId: option.id, text: null, pastedChars: 0, verdict: null, quality: qualityFromClick(option), copied: false };
+    return { mode: "click", optionId: option.id, text: null, pastedChars: 0, verdict: null, quality: qualityFromClick(option, template.rubric.length), copied: false };
   }
   const { text, pastedChars } = parsed;
   if (text === "") {
@@ -93,7 +93,7 @@ export async function gradeAnswer(
   const kind = classifyOwnAnswer(text, pastedChars, template.options);
   if (kind.kind === "copiedOption") {
     const option = template.options.find((o) => o.id === kind.optionId)!;
-    return { mode: "click", optionId: option.id, text, pastedChars, verdict: null, quality: qualityFromClick(option), copied: true };
+    return { mode: "click", optionId: option.id, text, pastedChars, verdict: null, quality: qualityFromClick(option, template.rubric.length), copied: true };
   }
   const verdict = await judgeFn({ template, hotelName: input.hotelName, text, transcript: input.transcript });
   const capped = kind.kind === "pasted";

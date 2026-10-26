@@ -87,7 +87,7 @@ function Situation({ s }: { s: SituationView }) {
       {answer ? (
         <div className="grid gap-5 lg:grid-cols-2">
           <div className="space-y-2">
-            <VerdictCard answer={answer} options={s.options} character={s.character} expired={s.state === "expired"} />
+            <VerdictCard answer={answer} options={s.options} character={s.character} expired={s.state === "expired"} rubricLength={s.rubric?.length} />
             {answer.mode !== "none" && (
               <FlowLink href={`/igra/situacija/${s.id}/tok`} title="Kako je tvoj odgovor prošao kroz hotel" hint="Od odgovora do ocjene i pokazatelja" />
             )}

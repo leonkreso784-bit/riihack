@@ -108,6 +108,44 @@ describe("gradeAnswer", () => {
     expect(g).toMatchObject({ mode: "own", quality: 4, copied: true });
   });
 
+  // #266 točka 5: rubrika od 3 ili 4 kriterija smije dati 5 za potpun vlastiti odgovor; ponuđeni i zalijepljeni ostaju na 4.
+  describe.each([3, 4])("rubrika od %i kriterija", (n) => {
+    const ids = ["c1", "c2", "c3", "c4", "c5"].slice(0, n);
+    const short: SituationTemplate = {
+      ...TEMPLATE,
+      rubric: TEMPLATE.rubric.slice(0, n),
+      options: [
+        { id: "o1", text: "Ispričajte se i obećajte da će majstor doći sutra ujutro.", criteria: ["c1"] },
+        { id: "o2", text: "Odmah ponudite drugi apartman s pogledom na more i besplatan doručak.", criteria: ids },
+      ],
+    };
+    const shortInput = { ...input, template: short };
+
+    it("potpun vlastiti odgovor: 5", async () => {
+      const g = await gradeAnswer({ kind: "text", text: OWN, pastedChars: 0 }, shortInput, async () => verdict(ids));
+      expect(g).toMatchObject({ mode: "own", quality: 5, copied: false });
+    });
+    it("zalijepljen potpun odgovor: najviše 4", async () => {
+      const g = await gradeAnswer({ kind: "text", text: OWN, pastedChars: OWN.length }, shortInput, async () => verdict(ids));
+      expect(g).toMatchObject({ mode: "own", quality: CLICK_QUALITY_CAP, copied: true });
+    });
+    it("ponuđeni odgovor koji pokriva cijelu rubriku: najviše 4; jedan kriterij razmjerno manje", async () => {
+      const full = await gradeAnswer({ kind: "click", optionId: "o2" }, shortInput, vi.fn());
+      expect(full).toMatchObject({ mode: "click", quality: CLICK_QUALITY_CAP, verdict: null });
+      const one = await gradeAnswer({ kind: "click", optionId: "o1" }, shortInput, vi.fn());
+      expect(one.quality).toBe(n === 3 ? 2 : 1);
+    });
+    it("prepisana opcija vrijedi kao klik, najviše 4", async () => {
+      const copied = "odmah ponudite drugi apartman s pogledom na more i besplatan doručak!";
+      const g = await gradeAnswer({ kind: "text", text: copied, pastedChars: 0 }, shortInput, vi.fn());
+      expect(g).toMatchObject({ mode: "click", optionId: "o2", quality: CLICK_QUALITY_CAP, copied: true });
+    });
+    it("djelomičan vlastiti odgovor ne dobiva 5", async () => {
+      const g = await gradeAnswer({ kind: "text", text: OWN, pastedChars: 0 }, shortInput, async () => verdict(ids.slice(0, n - 1)));
+      expect(g.quality).toBe(n === 3 ? 3 : 4);
+    });
+  });
+
   it("AI ne odgovori (null) → rezerva 3", async () => {
     const g = await gradeAnswer({ kind: "text", text: OWN, pastedChars: 0 }, input, async () => null);
     expect(g).toMatchObject({ mode: "own", quality: FALLBACK_QUALITY, verdict: null });

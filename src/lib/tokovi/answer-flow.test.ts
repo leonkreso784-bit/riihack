@@ -3,7 +3,7 @@ import { applyRound } from "@/lib/engine/round";
 import { qualityFromVerdict } from "@/lib/engine/quality";
 import { DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { AnswerView, Metrics, Quality, RubricCriterion, SituationView } from "@/lib/types";
-import { buildAnswerFlow, flowInputFromSituation, metricDelta, NO_EFFECTS_TEXT, CLOSE_NOTE, type AnswerFlowInput } from "./answer-flow";
+import { buildAnswerFlow, flowInputFromSituation, LEGACY_QUALITY_NOTE, metricDelta, NO_EFFECTS_TEXT, CLOSE_NOTE, type AnswerFlowInput } from "./answer-flow";
 
 const RUBRIC = [
   { id: "c1", text: "Zove hitnu pomoć" },
@@ -33,6 +33,79 @@ describe("buildAnswerFlow", () => {
       expect(q.big).toBe(`${qualityFromVerdict(met, ENGINE_RUBRIC)} / 5`);
     }
     expect(own([]).quality).toBe(1);
+  });
+
+  it("rubrika od 4 kriterija: kvaliteta je udio preračunat na 1 do 5, pa objašnjenje to kaže i potpun odgovor daje 5", () => {
+    const rubric4 = RUBRIC.slice(0, 4);
+    const engine4 = ENGINE_RUBRIC.slice(0, 4);
+    const met = ["c1", "c2", "c3", "c4"];
+    const answer = own(met, { quality: qualityFromVerdict(met, engine4) });
+    const q = step(flow({ answer, rubric: rubric4, effects: EFFECTS }), "kvaliteta");
+    expect(q.big).toBe("5 / 5");
+    expect(q.calc).toBe("4 od 4 kriterija → kvaliteta 5");
+    expect(q.rule.join(" ")).toMatch(/udio ispunjenih kriterija/);
+    const half = own(["c1", "c2"], { quality: qualityFromVerdict(["c1", "c2"], engine4) });
+    expect(step(flow({ answer: half, rubric: rubric4 }), "kvaliteta").calc).toBe("2 od 4 kriterija → kvaliteta 3");
+  });
+
+  it("rubrika od 5 kriterija zadržava staro objašnjenje (broj kriterija)", () => {
+    const q = step(flow({ answer: own(["c1", "c2", "c3"]), rubric: RUBRIC }), "kvaliteta");
+    expect(q.rule.join(" ")).toMatch(/broj ispunjenih kriterija/);
+    expect(q.calc).toBe("3 kriterija → kvaliteta 3");
+  });
+
+  it("klik na rubrici od 3 ili 4 kriterija: objašnjenje kaže udio i strop 4 od 5, bez računice", () => {
+    for (const n of [3, 4]) {
+      const click: AnswerView = { mode: "click", optionId: "o2", quality: 4, copied: false };
+      const q = step(flow({ answer: click, rubric: RUBRIC.slice(0, n) }), "kvaliteta");
+      const rule = q.rule.join(" ");
+      expect(rule).toMatch(/udio kriterija/);
+      expect(rule).toMatch(/najviše 4 od 5/);
+      expect(rule).not.toMatch(/najviše 5/);
+      expect(q.calc).toBeUndefined();
+    }
+  });
+
+  it("klik na rubrici od 5 kriterija zadržava staro objašnjenje (broj kriterija) i strop 4 od 5", () => {
+    const click: AnswerView = { mode: "click", optionId: "o2", quality: 4, copied: false };
+    const q = step(flow({ answer: click, rubric: RUBRIC }), "kvaliteta");
+    const rule = q.rule.join(" ");
+    expect(rule).toMatch(/broj kriterija/);
+    expect(rule).not.toMatch(/udio/);
+    expect(rule).toMatch(/najviše 4 od 5/);
+    expect(q.calc).toBeUndefined();
+  });
+
+  it("ulaz kvalitete pokazuje ispunjeno od ukupno kriterija kad se rubrika zna", () => {
+    const rubric4 = RUBRIC.slice(0, 4);
+    const met = ["c1", "c2", "c3"];
+    const withRubric = step(flow({ answer: own(met, { quality: qualityFromVerdict(met, ENGINE_RUBRIC.slice(0, 4)) }), rubric: rubric4 }), "kvaliteta");
+    expect(withRubric.inputs).toContainEqual({ label: "Ispunjeno kriterija", value: "3 od 4" });
+    const without = step(flow({ answer: own(met) }), "kvaliteta");
+    expect(without.inputs).toContainEqual({ label: "Ispunjeno kriterija", value: "3" });
+  });
+
+  it("odgovor ocijenjen starim pravilom (4 od 4 spremljeno kao 4) ne tvrdi da puna rubrika daje 5", () => {
+    const rubric4 = RUBRIC.slice(0, 4);
+    const old = own(["c1", "c2", "c3", "c4"], { quality: 4 }); // prije promjene: kvaliteta = broj kriterija
+    const q = step(flow({ answer: old, rubric: rubric4 }), "kvaliteta");
+    expect(q.big).toBe("4 / 5");
+    expect(q.rule.join(" ")).not.toMatch(/kad su ispunjeni svi/);
+    expect(q.rule.join(" ")).toMatch(/broj ispunjenih kriterija/);
+    expect(q.calc).toBe("4 kriterija → kvaliteta 4");
+    expect(q.note).toBe(LEGACY_QUALITY_NOTE);
+  });
+
+  it("odgovor ocijenjen novim pravilom, zalijepljen ili s profesorovom ocjenom, nije stari", () => {
+    const rubric4 = RUBRIC.slice(0, 4);
+    const all = ["c1", "c2", "c3", "c4"];
+    const pasted = step(flow({ answer: own(all, { quality: 4, copied: true }), rubric: rubric4 }), "kvaliteta"); // strop 4 za zalijepljeno
+    expect(pasted.note).toBeUndefined();
+    expect(pasted.rule.join(" ")).toMatch(/udio ispunjenih kriterija/);
+    const fresh = step(flow({ answer: own(all, { quality: 5 }), rubric: rubric4 }), "kvaliteta");
+    expect(fresh.note).toBeUndefined();
+    const overridden = step(flow({ answer: own(all, { quality: 2, overridden: true }), rubric: rubric4 }), "kvaliteta");
+    expect(overridden.note).toBe("Profesor je promijenio ocjenu.");
   });
 
   it("promjena pokazatelja je jednaka onoj iz applyRound", () => {
