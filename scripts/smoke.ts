@@ -348,6 +348,16 @@ async function main() {
     expectStatus(all, 200);
     expect((all.data as MailMessage[]).some((m) => m.id === sent.id), "profesor ne vidi poruku");
     expectStatus(await treci.call("GET", `/api/prof/${world.worldId}/mail`), 403);
+    // hotel kojeg nema u ovoj igri: 404 (ne 500), i nema upisa
+    expectStatus(await ana.call("POST", "/api/me/mail", { toCompanyId: "00000000-0000-4000-8000-000000000000", subject: "Nema", body: "Pozdrav" }), 404);
+    expectStatus(await ana.call("POST", "/api/me/mail", { toCompanyId: "nije-uuid", subject: "Nema", body: "Pozdrav" }), 404);
+    // granica po minuti (MAIL_PER_MINUTE = 5): prva poruka je već poslana, još četiri prolaze, šesta je 429
+    for (let i = 2; i <= 5; i++) {
+      expectStatus(await ana.call("POST", "/api/me/mail", { toCompanyId: to, subject: `${subject} ${i}`, body: `Poruka ${i}` }), 200);
+    }
+    const sixth = await ana.call("POST", "/api/me/mail", { toCompanyId: to, subject: `${subject} 6`, body: "Šesta poruka" });
+    expectStatus(sixth, 429);
+    expect(/minuti/.test(sixth.data?.error ?? ""), `poruka: ${JSON.stringify(sixth.data)}`);
   });
 
   await cityStep(18, "javni profil i ljestvica drugog hotela: bez novca; profesor vidi sve (ADR-040)", [2], async () => {

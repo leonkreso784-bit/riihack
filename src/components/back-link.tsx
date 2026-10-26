@@ -16,14 +16,14 @@ function Inner({ label }: { label: string }) {
   );
 }
 
-export function BackLink({ label, href, onClick, className }: { label: string; href?: string; onClick?: () => void; className?: string }) {
+export function BackLink({ label, href, onClick, className, disabled }: { label: string; href?: string; onClick?: () => void; className?: string; disabled?: boolean }) {
   const cls = className ? `${BACK} ${className}` : BACK;
   return href ? (
     <Link href={href} className={cls}>
       <Inner label={label} />
     </Link>
   ) : (
-    <button type="button" onClick={onClick} className={cls}>
+    <button type="button" onClick={onClick} disabled={disabled} className={`${cls} disabled:opacity-60`}>
       <Inner label={label} />
     </button>
   );
