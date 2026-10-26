@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { BedDouble, ChartColumn, ChevronRight, MessageCircle, Moon, Store, Wallet } from "lucide-react";
-import { api, usePoll } from "@/lib/client";
+import { api, blocksPage, usePoll } from "@/lib/client";
 import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
 import type { MetricKey, SituationView } from "@/lib/types";
 import { Panel } from "@/components/panel";
@@ -13,6 +13,7 @@ import { RoundBanner } from "@/components/round-banner";
 import { Leaderboard } from "@/components/leaderboard";
 import { CountUp } from "@/components/count-up";
 import { CloseRound } from "@/components/close-round";
+import { PollNotice } from "@/components/poll-notice";
 import { plural, starsLabel } from "@/lib/format";
 import { BackLink } from "@/components/back-link";
 import { Hint } from "@/components/hint";
@@ -20,8 +21,8 @@ import { HINTS, METRIC_HINTS } from "@/lib/hints";
 
 // Hotel dashboard (R0, R4): metrics, money, this month's situations, ranking, and "Završi mjesec".
 export default function GamePage() {
-  const { data, error, syncedAt } = usePoll(api.me);
-  if (error)
+  const { data, error, syncedAt, refresh } = usePoll(api.me);
+  if (error && blocksPage(error, data))
     return (
       <div className="space-y-4">
         <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>
@@ -38,12 +39,13 @@ export default function GamePage() {
   const initials = company.hotelName.split(" ").map((w) => w[0]).join("").slice(0, 2);
   return (
     <div className="space-y-5">
+      <PollNotice error={error} className="mt-4 md:mt-0" />
       <header className="anim-rise flex items-center gap-4 pt-4 md:pt-0">
         <span aria-hidden className="gloss-night grid size-14 shrink-0 place-items-center rounded-2xl text-xl font-extrabold">
           {initials}
         </span>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-3xl font-extrabold tracking-tight">{company.hotelName}</h1>
+          <h1 className="line-clamp-2 text-3xl font-extrabold tracking-tight">{company.hotelName}</h1>
           <p className="text-sm text-muted-foreground">
             {company.place} · <span aria-label={starsLabel(company.stars)}>{"★".repeat(company.stars)}</span> ·{" "}
             {company.roomsCount} {plural(company.roomsCount, "soba", "sobe", "soba")} · vodi {company.playerName}
@@ -62,14 +64,15 @@ export default function GamePage() {
       </div>
 
       <div className="anim-rise [--i:1]">
-        <CloseRound world={world} company={company} situations={data.situations} />
+        <CloseRound world={world} company={company} situations={data.situations} onStale={refresh} />
       </div>
 
       {/* BUG-073: two independent columns from xl, so a short left column leaves no hole; below xl `contents` + order
-          interleaves them into one column with the money and situations right after the metrics. */}
+          interleaves them into one column. On a phone the situations come first (#266, 7: they used to start 1.3
+          screens below the metrics), then metrics and money; from xl the order inside each column is unchanged. */}
       <div className="flex flex-col gap-5 xl:grid xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start">
         <div className="contents xl:flex xl:flex-col xl:gap-5">
-          <Panel className="anim-rise order-1 [--i:2]" title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0–100 · od početka</span>}>
+          <Panel className="anim-rise order-2 xl:order-1 [--i:2]" title="Pokazatelji" action={<span className="text-xs text-muted-foreground">0 do 100 · od početka</span>}>
             {(Object.keys(METRIC_LABELS) as MetricKey[]).map((k, i) => (
               <MetricBar key={k} order={i} icon={METRIC_ICONS[k]} label={METRIC_LABELS[k]} hint={METRIC_HINTS[k]} start={company.startMetrics[k]} now={company.metrics[k]} />
             ))}
@@ -80,14 +83,14 @@ export default function GamePage() {
         </div>
 
         <div className="contents xl:flex xl:flex-col xl:gap-5">
-          <div className="anim-rise order-2 grid grid-cols-2 gap-3 [--i:3]">
+          <div className="anim-rise order-3 grid grid-cols-2 gap-3 xl:order-1 [--i:3]">
             <StatCard icon={Wallet} label="Stanje računa" hint={HINTS.cash} value={<CountUp value={company.cash} />} unit="€" tone="accent" note={world.status === "finished" ? "konačno stanje, sezona je gotova" : "obračun kad profesor zatvori mjesec"} />
             <StatCard icon={BedDouble} label="Popunjenost" hint={HINTS.occupancy} value={june ? <CountUp value={june.occupancyPct} /> : "—"} unit="%" note={settled} />
             <StatCard icon={ChartColumn} label="Dobit" hint={HINTS.profit} value={june ? <CountUp value={june.profit} /> : "—"} unit="€" tone={june && june.profit < 0 ? "down" : "up"} note={settled} />
             <StatCard icon={Moon} label="Noćenja" hint={HINTS.nights} value={june ? <CountUp value={june.nights + june.contractNights} /> : "—"} unit="" note={june ? `${june.marketSharePct} % turista grada` : undefined} />
           </div>
 
-          <Panel className="anim-rise order-3 [--i:4]" title="Situacije ovog kruga" pad="list">
+          <Panel className="anim-rise order-1 xl:order-2 [--i:4]" title="Situacije ovog kruga" pad="list">
             <ul className="divide-y">
               {data.situations.map((s) => (
                 <SituationRow key={s.id} s={s} />
@@ -122,7 +125,7 @@ function SituationRow({ s }: { s: SituationView }) {
           <MessageCircle className="size-5" aria-hidden />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate font-bold">{s.title}</span>
+          <span className="line-clamp-2 font-bold">{s.title}</span>
           <span className="block truncate text-xs text-muted-foreground">
             {s.character.name} · {s.character.role}
           </span>

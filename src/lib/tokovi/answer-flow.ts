@@ -14,6 +14,8 @@ export type AnswerFlowInput = {
   effects?: FlowEffects;
   title: string;
   character: { name: string; role: string };
+  // The situation's month is already closed for this company, so its effects are already in the metrics (#239).
+  closed?: boolean;
 };
 
 export type AnswerStepId = "odgovor" | "sudac" | "kvaliteta" | "ucinak" | "odjeli";
@@ -35,12 +37,13 @@ export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava krite
 export const NO_EFFECTS_TEXT = "Učinak na pokazatelje vidiš u izvještaju mjeseca.";
 export const LEGACY_QUALITY_NOTE = "Ovaj je odgovor ocijenjen prije promjene računanja kvalitete na kraćim rubrikama, pa kvaliteta slijedi tadašnje pravilo: broj ispunjenih kriterija.";
 export const CLOSE_NOTE = "Promjena se upisuje tek kad se mjesec zatvori (ti ga zatvoriš ili ga zatvori profesor ili rok). Do tada pokazatelji ostaju isti.";
+export const APPLIED_NOTE = "Već je upisano u pokazatelj: zatvorio si mjesec, pa se ovo ne zbraja ponovno.";
 
 // Rubrika i učinak stižu uz situaciju kad ih ugovor ima (zahtjev #178). Do tada su prazni i tok to kaže.
-export function flowInputFromSituation(s: SituationView): AnswerFlowInput | null {
+export function flowInputFromSituation(s: SituationView, closed = false): AnswerFlowInput | null {
   if (!s.answer) return null;
   const extra = s as SituationView & { rubric?: FlowRubric; effects?: FlowEffects };
-  return { answer: s.answer, rubric: extra.rubric, effects: extra.effects, title: s.title, character: s.character };
+  return { answer: s.answer, rubric: extra.rubric, effects: extra.effects, title: s.title, character: s.character, closed };
 }
 
 const MINUS = "−";
@@ -199,7 +202,7 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
     rule: ["Promjena pokazatelja = množitelj kvalitete × učinak situacije (1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3). Napisan svoj tekst (ne zalijepljen) s kvalitetom 1 vrijedi 0.", "Pokazatelj ostaje između 0 i 100."],
     calc: rows.map((r) => `${METRIC_LABELS[r.k]}: ${signed(qualityFactor(q, written))} × ${r.e} = ${signed(r.d)}`).join("  ·  "),
     outputs: rows.map((r) => ({ label: METRIC_LABELS[r.k], value: signed(r.d), strong: true })),
-    note: CLOSE_NOTE,
+    note: input.closed ? APPLIED_NOTE : CLOSE_NOTE,
   });
 
   // 5. Odjeli

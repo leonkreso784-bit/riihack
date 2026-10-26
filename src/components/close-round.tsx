@@ -17,14 +17,17 @@ const ofSituations = (n: number) => `${n} ${n % 10 >= 1 && n % 10 <= 4 && !(n % 
 // R4: the student says "I'm done with this month". The professor sees it on the board and opens the next month for
 // everyone (the city settles all hotels together), so after closing the student waits. Closing opens the month's
 // report; the mentor's question and all past conversations live on /igra/mentor (BUG-070).
-export function CloseRound(props: { world: WorldView; company: CompanyView; situations: SituationView[] }) {
+// `onStale` pulls fresh data right away when the server refuses the click as stale (409), so the card shows the real month.
+export function CloseRound(props: { world: WorldView; company: CompanyView; situations: SituationView[]; onStale?: () => void }) {
   return <Status {...props} />;
 }
 
-function Status({ world, company, situations }: { world: WorldView; company: CompanyView; situations: SituationView[] }) {
+function Status({ world, company, situations, onStale }: { world: WorldView; company: CompanyView; situations: SituationView[]; onStale?: () => void }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // The month is stored with the message: after a stale click the poll switches the card to the new month, and an error
+  // about the old month must not stay on it (it would tell the student to refresh when the refresh already happened).
+  const [error, setError] = useState<{ round: number; message: string } | null>(null);
   const sending = useRef(false);
 
   if (world.status === "finished")
@@ -56,10 +59,13 @@ function Status({ world, company, situations }: { world: WorldView; company: Com
     setBusy(true);
     setError(null);
     try {
-      await api.closeRound();
-      router.push(`/igra/izvjestaj/${world.round}`);
+      // Send the month on the screen: if the professor has opened the next one in the meantime the server answers 409
+      // instead of closing the new month with every situation unanswered (#266, item 1).
+      const report = await api.closeRound(world.round);
+      router.push(`/igra/izvjestaj/${report.round}`);
     } catch (err) {
-      setError((err as Error).message);
+      setError({ round: world.round, message: (err as Error).message });
+      if ((err as { status?: number }).status === 409) onStale?.();
     } finally {
       sending.current = false;
       setBusy(false);
@@ -87,7 +93,7 @@ function Status({ world, company, situations }: { world: WorldView; company: Com
           {busy ? <span className="inline-flex items-center gap-2"><Dots /> Zatvaram</span> : `Završi ${month(world.round)}`}
         </button>
       </div>
-      {error && <FormError key={error}>{error}</FormError>}
+      {error && error.round === world.round && <FormError key={error.message}>{error.message}</FormError>}
     </div>
   );
 }

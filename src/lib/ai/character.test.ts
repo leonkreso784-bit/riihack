@@ -54,7 +54,7 @@ describe("streamCharacterReply", () => {
     expect(sent).toContain("poruka 5 od najviše 6");
     expect(sent).toContain("predzadnja");
     expect(sent).toContain("Hotel Test, soba 204");
-    expect(sent).toContain("Gost u sobi 204 hotela Hotel Test.");
+    expect(sent).toContain("Gost u sobi 204 hotela Test."); // ispred riječi "hotela" ime bez početnog "Hotel" (#266, 10)
 
     const last = okModel("Hm.");
     await streamCharacterReply({ ...input, messageNo: 6, maxMessages: 6 }, last).text();

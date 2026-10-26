@@ -3,10 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { BedDouble, MapPin } from "lucide-react";
-import { api, usePoll } from "@/lib/client";
+import { api, blocksPage, usePoll } from "@/lib/client";
 import { plural, starsLabel } from "@/lib/format";
 import { BackLink } from "@/components/back-link";
 import { Loading } from "@/components/loading";
+import { PollNotice } from "@/components/poll-notice";
 
 // R1: after joining, wait here until the professor starts the game, then go to /igra.
 export default function WaitingRoom() {
@@ -18,7 +19,7 @@ export default function WaitingRoom() {
     if (started) router.replace("/igra");
   }, [started, router]);
 
-  if (error)
+  if (error && blocksPage(error, data))
     return (
       <div className="mx-auto max-w-md space-y-4 pt-12 text-center">
         <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>
@@ -31,6 +32,7 @@ export default function WaitingRoom() {
   const c = data.company;
   return (
     <div className="mx-auto max-w-md pt-4 text-center md:pt-12">
+      <PollNotice error={error} className="mb-6" />
       <p className="text-sm font-semibold text-muted-foreground">Dobio si hotel</p>
       <h1 className="anim-pop mt-1 text-4xl font-extrabold tracking-tight">{c.hotelName}</h1>
 

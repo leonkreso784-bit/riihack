@@ -266,6 +266,10 @@ kodom (`sp_prof`, uz provjeru prema hashu u `worlds`) ili po Better Auth sesiji 
 
 Napomene
 - `GET /api/me/staff` vraća popis osoblja iz predloška hotela, bez baze (ADR-012).
+- `GET /api/me` uz `situations` (tekući mjesec) vraća i `pastSituations`: vlastite situacije prošlih mjeseci (polje izostaje kad ih nema), pa
+  stranice odgovora i toka rade i nakon zatvaranja mjeseca. Rubrika i učinci stižu tek uz odgovor.
+- `POST /api/me/close-round` prima neobavezno tijelo `{ round }`: mjesec koji student ima na ekranu. Ako to više nije tekući mjesec, odgovor je 409
+  „Mjesec se u međuvremenu promijenio. Osvježi stranicu." i ništa se ne zatvara. Prazno tijelo radi kao prije (skripte, stari klijenti).
 - Ponude ugovora stvara poslužitelj; ne postoji ruta za njihovo stvaranje.
 - Plan mjeseca: cijena 30 do 400 €, marketing 0 do 2.000 €, ulaganje 0 do 3.000 € po odjelu.
 - Bez API rute za brisanje: nema `DELETE`, `PATCH` ni `PUT` handlera.

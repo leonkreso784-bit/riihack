@@ -71,7 +71,7 @@ export type CounterOfferRequest = { pricePerNight?: number; monthlyCost?: number
 export type NegotiationOutcome = "accepted" | "countered" | "rejected";
 export type NegotiationResult = { outcome: NegotiationOutcome; contract: ContractView; reply: MailMessage };
 export type DepartmentView = { department: StaffDepartment; label: string; metric: MetricKey; metricValue: number; staffCount: number; alerts: string[]; investment: number }; // stanje odjela: pokazatelj, ljudi, upozorenja (hrvatski), ulaganje iz plana tekućeg mjeseca
-export type MeResponse = { world: WorldView; company: CompanyView; situations: SituationView[]; leaderboard: LeaderboardRow[]; reports: RoundReportView[]; plan: RoundPlan; contracts: ContractView[]; finances: RoundFinance[]; city: CityView; news: NewsItem[]; departments?: DepartmentView[]; mail?: MailMessage[]; unreadMail?: number }; // mail = zadnjih 30, najnovije prvo
+export type MeResponse = { world: WorldView; company: CompanyView; situations: SituationView[]; leaderboard: LeaderboardRow[]; reports: RoundReportView[]; plan: RoundPlan; contracts: ContractView[]; finances: RoundFinance[]; city: CityView; news: NewsItem[]; departments?: DepartmentView[]; mail?: MailMessage[]; unreadMail?: number; pastSituations?: SituationView[] }; // mail = zadnjih 30, najnovije prvo; situations = tekući mjesec, pastSituations = vlastite situacije prošlih mjeseci (#239, bez polja kad ih nema)
 export type ProfStateResponse = { world: WorldView & { joinCode: string; maxPlayers: number }; players: LeaderboardRow[]; city: CityView; news: NewsItem[]; bank?: SituationSummary[]; dispatches?: DispatchView[]; autoDraw?: boolean }; // bank = banka + profesorove situacije; autoDraw = slučajno izvlačenje po krugu
 export type ProfGameSummary = { worldId: string; name: string; joinCode: string; status: WorldStatus; round: number; maxRounds: number; players: number; createdAt: string }; // igre prijavljenog profesora (L16)
 export type LibraryItem = SituationSummary & { createdAt: string }; // situacija u profesorovoj knjižnici (na računu, ne u igri), L17
@@ -85,6 +85,7 @@ export type CreateWorldResponse = { worldId: string; joinCode: string; profCode:
 export type ProfLoginRequest = { profCode: string };
 export type ProfLoginResponse = { worldId: string };
 export type OpenRoundRequest = { deadlineMinutes?: number; fromRound?: number }; // fromRound = mjesec koji profesor zatvara; ako je već zatvoren, vrati se stanje (dvoklik)
+export type CloseRoundRequest = { round?: number }; // round = mjesec koji student zatvara (onaj na njegovu ekranu); ako više nije tekući, 409 umjesto zatvaranja sljedećeg
 export type JoinRequest = { joinCode: string; name: string; hotelName: string };
 export type JoinResponse = { companyId: string; hotelName: string; place: string; stars: number };
 export type AnswerRequest = { optionId: string } | { text: string; pastedChars: number };

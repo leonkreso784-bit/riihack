@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChartColumn, Percent, Trophy, Wallet } from "lucide-react";
-import { api, usePoll } from "@/lib/client";
+import { api, blocksPage, usePoll } from "@/lib/client";
 import { eur, num, plural } from "@/lib/format";
 import { breakdown, growthPct, type Breakdown } from "@/lib/finance-view";
 import { isInsolvent, rankByProgress } from "@/lib/ranking";
@@ -14,6 +14,7 @@ import { StatCard } from "@/components/stat-card";
 import { cn } from "@/lib/utils";
 import { FlowLink } from "@/components/flow-link";
 import { Hint } from "@/components/hint";
+import { PollNotice } from "@/components/poll-notice";
 import { HINTS } from "@/lib/hints";
 
 type Month = { f: RoundFinance; b: Breakdown; growth: number | null };
@@ -57,7 +58,7 @@ const TABS = [
 export default function FinancePage() {
   const { data, error } = usePoll(api.me);
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("overview");
-  if (error) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
+  if (error && blocksPage(error, data)) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
   if (!data) return <div className="h-80 animate-pulse rounded-[var(--radius)] bg-muted" aria-busy="true" aria-label="Učitavam" />;
 
   const { company, finances, leaderboard, contracts } = data;
@@ -71,6 +72,7 @@ export default function FinancePage() {
 
   return (
     <div className="space-y-5 pt-4 md:pt-0">
+      <PollNotice error={error} />
       <PageHeader title="Financije" subtitle="Novac hotela i obračun po mjesecima." />
 
       {/* BUG-071: the overview and the month-by-month statement are two tabs instead of one long page. */}

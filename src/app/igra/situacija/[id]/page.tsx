@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { BedDouble, ListChecks, MessageCircle, PenLine, ArrowRight } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
+import { findSituation } from "@/lib/find-situation";
 import { CLICK_QUALITY_CAP } from "@/lib/rules";
 import { cn } from "@/lib/utils";
 import type { AnswerView, ChatTurn, SituationView } from "@/lib/types";
@@ -29,7 +30,7 @@ export default function SituationPage() {
   if (error && !data) return <FormError>{error.message}</FormError>;
   if (!data) return <Loading />;
 
-  const s = data.situations.find((x) => x.id === id);
+  const s = findSituation(data, id);
   if (!s)
     return (
       <div className="space-y-4 pt-4 md:pt-0">
@@ -45,9 +46,13 @@ type Mode = "chat" | "own" | "options";
 
 function Situation({ s }: { s: SituationView }) {
   const [turns, setTurns] = useState<ChatTurn[]>(s.transcript);
-  const [answer, setAnswer] = useState<AnswerView | undefined>(s.answer);
+  const [sent, setSent] = useState<AnswerView | undefined>(s.answer);
   const [mode, setMode] = useState<Mode>("chat");
   const firstName = s.character.name.split(" ")[0];
+  // Odgovor s poslužitelja (poll) ima prednost pred onim iz lokalnog stanja: ako je odgovor spremljen dok je ova
+  // stranica bila otvorena (osvježavanje dok sudac radi, druga kartica), stanje situacije je već "answered", a lokalno
+  // stanje još prazno, pa bi stranica pisala "nisi odgovorio".
+  const answer = s.answer ?? sent;
   const open = s.state === "open" && !answer;
 
   const modes: { key: Mode; icon: typeof PenLine; title: string; text: string }[] = [
@@ -144,8 +149,8 @@ function Situation({ s }: { s: SituationView }) {
                 </button>
               </div>
             )}
-            {mode === "own" && <OwnAnswerForm situationId={s.id} firstName={firstName} onAnswered={setAnswer} />}
-            {mode === "options" && <OptionsForm situationId={s.id} firstName={firstName} options={s.options} onAnswered={setAnswer} />}
+            {mode === "own" && <OwnAnswerForm situationId={s.id} firstName={firstName} onAnswered={setSent} />}
+            {mode === "options" && <OptionsForm situationId={s.id} firstName={firstName} options={s.options} onAnswered={setSent} />}
           </Panel>
         </>
       )}
