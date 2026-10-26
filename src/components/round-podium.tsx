@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { Trophy, X } from "lucide-react";
 import type { LeaderboardRow } from "@/lib/types";
 import { num } from "@/lib/format";
+import { isInsolvent, rankBy } from "@/lib/ranking";
 import { cn } from "@/lib/utils";
 import { Delta } from "./metric-bar";
 import { MEDALS } from "./leaderboard";
@@ -17,7 +18,8 @@ const SLOTS = [
 ];
 
 type By = "roundGain" | "progress";
-export const podiumTop = (rows: LeaderboardRow[], by: By = "roundGain") => [...rows].sort((a, b) => b[by] - a[by]).slice(0, 3);
+// Insolvent hotels never take a podium place above a solvent one (ADR-059, ranking.ts).
+export const podiumTop = (rows: LeaderboardRow[], by: By = "roundGain") => rankBy(rows, (r) => r[by]).slice(0, 3);
 
 // R10: "Skok mjeseca" for the projector: top 3 by roundGain, full screen for 5 s, then back to the board.
 export function RoundPodium({ rows, month, anonymous, onClose }: { rows: LeaderboardRow[]; month: string; anonymous: boolean; onClose: () => void }) {
@@ -46,13 +48,17 @@ export function RoundPodium({ rows, month, anonymous, onClose }: { rows: Leaderb
   );
 }
 
+// The season subtitle names the ranking rule only when it can matter, i.e. when some hotel is in blockade (ADR-059).
+export const seasonSubtitle = (name: string, rows: LeaderboardRow[]) =>
+  `${name} · pobjednici po napretku${rows.some(isInsolvent) ? ", hoteli u blokadi idu iza ostalih" : ""}`;
+
 // BUG-022: the season's final podium stays on the board (the last thing the jury sees), ranked by total progress.
 // The whole economy can drift down, so the score is shown plainly, not as a red "loss" next to the winner.
 // Compact: on a 1920×1080 projector it sits next to the leaderboard (prof-board, xl).
 export function SeasonPodium({ rows, name, anonymous }: { rows: LeaderboardRow[]; name: string; anonymous: boolean }) {
   return (
     <section aria-label="Pobjednici sezone" className="gloss anim-shine relative overflow-hidden rounded-[var(--radius)] px-4 py-6 text-white md:px-8 md:py-8">
-      <Podium rows={rows} by="progress" anonymous={anonymous} title="Sezona je gotova" subtitle={`${name} · pobjednici po napretku`} compact />
+      <Podium rows={rows} by="progress" anonymous={anonymous} title="Sezona je gotova" subtitle={seasonSubtitle(name, rows)} compact />
     </section>
   );
 }

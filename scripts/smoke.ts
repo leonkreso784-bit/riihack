@@ -5,7 +5,7 @@ import type {
   AnswerView, ContractView, CreateWorldResponse, JoinResponse, MailMessage, MeResponse, NegotiationResult,
   ProfGameSummary, ProfStateResponse, RoundReportView, SituationView,
 } from "../src/lib/types";
-import { INVEST_EFFECT_DIVISOR, INVEST_MAX, NEGOTIATE_COUNTER_PCT, NEGOTIATE_OK_PCT } from "../src/lib/rules";
+import { INVEST_MAX, NEGOTIATE_COUNTER_PCT, NEGOTIATE_OK_PCT } from "../src/lib/rules";
 
 const BASE_URL = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 const CITY = process.env.SMOKE_CITY === "1";
@@ -249,8 +249,8 @@ async function main() {
     const base = { price: me.plan.price, marketing: 0 };
     expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { reception: INVEST_MAX + 1 } }), 400);
     expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { reception: -1 } }), 400);
-    expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { bazen: INVEST_EFFECT_DIVISOR } }), 400);
-    const investments = { reception: INVEST_EFFECT_DIVISOR, kitchen: 2 * INVEST_EFFECT_DIVISOR };
+    expectStatus(await lea.call("POST", "/api/me/plan", { ...base, investments: { bazen: INVEST_MAX } }), 400);
+    const investments = { reception: INVEST_MAX, kitchen: Math.floor(INVEST_MAX / 2) }; // oba u rasponu (ADR-059: tek puni ulog donosi bod)
     const sum = investments.reception + investments.kitchen;
     const saved = await lea.call("POST", "/api/me/plan", { ...base, investments });
     expectStatus(saved, 200);
@@ -266,7 +266,7 @@ async function main() {
     const b = f.breakdown;
     expect(b, "nema raspodjele troškova (breakdown)");
     expect(b.costInvestments === sum, `breakdown.costInvestments ${b.costInvestments}, očekivano ${sum}`);
-    const costs = b.costStaff + b.costRooms + b.costMarketing + b.costContracts + b.costInvestments;
+    const costs = b.costStaff + b.costRooms + b.costMarketing + b.costContracts + b.costInvestments + (b.costVat ?? 0) + (b.costCommission ?? 0) + (b.costMaterials ?? 0);
     expect(f.costs === costs, `costs ${f.costs} ≠ zbroj stavki ${costs}`);
   });
 

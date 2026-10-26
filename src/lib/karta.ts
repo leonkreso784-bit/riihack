@@ -2,6 +2,7 @@
 // Za tuđe hotele prikazujemo samo ono što API stvarno daje (ljestvica, grad, predložak hotela).
 // Cijena, ocjene, popunjenost i financije tuđih hotela dolaze tek kad stigne Leonov javni profil (L14): `detail`.
 import { HOTELS } from "@/content";
+import { isInsolvent, rankByProgress } from "./ranking";
 import type {
   CompanyPublicView, BusinessKind, HotelTemplate, StaffDepartment, CityBusiness, LeaderboardRow, MeResponse, Metrics } from "./types";
 
@@ -214,7 +215,7 @@ export const fmtDec = (n: number) => n.toFixed(1).replace(".", ",");
 export const word = (s: number) => (s >= 9 ? "Izvanredno" : s >= 8 ? "Vrlo dobro" : s >= 7 ? "Dobro" : "Prihvatljivo");
 export const reviewsCount = (nights: number) => Math.round(nights * 0.15);
 export const profit = (m: { revenue: number; costs: number }) => m.revenue - m.costs;
-export const inBlockade = (cash: number) => cash < 0;
+export const inBlockade = (cash: number) => isInsolvent({ cash }); // jedna definicija "račun ispod nule" (ranking.ts)
 
 // Rast prihoda zadnjeg mjeseca prema prošlom, u %; null kad nema dva zatvorena mjeseca.
 export function growth(months: { revenue: number }[]): number | null {
@@ -248,8 +249,8 @@ export function publicBonitet(months: PublicMonth[]): Bonitet {
 
 // Rang po napretku na ljestvici (1 = najbolji). Isti napredak zadržava redoslijed s poslužitelja (novac, pa redoslijed
 // ulaska, views.ts toLeaderboard), pa kartica i ljestvica uvijek kažu isti rang (pregled GAP1-05). Sort je stabilan.
-export function rank(id: string, rows: { id: string; progress: number; hotelName: string }[]): number {
-  const sorted = [...rows].sort((a, b) => b.progress - a.progress);
+export function rank(id: string, rows: { id: string; progress: number; hotelName: string; cash?: number; insolvent?: boolean }[]): number {
+  const sorted = rankByProgress(rows); // hotel u blokadi ne stoji iznad hotela s novcem (ADR-059)
   return sorted.findIndex((p) => p.id === id) + 1;
 }
 
@@ -276,7 +277,7 @@ export function profilesFromMe(me: MeResponse, publicViews: Record<string, Compa
         const b = bizById.get(l.businessId);
         return b ? [{ name: b.name, kind: b.kind }] : [];
       });
-  const rows = me.city.hotels.map((h) => ({ id: h.companyId, progress: h.progress, hotelName: h.hotelName }));
+  const rows = me.city.hotels.map((h) => ({ id: h.companyId, progress: h.progress, hotelName: h.hotelName, cash: h.cash, insolvent: h.insolvent }));
   const rankOf = (id: string) => rank(id, rows);
 
   me.city.hotels.forEach((row, i) => {

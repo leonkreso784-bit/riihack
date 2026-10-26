@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { CITY, CONTRACTS, HOTELS, SITUATIONS, getBusiness, getContract, getHotel, getSituation } from "@/content";
 import { validateDraft } from "@/lib/engine/draft";
-import { METRIC_TOTAL, STAFF_COST_PER_ROOM, START_CASH } from "@/lib/rules";
+import { METRIC_TOTAL, START_CASH, STAFF_COST_PER_ROOM_BY_STARS } from "@/lib/rules";
 import type { RoomType, StaffDepartment } from "@/lib/types";
 
 const ROOM_TYPES: RoomType[] = ["single", "double", "suite", "family"];
@@ -28,7 +28,7 @@ describe("banka hotela", () => {
       });
 
       it("ekonomija: staffCost i startCash iz pravila", () => {
-        expect(hotel.staffCost).toBe(hotel.rooms.length * STAFF_COST_PER_ROOM);
+        expect(hotel.staffCost).toBe(hotel.rooms.length * (STAFF_COST_PER_ROOM_BY_STARS[hotel.stars] ?? NaN));
         expect(hotel.startCash).toBe(START_CASH);
       });
 

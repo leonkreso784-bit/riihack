@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { isInsolvent } from "./ranking";
 import type { CompanyPublicView, MeResponse } from "./types";
-import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, LOTS, allocateLots, bonitet, businessLots, cityTier, districtOfPlace, fmtDec, growth, hotelHeight, profilesFromMe, publicBonitet, rank, reviewsCount, score, simId, terrainCell, visibleBusinesses, word } from "./karta";
+import { BIZ_EXTRA_LOTS, BIZ_LOTS, DISTRICTS, GRID, HOTEL_H_MAX, HOTEL_H_MIN, HOTEL_HALF, TERRAIN_ROWS, LOTS, allocateLots, bonitet, businessLots, cityTier, districtOfPlace, fmtDec, growth, hotelHeight, inBlockade, profilesFromMe, publicBonitet, rank, reviewsCount, score, simId, terrainCell, visibleBusinesses, word } from "./karta";
 
 describe("ocjena gostiju", () => {
   it("score = 5 + reviews / 20", () => {
@@ -53,6 +54,21 @@ describe("rast i rang", () => {
     expect(rank("b", rows)).toBe(1);
     expect(rank("a", rows)).toBe(2);
     expect(rank("c", rows)).toBe(3);
+  });
+  it("blokada i insolventnost su ista definicija: račun ispod nule", () => {
+    for (const cash of [-1, 0, 1, -51600, 20000]) expect(inBlockade(cash)).toBe(isInsolvent({ cash }));
+    expect(inBlockade(-1)).toBe(true);
+    expect(inBlockade(0)).toBe(false);
+  });
+  it("hotel u blokadi ne stoji iznad solventnog, ni uz veći napredak (ADR-059)", () => {
+    const rows = [
+      { id: "bankrot", progress: 71.7, hotelName: "Zora", insolvent: true },
+      { id: "solventan", progress: 35.7, hotelName: "Maris" },
+      { id: "vlastiti", progress: 10, hotelName: "Adria", cash: -5 },
+    ];
+    expect(rank("solventan", rows)).toBe(1);
+    expect(rank("bankrot", rows)).toBe(2);
+    expect(rank("vlastiti", rows)).toBe(3);
   });
 });
 

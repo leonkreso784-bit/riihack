@@ -35,7 +35,7 @@ Milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6) 
 | --- | --- | --- |
 | [#266](https://github.com/leonkreso784-bit/riihack/issues/266) | Nalazi noćnog pregleda koji nisu popravljeni (zastarjeli „Završi mjesec", rubrike s 3 kriterija, sitnice) | Ispravnost svakog razreda |
 | [#239](https://github.com/leonkreso784-bit/riihack/issues/239) | Tok odgovora za zatvorene mjesece | Student može pregledati svoje prošle odgovore |
-| [#198](https://github.com/leonkreso784-bit/riihack/issues/198) | Balans ekonomije: ulaganja, klik, marketing, stečaj i kalibracija troškova (grana `simon/kalibracija`, [ADR-047](records/DECISIONS.md#adr-047)) | Troškovi još nisu usklađeni sa stvarnim kvarnerskim hotelima |
+| [#198](https://github.com/leonkreso784-bit/riihack/issues/198) | Balans ekonomije: kalibracija, ulaganja, klik, marketing, stečaj i elastičnost su u [ADR-059](records/DECISIONS.md#adr-059); ostaje rezerva suca na ocjenu 3 kad AI padne | Pošteno ocjenjivanje kad AI nije dostupan |
 | [#110](https://github.com/leonkreso784-bit/riihack/issues/110) | Rubrike situacija: spojeni kriteriji čine suca prestrogim | Pošteno ocjenjivanje |
 | [#299](https://github.com/leonkreso784-bit/riihack/issues/299) | Duljina sezone po igri (sada fiksno 4 mjeseca) | Kolegij traje semestar, 13 do 15 tjedana |
 | [#297](https://github.com/leonkreso784-bit/riihack/issues/297) | Brisanje igre i podataka studenata | Fakultet je voditelj obrade podataka |

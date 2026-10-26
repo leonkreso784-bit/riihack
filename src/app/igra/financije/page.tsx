@@ -5,7 +5,8 @@ import { ChartColumn, Percent, Trophy, Wallet } from "lucide-react";
 import { api, usePoll } from "@/lib/client";
 import { eur, num, plural } from "@/lib/format";
 import { breakdown, growthPct, type Breakdown } from "@/lib/finance-view";
-import { ROUND_LABELS } from "@/lib/rules";
+import { isInsolvent, rankByProgress } from "@/lib/ranking";
+import { ROUND_LABELS, VAT_PCT } from "@/lib/rules";
 import type { RoundFinance } from "@/lib/types";
 import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
@@ -31,6 +32,9 @@ const LINES: (Line | string)[] = [
   { label: "Marketing", hint: HINTS.costMarketing, value: (m) => eur(m.b.costs.marketing), indent: true },
   { label: "Ugovori s tvrtkama", hint: HINTS.costContracts, value: (m) => eur(m.b.costs.contracts), indent: true },
   { label: "Ulaganja u odjele", hint: HINTS.costInvestments, value: (m) => eur(m.b.costs.investments), indent: true },
+  { label: `PDV (${VAT_PCT} %)`, hint: HINTS.costVat, value: (m) => eur(m.b.costs.vat), indent: true },
+  { label: "Provizija portala", hint: HINTS.costCommission, value: (m) => eur(m.b.costs.commission), indent: true },
+  { label: "Materijal i potrošni", hint: HINTS.costMaterials, value: (m) => eur(m.b.costs.materials), indent: true },
   { label: "Ukupni rashodi", hint: HINTS.costs, value: (m) => eur(m.f.costs), strong: true },
   "Rezultat",
   { label: "Dobit / gubitak", hint: HINTS.result, value: (m) => signed(m.f.profit), strong: true, tone: (m) => (m.f.profit < 0 ? "text-down" : "text-up") },
@@ -61,8 +65,8 @@ export default function FinancePage() {
   const months: Month[] = finances.map((f, i) => ({ f, b: breakdown(f, company, contracts), growth: growthPct(finances[i - 1]?.revenue, f.revenue) }));
   const totalProfit = finances.reduce((s, f) => s + f.profit, 0);
   const avgOccupancy = finances.length ? Math.round(finances.reduce((s, f) => s + f.occupancyPct, 0) / finances.length) : null;
-  // Tuđi novac se ne vidi (ADR-040), pa rang ide po javnom napretku, kao na ljestvici.
-  const rank = [...leaderboard].sort((a, b) => b.progress - a.progress).findIndex((r) => r.companyId === company.id) + 1;
+  // Tuđi novac se ne vidi (ADR-040), pa rang ide po javnom napretku, kao na ljestvici (hotel u blokadi ne stoji iznad hotela s novcem, ADR-059).
+  const rank = rankByProgress(leaderboard).findIndex((r) => r.companyId === company.id) + 1;
   const maxCash = Math.max(company.startCash, ...finances.map((f) => f.cashAfter));
 
   return (
@@ -94,7 +98,7 @@ export default function FinancePage() {
               <StatCard icon={Wallet} label="Stanje računa" hint={HINTS.cash} value={num(company.cash)} unit="€" tone="accent" note={`${diff >= 0 ? "+" : "−"}${eur(Math.abs(diff))} od početnih ${eur(company.startCash)}`} />
               <StatCard icon={ChartColumn} label="Dobit sezone" hint={HINTS.seasonProfit} value={num(totalProfit)} unit="€" tone={totalProfit < 0 ? "down" : "up"} note={`${finances.length} ${plural(finances.length, "obračunat mjesec", "obračunata mjeseca", "obračunatih mjeseci")}`} />
               <StatCard icon={Percent} label="Prosječna popunjenost" hint={HINTS.avgOccupancy} value={avgOccupancy ?? "—"} unit={avgOccupancy === null ? "" : "%"} />
-              <StatCard icon={Trophy} label="Rang po napretku" hint={HINTS.rank} value={rank ? `${rank}.` : "—"} unit="" note={`od ${leaderboard.length} hotela`} />
+              <StatCard icon={Trophy} label="Rang po napretku" hint={HINTS.rank} value={rank ? `${rank}.` : "—"} unit="" note={isInsolvent({ cash: company.cash }) ? "račun u blokadi: iza svih hotela s novcem" : `od ${leaderboard.length} hotela`} />
             </div>
 
             {months.length === 0 ? (

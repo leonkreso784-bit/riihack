@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { RubricCriterion, SituationOption, Verdict } from "@/lib/types";
+import { CLICK_QUALITY_CAP } from "@/lib/rules";
 import { qualityForOwn, qualityFromClick, qualityFromVerdict, scaleToQuality } from "./quality";
 
 const rubricOf = (n: number) => Array.from({ length: n }, (_, i) => ({ id: `c${i + 1}`, text: `c${i + 1}`, skill: "empathy" })) as RubricCriterion[];
@@ -33,18 +34,21 @@ describe("scaleToQuality", () => {
 });
 
 describe("qualityFromClick", () => {
-  it("5 kriterija -> 4 (strop)", () => expect(qualityFromClick(opt(["a", "b", "c", "d", "e"]), 5)).toBe(4));
+  // ADR-059 (#198): najdulja opcija u banci pokriva 4 kriterija, pa je klik prije svugdje davao 4. Sad je strop 3.
+  it("strop klika je 3 (ADR-059)", () => expect(CLICK_QUALITY_CAP).toBe(3));
+  it("5 kriterija -> strop", () => expect(qualityFromClick(opt(["a", "b", "c", "d", "e"]), 5)).toBe(CLICK_QUALITY_CAP));
+  it("4 kriterija od 5 (najbolja opcija u banci) -> strop, ne 4", () => expect(qualityFromClick(opt(["a", "b", "c", "d"]), 5)).toBe(3));
   it("0 kriterija -> 1", () => expect(qualityFromClick(opt([]), 5)).toBe(1));
   it("2 kriterija -> 2", () => expect(qualityFromClick(opt(["a", "b"]), 5)).toBe(2));
-  it("rubrika od 5: 3 -> 3, 4 -> 4 kao prije", () => {
+  it("rubrika od 5: 3 -> 3, 4 -> 3 (strop)", () => {
     expect(qualityFromClick(opt(["a", "b", "c"]), 5)).toBe(3);
-    expect(qualityFromClick(opt(["a", "b", "c", "d"]), 5)).toBe(4);
+    expect(qualityFromClick(opt(["a", "b", "c", "d"]), 5)).toBe(CLICK_QUALITY_CAP);
   });
-  it("rubrika od 3: razmjerno, a ponuđeni odgovor i dalje ne prelazi 4", () => {
-    expect([[], ["a"], ["a", "b"], ["a", "b", "c"]].map((c) => qualityFromClick(opt(c), 3))).toEqual([1, 2, 3, 4]);
+  it("rubrika od 3: razmjerno, a ponuđeni odgovor ne prelazi strop klika", () => {
+    expect([[], ["a"], ["a", "b"], ["a", "b", "c"]].map((c) => qualityFromClick(opt(c), 3))).toEqual([1, 2, 3, CLICK_QUALITY_CAP]);
   });
-  it("rubrika od 4: razmjerno, a ponuđeni odgovor i dalje ne prelazi 4", () => {
-    expect([[], ["a"], ["a", "b"], ["a", "b", "c"], ["a", "b", "c", "d"]].map((c) => qualityFromClick(opt(c), 4))).toEqual([1, 1, 3, 4, 4]);
+  it("rubrika od 4: razmjerno, a ponuđeni odgovor ne prelazi strop klika", () => {
+    expect([[], ["a"], ["a", "b"], ["a", "b", "c"], ["a", "b", "c", "d"]].map((c) => qualityFromClick(opt(c), 4))).toEqual([1, 1, 3, CLICK_QUALITY_CAP, CLICK_QUALITY_CAP]);
   });
   it("ponovljena oznaka kriterija ne broji se dvaput", () => expect(qualityFromClick(opt(["a", "a", "a"]), 3)).toBe(2));
 });
@@ -71,19 +75,19 @@ describe("qualityFromVerdict", () => {
 
 describe("qualityForOwn", () => {
   it("null -> FALLBACK_QUALITY (3)", () => expect(qualityForOwn(null, rubric5, false)).toBe(3));
-  it("5 kriterija s capped -> 4", () =>
-    expect(qualityForOwn(verdict(["c1", "c2", "c3", "c4", "c5"]), rubric5, true)).toBe(4));
+  it("5 kriterija s capped -> strop klika", () =>
+    expect(qualityForOwn(verdict(["c1", "c2", "c3", "c4", "c5"]), rubric5, true)).toBe(CLICK_QUALITY_CAP));
   it("5 kriterija bez capped -> 5", () =>
     expect(qualityForOwn(verdict(["c1", "c2", "c3", "c4", "c5"]), rubric5, false)).toBe(5));
-  it("rubrika od 3 i od 4 kriterija: savršen vlastiti odgovor daje 5, zalijepljen 4", () => {
+  it("rubrika od 3 i od 4 kriterija: savršen vlastiti odgovor daje 5, zalijepljen strop klika", () => {
     expect(qualityForOwn(verdict(idsOf(3)), rubric3, false)).toBe(5);
-    expect(qualityForOwn(verdict(idsOf(3)), rubric3, true)).toBe(4);
+    expect(qualityForOwn(verdict(idsOf(3)), rubric3, true)).toBe(CLICK_QUALITY_CAP);
     expect(qualityForOwn(verdict(idsOf(4)), rubric4, false)).toBe(5);
-    expect(qualityForOwn(verdict(idsOf(4)), rubric4, true)).toBe(4);
+    expect(qualityForOwn(verdict(idsOf(4)), rubric4, true)).toBe(CLICK_QUALITY_CAP);
   });
-  it("djelomično ispunjena kraća rubrika ne dobiva 5, a zalijepljena ne prelazi 4", () => {
+  it("djelomično ispunjena kraća rubrika ne dobiva 5, a zalijepljena ne prelazi strop klika", () => {
     expect(qualityForOwn(verdict(idsOf(2)), rubric3, false)).toBe(3);
     expect(qualityForOwn(verdict(idsOf(3)), rubric4, false)).toBe(4);
-    expect(qualityForOwn(verdict(idsOf(3)), rubric4, true)).toBe(4);
+    expect(qualityForOwn(verdict(idsOf(3)), rubric4, true)).toBe(CLICK_QUALITY_CAP);
   });
 });

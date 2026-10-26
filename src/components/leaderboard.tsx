@@ -1,5 +1,7 @@
 import type { LeaderboardRow } from "@/lib/types";
 import { num } from "@/lib/format";
+import { BLOCKADE_RANK_RULE } from "@/lib/hints";
+import { isInsolvent, rankByProgress } from "@/lib/ranking";
 import { cn } from "@/lib/utils";
 import { Delta } from "./metric-bar";
 
@@ -10,7 +12,8 @@ export const MEDALS = [
   `bg-gradient-to-b from-[#f3c39f] to-[#c98552] ${MEDAL}`,
 ];
 
-// Ranked by progress (not money): top `limit`, plus your own row below if you are further down.
+// Ranked by progress (not money), but a hotel with a negative account never stands above a solvent one (ADR-059, ranking.ts):
+// top `limit`, plus your own row below if you are further down.
 // anonymous (R10, projector): only hotel names, no student names.
 // Money only where the server sends it: the student sees only their own, the professor everyone's (ADR-040).
 // big (projector): larger text on xl only. neutral (season end, BUG-022): progress without green/red.
@@ -23,7 +26,7 @@ export function Leaderboard({
   big = false,
   neutral = false,
 }: { rows: LeaderboardRow[]; youId?: string; limit?: number } & Partial<Look>) {
-  const ranked = [...rows].sort((a, b) => b.progress - a.progress);
+  const ranked = rankByProgress(rows);
   const youRank = ranked.findIndex((r) => r.companyId === youId);
   const shown = ranked.slice(0, limit);
   const look = { anonymous, big, neutral };
@@ -57,11 +60,17 @@ function Row({ row, rank, you, anonymous, big, neutral }: { row: LeaderboardRow;
         {rank}
       </span>
       <div className="min-w-0 flex-1">
-        <p className={cn("truncate font-bold", big && "xl:text-xl")}>
-          {row.hotelName}
-          {you && <span className="ml-2 text-xs font-bold text-secondary-foreground">ti</span>}
-          {row.isBot && <span className="ml-2 rounded-full bg-muted px-2 py-0.5 align-middle text-xs font-bold text-muted-foreground">bot</span>}
-        </p>
+        {/* Only the name truncates; the pills stay visible next to it, also for a long name at 375 px. */}
+        <div className={cn("flex min-w-0 items-center gap-2 font-bold", big && "xl:text-xl")}>
+          <span className="truncate">{row.hotelName}</span>
+          {you && <span className="shrink-0 text-xs font-bold text-secondary-foreground">ti</span>}
+          {row.isBot && <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-bold text-muted-foreground">bot</span>}
+          {isInsolvent(row) && (
+            <span title={BLOCKADE_RANK_RULE} className="shrink-0 rounded-full bg-down-soft px-2 py-0.5 text-xs font-bold text-down">
+              u blokadi
+            </span>
+          )}
+        </div>
         <p className={cn("truncate text-xs text-muted-foreground", big && "xl:text-sm")}>
           {anonymous ? row.place : `${row.playerName} · ${row.place}`}
         </p>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ContractTemplate } from "@/lib/types";
 import { SEASON_DEMAND_BP } from "@/lib/rules";
-import { attractiveness, capacityNights, financeEffect, priceBp, qualityBp, refPrice, roundFinance, settleMarket } from "./economy";
+import { attractiveness, capacityNights, demandNights, demandPriceBp, financeEffect, priceBp, qualityBp, refPrice, roundFinance, settleMarket } from "./economy";
 import type { MarketInput } from "./economy";
 
 const hotel = (companyId: string, price: number, extra: Partial<MarketInput> = {}): MarketInput => ({
@@ -68,6 +68,59 @@ describe("economy", () => {
     const [a2, b2] = settleMarket(2, [hotel("A", 80), hotel("B", 80)]);
     expect(a2.nights).toBe(510);
     expect(b2.nights).toBe(510);
+  });
+
+  // ADR-059 (#198): ako svi hoteli dignu cijenu, grad ima malo manje turista. Mala, jednosmjerna elastičnost.
+  it("demandPriceBp: na ili ispod referentne ×1,00, iznad pada 20 % na svakih 100 %, najviše na 2,5× ref", () => {
+    expect(demandPriceBp(100, 100)).toBe(10000);
+    expect(demandPriceBp(50, 100)).toBe(10000); // nižom cijenom grad ne dobiva nove turiste
+    expect(demandPriceBp(0, 100)).toBe(10000);
+    expect(demandPriceBp(110, 100)).toBe(9800);
+    expect(demandPriceBp(150, 100)).toBe(9000);
+    expect(demandPriceBp(200, 100)).toBe(8000);
+    expect(demandPriceBp(250, 100)).toBe(7000);
+    expect(demandPriceBp(400, 100)).toBe(7000); // iznad 2,5× ref već nitko ne dolazi, pad se ne produbljuje
+    expect(demandPriceBp(100, 0)).toBeGreaterThan(0); // bez referentne cijene bez dijeljenja nulom
+  });
+
+  it("demandNights: skup hotel dovodi manje turista, jeftin jednako kao referentan", () => {
+    const m = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
+    expect(demandNights(3, 20, m, 100, 100)).toBe(570); // 600 noći × 95 %
+    expect(demandNights(3, 20, m, 60, 100)).toBe(570);
+    expect(demandNights(3, 20, m, 200, 100)).toBe(456); // × 0,80
+  });
+
+  it("svi hoteli dižu cijenu: ukupna potražnja pada, ali umjereno (ne više od 20 % na 2× ref)", () => {
+    const total = (price: number) =>
+      settleMarket(3, ["A", "B", "C", "D", "E"].map((id) => hotel(id, price))).reduce((s, r) => s + r.nights, 0);
+    const base = total(100);
+    expect(base).toBe(2850); // 5 × 570
+    expect(total(150)).toBeLessThan(base);
+    expect(total(200)).toBeLessThan(total(150));
+    expect(total(200)).toBe(2280); // točno −20 %
+    expect(total(200)).toBeGreaterThan(base * 0.75);
+    expect(total(250)).toBeGreaterThan(base * 0.65);
+    // jednosmjerno: nitko ne dobiva nove turiste snižavanjem cijena
+    expect(total(60)).toBe(base);
+    expect(total(30)).toBe(base);
+  });
+
+  it("jedan skup hotel smanji gradsku potražnju tek malo, a sebi uzme manje nego kad je na referentnoj cijeni", () => {
+    const others = ["B", "C", "D", "E"].map((id) => hotel(id, 100));
+    const at = (price: number) => settleMarket(3, [hotel("A", price), ...others]);
+    const total = (rows: ReturnType<typeof at>) => rows.reduce((s, r) => s + r.nights, 0);
+    expect(total(at(200))).toBeGreaterThan(total(at(100)) * 0.85); // dio pada je i kapacitet ostalih hotela (puni su)
+    expect(total(at(200))).toBeLessThan(total(at(100)));
+    expect(at(200)[0].nights).toBeLessThan(at(100)[0].nights);
+  });
+
+  // Poznata praznina (ADR-059, Otvoreno): hotel iznad 2,5× ref ne prodaje ništa, ali u grad i dalje donosi ×0,70 potražnje.
+  it("iznad 2,5× ref hotel ne prodaje ništa, a pad potražnje se ne produbljuje (ostaje ×0,70)", () => {
+    const m = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
+    const rows = settleMarket(3, [hotel("A", 260), ...["B", "C", "D", "E"].map((id) => hotel(id, 100))]);
+    expect(rows[0].nights).toBe(0);
+    expect(demandNights(3, 20, m, 260, 100)).toBe(demandNights(3, 20, m, 400, 100));
+    expect(demandNights(3, 20, m, 400, 100)).toBe(399); // 600 noći × 0,70 × 95 %: i dalje puni zajednički bazen
   });
 
   it("kapacitet i ugovori", () => {
@@ -144,10 +197,11 @@ describe("economy", () => {
       cashBefore: 20000,
       contracts: [agency],
     });
+    // PDV 13/113: 32.000 -> 3.681, 2.800 -> 322; provizija 8 % od (32.000 - 3.681) = 2.266; materijal 17 % od (34.800 - 4.003) = 5.235
     expect(f.revenue).toBe(34800);
-    expect(f.costs).toBe(16000);
-    expect(f.profit).toBe(18800);
-    expect(f.cashAfter).toBe(38800);
+    expect(f.costs).toBe(9000 + 9000 + 1000 + 4003 + 2266 + 5235);
+    expect(f.profit).toBe(34800 - f.costs);
+    expect(f.cashAfter).toBe(20000 + f.profit);
     expect(f.round).toBe(2);
     expect(f.contractNights).toBe(40);
   });
@@ -170,13 +224,16 @@ describe("economy", () => {
       revenueOwn: 32000,
       revenueContracts: 2800,
       costStaff: 9000,
-      costRooms: 6000,
+      costRooms: 9000,
       costMarketing: 1000,
       costContracts: 1500,
       costInvestments: 2000,
+      costVat: 4003,
+      costCommission: 2266,
+      costMaterials: 5235,
     });
     expect(f.revenue).toBe(34800);
-    expect(f.costs).toBe(19500);
+    expect(f.costs).toBe(9000 + 9000 + 1000 + 1500 + 2000 + 4003 + 2266 + 5235);
   });
 
   it("roundFinance s ulaganjem u odjele", () => {
@@ -192,10 +249,19 @@ describe("economy", () => {
       contracts: [agency],
       investments: 2000,
     });
-    expect(f.costs).toBe(18000);
-    expect(f.profit).toBe(16800);
-    expect(f.cashAfter).toBe(36800);
+    expect(f.costs).toBe(9000 + 9000 + 1000 + 2000 + 4003 + 2266 + 5235);
+    expect(f.profit).toBe(34800 - f.costs);
+    expect(f.cashAfter).toBe(20000 + f.profit);
     expect(f.investments).toBe(2000);
+  });
+
+  it("roundFinance: bez prihoda nema PDV-a, provizije ni materijala; provizija samo na slobodno tržište", () => {
+    const m = { companyId: "A", nights: 0, contractNights: 0, capacityNights: 600, occupancyPct: 0, marketSharePct: 0 };
+    const f = roundFinance(m, { round: 1, price: 80, marketing: 0, staffCost: 1000, roomsCount: 2, cashBefore: 0, contracts: [] });
+    expect([f.breakdown!.costVat, f.breakdown!.costCommission, f.breakdown!.costMaterials]).toEqual([0, 0, 0]);
+    const agency = { nights: 10, pricePerNight: 113, monthlyCost: 0 } as ContractTemplate;
+    const g = roundFinance(m, { round: 1, price: 80, marketing: 0, staffCost: 0, roomsCount: 0, cashBefore: 0, contracts: [agency] });
+    expect([g.breakdown!.costVat, g.breakdown!.costCommission, g.breakdown!.costMaterials]).toEqual([130, 0, 170]); // 1.130 € s PDV-om: PDV 130, neto 1.000, materijal 17 %
   });
 
   it("financeEffect", () => {

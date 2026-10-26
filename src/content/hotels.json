@@ -11,7 +11,7 @@
       "operations": 55,
       "finance": 45
     },
-    "staffCost": 6300,
+    "staffCost": 9800,
     "startCash": 20000,
     "rooms": [
       {
@@ -209,7 +209,7 @@
       "operations": 48,
       "finance": 30
     },
-    "staffCost": 7650,
+    "staffCost": 17000,
     "startCash": 20000,
     "rooms": [
       {
@@ -446,7 +446,7 @@
       "operations": 38,
       "finance": 38
     },
-    "staffCost": 6300,
+    "staffCost": 9800,
     "startCash": 20000,
     "rooms": [
       {
@@ -644,7 +644,7 @@
       "operations": 44,
       "finance": 24
     },
-    "staffCost": 5400,
+    "staffCost": 12000,
     "startCash": 20000,
     "rooms": [
       {
@@ -818,7 +818,7 @@
       "operations": 56,
       "finance": 72
     },
-    "staffCost": 8100,
+    "staffCost": 12600,
     "startCash": 20000,
     "rooms": [
       {
@@ -1057,7 +1057,7 @@
       "operations": 35,
       "finance": 40
     },
-    "staffCost": 5400,
+    "staffCost": 6000,
     "startCash": 20000,
     "rooms": [
       {

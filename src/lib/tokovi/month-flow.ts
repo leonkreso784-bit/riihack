@@ -4,16 +4,20 @@
 import { financeEffect, priceBp, refPrice, roundFinance, type MarketResult } from "@/lib/engine/economy";
 import { eur as eurRaw, num } from "@/lib/format";
 import {
+  DEMAND_ELASTICITY_PCT,
   FINANCE_EFFECT_CAP,
   FINANCE_EFFECT_DIVISOR,
+  COMMISSION_PCT,
   FIXED_COST_PER_ROOM,
   MARKET_QUALITY_WEIGHTS,
   MARKETING_MAX,
+  MATERIALS_PCT,
   MAX_ROUNDS,
   METRIC_LABELS,
   NIGHTS_PER_ROUND,
   ROUND_LABELS,
   SEASON_DEMAND_BP,
+  VAT_PCT,
 } from "@/lib/rules";
 import type { ContractTemplate, MetricKey, RoundFinance } from "@/lib/types";
 
@@ -69,7 +73,7 @@ export function monthBase(finance: RoundFinance, rooms: { basePrice: number }[])
     price,
     marketing: b.costMarketing,
     ref: refPrice(rooms),
-    roomsCount: Math.round(b.costRooms / FIXED_COST_PER_ROOM),
+    roomsCount: Math.round(finance.capacityNights / NIGHTS_PER_ROUND), // iz kapaciteta, ne iz troška: ne ovisi o cijeni sobe u pravilima
     cashBefore: finance.cashAfter - finance.profit,
   };
 }
@@ -151,7 +155,7 @@ export function buildMonthFlow(
   const effect = financeEffect(f.profit);
   const effectText = effect > 0 ? `+${effect}` : effect < 0 ? `−${-effect}` : "0";
   const occupied = f.nights + f.contractNights;
-  const costsSum = [b.costStaff, b.costRooms, b.costMarketing, b.costContracts, b.costInvestments];
+  const costsSum = [b.costStaff, b.costRooms, b.costMarketing, b.costContracts, b.costInvestments, b.costVat ?? 0, b.costCommission ?? 0, b.costMaterials ?? 0];
 
   const steps: FlowStep[] = [
     {
@@ -249,10 +253,11 @@ export function buildMonthFlow(
       ],
       rule: [
         `Turisti u gradu = ${demandBp / 100} % svih noćenja u gradu u ovom mjesecu; hotel s ugledom ispod 1,00 dovodi toliko manje turista.`,
+        `Hotel s cijenom iznad prosječne cijene svojih soba dovodi ${DEMAND_ELASTICITY_PCT} % manje turista na svakih 100 % iznad nje, ali najviše ${num(DEMAND_ELASTICITY_PCT * 1.5)} % manje (iznad 2,5× nitko ne dolazi).`,
         "Slobodni turisti = turisti − ugovorena noćenja svih hotela.",
         "Tvoj dio = slobodni turisti × tvoji bodovi ÷ zbroj bodova svih hotela.",
       ],
-      note: "Turisti se ne množe kad spustiš cijenu. Samo otimaš dio iste torte od drugih hotela. Brojke ostalih hotela ovdje ne prikazujemo.",
+      note: "Turisti se ne množe kad spustiš cijenu. Samo otimaš dio iste torte od drugih hotela. Ako svi hoteli dignu cijenu iznad prosječne, torta se smanji. Brojke ostalih hotela ovdje ne prikazujemo.",
       outputs: [
         { label: "Tvoja slobodna noćenja", value: num(f.nights) },
         { label: "Udio turista grada", value: `${f.marketSharePct} %`, strong: true },
@@ -286,24 +291,30 @@ export function buildMonthFlow(
       ],
       rule: ["Prihod = slobodna noćenja × tvoja cijena + prihod ugovora."],
       calc: `${num(b.revenueOwn)} + ${num(b.revenueContracts)} = ${num(f.revenue)}`,
-      note: "Veća cijena po noći često vrijedi više od dodatnih gostiju. Pomakni klizač cijene i provjeri.",
+      note: "Prihod je iznos koji gosti plate, s PDV-om; PDV se oduzima među troškovima. Veća cijena po noći često vrijedi više od dodatnih gostiju. Pomakni klizač cijene i provjeri.",
       outputs: [{ label: "Prihod", value: eur(f.revenue), strong: true }],
     },
     {
       id: "troskovi",
       title: "Troškovi",
       big: eur(f.costs),
-      small: `osoblje ${num(b.costStaff)} · sobe ${num(b.costRooms)} · marketing ${num(b.costMarketing)} · ugovori ${num(b.costContracts)}${b.costInvestments > 0 ? ` · ulaganja ${num(b.costInvestments)}` : ""}`,
+      small: `osoblje ${num(b.costStaff)} · sobe ${num(b.costRooms)} · marketing ${num(b.costMarketing)} · ugovori ${num(b.costContracts)}${b.costInvestments > 0 ? ` · ulaganja ${num(b.costInvestments)}` : ""} · PDV ${num(b.costVat ?? 0)} · provizija ${num(b.costCommission ?? 0)} · materijal ${num(b.costMaterials ?? 0)}`,
       inputs: [
         { label: "Plaće osoblja", value: eur(b.costStaff) },
         { label: `Sobe: ${num(base.roomsCount)} × ${eur(FIXED_COST_PER_ROOM)}`, value: eur(b.costRooms) },
         { label: "Marketing", value: eur(b.costMarketing) },
         { label: "Trošak ugovora", value: eur(b.costContracts) },
         { label: "Ulaganja u odjele", value: eur(b.costInvestments) },
+        { label: `PDV (${VAT_PCT} %)`, value: eur(b.costVat ?? 0) },
+        { label: "Provizija portala", value: eur(b.costCommission ?? 0) },
+        { label: "Materijal i potrošni", value: eur(b.costMaterials ?? 0) },
       ],
-      rule: [`Troškovi = osoblje + sobe × ${num(FIXED_COST_PER_ROOM)} € + marketing + trošak ugovora + ulaganja.`],
+      rule: [
+        `Troškovi = osoblje + sobe × ${num(FIXED_COST_PER_ROOM)} € + marketing + trošak ugovora + ulaganja + PDV + provizija portala + materijal.`,
+        `PDV je ${VAT_PCT} ÷ ${100 + VAT_PCT} onoga što gosti plate (cijena sadrži PDV). Provizija portala je ${COMMISSION_PCT} % prihoda od gostiju bez PDV-a, ne i od ugovora. Materijal i potrošni je ${MATERIALS_PCT} % sveg prihoda bez PDV-a.`,
+      ],
       calc: `${costsSum.map(num).join(" + ")} = ${num(f.costs)}`,
-      note: "Osoblje i sobe plaćaš uvijek, pune ili prazne. Marketing i ulaganja su troškovi koje biraš.",
+      note: "Osoblje i sobe plaćaš uvijek, pune ili prazne. PDV, provizija i materijal rastu s prihodom. Marketing i ulaganja su troškovi koje biraš.",
       outputs: [{ label: "Troškovi", value: eur(f.costs), strong: true }],
     },
     {

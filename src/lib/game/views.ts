@@ -17,6 +17,7 @@ import { departmentViews } from "@/lib/engine/departments";
 import { sourceOfTemplateId } from "@/lib/engine/draft";
 import { progress } from "@/lib/engine/round";
 import { renderSituationText } from "@/lib/engine/text";
+import { isInsolvent } from "@/lib/ranking";
 import { MAX_ROUNDS } from "@/lib/rules";
 import { buildNews, toCityLinks, toCityView, toContractView, toFinance, toPlan, type NewsEvent } from "./city";
 import { toMailMessage } from "./mail";
@@ -125,7 +126,10 @@ function lastReports(reports: RoundReportRow[]): Map<string, RoundReportRow> {
   return last;
 }
 
-/** Ljestvica: napredak, pa novac (oboje silazno), pa redoslijed ulaska. `reports` = izvještaji svih tvrtki igre. */
+/**
+ * Ljestvica: prvo solventni hoteli, pa insolventni (račun ispod nule, ADR-059); unutar skupine napredak, pa novac
+ * (oboje silazno), pa redoslijed ulaska. `reports` = izvještaji svih tvrtki igre.
+ */
 export function toLeaderboard(all: CompanyWithPlayer[], reports: RoundReportRow[] = []): LeaderboardRow[] {
   const last = lastReports(reports);
   return all
@@ -142,9 +146,10 @@ export function toLeaderboard(all: CompanyWithPlayer[], reports: RoundReportRow[
         cash: company.cash,
         roundGain: roundGain(company.startMetrics, last.get(company.id)),
         ...(company.kind === "bot" && { isBot: true }), // ADR-044
+        ...(isInsolvent({ cash: company.cash }) && { insolvent: true }), // ADR-059: ostaje i kad se tuđi `cash` skine (ownCashOnly)
       } satisfies LeaderboardRow,
     }))
-    .sort((a, b) => b.row.progress - a.row.progress || b.cash - a.cash || a.joinIndex - b.joinIndex)
+    .sort((a, b) => Number(isInsolvent(a.row)) - Number(isInsolvent(b.row)) || b.row.progress - a.row.progress || b.cash - a.cash || a.joinIndex - b.joinIndex)
     .map((x) => x.row);
 }
 

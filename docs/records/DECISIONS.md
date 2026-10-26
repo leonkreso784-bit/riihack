@@ -8,6 +8,81 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-059"></a>
+## ADR-059 · Balans ekonomije (#198): kalibracija, ulaganja, klik, marketing, stečaj, elastičnost
+**Datum:** 26.10. · **Status:** ✅ prijedlog u PR-u (Simon, grana `simon/kalibracija`); dira `rules.ts` i `types.ts`, pa čeka Leonovo „spoji"
+([ADR-017](#adr-017)), a zastavica `insolvent` (točka 5) traži njegov izričit OK jer otkriva tuđe stanje računa · **Vezano:** [#198](https://github.com/leonkreso784-bit/riihack/issues/198), [PR #209](https://github.com/leonkreso784-bit/riihack/pull/209),
+[ADR-047](#adr-047) (zamijenjen), [ADR-043](#adr-043), [ADR-040](#adr-040), [ADR-046](#adr-046)
+
+**Kontekst.** Nakon natjecanja ADR-047 je odgodio kalibraciju troškova. Hotel s referentnom cijenom imao je maržu 60 do 70 % (stvarni kvarnerski
+hoteli: GOP oko 11 do 31 %), a Simonova provjera motora ([#198](https://github.com/leonkreso784-bit/riihack/issues/198)) pokazala je da se
+isplati ulagati u svih pet odjela, da klik na najdulju opciju daje kvalitetu 4 u svih 8 situacija, da je marketing do 5.000 € oko 20 % prihoda
+malog hotela, da hotel u minusu 51.600 € vodi ispred solventnog i da ukupna potražnja ne reagira kad svi dignu cijenu.
+
+**Odluka.**
+1. **Kalibracija troškova** (grana #209, ponovno prebačena na `main`): PDV 13 % (cijena sadrži PDV, prihod ostaje iznos koji gost plati, PDV se
+   prikazuje kao trošak), provizija portala 8 % prihoda od gostiju bez PDV-a (ne od agencijskih ugovora), materijal i potrošni 17 % prihoda bez PDV-a,
+   fiksni trošak 450 € po sobi umjesto 300 €, plaće 500, 700 i 1.000 € po sobi za 2, 3 i 4 zvjezdice (`hotels.json`). Svaka konstanta u `rules.ts`
+   ima izvor (Liburnia Riviera Hoteli 2025, Valamar, Kvarner 2014).
+2. **Ulaganja:** `INVEST_EFFECT_DIVISOR` 1.000 na 3.000 i `INVEST_EFFECT_CAP` 3 na 1: odjel donosi najviše +1 mjesečno i samo uz puni ulog od 3.000 €
+   (`INVEST_MAX`). Strop je spušten na 1 da tekstovi („najviše +N") i „sljedeća razina" u sučelju ostanu istiniti.
+3. **Klik:** `CLICK_QUALITY_CAP` 4 na 3. Ponuđeni odgovor daje najviše 3 od 5; 4 i 5 samo vlastitim riječima. Isti strop vrijedi za prepisanu opciju i
+   za zalijepljen tekst.
+4. **Marketing:** `MARKETING_MAX` 5.000 na 2.000 € (prodaja i marketing 3,5 do 4,4 % prihoda; 2.000 € je oko 4 do 6 % prihoda malog hotela u vrhu).
+5. **Stečaj:** hotel čiji je račun ispod nule ne stoji iznad hotela s računom od nule naviše, bez obzira na napredak (`src/lib/ranking.ts`). Unutar
+   skupine redoslijed je isti kao prije. Vrijedi za ljestvicu, podij sezone i mjeseca, rang na Financijama i rang na karti. Hotel i dalje smije u minus
+   (plan se ne odbija), ali ga to košta mjesta. U sučelju se to stanje svugdje zove „u blokadi" (kao i na kartici grada), a pravilo piše uz „?" kod
+   napretka i ranga, na kartici ranga na Financijama i uz oznaku na ljestvici. Jedan predikat: `isInsolvent` (`inBlockade` na karti zove njega). Tuđi račun je i dalje skriven ([ADR-040](#adr-040)): redak ljestvice nosi samo neobaveznu zastavicu
+   `LeaderboardRow.insolvent`, bez iznosa. Blokiran račun je u stvarnosti javan podatak (FINA), pa je to najmanje otkrivanje koje omogućuje isti rang
+   svima.
+6. **Elastičnost ukupne potražnje:** hotel s cijenom iznad referentne dovodi u grad 20 % manje turista na svakih 100 % iznad referentne cijene (`DEMAND_ELASTICITY_PCT`,
+   najviše 30 % na 2,5× ref). Samo prema dolje: nižom cijenom grad ne dobiva turiste, pa se ne nagrađuje spuštanje cijena svih. Izvor: elastičnost
+   potražnje hotelskog tržišta oko −0,15 do −0,17 (Corgel 2012; Singh i sur. 2023), zaokruženo na 0,20. Namjerno mala; Tokovi to objašnjavaju u koraku „Tržište grada".
+
+Izvan ovog zadatka ostaju: ponovni ulaz istim imenom (#301) i rezerva suca na ocjenu 3 kad AI padne.
+
+**Provjera.** `src/lib/game/season-sim.ts` odigra sezonu čistim funkcijama motora (botovi tri težine, isto sjeme, bez baze); ispis `npx tsx scripts/sim-sezona.ts` (strategije igrača za Rijeku, Opatiju i Crikvenicu),
+zaštita `season-sim.test.ts`. Grad od 6 hotela, lipanj do rujan (marža = dobit / prihod bez PDV-a):
+
+| | prije (`main`) | poslije |
+| --- | --- | --- |
+| marža sezone, srednji botovi | 69 % | 20 % |
+| marža sezone, teški botovi | 68 % | 19 % |
+| marža sezone, mješoviti grad | 66 % | 14 % |
+| marža kolovoza, srednji botovi (po hotelu) | 73 % (63 do 85) | 30 % (19 do 43) |
+| marža lipnja i rujna, srednji botovi | 59 % i 54 % | 5 % i −4 % |
+| popunjenost lipanj / srpanj / kolovoz / rujan, srednji botovi | 61 / 86 / 91 / 55 % | 61 / 85 / 91 / 55 % |
+| prosječna dobit po hotelu u sezoni, srednji botovi | 106.175 € | 27.127 € |
+| napredak lako / srednje / teško (mješoviti grad) | −32 / 29 / 68 | −49 / 21 / 35 |
+| ulaganje u svih 5 odjela svaki mjesec (Rijeka, srednji grad) | napredak 45,8, rang 1, račun 39.088 € | napredak 19,1, rang 6, račun −26.961 € |
+| ulaganje u svih 5 odjela svaki mjesec (Opatija 4★, srednji grad) | nije mjereno | napredak 31,0, rang 1, račun 12.515 € (kontrola bez ulaganja: 26,3, rang 2), vidi Otvoreno |
+| stečaj uz dobre odgovore (kvaliteta 5, cijena 30 €, sve na maksimum) | napredak 83,2, rang 1 (račun −43.200 €) | napredak 79,8, rang 1 bez pravila, rang 5 s pravilom (račun −72.396 €) |
+| svi hoteli na 2× referentnu cijenu | popunjenost 74 %, dobit 249.169 € | popunjenost 60 %, dobit 82.395 € |
+
+Vrhunac sezone (srpanj, kolovoz) je u rasponu stvarnih GOP marži (22 do 30 %), a lipanj i rujan su kod slabijih hotela oko nule ili u minusu, kao
+kod Liburnije (EBITDA 43,6 % u trećem tromjesečju, −40 % u prvom). Ljetna popunjenost ostaje 85 do 91 % (Kvarner 2014: srpanj 77 %, kolovoz 89 %).
+Igrač koji piše dobre odgovore (kvaliteta 4 ili 5) i dalje pobjeđuje bota, a bot „teško" (najbolja ponuđena opcija, sad najviše 3) zaostaje za njim.
+
+**Posljedice.** Mijenjaju se sve brojke igre: demo igru treba ponovno posijati (`npm run seed:demo`, ulaganja u demu su sada puni ulog od 3.000 €) i jednom proći smoke.
+Zapisi mjeseci obračunatih prije promjene nemaju `costVat`, `costCommission` i `costMaterials` (aditivna neobavezna polja, [ADR-037](#adr-037)) i prikazuju se s 0.
+Bez promjene sheme baze. „Što ako?" u Tokovima ne uračunava da skuplji hotel smanji i gradsku potražnju (učinak jednog hotela je malen).
+
+**Otvoreno.** Elastičnost je namjerno mala, pa „svi digni cijenu" ostaje isplativo (na 2× ref dobit je i dalje oko 3× veća uz 20 % manje gostiju); jača
+veza potražnje s cijenom (ADR-043 i bilješka `exploiti-motor.md`, F1) je odluka za Leona. Lipanj i rujan za najslabije hotele (Crikvenica 3★) su duboko u minusu;
+zimski rad i zatvaranje hotela u izvansezoni nisu modelirani.
+Tri stvari čekaju Leonovu odluku:
+(a) **Ulaganje u svih 5 odjela nije posvuda nedominantno.** Za Rijeku i Crikvenicu ne donosi ništa ili vodi u bankrot, ali Opatija (4★, veća dobit) u
+gradu srednjih botova uz 3.000 € u svih pet odjela svaki mjesec ostaje solventna i dobije oko +5 napretka (26,3 na 31,0, rang 2 na 1, račun 70.653 € na
+12.515 €), jer se novac na računu ne boduje dok je od nule naviše. Moguće rješenje: uračunati neutrošeni novac u poredak (ne samo kao razrješenje
+izjednačenja). Mjerenje: `npx tsx scripts/sim-sezona.ts`, tablica za Opatiju.
+(b) **Hotel iznad 2,5× referentne cijene** ne prodaje ništa (`priceBp` je 0), ali u gradsku potražnju i dalje ulazi sa ×0,70 svojeg kapaciteta, pa tu
+potražnju dijele ostali hoteli (`demandNights`). Opcija: potražnja 0 iznad 2,5× ref (skok, kao što `priceBp` već skače na 0). Ostavljeno kako jest dok se
+ne odluči o jačoj vezi potražnje s cijenom.
+(c) **Zastavica `insolvent`** šalje svakom studentu je li tuđi račun ispod nule, što ADR-040 inače skriva. Obrazloženje je FINA-ina javna blokada računa,
+ali to je odluka o privatnosti, ne samo kôda; traži Leonov izričit OK uz „spoji" za `rules.ts` i `types.ts`. Bez zastavice student bi vidio hotel s
+najboljim napretkom na dnu ljestvice bez ikakvog objašnjenja.
+Botovi „lako" kolabiraju (napredak oko −49, rujan u gradu samih lakih botova u prosjeku −223 % marže) jer biraju treću najbolju opciju.
+
 <a id="adr-058"></a>
 ## ADR-058 · Poruke među hotelima: tko ih vidi, tko ih prima i granice slanja
 **Datum:** 26.10. · **Status:** 🟨 potvrditi (graditelj uz [#303](https://github.com/leonkreso784-bit/riihack/issues/303); Leon potvrđuje pri spajanju) · **Vezano:**
@@ -161,7 +236,7 @@ demo igra ima 15 mjesta, smoke korak 20 provjerava kasni ulaz.
 
 <a id="adr-047"></a>
 ## ADR-047 · Kalibracija troškova (#209) ne ide prije predaje
-**Datum:** 24.10. ~23:10 · **Status:** ✅ (Leon; mišljenje graditelja) · **Vezano:** [ADR-046](#adr-046)
+**Datum:** 24.10. ~23:10 · **Status:** 🔁 zamijenjeno [ADR-059](#adr-059) (kalibracija ponovno prebačena na `main` nakon predaje) · **Vezano:** [ADR-046](#adr-046)
 
 **Kontekst.** Simonov [#209](https://github.com/leonkreso784-bit/riihack/pull/209) usklađuje troškove sa stvarnim kvarnerskim hotelima (PDV 13 %, provizija
 portala 8 %, materijal 17 %, plaće po zvjezdicama), pa marža pada s 29–86 % na 11–31 %.

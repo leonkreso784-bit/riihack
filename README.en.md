@@ -40,7 +40,7 @@ Simpolis gives students a safe place to practise decisions that involve people a
 
 1. **The professor creates a game.** The class joins with a code or QR code, and each student gets one of six hotels in the Kvarner region.
 2. **Situations.** Each month brings two situations: a guest or staff member with a problem (for example, the air conditioning breaks in the middle of the season). The student talks to the character, up to six messages.
-3. **Answer and rubric.** An offered answer is worth at most 4 out of 5, the student's own words up to 5 out of 5. An AI judge marks which of five rubric criteria the answer met.
+3. **Answer and rubric.** An offered answer is worth at most 3 out of 5, the student's own words up to 5 out of 5. An AI judge marks which of five rubric criteria the answer met.
 4. **Plan.** The student sets the price, marketing and investment in hotel departments.
 5. **Month close.** The professor closes the month, the rules compute occupancy, cash and reviews (all hotels share the same tourists), and the class sees the month's podium.
 6. **Mentor.** The mentor asks about the student's weakest decision of the month, the student reflects, and the mentor replies.
@@ -61,10 +61,10 @@ Every AI call has a time limit and a fallback answer, so the game keeps working 
 
 The `ri-hack-4.0` version works end to end: joining with a code, hotel board, situations with a conversation and rubric grading, plan and finances, a city with contracts with local businesses, month close with a podium, mentor, professor overview and bots.
 
-- **Checks:** 674 tests in 57 files pass, typecheck and lint are clean, the build passes, CI is green.
+- **Checks:** 983 tests in 72 files pass, typecheck and lint are clean, the build passes, CI is green.
 - **Content:** 6 hotels, 8 situations, 6 city businesses, 8 contract templates. 26 pages, 37 API route files, 19 database tables.
 - **Development:** 671 commits and 236 merged pull requests on `main`, all made during the hackathon.
-- **Not done yet:** the economy is not calibrated against real hotels, a season is fixed at four months, there are only 8 situations and all are about hotels, and there is no English interface or grade export. Login through the faculty (AAI@EduHr, Merlin) is a goal. A PIN for student entry is planned ([ADR-053](docs/records/DECISIONS.md#adr-053)).
+- **Not done yet:** a season is fixed at four months, there are only 8 situations and all are about hotels, and there is no English interface or grade export. Login through the faculty (AAI@EduHr, Merlin) is a goal. A PIN for student entry is planned ([ADR-053](docs/records/DECISIONS.md#adr-053)).
 
 Details and known bugs: [docs/STATUS.md](docs/STATUS.md) (Croatian).
 

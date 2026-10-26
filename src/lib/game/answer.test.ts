@@ -73,7 +73,7 @@ describe("answerBlocked", () => {
 describe("gradeAnswer", () => {
   const verdict = (criteriaMet: string[]): Verdict => ({ criteriaMet, reasoning: "Obrazloženje." });
 
-  it("klik: kvaliteta iz opcije, najviše 4, bez presude", async () => {
+  it("klik: kvaliteta iz opcije, najviše CLICK_QUALITY_CAP, bez presude", async () => {
     const judge = vi.fn();
     const g = await gradeAnswer({ kind: "click", optionId: "o2" }, input, judge);
     expect(g).toMatchObject({ mode: "click", optionId: "o2", quality: CLICK_QUALITY_CAP, copied: false, verdict: null });
@@ -84,7 +84,7 @@ describe("gradeAnswer", () => {
     const judge = vi.fn();
     const copied = "odmah ponudite drugi apartman s pogledom na more i besplatan doručak!";
     const g = await gradeAnswer({ kind: "text", text: copied, pastedChars: 0 }, input, judge);
-    expect(g).toMatchObject({ mode: "click", optionId: "o2", text: copied, quality: 4, copied: true, verdict: null });
+    expect(g).toMatchObject({ mode: "click", optionId: "o2", text: copied, quality: CLICK_QUALITY_CAP, copied: true, verdict: null });
     expect(judge).not.toHaveBeenCalled();
   });
 
@@ -102,10 +102,10 @@ describe("gradeAnswer", () => {
     expect(judge).not.toHaveBeenCalled();
   });
 
-  it("zalijepljen tekst: presuda, najviše 4, copied", async () => {
+  it("zalijepljen tekst: presuda, najviše CLICK_QUALITY_CAP, copied", async () => {
     const judge = vi.fn(async () => verdict(["c1", "c2", "c3", "c4", "c5"]));
     const g = await gradeAnswer({ kind: "text", text: OWN, pastedChars: OWN.length }, input, judge);
-    expect(g).toMatchObject({ mode: "own", quality: 4, copied: true });
+    expect(g).toMatchObject({ mode: "own", quality: CLICK_QUALITY_CAP, copied: true });
   });
 
   // #266 točka 5: rubrika od 3 ili 4 kriterija smije dati 5 za potpun vlastiti odgovor; ponuđeni i zalijepljeni ostaju na 4.

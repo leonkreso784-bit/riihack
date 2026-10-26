@@ -71,7 +71,7 @@ export type Graded = {
 
 /**
  * Kvaliteta po pravilima plana (L7): klik → qualityFromClick; tekst prepisan od opcije → kvaliteta te opcije, kao
- * klik, copied, bez presude; zalijepljen tekst → presuda, najviše 4, copied; vlastiti tekst → presuda, do 5.
+ * klik, copied, bez presude; zalijepljen tekst → presuda, najviše CLICK_QUALITY_CAP, copied; vlastiti tekst → presuda, do 5.
  * Presuda null (AI ne odgovori) → FALLBACK_QUALITY kroz qualityForOwn. `template` je već s upisanom sobom i hotelom.
  */
 export async function gradeAnswer(

@@ -45,8 +45,8 @@ flowchart LR
 
 1. **AI ne odlučuje o brojkama.** Presuda AI-ja svodi se na popis ispunjenih kriterija rubrike; kvalitetu (1 do 5), pokazatelje,
    novac i tržište piše samo kod motora. Detalji su u §7.
-2. **Vlastite riječi vrijede više od klika.** Klik daje najviše 4, vlastiti odgovor do 5. Odgovor koji je prepisana ponuđena
-   opcija ili je većinom zalijepljen ne dobiva više od 4.
+2. **Vlastite riječi vrijede više od klika.** Klik daje najviše 3, vlastiti odgovor do 5. Odgovor koji je prepisana ponuđena
+   opcija ili je većinom zalijepljen ne dobiva više od 3 (ADR-059).
 3. **Ulogu dobiješ, ne biraš.** Svaki hotel kreće s istim zbrojem pokazatelja (250), drukčije raspoređenim.
 4. **Ocjena je napredak**, ne apsolutni rezultat (`progress` u `src/lib/engine/round.ts`).
 5. **AI ključ i baza samo na poslužitelju.** Preglednik zove samo naše API rute.
@@ -77,12 +77,13 @@ src/
   lib/
     types.ts      ugovor API-ja: svi tipovi zahtjeva, odgovora i sadržaja
     rules.ts      sve konstante igre (krugovi, ekonomija, ograničenja)
+    ranking.ts    pravilo ljestvice: hotel u blokadi ne stoji iznad solventnog (ADR-059)
     engine/       motor: čiste funkcije, bez baze, mreže i AI-ja (14 modula)
-    game/         poslužiteljska orkestracija nad bazom (14 modula)
+    game/         poslužiteljska orkestracija nad bazom (14 modula) i `season-sim.ts` (simulacija sezone bez baze)
     ai/           svi pozivi modela, promptovi i rezerve (promptovi su TypeScript konstante u prompts.ts)
     tokovi/       modeli prikaza za stranice „Tokovi" (čiste funkcije)
     session.ts, http.ts, auth.ts, client.ts, mock.ts   kolačići i zaštite, omotač ruta, Better Auth, API klijent, lažni podaci
-scripts/          seed-demo.ts, smoke.ts, ai-smoke.ts, cleanup-test-data.ts, lock-merge.py
+scripts/          seed-demo.ts, smoke.ts, ai-smoke.ts, sim-sezona.ts, cleanup-test-data.ts, lock-merge.py
 docs/             dokumentacija (ulaz: docs/README.md)
 .github/workflows/ci.yml
 ```
@@ -131,21 +132,21 @@ plaće, cijene soba, učinci situacija) u `src/content/*.json`.
 **Kvaliteta odgovora**
 - Preračunavanje (`scaleToQuality`): broj ispunjenih kriterija razmjerno duljini rubrike na ljestvicu 1 do 5, zaokruženo na najbliže cijelo, najmanje 1.
   Rubrika od 5 kriterija daje isto što i broj kriterija; ispunjena rubrika od 3 ili 4 kriterija također daje 5 (3 od 4 daje 4, 2 od 3 daje 3).
-- Klik: udio kriterija koje opcija ispunjava, preračunat kao gore, najmanje 1, najviše 4 (`CLICK_QUALITY_CAP`, ne ovisi o duljini rubrike).
+- Klik: udio kriterija koje opcija ispunjava, preračunat kao gore, najmanje 1, najviše 3 (`CLICK_QUALITY_CAP`, ADR-059; ne ovisi o duljini rubrike).
 - Vlastiti tekst: prazan daje 1 bez AI-ja. Ako je najmanje 70 % riječi odgovora (jedinstvene riječi od 3+ slova, bez kvačica) u jednoj
   ponuđenoj opciji, računa se kao klik te opcije. Inače sudi AI, a kvaliteta je udio ispunjenih kriterija rubrike preračunat na 1 do 5;
-  ako je više od 50 % teksta zalijepljeno, najviše 4.
+  ako je više od 50 % teksta zalijepljeno, najviše 3.
 - Presuda nije dostupna: 3 (`FALLBACK_QUALITY`). Neodgovoreno do kraja mjeseca: 1.
 - Odgovori spremljeni prije preračunavanja zadržavaju staru kvalitetu (broj kriterija, bez preračuna); Tokovi to kaže bilješkom (`LEGACY_QUALITY_NOTE`).
 
 ```mermaid
 flowchart TD
   A["Odgovor"] --> B{"Način"}
-  B -->|"klik"| C["qualityFromClick, najviše 4"]
+  B -->|"klik"| C["qualityFromClick, najviše 3"]
   B -->|"vlastiti tekst"| D{"classifyOwnAnswer"}
   D -->|"prazan"| E["kvaliteta 1, bez AI-ja"]
   D -->|"kopija opcije, 70 % riječi"| C
-  D -->|"zalijepljeno, više od 50 %"| F["judge (Sonnet), najviše 4"]
+  D -->|"zalijepljeno, više od 50 %"| F["judge (Sonnet), najviše 3"]
   D -->|"vlastito"| G["judge (Sonnet), najviše 5"]
   F --> H["spremi u answers"]
   G --> H
@@ -160,9 +161,19 @@ neprazan i nezalijepljen (ADR-046, ADR-052). Dobit mjeseca pomiče pokazatelj fi
 **Gradsko tržište** (`economy.ts`). Kapacitet hotela = sobe × 30 noći. Potražnja svakog hotela = kapacitet × min(1, faktor kvalitete) × udio mjeseca (lipanj 60 %, srpanj 85 %,
 kolovoz 95 %, rujan 55 %); hotel s kvalitetom ispod 50 dovodi manje turista (ADR-045). Gradska potražnja je zbroj tih potražnji, a slobodna noćenja (potražnja minus zajamčena noćenja iz ugovora) dijele se po privlačnosti = kvaliteta × cijena × marketing. Kvaliteta je
 ponderirani prosjek pet pokazatelja (30/30/15/15/10, ADR-045), cijena iznad referentne (prosjek osnovnih cijena soba) kažnjava se
-kvadratno i iznad 2,5× daje 0 (ADR-043), marketing daje do ×1,5 (do 5.000 €). Prihod = noćenja × cijena + noćenja iz ugovora; troškovi =
-plaće hotela + 300 € po sobi + marketing + ugovori + ulaganja. Ekonomija još nije kalibrirana prema stvarnim hotelima
-(ADR-047, vidi [STATUS.md](STATUS.md)).
+kvadratno i iznad 2,5× daje 0 (ADR-043), marketing daje do ×1,5 (do 2.000 €). Skup hotel dovodi i manje turista: 20 % manje na svakih 100 %
+iznad referentne cijene, najviše 30 %, a nižom cijenom grad ne dobiva turiste (`demandPriceBp`, ADR-059). Prihod = noćenja × cijena + noćenja iz
+ugovora; cijena sadrži PDV. Troškovi = plaće hotela (500, 700 ili 1.000 € po sobi za 2, 3 ili 4 zvjezdice) + 450 € po sobi + marketing + ugovori +
+ulaganja + PDV (13 % cijene, 13 ÷ 113 prihoda) + provizija portala (8 % prihoda od gostiju bez PDV-a, ne i od ugovora) + materijal i potrošni (17 %
+sveg prihoda bez PDV-a). Konstante i izvori su u `src/lib/rules.ts`, a kalibracija prema kvarnerskim hotelima u [ADR-059](records/DECISIONS.md#adr-059).
+Ulaganje u odjel daje +1 na pokazatelj odjela tek uz puni ulog od 3.000 € mjesečno (`INVEST_EFFECT_DIVISOR`, `INVEST_EFFECT_CAP`).
+
+**Ljestvica.** Prvo hoteli čiji je račun od nule naviše, pa hoteli u blokadi (račun ispod nule); unutar skupine veći napredak, pa novac, pa redoslijed ulaska
+(`src/lib/ranking.ts`, ADR-059). Tuđi račun student ne vidi, pa redak ljestvice nosi samo zastavicu `insolvent`, bez iznosa. Isto pravilo
+vrijedi za podij sezone i mjeseca, za rang na Financijama i za rang na karti.
+
+**Simulacija sezone.** `src/lib/game/season-sim.ts` odigra sezonu s botovima (tri težine) i jednostavnim strategijama istim čistim funkcijama motora, bez
+baze; `npx tsx scripts/sim-sezona.ts` ispisuje maržu, popunjenost i ljestvicu, a `season-sim.test.ts` čuva da marža ostane u rasponu stvarnih hotela.
 
 **Ugovori i botovi.** Svaki hotel dobije jednu ponudu mjeseca (agencija ili usluga). Protuponuda je dopuštena jednom: do 15 % u korist
 hotela prihvaća se, do 30 % agencija nudi sredinu, više se odbija. Botovi (`src/lib/game/bots.ts`) su hoteli bez studenta, vode ih
@@ -256,7 +267,7 @@ kodom (`sp_prof`, uz provjeru prema hashu u `worlds`) ili po Better Auth sesiji 
 Napomene
 - `GET /api/me/staff` vraća popis osoblja iz predloška hotela, bez baze (ADR-012).
 - Ponude ugovora stvara poslužitelj; ne postoji ruta za njihovo stvaranje.
-- Plan mjeseca: cijena 30 do 400 €, marketing 0 do 5.000 €, ulaganje 0 do 3.000 € po odjelu.
+- Plan mjeseca: cijena 30 do 400 €, marketing 0 do 2.000 €, ulaganje 0 do 3.000 € po odjelu.
 - Bez API rute za brisanje: nema `DELETE`, `PATCH` ni `PUT` handlera.
 - Neki handleri nemaju sučelje: ispis pošte igre za profesora (`GET /api/prof/[worldId]/mail`). Koriste ih skripte i testovi.
 - `POST /api/me/mail` (poruka drugom hotelu): 400 oblik ili primatelj je bot, 404 hotel nije u igri, 409 igra nije u tijeku, 429 granice slanja
@@ -311,8 +322,8 @@ Zamka: nova instalacija bez `NEXT_PUBLIC_USE_MOCK=0` prikazuje lažne podatke. T
 
 ## 13 · Testovi i CI
 
-- **674 testa u 57 datoteka**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 171, `lib/engine` 107, `lib` 103, `lib/ai` 99,
-  `lib/tokovi` 83, `content` 80, `components` 27, `db` 4. AI moduli se testiraju lažnim jezičnim modelima, pa testovi ne trebaju ključ ni bazu.
+- **983 testa u 72 datoteke**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 252, `lib/ai` 201, `lib` 154, `lib/engine` 153,
+  `lib/tokovi` 90, `content` 89, `components` 31, `db` 8, `app/api` 5. AI moduli se testiraju lažnim jezičnim modelima, pa testovi ne trebaju ključ ni bazu.
 - Stranice i API rute nemaju vlastitih testova. Cijeli tok pokriva `npm run smoke` (HTTP prema pokrenutom poslužitelju i stvarnoj bazi;
   koraci 11 do 19 uz `SMOKE_CITY=1`), a `npm run ai:smoke` provjerava ključ i hrvatski izlaz.
 - **Provjere:** `npm run typecheck` prolazi, `npm run lint` ima 0 grešaka, `npm run build` prolazi bez ijedne varijable okoline (baza i Better Auth su lijeni).
@@ -323,7 +334,6 @@ Zamka: nova instalacija bez `NEXT_PUBLIC_USE_MOCK=0` prikazuje lažne podatke. T
 
 Namjerno kratko; punu sliku daju [STATUS.md](STATUS.md) i [ROADMAP.md](ROADMAP.md).
 
-- kalibracija troškova prema stvarnim hotelima (PDV, provizije, plaće po zvjezdicama; ADR-047)
 - PIN za ulazak studenta (planiran, ADR-053)
 - ugovori i suradnja između hotela te botovi dobavljača (poruke između hotela postoje samo kao API)
 - sezona dulja od 4 mjeseca (`MAX_ROUNDS` je konstanta), više jezika, prava karta Kvarnera

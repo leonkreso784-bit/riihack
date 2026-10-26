@@ -35,10 +35,20 @@ describe("departments", () => {
   });
 
   it("investmentEffects", () => {
-    expect(investmentEffects({ reception: 1500, kitchen: 3000, maintenance: 999 })).toEqual({ guests: 4 });
-    expect(investmentEffects({ housekeeping: 3000, management: 2500 })).toEqual({ reviews: 3, staff: 2 });
-    expect(investmentEffects({ management: 9000 })).toEqual({ staff: 3 }); // strop po odjelu
+    // ADR-059 (#198): +1 po odjelu tek uz puni ulog od 3.000 €; manje ne donosi ništa
+    expect(investmentEffects({ reception: 1500, kitchen: 3000, maintenance: 999 })).toEqual({ guests: 1 });
+    expect(investmentEffects({ reception: 3000, kitchen: 3000 })).toEqual({ guests: 2 }); // dva odjela na istom pokazatelju se zbrajaju
+    expect(investmentEffects({ housekeeping: 3000, management: 2500 })).toEqual({ reviews: 1 });
+    expect(investmentEffects({ management: 9000 })).toEqual({ staff: 1 }); // strop po odjelu
     expect(investmentEffects({})).toEqual({});
+  });
+
+  it("ulaganje u svih 5 odjela više nije dominantna strategija (#198): 15.000 € donosi +5 ukupno, ne +15", () => {
+    const all = { reception: 3000, housekeeping: 3000, kitchen: 3000, maintenance: 3000, management: 3000 };
+    expect(investmentTotal(all)).toBe(15000);
+    const effects = investmentEffects(all);
+    expect(effects).toEqual({ guests: 2, reviews: 1, operations: 1, staff: 1 });
+    expect(Object.values(effects).reduce((s, n) => s + n, 0)).toBe(5);
   });
 
   it("departmentViews", () => {

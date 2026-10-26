@@ -3,9 +3,9 @@
 **TL;DR**
 
 - **Stanje na dan 26. 10. 2026.**, `main` na `b6ffb61` (oznaka `ri-hack-4.0`, verzija koja je prošla Ri-Hack 4.0).
-- **Provjere su zelene:** 674 testa u 57 datoteka, typecheck i lint bez grešaka, build prolazi, CI zelen. Testovi pokrivaju motor i logiku igre, ne stranice ni API rute.
+- **Provjere su zelene:** 983 testa u 72 datoteke, typecheck i lint bez grešaka, build prolazi, CI zelen. Testovi pokrivaju motor i logiku igre, ne stranice ni API rute.
 - **Glavna nastavna petlja radi na pravom kodu:** ulaz, hotel, gost s ocjenom po rubrici, plan i financije, zatvaranje mjeseca, podij, mentor i profesorov uvid.
-- **Za pilot još nije spremno:** fale brisanje podataka, potvrda e-pošte i reset lozinke, duljina sezone, vlastita baza i kalibrirana ekonomija ([Što fali za pilot](#što-fali-za-pilot)).
+- **Za pilot još nije spremno:** fale brisanje podataka, potvrda e-pošte i reset lozinke, duljina sezone i vlastita baza ([Što fali za pilot](#što-fali-za-pilot)).
 - **Poznate greške:** 4 otvorena issuea ([#239](https://github.com/leonkreso784-bit/riihack/issues/239), [#266](https://github.com/leonkreso784-bit/riihack/issues/266), [#198](https://github.com/leonkreso784-bit/riihack/issues/198), [#110](https://github.com/leonkreso784-bit/riihack/issues/110)) i 21 zapis u [BUGS.md](records/BUGS.md), jedan srednje težine.
 
 Ovaj dokument je poštena slika onoga što postoji, ne ono što je obećano u pitchu. Kamo dalje: [ROADMAP.md](ROADMAP.md). Kako pokrenuti i provjeriti: [RAZVOJ.md](RAZVOJ.md). Kako je sve složeno: [ARHITEKTURA.md](ARHITEKTURA.md).
@@ -18,7 +18,7 @@ Izmjereno 26. 10. 2026. na `b6ffb61`, bez ikakvih varijabli okruženja.
 
 | Provjera | Naredba | Rezultat |
 | --- | --- | --- |
-| Testovi | `npm test` | prolazi: 674 testa u 57 datoteka, 0 neuspjelih, 0 preskočenih, oko 2 s |
+| Testovi | `npm test` | prolazi: 983 testa u 72 datoteke (izmjereno na grani `simon/kalibracija` nakon rebasea na `3e01fd5`), 0 neuspjelih, 0 preskočenih, oko 2 s |
 | Typecheck | `npm run typecheck` | prolazi, bez grešaka |
 | Lint | `npm run lint` | 0 grešaka, 11 upozorenja (9 u uvezenoj datoteci iz prezentacije, 2 u `src`) |
 | Build | `npm run build` | prolazi (Next.js 16.4.2); baza i prijava se inicijaliziraju tek pri radu, pa build ne treba varijable |
@@ -35,7 +35,7 @@ Izmjereno 26. 10. 2026. na `b6ffb61`, bez ikakvih varijabli okruženja.
 
 **gotovo** = radi od početka do kraja u kodu na `main`-u. **djelomično** = koristivo, ali fali navedeni dio. **planirano** = u pitchu ili dokumentima, nema radnog koda na `main`-u. „Gotovo" ne znači „spremno za pilot": to je zasebna lista niže.
 
-Od 17 područja koja postoje u kodu, 13 je gotovo i 4 djelomično. Šest stavki je planirano.
+Od 18 područja koja postoje u kodu, 14 je gotovo i 4 djelomično. Pet stavki je planirano.
 
 | Područje | Stanje | Gdje u kodu | Napomena |
 | --- | --- | --- | --- |
@@ -48,7 +48,7 @@ Od 17 područja koja postoje u kodu, 13 je gotovo i 4 djelomično. Šest stavki 
 | Karta grada i javni podaci hotela | gotovo | `src/app/igra/grad`, `src/components/city`, `src/lib/karta.ts`, `src/lib/game/public.ts` | Izometrijski grad, kartica tvrtke (Pregled, Financije, Registar), vijesti. Tuđi novac je skriven; prihod i dobit zatvorenih mjeseci su javni. Profesorova ploča nema kartu. |
 | Odjeli, osoblje i Tokovi | gotovo | `src/app/igra/osoblje`, `src/lib/tokovi` | Mjesečno ulaganje po odjelu (0 do 3.000 €), stranice koje objašnjavaju kako odgovor, mjesec i odjeli utječu na brojke, „Što ako?" za obračunat mjesec. Osoblje je fiksan popis, bez zapošljavanja. Greška: [#239](https://github.com/leonkreso784-bit/riihack/issues/239). |
 | Sobe | gotovo | `src/app/igra/sobe` | 12 do 18 soba po hotelu; stanje sobe mijenjaju situacije. Nema akcija po sobi. Kasni ulaz ne postavlja stanje sobe ([#266](https://github.com/leonkreso784-bit/riihack/issues/266), stavka 4). |
-| Plan i financije | gotovo | `src/app/igra/plan`, `src/app/igra/financije`, `src/lib/finance-view.ts` | Cijena, marketing, ulaganja po odjelima, kartice Pregled i Obračun; plan se prenosi u idući mjesec. Brojke su nekalibrirane ([#198](https://github.com/leonkreso784-bit/riihack/issues/198)). |
+| Plan i financije | gotovo | `src/app/igra/plan`, `src/app/igra/financije`, `src/lib/finance-view.ts` | Cijena, marketing, ulaganja po odjelima, kartice Pregled i Obračun; plan se prenosi u idući mjesec. Brojke su kalibrirane prema kvarnerskim hotelima ([ADR-059](records/DECISIONS.md#adr-059)). |
 | Zatvaranje mjeseca i podij | gotovo | `src/app/api/prof/[worldId]/round`, `src/lib/game/round.ts`, `src/components/prof-board.tsx` | Zatvaranje za sve hotele, botovi igraju paralelno, podij mjeseca i sezone, automatski osvrt mentora. Sezona je zasad uvijek 4 mjeseca. Zatvaranje mjeseca ne traži potvrdu ([#266](https://github.com/leonkreso784-bit/riihack/issues/266), stavka 13). |
 | Mentor | gotovo | `src/app/igra/mentor`, `src/lib/ai/mentor.ts` | Sokratsko pitanje, studentova refleksija, završni razgovor. Jedna srednja greška: [BUG-075](#bugovi-u-bugsmd). Savjet u mjesečnom osvrtu: [#302](https://github.com/leonkreso784-bit/riihack/issues/302). |
 | Profesorov uvid i promjena ocjene | djelomično | `src/app/profesor/[worldId]/tvrtka`, `src/lib/game/override.ts`, `src/lib/game/grades.ts` | Svi odgovori, presude, razgovori i mentorov tekst; ocjena odgovora može se promijeniti (1 do 5). Jedina ocjena je napredak u igri. Gumb „Izvezi ocjene (CSV)" na ploči izvozi jedan redak po studentu: napredak i po situaciji ocjenu (nakon promjena), vrstu odgovora i mjesec ([#298](https://github.com/leonkreso784-bit/riihack/issues/298)). Izravnog upisa u Merlin nema. |
@@ -56,7 +56,7 @@ Od 17 područja koja postoje u kodu, 13 je gotovo i 4 djelomično. Šest stavki 
 | Demo igra | gotovo | `scripts/seed-demo.ts` | `npm run seed:demo` pripremi igru s odigranim prvim mjesecom. Treba bazu. |
 | Otpornost | gotovo | `src/lib/ai/client.ts`, `src/lib/ai/fallbacks.ts` | Rok 20 s za AI pozive (35 s za završni razgovor mentora, 45 s za prijedlog situacije) i rezervni odgovor; dupli odgovor, odgovor na zatvoren mjesec i dvostruki obračun odbijeni su ili idempotentni (smoke 25. 10.). Zastarjeli gumb „Završi mjesec" je poznata greška ([#266](https://github.com/leonkreso784-bit/riihack/issues/266)). |
 | Mobitel i projektor | djelomično | `src/components/bottom-nav.tsx`, `src/components/app-frame.tsx` | Prikaz je prvo za mobitel, ploča ima projektorski raspored. Otvorene sitnice na 375 px i na velikim ekranima: BUG-077, 078, 064, 065, 055. Nisu ponovno provjerene u pregledniku 26. 10. |
-| Kalibrirana ekonomija | planirano | grana `simon/kalibracija` (nije spojena) | [#198](https://github.com/leonkreso784-bit/riihack/issues/198). Vidi [Što nije izgrađeno](#što-nije-izgrađeno). |
+| Kalibrirana ekonomija | gotovo | `src/lib/rules.ts`, `src/lib/engine/economy.ts`, `src/lib/ranking.ts`, `src/lib/game/season-sim.ts` | PDV, provizija portala, materijal, fiksni trošak i plaće po zvjezdicama, ulaganje samo uz puni ulog, klik najviše 3, marketing do 2.000 €, hotel u blokadi (račun ispod nule) ne stoji iznad solventnog, mala elastičnost potražnje ([ADR-059](records/DECISIONS.md#adr-059)). U simulaciji botova marža sezone je 14 do 20 %. Ostaje u [#198](https://github.com/leonkreso784-bit/riihack/issues/198): rezerva suca na ocjenu 3 i ponovni ulaz (#301). |
 | Karta Kvarnera s pinovima | planirano | nema | Zamijenjena izometrijskim gradom, vidi dolje. |
 | Ugovori i preusmjeravanje gostiju među studentima | planirano | nema | [ADR-034](records/DECISIONS.md#adr-034), vidi dolje. |
 | Više jezika | planirano | nema | Sve je na hrvatskom. |
@@ -81,7 +81,7 @@ Od 17 područja koja postoje u kodu, 13 je gotovo i 4 djelomično. Šest stavki 
 | --- | --- |
 | [#239](https://github.com/leonkreso784-bit/riihack/issues/239) | Tok odgovora za situaciju iz zatvorenog mjeseca javlja „nije tvoja", jer `/api/me` vraća samo situacije tekućeg mjeseca. |
 | [#266](https://github.com/leonkreso784-bit/riihack/issues/266) | Ostatak noćnog pregleda prije žirija. Najvažnije: gumb „Završi mjesec" iz zastarjelog prikaza može zatvoriti sljedeći mjesec; kasni ulaz ne mijenja stanje sobe; situacija s 3 ili 4 kriterija ne može dobiti najvišu kvalitetu; zatvaranje mjeseca ne traži potvrdu. Uz to sitnice: padeži u tekstovima, `$` u imenu hotela, sobe sortirane kao tekst. |
-| [#198](https://github.com/leonkreso784-bit/riihack/issues/198) | Balans ekonomije: ulaganje u odjele je gotovo besplatno, klik doseže kvalitetu 4, marketing do 5.000 €, stečaj nema posljedica, troškovi su preniski prema stvarnim hotelima. Dio rješenja je na grani `simon/kalibracija`. |
+| [#198](https://github.com/leonkreso784-bit/riihack/issues/198) | Balans ekonomije: ulaganje, klik, marketing, stečaj, troškovi i elastičnost riješeni su u [ADR-059](records/DECISIONS.md#adr-059). Ostaje: kad AI sudac padne, svaki vlastiti tekst dobije 3, i preuzimanje hotela ponovnim ulazom ([#301](https://github.com/leonkreso784-bit/riihack/issues/301)). |
 | [#110](https://github.com/leonkreso784-bit/riihack/issues/110) | Šest složenih kriterija u banci situacija čini suca prestrogim; tekstovi u `src/content/situations.json` nisu promijenjeni. |
 
 ### Bugovi u BUGS.md
@@ -123,7 +123,7 @@ Pilot na FMTU-u (Opatija) je plan tima. Popis što još treba vodi se u GitHub I
 | Što | Zašto | Issue |
 | --- | --- | --- |
 | Popraviti greške koje pogađaju svaki razred | Zastarjeli „Završi mjesec", stanje sobe pri kasnom ulasku, kvaliteta uz 3 ili 4 kriterija, potvrda pri zatvaranju mjeseca, tok odgovora za zatvorene mjesece. | [#266](https://github.com/leonkreso784-bit/riihack/issues/266), [#239](https://github.com/leonkreso784-bit/riihack/issues/239) |
-| Kalibrirati ekonomiju | Na `main`-u hotel s 20.000 € početnog stanja u sezoni zaradi otprilike 5 do 6 puta toliko (marža oko 60 %, a stvarni kvarnerski hoteli imaju 11 do 31 %), prema bilješci u [PR-u #209](https://github.com/leonkreso784-bit/riihack/pull/209). Grana treba rebase (3 datoteke u sukobu), ponovno punjenje demo igre i novi pokus s botovima. | [#198](https://github.com/leonkreso784-bit/riihack/issues/198) |
+| Ponovno posijati demo nakon kalibracije | Ekonomija je kalibrirana ([ADR-059](records/DECISIONS.md#adr-059)), pa sve brojke igre vrijede drukčije nego u starom demu. Treba `npm run seed:demo` i jedan smoke na vlastitoj bazi; pokus s pravim razredom tek slijedi. | [#198](https://github.com/leonkreso784-bit/riihack/issues/198) |
 | Brisanje igre i podataka studenata | Nema načina da profesor obriše igru ni studenta; to radi samo developerova skripta (`scripts/cleanup-test-data.ts`). Treba i izjava o čuvanju podataka. Slobodni tekst studenta obrađuje AI pružatelj (Anthropic), a podaci su u Neon bazi (Frankfurt); to treba navesti fakultetu. Podjelu uloga (fakultet kao voditelj obrade, tim kao izvršitelj) tek treba dogovoriti. | [#297](https://github.com/leonkreso784-bit/riihack/issues/297) |
 | Profesorski račun: potvrda e-pošte i reset lozinke | Račun ima samo e-poštu i lozinku. Treba i način da fakultet upravlja računima svojih profesora. | [#296](https://github.com/leonkreso784-bit/riihack/issues/296) |
 | Izvoz ocjena | CSV izvoz je napravljen ([#298](https://github.com/leonkreso784-bit/riihack/issues/298)). Treba još potvrditi s fakultetom je li CSV dovoljan ili traži upis izravno u Merlin (LTI, nije dogovoren). | [#298](https://github.com/leonkreso784-bit/riihack/issues/298) |
@@ -148,7 +148,6 @@ Ovo je u pitchu ili dokumentima, ali na `main`-u nema radnog koda.
 
 | Što | Stanje | Detalji |
 | --- | --- | --- |
-| Kalibrirana ekonomija | kod postoji na grani `simon/kalibracija` ([PR #209](https://github.com/leonkreso784-bit/riihack/pull/209), zatvoren, nije spojen) | Grana dodaje PDV 13 %, proviziju portala 8 %, materijal 17 %, fiksni trošak 450 € po sobi, trošak osoblja po zvjezdicama i marketing do 2.000 €. Na `main`-u su fiksni trošak 300 € po sobi, marketing do 5.000 € i nema PDV-a. Odgođeno do nakon natjecanja ([ADR-047](records/DECISIONS.md#adr-047)). Prati se u [#198](https://github.com/leonkreso784-bit/riihack/issues/198). |
 | Karta Kvarnera s pinovima | nije izgrađena, zamijenjena | Odluka ([zatvoreni issue #125](https://github.com/leonkreso784-bit/riihack/issues/125)): igra je izometrijska društvena igra, ne prava karta. Izgrađen je izometrijski grad `/igra/grad`. Predlošci hotela zadržavaju stvarna mjesta (Rijeka, Opatija, Omišalj, Mali Lošinj, Crikvenica, Rab). Zemljopisna karta nije u rasporedu. |
 | Ugovori i preusmjeravanje gostiju među studentima | nema koda | [ADR-034](records/DECISIONS.md#adr-034), zadatak L19 u [planu vala 3](hackathon/plans/2026-10-24-simpolis-val-3.md). Ugovori postoje samo između hotela i gradskih tvrtki (agencija, praonica, pekara, zaštita, vinarija). Preuzimanje gostiju ili osoblja među igračima postoji samo kao ideja u viziji, bez odluke i koda. |
 | Više jezika | nema koda | Nema biblioteke za i18n; tekstovi su u oko 80 komponenti, a AI promptovi, rubrike i banka situacija su na hrvatskom. Dodavanje jezika znači izvući tekstove i prevesti sadržaj. |

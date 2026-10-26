@@ -12,7 +12,8 @@ const sit = (id: string, quality: Quality | null, effects: SituationView["effect
     id, templateId: id, round: 1, title: `Situacija ${id}`, text: "", area: "Recepcija", difficulty: 2, character: { name: "X", role: "Y" }, options: [],
     state: quality ? "answered" : "open", transcript: [], answer: quality ? { mode: "click", quality, copied: false } : undefined, effects,
   }) as SituationView;
-const PLAN = { reception: 2000 }; // +2 on guests (investmentEffects)
+const PLAN = { reception: 3000 }; // +1 on guests (investmentEffects, ADR-059: the full budget of a department)
+const INVEST = investmentEffects(PLAN).guests ?? 0;
 const ANSWERED = [sit("a", 5, { guests: 4 })]; // quality 5 x effect 4 = +12
 const input = (over: Partial<DepartmentsFlowInput>): DepartmentsFlowInput => ({ metrics: START, plan: PLAN, staff: [], rooms: [], situations: ANSWERED, round: 1, ...over });
 const guests = (i: DepartmentsFlowInput) => buildDepartmentsBoard(i).results.find((r) => r.metric === "guests")!;
@@ -23,12 +24,13 @@ const afterSettle = { ...afterClose, guests: afterClose.guests + (investmentEffe
 
 describe("departments Tok after the month is closed", () => {
   it("before closing: answers and investment are still to come (unchanged behaviour)", () => {
-    expect(guests(input({})).expected).toBe(50 + 12 + 2);
+    expect(INVEST).toBe(1);
+    expect(guests(input({})).expected).toBe(50 + 12 + INVEST);
   });
 
   it("closed, not yet settled: only the investment is still to come", () => {
     expect(afterClose.guests).toBe(62);
-    expect(guests(input({ metrics: afterClose, closed: true } as Partial<DepartmentsFlowInput>)).expected).toBe(62 + 2);
+    expect(guests(input({ metrics: afterClose, closed: true } as Partial<DepartmentsFlowInput>)).expected).toBe(62 + INVEST);
   });
 
   it("closed and settled: nothing is added again", () => {
@@ -37,12 +39,12 @@ describe("departments Tok after the month is closed", () => {
 
   it("the reception lane does not send the situation to the metric a second time", () => {
     const board = buildDepartmentsBoard(input({ metrics: afterClose, closed: true } as Partial<DepartmentsFlowInput>));
-    expect(board.lanes.find((l) => l.department === "reception")!.contribution).toBe(2);
+    expect(board.lanes.find((l) => l.department === "reception")!.contribution).toBe(INVEST);
   });
 
   it("what-if after closing does not count the answers twice", () => {
-    const w = whatIfDepartment({ metrics: afterClose, plan: PLAN, situations: ANSWERED, round: 1, closed: true } as Parameters<typeof whatIfDepartment>[0], "reception", 3000);
-    expect(w.expected).toBe(62 + 3);
+    const w = whatIfDepartment({ metrics: afterClose, plan: {}, situations: ANSWERED, round: 1, closed: true } as Parameters<typeof whatIfDepartment>[0], "reception", 3000);
+    expect(w.expected).toBe(62 + INVEST);
   });
 });
 
