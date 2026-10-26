@@ -148,3 +148,19 @@ export async function readJson(req: Request): Promise<Record<string, unknown>> {
   }
   return body as Record<string, unknown>;
 }
+
+/** Tijelo zahtjeva kao JSON objekt; bez tijela {} (neobavezna polja), a neispravan JSON ili nešto drugo od objekta → 400. */
+export async function readOptionalJson(req: Request): Promise<Record<string, unknown>> {
+  const raw = (await req.text()).trim();
+  if (!raw) return {};
+  let body: unknown;
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    throw new HttpError(400, "Neispravan zahtjev: tijelo mora biti JSON");
+  }
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    throw new HttpError(400, "Neispravan zahtjev: tijelo mora biti JSON objekt");
+  }
+  return body as Record<string, unknown>;
+}

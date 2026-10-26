@@ -3,7 +3,7 @@ import { applyRound } from "@/lib/engine/round";
 import { qualityFromVerdict } from "@/lib/engine/quality";
 import { CLICK_QUALITY_CAP, DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { AnswerView, Metrics, Quality, RubricCriterion, SituationView } from "@/lib/types";
-import { buildAnswerFlow, flowInputFromSituation, LEGACY_QUALITY_NOTE, metricDelta, NO_EFFECTS_TEXT, CLOSE_NOTE, type AnswerFlowInput } from "./answer-flow";
+import { buildAnswerFlow, flowInputFromSituation, LEGACY_QUALITY_NOTE, metricDelta, NO_EFFECTS_TEXT, CLOSE_NOTE, APPLIED_NOTE, type AnswerFlowInput } from "./answer-flow";
 
 const RUBRIC = [
   { id: "c1", text: "Zove hitnu pomoć" },
@@ -153,6 +153,14 @@ describe("buildAnswerFlow", () => {
     expect(dep.find((o) => o.label === "Financije")!.value).toMatch(/Nema svog odjela/);
   });
 
+  it("za zatvoreni mjesec učinak kaže da je već upisan, a ne da se tek upisuje (#239)", () => {
+    const open = step(flow({ answer: own(["c2", "c3"]), effects: EFFECTS }), "ucinak");
+    expect(open.note).toBe(CLOSE_NOTE);
+    const closed = step(flow({ answer: own(["c2", "c3"]), effects: EFFECTS, closed: true }), "ucinak");
+    expect(closed.note).toBe(APPLIED_NOTE);
+    expect(closed.note).not.toBe(CLOSE_NOTE);
+  });
+
   it("kartice kažu koliko je kriterija ispunjeno od koliko, koji broj je koji pokazatelj i tko ga osjeti", () => {
     const steps = flow({ answer: own(["c1", "c2", "c3", "c4"]), rubric: RUBRIC, effects: { ...EFFECTS, finance: 2 } });
     expect(step(steps, "sudac").small).toBe("Ispunjeno 4 od 5 kriterija");
@@ -190,6 +198,8 @@ describe("buildAnswerFlow", () => {
     const a = own(["c1"]);
     expect(flowInputFromSituation({ ...s, answer: a })).toMatchObject({ rubric: undefined, effects: undefined });
     expect(flowInputFromSituation({ ...s, answer: a, rubric: RUBRIC, effects: EFFECTS } as never)).toMatchObject({ rubric: RUBRIC, effects: EFFECTS });
+    expect(flowInputFromSituation({ ...s, answer: a })).toMatchObject({ closed: false });
+    expect(flowInputFromSituation({ ...s, answer: a }, true)).toMatchObject({ closed: true });
   });
   it("napisan svoj tekst s kvalitetom 1 → množitelj 0, prazan i propušten −2, kao applyRound (ADR-046)", () => {
     const start: Metrics = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };

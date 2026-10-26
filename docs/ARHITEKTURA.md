@@ -266,6 +266,10 @@ kodom (`sp_prof`, uz provjeru prema hashu u `worlds`) ili po Better Auth sesiji 
 
 Napomene
 - `GET /api/me/staff` vraća popis osoblja iz predloška hotela, bez baze (ADR-012).
+- `GET /api/me` uz `situations` (tekući mjesec) vraća i `pastSituations`: vlastite situacije prošlih mjeseci (polje izostaje kad ih nema), pa
+  stranice odgovora i toka rade i nakon zatvaranja mjeseca. Rubrika i učinci stižu tek uz odgovor.
+- `POST /api/me/close-round` prima neobavezno tijelo `{ round }`: mjesec koji student ima na ekranu. Ako to više nije tekući mjesec, odgovor je 409
+  „Mjesec se u međuvremenu promijenio. Osvježi stranicu." i ništa se ne zatvara. Prazno tijelo radi kao prije (skripte, stari klijenti).
 - Ponude ugovora stvara poslužitelj; ne postoji ruta za njihovo stvaranje.
 - Plan mjeseca: cijena 30 do 400 €, marketing 0 do 2.000 €, ulaganje 0 do 3.000 € po odjelu.
 - Bez API rute za brisanje: nema `DELETE`, `PATCH` ni `PUT` handlera.
@@ -322,8 +326,8 @@ Zamka: nova instalacija bez `NEXT_PUBLIC_USE_MOCK=0` prikazuje lažne podatke. T
 
 ## 13 · Testovi i CI
 
-- **983 testa u 72 datoteke**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 252, `lib/ai` 201, `lib` 154, `lib/engine` 153,
-  `lib/tokovi` 90, `content` 89, `components` 31, `db` 8, `app/api` 5. AI moduli se testiraju lažnim jezičnim modelima, pa testovi ne trebaju ključ ni bazu.
+- **1030 testova u 75 datoteka**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 268, `lib/ai` 201, `lib` 174, `lib/engine` 163,
+  `lib/tokovi` 91, `content` 89, `components` 31, `db` 8, `app/api` 5. AI moduli se testiraju lažnim jezičnim modelima, pa testovi ne trebaju ključ ni bazu.
 - Stranice i API rute nemaju vlastitih testova. Cijeli tok pokriva `npm run smoke` (HTTP prema pokrenutom poslužitelju i stvarnoj bazi;
   koraci 11 do 19 uz `SMOKE_CITY=1`), a `npm run ai:smoke` provjerava ključ i hrvatski izlaz.
 - **Provjere:** `npm run typecheck` prolazi, `npm run lint` ima 0 grešaka, `npm run build` prolazi bez ijedne varijable okoline (baza i Better Auth su lijeni).

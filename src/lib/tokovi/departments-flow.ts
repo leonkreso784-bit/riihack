@@ -15,7 +15,7 @@ import {
   STAFF_DEPARTMENT_LABELS,
 } from "@/lib/rules";
 import type { DepartmentInvestments, MetricKey, Metrics, RoomStatus, SituationView, StaffDepartment, StaffMember } from "@/lib/types";
-import { activeEffects, departmentsForMetric, metricDelta, signed } from "@/lib/tokovi/answer-flow";
+import { activeEffects, APPLIED_NOTE, departmentsForMetric, metricDelta, signed } from "@/lib/tokovi/answer-flow";
 import { eur } from "@/lib/tokovi/month-flow";
 
 /** Pokazatelji u akuzativu, za rečenice poput "situacija koja dira operativu" (pregled JEZIK-07). METRIC_LABELS su nominativ. */
@@ -74,7 +74,6 @@ export type DepartmentFlow = {
 
 export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava kriterije.";
 export const CLOSE_NOTE = "Primjenjuje se tek kad se mjesec zatvori. Do tada pokazatelj ostaje isti.";
-export const APPLIED_NOTE = "Već je upisano u pokazatelj: zatvorio si mjesec, pa se ovo ne zbraja ponovno.";
 export const FACTOR_RULE = "Promjena pokazatelja = množitelj kvalitete × učinak situacije. Množitelj: 1 → −2, 2 → 0, 3 → +1, 4 → +2, 5 → +3. Napisan svoj tekst (ne zalijepljen) s kvalitetom 1 vrijedi 0.";
 export const WHATIF_LABEL = "Procjena: mijenjaš samo ulaganje ovog odjela, sve ostalo ostaje kako je u planu.";
 

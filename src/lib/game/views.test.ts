@@ -536,6 +536,58 @@ describe("toMeResponse s krugovima", () => {
   });
 });
 
+describe("toMeResponse: situacije prošlih mjeseci (#239)", () => {
+  const a = bundle("a", 1, 20000);
+  const input = (situations: { situation: SituationRow; answer: AnswerRow | null }[], round = 3) => ({
+    world: { ...world, status: "running", round },
+    ...a,
+    rooms: [],
+    all: [a, bundle("b", 2, 20000)],
+    situations,
+  });
+
+  it("odgovorene i propuštene situacije zatvorenih mjeseci idu u pastSituations, tekući mjesec ostaje u situations", () => {
+    const me = toMeResponse(
+      input([
+        { situation: situationRow("s1", 1, { state: "answered" }), answer: answerRow("s1") },
+        { situation: situationRow("s2", 2, { state: "expired" }), answer: answerRow("s2", { mode: "none", text: null, verdict: null, quality: 1 }) },
+        { situation: situationRow("s3", 3), answer: null },
+      ]),
+      NOW,
+      [TEMPLATE],
+    );
+    expect(me.situations.map((s) => s.id)).toEqual(["s3"]);
+    expect(me.pastSituations?.map((s) => [s.id, s.round])).toEqual([
+      ["s1", 1],
+      ["s2", 2],
+    ]);
+    // Presuda i rubrika stižu uz odgovorenu prošlu situaciju, što stranica toka treba.
+    expect(me.pastSituations?.[0].answer?.verdict?.criteriaMet).toEqual(["c1"]);
+    expect(me.pastSituations?.[0].rubric).toEqual(TEMPLATE.rubric.map((c) => ({ id: c.id, text: c.text })));
+    expect(me.pastSituations?.[1].answer?.mode).toBe("none");
+  });
+
+  it("bez prošlih mjeseci polja nema", () => {
+    const me = toMeResponse(input([{ situation: situationRow("s3", 3), answer: null }]), NOW, [TEMPLATE]);
+    expect("pastSituations" in me).toBe(false);
+  });
+
+  it("tuđe situacije ne izlaze ni kao tekuće ni kao prošle", () => {
+    const me = toMeResponse(
+      input([
+        { situation: situationRow("tudja-prosla", 1, { companyId: "b", state: "answered" }), answer: answerRow("tudja-prosla", { text: "TAJNI TEKST" }) },
+        { situation: situationRow("tudja-tekuca", 3, { companyId: "b" }), answer: null },
+        { situation: situationRow("moja-prosla", 1, { state: "answered" }), answer: answerRow("moja-prosla") },
+      ]),
+      NOW,
+      [TEMPLATE],
+    );
+    expect(me.situations).toEqual([]);
+    expect(me.pastSituations?.map((s) => s.id)).toEqual(["moja-prosla"]);
+    expect(JSON.stringify(me)).not.toContain("TAJNI TEKST");
+  });
+});
+
 describe("toCompanyDetail", () => {
   it("sve situacije svih krugova po krugu i izvještaji tvrtke", () => {
     const a = bundle("a", 1, 20000);

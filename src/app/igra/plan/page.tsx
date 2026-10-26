@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Megaphone, Tag } from "lucide-react";
-import { api, usePoll } from "@/lib/client";
+import { api, blocksPage, usePoll } from "@/lib/client";
 import { eur, num } from "@/lib/format";
 import { activeIn, breakdown, contractMargin, nightMargin, staffCostOf } from "@/lib/finance-view";
 import { FIXED_COST_PER_ROOM, MARKETING_MAX, PRICE_MAX, PRICE_MIN, ROUND_LABELS } from "@/lib/rules";
@@ -13,6 +13,7 @@ import { PageHeader } from "@/components/page-header";
 import { Panel } from "@/components/panel";
 import { ContractOffers } from "@/components/city/contract-offers";
 import { Dots } from "@/components/loading";
+import { PollNotice } from "@/components/poll-notice";
 
 const SLIDER = "h-11 w-full cursor-pointer accent-primary";
 
@@ -43,7 +44,7 @@ export default function PlanPage() {
   const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string }>();
 
-  if (error) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
+  if (error && blocksPage(error, data)) return <p role="alert" className="rounded-xl bg-down-soft px-4 py-3 text-down">{error.message}</p>;
   if (!data) return <div className="h-80 animate-pulse rounded-[var(--radius)] bg-muted" aria-busy="true" aria-label="Učitavam" />;
 
   const plan = draft ?? data.plan;
@@ -65,6 +66,7 @@ export default function PlanPage() {
 
   return (
     <div className="space-y-5 pt-4 md:pt-0">
+      <PollNotice error={error} />
       <PageHeader title={`Plan za ${month.toLowerCase()}`} subtitle="Odredi cijenu noćenja i marketing prije nego profesor zatvori mjesec." />
 
       <div className="grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] xl:items-start">

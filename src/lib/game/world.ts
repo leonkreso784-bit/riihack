@@ -224,12 +224,12 @@ export async function loadProfState(world: WorldRow): Promise<ProfStateResponse>
   return toProfState({ world, all, reports, contracts, events, bank, dispatches });
 }
 
-/** GET /api/me: tvrtka, situacije tekućeg kruga, izvještaji, ljestvica, plan, ugovori, obračuni, grad i vijesti. */
+/** GET /api/me: tvrtka, situacije tekućeg kruga (i vlastite prošle, #239), izvještaji, ljestvica, plan, ugovori, obračuni, grad i vijesti. */
 export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
   const [rooms, all, situations, reports, plan, contracts, finances, events, pool, mail, unreadMail] = await Promise.all([
     listRooms(ctx.company.id),
     listCompanies(ctx.world.id),
-    listSituationsWithAnswers(ctx.company.id, ctx.world.round),
+    listSituationsWithAnswers(ctx.company.id), // svi mjeseci ove tvrtke; toMeResponse ih razdvoji na tekući i prošle
     listWorldReports(ctx.world.id),
     getPlanRow(ctx.company.id, ctx.world.round),
     listWorldContracts(ctx.world.id),

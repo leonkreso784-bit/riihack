@@ -241,7 +241,7 @@ const hotelNames = (all: CompanyWithPlayer[]) =>
   Object.fromEntries(all.map(({ company }) => [company.id, company.name]));
 
 /**
- * `situations` = situacije tvrtke (u odgovor idu samo one tekućeg kruga); `reports` = izvještaji svih tvrtki igre
+ * `situations` = situacije tvrtke (u `situations` idu one tekućeg kruga, u `pastSituations` one prošlih); `reports` = izvještaji svih tvrtki igre
  * (tvrtka dobije svoje, ljestvica skok kruga); `plan` = spremljeni plan tekućeg kruga (bez njega zadani);
  * `finances` = obračuni tvrtke; `departments` = stanje odjela iz osoblja predloška, soba, pokazatelja i ulaganja plana;
  * `mail` = pošta tvrtke najnovija prvo (u odgovor ide zadnjih 30), `unreadMail` = broj nepročitanih (L15).
@@ -266,12 +266,17 @@ export function toMeResponse(
   const { world, company, player, rooms, all, situations = [], reports = [] } = input;
   const { plan = null, finances = [], contracts = [], events = [], mail = [], unreadMail = 0 } = input;
   const leaderboard = ownCashOnly(toLeaderboard(all, reports), company.id);
-  const current = situations.filter((s) => s.situation.round === world.round);
+  // Samo situacije ove tvrtke (obrana u dubinu, upit ih već filtrira): tekući mjesec ide u `situations`, prošli u
+  // `pastSituations` da stranice odgovora i toka rade i nakon zatvaranja mjeseca (#239).
+  const own = situations.filter((s) => s.situation.companyId === company.id);
+  const current = own.filter((s) => s.situation.round === world.round);
+  const past = own.filter((s) => s.situation.round < world.round);
   const roundPlan = toPlan(world.round, plan, rooms);
   return {
     world: toWorldView(world, now),
     company: toCompanyView(company, player, rooms.length),
     situations: toSituationViews(current, company.name, pool),
+    ...(past.length > 0 && { pastSituations: toSituationViews(past, company.name, pool) }),
     leaderboard,
     reports: companyReports(reports, company.id),
     plan: roundPlan,

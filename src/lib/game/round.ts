@@ -12,7 +12,7 @@ import { pickRoom } from "@/lib/engine/rooms";
 import { applyRound, isWrittenAnswer } from "@/lib/engine/round";
 import { HttpError } from "@/lib/http";
 import { MISSED_QUALITY, SITUATIONS_PER_ROUND } from "@/lib/rules";
-import type { MetricKey, Metrics, Quality, RoomType, RoundReportView, SituationTemplate } from "@/lib/types";
+import type { MetricKey, Metrics, Quality, RoomStatus, RoomType, RoundReportView, SituationTemplate } from "@/lib/types";
 import type { requirePlayer } from "@/lib/session";
 import {
   listScheduledDispatches,
@@ -67,6 +67,28 @@ export function lateJoinTemplateIds(rows: { companyId: string; templateId: strin
 }
 
 /**
+ * Stanje sobe koje nova situacija postavlja (npr. kvar klime: soba 105 postaje "broken"): jedan zapis po umetnutoj
+ * situaciji sa sobom. Dijele ga openRound i openRoundForLateJoin, da kasni ulaz ne ostavi sobu "Slobodna" (#266, 4).
+ */
+export function roomProblemUpdates(
+  inserted: { companyId: string; roomNumber: string | null; templateId: string }[],
+  byId: Map<string, Pick<SituationTemplate, "room">>,
+): { companyId: string; number: string; status: RoomStatus }[] {
+  return inserted.flatMap((s) => {
+    const room = byId.get(s.templateId)?.room;
+    return room && s.roomNumber ? [{ companyId: s.companyId, number: s.roomNumber, status: room.problemStatus }] : [];
+  });
+}
+
+const roomProblemItems = (
+  inserted: Parameters<typeof roomProblemUpdates>[0],
+  byId: Parameters<typeof roomProblemUpdates>[1],
+): BatchItem<"pg">[] =>
+  roomProblemUpdates(inserted, byId).map((u) =>
+    db.update(rooms).set({ status: u.status }).where(and(eq(rooms.companyId, u.companyId), eq(rooms.number, u.number))),
+  );
+
+/**
  * Kasni ulaz (BUG-027): tvrtka koja uđe dok igra traje dobije situacije tekućeg mjeseca kao i ostali (isti predlošci,
  * sobe iz svog hotela). Ponovni poziv ne radi ništa (unique company, round, template).
  */
@@ -95,7 +117,10 @@ export async function openRoundForLateJoin(world: WorldRow, companyId: string): 
     }
     return [{ companyId, round: world.round, templateId, roomNumber }];
   });
-  if (rows.length) await db.insert(situations).values(rows).onConflictDoNothing();
+  if (rows.length === 0) return;
+  // Kao openRound: soba situacije dobije stanje problema, samo za situacije koje su ovdje stvarno umetnute.
+  const inserted = await db.insert(situations).values(rows).onConflictDoNothing().returning();
+  await runBatch(roomProblemItems(inserted, byId));
 }
 
 export async function openRound(world: WorldRow, round: number, deadlineMinutes?: number): Promise<WorldRow> {
@@ -160,16 +185,7 @@ export async function openRound(world: WorldRow, round: number, deadlineMinutes?
         .where(and(inArray(dispatches.id, executed), eq(dispatches.status, "scheduled"))),
     );
   }
-  for (const s of inserted) {
-    const t = byId.get(s.templateId);
-    if (!t?.room || !s.roomNumber) continue;
-    items.push(
-      db
-        .update(rooms)
-        .set({ status: t.room.problemStatus })
-        .where(and(eq(rooms.companyId, s.companyId), eq(rooms.number, s.roomNumber))),
-    );
-  }
+  items.push(...roomProblemItems(inserted, byId));
   items.push(
     db
       .update(worlds)
@@ -290,12 +306,44 @@ export async function closeRoundForAll(world: WorldRow, round: number): Promise<
   return closed;
 }
 
-/** POST /api/me/close-round: student sam zatvara tekući krug. */
-export async function closeMyRound(ctx: PlayerCtx): Promise<RoundReportView> {
+/** Mjesec za zatvaranje iz tijela zahtjeva (CloseRoundRequest.round): bez polja undefined, inače cijeli broj od 1. */
+export function parseCloseRound(value: unknown): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+    throw new HttpError(400, "Neispravan mjesec za zatvaranje");
+  }
+  return value;
+}
+
+export const ROUND_CHANGED = "Mjesec se u međuvremenu promijenio. Osvježi stranicu.";
+
+/**
+ * Zašto student sada ne može zatvoriti mjesec (poruka za 409), ili null. `requested` = mjesec koji je student imao na
+ * ekranu: zastarjeli klik ("Završi lipanj" dok je profesor već otvorio srpanj) ne smije zatvoriti sljedeći mjesec, pa se
+ * razlika od tekućeg mjeseca odbija prije svega ostalog što bi tekući mjesec zatvorilo. Bez `requested` (stariji
+ * klijenti, smoke) vrijedi tekući mjesec kao i prije.
+ */
+export function closeRoundBlocked(
+  world: { status: string; round: number },
+  company: { closedRound: number },
+  requested?: number,
+): string | null {
+  if (world.status === "lobby") return "Igra još nije počela";
+  if (world.status === "finished") return "Sezona je gotova";
+  if (requested !== undefined && requested !== world.round) return ROUND_CHANGED;
+  if (company.closedRound >= world.round) return "Ovaj krug si već zatvorio";
+  return null;
+}
+
+/**
+ * POST /api/me/close-round: student sam zatvara tekući krug. `requested` je mjesec koji student namjerava zatvoriti;
+ * ako se razlikuje od tekućeg, 409 (ROUND_CHANGED). Zatvara se uvijek `requested` (ili tekući), nikad "sljedeći":
+ * closeCompanyRound ima zaštitu po (tvrtka, krug), pa se i istodobni dvoklik zatvori točno jednom.
+ */
+export async function closeMyRound(ctx: PlayerCtx, requested?: number): Promise<RoundReportView> {
   const { world, company } = ctx;
-  if (world.status === "lobby") throw new HttpError(409, "Igra još nije počela");
-  if (world.status === "finished") throw new HttpError(409, "Sezona je gotova");
-  if (company.closedRound >= world.round) throw new HttpError(409, "Ovaj krug si već zatvorio");
+  const blocked = closeRoundBlocked(world, company, requested);
+  if (blocked) throw new HttpError(409, blocked);
   // Krug je upravo prešao u sljedeći, a situacije se još upisuju (milisekunde): ne zatvaraj prazan krug. Bez
   // slučajnog izvlačenja (L12, autoDraw = false) krug smije biti prazan, pa se tada smije zatvoriti.
   if (world.autoDraw && SITUATIONS.length > 0 && (await countSituations(company.id, world.round)) === 0) {

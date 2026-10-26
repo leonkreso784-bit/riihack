@@ -29,12 +29,11 @@ Faze 3 do 5 nemaju datume namjerno: ovise o tome što pilot pokaže. Ideje koje 
 
 ### Faza 0 u detalje
 
-Milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6) drži deset otvorenih issueova ([svi milestoneovi](https://github.com/leonkreso784-bit/riihack/milestones)). Popis u GitHub Issues je izvor istine: ovdje je samo pregled.
+Milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6) drži devet otvorenih issueova ([svi milestoneovi](https://github.com/leonkreso784-bit/riihack/milestones)). Popis u GitHub Issues je izvor istine: ovdje je samo pregled.
 
 | Issue | Što | Zašto je potrebno za pilot |
 | --- | --- | --- |
-| [#266](https://github.com/leonkreso784-bit/riihack/issues/266) | Nalazi noćnog pregleda koji nisu popravljeni (zastarjeli „Završi mjesec", rubrike s 3 kriterija, sitnice) | Ispravnost svakog razreda |
-| [#239](https://github.com/leonkreso784-bit/riihack/issues/239) | Tok odgovora za zatvorene mjesece | Student može pregledati svoje prošle odgovore |
+| [#266](https://github.com/leonkreso784-bit/riihack/issues/266) | Ostatak noćnog pregleda: neuspjeli dohvat na Gradu i Mentoru (stavka 3); ostale stavke su popravljene | Ispravnost svakog razreda |
 | [#198](https://github.com/leonkreso784-bit/riihack/issues/198) | Balans ekonomije: kalibracija, ulaganja, klik, marketing, stečaj i elastičnost su u [ADR-059](records/DECISIONS.md#adr-059); ostaje rezerva suca na ocjenu 3 kad AI padne | Pošteno ocjenjivanje kad AI nije dostupan |
 | [#110](https://github.com/leonkreso784-bit/riihack/issues/110) | Rubrike situacija: spojeni kriteriji čine suca prestrogim | Pošteno ocjenjivanje |
 | [#299](https://github.com/leonkreso784-bit/riihack/issues/299) | Duljina sezone po igri (sada fiksno 4 mjeseca) | Kolegij traje semestar, 13 do 15 tjedana |

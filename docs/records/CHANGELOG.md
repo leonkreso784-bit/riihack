@@ -3,6 +3,12 @@
 Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 03:00 CEST, zatim CET (sat vraćen u 03:00 na 02:00). Priča po sesijama je u
 [PROGRESS.md](../hackathon/PROGRESS.md).
 
+## Nakon natjecanja
+
+| PR | Spojeno | Autor | Što |
+| --- | --- | --- | --- |
+| [#310](https://github.com/leonkreso784-bit/riihack/pull/310) | čeka spajanje | Simon | popravci iz [#266](https://github.com/leonkreso784-bit/riihack/issues/266) (zastarjeli „Završi mjesec" dobiva 409, odgovor se ne gubi nakon osvježavanja, neuspjeli dohvat ne zamjenjuje stranicu, kasni ulaz postavlja stanje sobe, redoslijed i naslovi situacija na ploči, tekstovi, sobe po broju, potvrda i podij na ploči profesora) i [#239](https://github.com/leonkreso784-bit/riihack/issues/239) (`pastSituations`, tok odgovora za zatvorene mjesece); bez promjene baze |
+
 ## M3 · Obilazak 3 (rok ned 07:45)
 
 | PR | Spojeno | Autor | Što |

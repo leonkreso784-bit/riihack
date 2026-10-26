@@ -163,6 +163,49 @@ const SITUATIONS: SituationView[] = [
   },
 ];
 
+// A situation from a closed month (June), answered: the answer and flow pages must still open it (#239).
+const PAST_SITUATIONS: SituationView[] = [
+  {
+    id: "s-lipanj-prekobukiranje",
+    templateId: "prekobukiranje",
+    round: 1,
+    title: "Prekobukirana soba: gošća s rezervacijom stoji na recepciji",
+    text: "Na recepciju hotela Vila Ana stiže gošća s potvrdom rezervacije za sobu 105, no u sustavu je ista soba dvaput prodana, a prvi gost još nije otišao. Iza nje je red, a slobodnih soba tog tipa nema.",
+    area: "Gosti",
+    difficulty: 3,
+    roomNumber: "105",
+    character: { name: "Ivana Babić", role: "Gošća, poslovni put" },
+    options: [
+      { id: "o1", text: "Ispričajte se i smjestite je u susjedni hotel uz pokrivene troškove." },
+      { id: "o2", text: "Recite joj da pričeka dok se soba ne oslobodi." },
+    ],
+    state: "answered",
+    transcript: [
+      { role: "character", text: "Imam potvrdu rezervacije i putujem od jutra. Što to znači da nema sobe?" },
+      { role: "student", text: "Ispričavam se, odmah ću pronaći rješenje za vas." },
+      { role: "character", text: "Nadam se. Ne mogu čekati u redu cijelu večer." },
+    ],
+    answer: {
+      mode: "own",
+      text: "Iskreno se ispričavam, greška je naša. Smještam vas večeras u susjedni hotel iste kategorije, pokrivamo sve troškove i prijevoz, a sutra imate prednost za sobu 105.",
+      quality: 3, // 3 of 5 criteria met: quality is the share on the 1 to 5 scale (scaleToQuality), so 3
+      copied: false,
+      verdict: {
+        criteriaMet: ["c1", "c2", "c3"],
+        reasoning: "Priznao si grešku i ponudio konkretno rješenje. Nisi provjerio kakav smještaj gošća zapravo treba.",
+      },
+    },
+    rubric: [
+      { id: "c1", text: "Ispriča se i preuzme odgovornost" },
+      { id: "c2", text: "Ponudi konkretno rješenje odmah" },
+      { id: "c3", text: "Pokrije troškove gošće" },
+      { id: "c4", text: "Pita što gošća treba" },
+      { id: "c5", text: "Jasno kaže što slijedi" },
+    ],
+    effects: { guests: 3, reviews: 2 },
+  },
+];
+
 const REPORTS: RoundReportView[] = [
   {
     round: 1,
@@ -291,6 +334,7 @@ export const MOCK_ME: MeResponse = {
   world: WORLD,
   company: COMPANY,
   situations: SITUATIONS,
+  pastSituations: PAST_SITUATIONS,
   leaderboard: STUDENT_LEADERBOARD,
   reports: REPORTS,
   plan: { round: 2, price: 85, marketing: 1000, investments: { maintenance: 3000 } },

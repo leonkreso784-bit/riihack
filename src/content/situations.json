@@ -140,7 +140,7 @@
       },
       {
         "id": "o3",
-        "text": "Obitelj danas preseljavamo u najbližu slobodnu sobu, čak i ako je manja, uz popust ili besplatan doručak. {soba} blokiram u sustavu i naručujem redovni servis, a recepciji šaljem poruku s rokom popravka.",
+        "text": "Obitelj danas preseljavamo u najbližu slobodnu sobu, čak i ako je manja, uz popust ili besplatan doručak. Sobu {soba} blokiram u sustavu i naručujem redovni servis, a recepciji šaljem poruku s rokom popravka.",
         "criteria": [
           "c1",
           "c3",

@@ -4,7 +4,8 @@ import { useCallback, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Flag, Hourglass, MessageSquarePlus, SkipForward, Trophy } from "lucide-react";
 import { api } from "@/lib/client";
-import { ROUND_LABELS } from "@/lib/rules";
+import { closeMonthConfirm, podiumReplayIsClean } from "@/lib/podium";
+import { MISSED_QUALITY, ROUND_LABELS } from "@/lib/rules";
 import type { LeaderboardRow, ProfStateResponse } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Panel } from "./panel";
@@ -54,7 +55,7 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
       ) : (
         <>
           <RoundBanner world={world} syncedAt={syncedAt} size="xl" />
-          <RoundControls worldId={world.id} round={world.round} last={last} onChange={onChange} onClosed={showPodium} />
+          <RoundControls worldId={world.id} round={world.round} last={last} playing={playing.length} onChange={onChange} onClosed={showPodium} />
         </>
       )}
 
@@ -92,7 +93,8 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
               <button type="button" aria-pressed={anonymous} onClick={() => setAnonymous((a) => !a)} className={cn(toggle, anonymous ? "bg-secondary text-secondary-foreground" : "hover:bg-muted")}>
                 Anonimno
               </button>
-              {closedMonth(state) && (
+              {/* #266, 14: once someone has closed the new month the board mixes two months, so no replay of the old podium. */}
+              {closedMonth(state) && podiumReplayIsClean(world, players) && (
                 <button type="button" onClick={() => showPodium(state)} className={cn(toggle, "text-secondary-foreground hover:bg-muted")}>
                   <Trophy className="size-4" aria-hidden /> Pokaži podij
                 </button>
@@ -110,7 +112,7 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
   );
 }
 
-function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: string; round: number; last: boolean; onChange: () => void; onClosed: (s: ProfStateResponse) => void }) {
+function RoundControls({ worldId, round, last, playing, onChange, onClosed }: { worldId: string; round: number; last: boolean; playing: number; onChange: () => void; onClosed: (s: ProfStateResponse) => void }) {
   const [minutes, setMinutes] = useState<number | undefined>(undefined); // "Ručno": a running deadline locks unanswered situations at 1/5
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -129,6 +131,12 @@ function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: 
     }
   }
 
+  // Closing a month is final and gives the students still playing the lowest grade on what they left open, so ask first
+  // (#266, 13), like "Završi sezonu" does.
+  const advance = () => {
+    if (confirm(closeMonthConfirm(ROUND_LABELS[round - 1].toLowerCase(), ROUND_LABELS[round].toLowerCase(), playing, MISSED_QUALITY)))
+      run(() => api.openRound(worldId, { fromRound: round, ...(minutes ? { deadlineMinutes: minutes } : {}) }));
+  };
   const finish = () => {
     if (confirm("Završiti sezonu? Zatvara se mjesec svima i ljestvica postaje konačna.")) run(() => api.finish(worldId));
   };
@@ -161,7 +169,7 @@ function RoundControls({ worldId, round, last, onChange, onClosed }: { worldId: 
             <button
               type="button"
               disabled={busy}
-              onClick={() => run(() => api.openRound(worldId, { fromRound: round, ...(minutes ? { deadlineMinutes: minutes } : {}) }))}
+              onClick={advance}
               className={cn(button, "bg-primary text-primary-foreground hover:bg-[#1f5fe0]")}
             >
               <SkipForward className="size-5" aria-hidden />

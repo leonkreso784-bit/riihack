@@ -12,6 +12,7 @@ import type {
   ApiError,
   BotsRequest,
   ChatRequest,
+  CloseRoundRequest,
   CompanyDetailResponse,
   ContractDecisionRequest,
   ContractView,
@@ -47,11 +48,18 @@ import type {
 } from "./types";
 
 async function send(path: string, method: "GET" | "POST", body?: unknown): Promise<Response> {
-  const res = await fetch(path, {
-    method,
-    headers: body === undefined ? undefined : { "content-type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
+  let res: Response;
+  try {
+    res = await fetch(path, {
+      method,
+      headers: body === undefined ? undefined : { "content-type": "application/json" },
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  } catch (e) {
+    // Bez veze (Wi-Fi, mobilni podaci) fetch baca TypeError s engleskim "Failed to fetch"; student dobije razumljivu poruku.
+    if (e instanceof TypeError) throw new Error("Nema veze s internetom. Pokušaj ponovno.");
+    throw e;
+  }
   if (!res.ok) {
     const err = (await res.json().catch(() => null)) as ApiError | null;
     throw Object.assign(new Error(err?.error ?? `Greška ${res.status}`), { status: res.status });
@@ -61,6 +69,12 @@ async function send(path: string, method: "GET" | "POST", body?: unknown): Promi
 
 // L17: true when the server answered 401 (no professor account signed in).
 export const isUnauthorized = (e: unknown) => (e as { status?: number } | null)?.status === 401;
+
+// A failed poll replaces the whole page only when there is nothing to show yet (first load) or when polling can never
+// recover (401: the cookie is gone). Otherwise the page keeps the last good data and shows <PollNotice>; usePoll keeps polling.
+// Plain boolean on purpose (not a type predicate): in the false branch a predicate would narrow `error` to undefined, and
+// the pages still pass it on to <PollNotice>. Callers guard with `error && blocksPage(error, data)`.
+export const blocksPage = (error: Error | undefined, data: unknown): boolean => !!error && (!data || isUnauthorized(error));
 
 const get = async <T>(path: string) => (await send(path, "GET")).json() as Promise<T>;
 const post = async <T>(path: string, body: unknown = {}) => (await send(path, "POST", body)).json() as Promise<T>;
@@ -110,7 +124,9 @@ const realApi = {
     const res = await send(`/api/situations/${situationId}/chat`, "POST", req);
     return res.body!.pipeThrough(new TextDecoderStream());
   },
-  closeRound: () => post<RoundReportView>("/api/me/close-round"),
+  // `round` = the month on the student's screen; the server answers 409 when it is no longer the current month
+  // (a stale click must not close the next one).
+  closeRound: (round?: number) => post<RoundReportView>("/api/me/close-round", round === undefined ? {} : ({ round } satisfies CloseRoundRequest)),
   report: (round: number) => get<RoundReportView>(`/api/me/report/${round}`),
   reflection: (req: ReflectionRequest) => post<RoundReportView>("/api/me/reflection", req),
   plan: (req: PlanRequest) => post<RoundPlan>("/api/me/plan", req),
@@ -352,7 +368,10 @@ const mockApi: Api = {
     ),
   chat: async () =>
     wordStream("Drugi apartman? Dobro, ali neka bude odmah, ne za sat vremena. I tko mi nadoknađuje izgubljeno jutro?"),
-  closeRound: () => {
+  closeRound: (round) => {
+    // Same refusal as the server for a stale click (the mock month never moves, so this only guards the contract).
+    if (round !== undefined && round !== MOCK_ME.world.round)
+      return Promise.reject(Object.assign(new Error("Mjesec se u međuvremenu promijenio. Osvježi stranicu."), { status: 409 }));
     mockClosedRound = MOCK_ME.world.round; // the waiting state shows on the next poll
     return wait({ round: MOCK_ME.world.round, metricsBefore: MOCK_ME.company.metrics, metricsAfter: MOCK_ME.company.metrics });
   },

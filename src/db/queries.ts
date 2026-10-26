@@ -4,6 +4,7 @@ import { db } from "./index";
 import { answers, companies, contracts, events, finances, players, plans, rooms, roundReports, situations, worlds } from "./schema";
 import type { AnswerRow, CompanyRow, PlayerRow, RoomRow, RoundReportRow, SituationRow, WorldRow } from "./schema";
 import type { ContractRow, EventRow, FinanceRow, PlanRow } from "./schema";
+import { compareRooms } from "@/lib/engine/rooms";
 import { getTemplate } from "@/lib/game/situations";
 import type { ChatTurn, DepartmentInvestments, SituationTemplate } from "@/lib/types";
 
@@ -36,13 +37,10 @@ export async function listCompanies(
     .orderBy(asc(companies.joinIndex));
 }
 
-/** Sobe tvrtke po katu i broju. */
+/** Sobe tvrtke po katu i broju; broj je tekst, pa se poredak brojeva slaže ovdje (compareRooms), ne u SQL-u (#266, 12). */
 export async function listRooms(companyId: string): Promise<RoomRow[]> {
-  return db
-    .select()
-    .from(rooms)
-    .where(eq(rooms.companyId, companyId))
-    .orderBy(asc(rooms.floor), asc(rooms.number));
+  const rows = await db.select().from(rooms).where(eq(rooms.companyId, companyId));
+  return rows.sort(compareRooms);
 }
 
 /**
