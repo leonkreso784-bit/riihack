@@ -25,13 +25,13 @@
 
 - **Što je:** web igra za studente ugostiteljstva i turizma. Profesor otvori igru, razred uđe kodom, a svaki student vodi svoj hotel u zajedničkom gradu na Kvarneru, mjesec po mjesec.
 - **Uloga AI-ja:** glumi goste i osoblje, ocjenjuje odgovore po rubrici i kao mentor prvo pita, pa tek onda objašnjava. **Svaku brojku računaju pravila igre, ne AI.**
-- **Radi:** glavna petlja radi uživo na pravom kodu, a 674 testa (motor i logika igre) prolaze. Napravljen u 24 sata na hackathonu Ri-Hack 4.0, 3. mjesto od 8 timova.
+- **Radi:** glavna petlja radi uživo na pravom kodu, a 1.085 testova prolazi. Napravljen u 24 sata na hackathonu Ri-Hack 4.0, 3. mjesto od 8 timova.
 - **Za pilot još nije spremno:** popis što fali je u dijelu [Stanje](#stanje-radi-li).
 - **Dalje (plan):** besplatni pilot na FMTU-u u Opatiji 2027., zatim licence za fakultete. Još ništa nije dogovoreno, vidi [Plan](#plan).
 
 ## Isprobaj sam
 
-Treba ti samo preglednik. Igru otvaraš sam, kao profesor, pa ti kod igre ne treba unaprijed. Koristi izmišljene podatke: brisanje igara i podataka još nije izgrađeno.
+Treba ti samo preglednik. Igru otvaraš sam, kao profesor, pa ti kod igre ne treba unaprijed. Koristi izmišljene podatke. Na kraju igru možeš obrisati tipkom **Obriši igru** na dnu ploče igre.
 
 1. Otvori [riihack.vercel.app/profesor](https://riihack.vercel.app/profesor) i odaberi **Napravi račun**.
 2. Odaberi **Nova igra**, upiši naziv i odaberi **Napravi igru** (broj studenata može ostati 24). Dobiješ kod igre i QR kod.
@@ -51,11 +51,11 @@ Treba ti samo preglednik. Igru otvaraš sam, kao profesor, pa ti kod igre ne tre
 Profesor otvori igru, razred uđe kodom ili QR kodom, a svaki student dobije jedan od šest hotela. Profesor može dodati botove, pa i mali razred ima tržište. Zatim svaki mjesec ide ovako:
 
 1. **Gost ima problem.** Stižu dvije situacije, npr. klima ne radi usred sezone. Gosta glumi AI, a student s njim razgovara i otkrije što mu zapravo treba.
-2. **Odgovor i presuda.** Vlastite riječi vrijede do 5 od 5, ponuđeni odgovor najviše 4. AI sudac označi koje je kriterije rubrike odgovor ispunio i zašto, a bodove računaju pravila.
+2. **Odgovor i presuda.** Vlastite riječi vrijede do 5 od 5, ponuđeni odgovor najviše 3. AI sudac označi koje je kriterije rubrike odgovor ispunio i zašto, a bodove računaju pravila.
 
 <p align="center">
   <img src="docs/media/gost-i-presuda.gif" width="360" alt="Na mobitelu student piše gostu: Dobar dan, gospodine Kovaču, hvala što ste nam javili. Što vas je najviše smetalo? Gost odgovara da ga je najviše smetala buka s terase do ponoći i da mu je recepcija samo slegnula ramenima. Student zatim vlastitim riječima piše ispriku i nudi rješenje, sudac razmišlja, pa prikazuje ocjenu 4 od 5, ispunjena 4 kriterija i obrazloženje po rubrici."><br>
-  <sub>Razgovor s gostom, odgovor svojim riječima i presuda po rubrici. Čekanje na AI je skraćeno.</sub>
+  <sub>Razgovor s gostom, odgovor svojim riječima i presuda po rubrici. Čekanje na AI je skraćeno. Snimljeno na hackathonu 25. 10. 2026.</sub>
 </p>
 
 3. **Plan i zatvaranje mjeseca.** Student postavi cijenu, marketing i ulaganja u odjele. Profesor zatvori mjesec, a pravila izračunaju popunjenost, novac i recenzije za sve hotele, jer dijele iste turiste. Podij je po napretku, ne po novcu.
@@ -86,14 +86,14 @@ Profesor otvori igru, razred uđe kodom ili QR kodom, a svaki student dobije jed
 
 ## Stanje: radi li?
 
-Glavna petlja radi od početka do kraja na pravom kodu. Brojke su iz [docs/STATUS.md](docs/STATUS.md) na dan 26. 10. 2026. (commit `b6ffb61`).
+Glavna petlja radi od početka do kraja na pravom kodu. Brojke su s `main`-a na dan 26. 10. 2026. Verzija koju je ocjenjivao žiri čuva se na oznaci [`ri-hack-4.0`](https://github.com/leonkreso784-bit/riihack/releases/tag/ri-hack-4.0).
 
 | Što | Brojke |
 | --- | --- |
-| **Provjere** | 674 testa u 57 datoteka prolaze (motor i logika igre; stranice i API rute nemaju testova); typecheck, lint, build i CI su zeleni |
+| **Provjere** | 1.085 testova u 80 datoteka prolazi; typecheck, lint, build i CI su zeleni |
 | **Sadržaj** | 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora |
-| **Opseg** | 26 stranica, 37 datoteka API ruta, 19 tablica u bazi |
-| **Razvoj** | 671 commit i 236 spojenih pull requestova |
+| **Opseg** | 26 stranica, 38 datoteka API ruta, 20 tablica u bazi |
+| **Razvoj** | 700 commitova i 246 spojenih pull requestova (236 tijekom hackathona) |
 
 <p align="center">
   <a href="docs/img/hotel.jpg"><img src="docs/media/hotel-pokazatelji.jpg" width="430" alt="Ploča hotela: pet pokazatelja od 0 do 100 (zadovoljstvo gostiju, recenzije, zaposlenici, operativa, financije)."></a>&nbsp;&nbsp;
@@ -107,9 +107,9 @@ Glavna petlja radi od početka do kraja na pravom kodu. Brojke su iz [docs/STATU
   <sub>Lijevo: situacije za razred (profesor). Desno: odakle je došla svaka brojka (student).</sub>
 </p>
 
-**Za pilot još nije spremno:** fale brisanje podataka, potvrda e-pošte i reset lozinke, izvoz ocjena, duljina sezone, vlastita baza i kalibrirana ekonomija ([docs/STATUS.md](docs/STATUS.md#što-fali-za-pilot)).
+**Za pilot još nije spremno:** fale ručno odobravanje profesorskih računa i reset lozinke, PIN za ulazak studenta, duljina sezone za semestar te migracije i vlastita baza za pilot ([docs/STATUS.md](docs/STATUS.md#što-fali-za-pilot)).
 
-**Još nije gotovo:** ekonomija nije kalibrirana prema stvarnim hotelima, sezona traje fiksno četiri mjeseca, situacija je samo 8, sve je na hrvatskom i nema izvoza ocjena. Stranice i API rute nemaju automatske testove, a tok u bazi provjeravamo ručnom smoke skriptom koju CI ne pokreće. Mentorov mjesečni osvrt zna dati i konkretan savjet, a je li to u redu, otvoreno je pitanje ([#302](https://github.com/leonkreso784-bit/riihack/issues/302)). Popis za pilot: milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6). Detalji i poznate greške: [docs/STATUS.md](docs/STATUS.md).
+**Još nije gotovo:** sezona traje fiksno četiri mjeseca, situacija je samo 8 i sve su hotelske, a sve je na hrvatskom. Tok u bazi provjeravamo ručnom smoke skriptom koju CI ne pokreće. Mentorov mjesečni osvrt postaje pitanje umjesto savjeta ([#302](https://github.com/leonkreso784-bit/riihack/issues/302)). Ekonomija je od 26. 10. kalibrirana prema hotelima na Kvarneru (marža sezone 14 do 20 %), a profesor može izvesti ocjene u CSV i obrisati igru. Popis za pilot: milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6). Detalji i poznate greške: [docs/STATUS.md](docs/STATUS.md).
 
 ## Pod haubom
 

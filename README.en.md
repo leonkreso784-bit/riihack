@@ -25,13 +25,13 @@
 
 - **What it is:** a web game for hospitality and tourism students. A professor opens a game, the class joins with a code, and each student runs their own hotel in a shared town on the Kvarner coast, month by month.
 - **What the AI does:** it plays guests and staff, grades answers against a rubric and, as a mentor, asks first and only then explains. **Every number is computed by the game rules, not by the AI.**
-- **It works:** the main loop runs live on real code, and 674 tests (engine and game logic) pass. Built in 24 hours at the Ri-Hack 4.0 hackathon, 3rd place out of 8 teams.
+- **It works:** the main loop runs live on real code, and 1,085 tests pass. Built in 24 hours at the Ri-Hack 4.0 hackathon, 3rd place out of 8 teams.
 - **Not ready for a pilot yet:** the list of what is missing is in the [Status](#status-does-it-work) section.
 - **Next (a plan):** a free pilot at FMTU in Opatija in 2027, then licences for faculties. Nothing is agreed yet, see the [Plan](#plan).
 
 ## Try it yourself
 
-All you need is a browser. You open the game yourself, as the professor, so you do not need a game code in advance. Use made-up data: deleting games and data is not built yet. The app itself is in Croatian.
+All you need is a browser. You open the game yourself, as the professor, so you do not need a game code in advance. Use made-up data. When you are done, delete the game with **Obriši igru** at the bottom of the game board. The app itself is in Croatian.
 
 1. Open [riihack.vercel.app/profesor](https://riihack.vercel.app/profesor) and choose **Napravi račun** (create an account).
 2. Choose **Nova igra** (new game), enter a name and choose **Napravi igru** (create game; the number of students can stay at 24). You get a game code and a QR code.
@@ -51,11 +51,11 @@ All you need is a browser. You open the game yourself, as the professor, so you 
 The professor opens a game, the class joins with a code or QR code, and each student gets one of six hotels. The professor can add bots, so even a small class has a market. Then every month goes like this. The recordings and screenshots below show the Croatian interface.
 
 1. **A guest has a problem.** Two situations arrive, for example the air conditioning breaks in the middle of the season. The AI plays the guest, and the student talks to them to find out what they actually need.
-2. **Answer and verdict.** The student's own words are worth up to 5 out of 5, an offered answer at most 4. An AI judge marks which rubric criteria the answer met and explains why, and the rules compute the points.
+2. **Answer and verdict.** The student's own words are worth up to 5 out of 5, an offered answer at most 3. An AI judge marks which rubric criteria the answer met and explains why, and the rules compute the points.
 
 <p align="center">
   <img src="docs/media/gost-i-presuda.gif" width="360" alt="On a phone, the student writes to the guest: Good afternoon, Mr Kovač, thank you for letting us know. What bothered you most? The guest replies that the noise from the terrace until midnight bothered him most and that the front desk only shrugged. The student then writes an apology and an offer in their own words, the judge thinks, then shows a grade of 4 out of 5, 4 criteria met and the reasoning against the rubric."><br>
-  <sub>Talking to a guest, an answer in the student's own words and the rubric verdict. The wait for the AI is shortened.</sub>
+  <sub>Talking to a guest, an answer in the student's own words and the rubric verdict. The wait for the AI is shortened. Recorded at the hackathon on 25 Oct 2026.</sub>
 </p>
 
 3. **Plan and month close.** The student sets the price, marketing and investment in departments. The professor closes the month, and the rules compute occupancy, cash and reviews for every hotel, because they all share the same tourists. The podium ranks progress, not money.
@@ -86,14 +86,14 @@ The professor opens a game, the class joins with a code or QR code, and each stu
 
 ## Status: does it work?
 
-The main loop works end to end on real code. The figures are from [docs/STATUS.md](docs/STATUS.md) as of 26 Oct 2026 (commit `b6ffb61`).
+The main loop works end to end on real code. The figures are from `main` as of 26 Oct 2026. The version the jury judged is kept at the tag [`ri-hack-4.0`](https://github.com/leonkreso784-bit/riihack/releases/tag/ri-hack-4.0).
 
 | What | Figures |
 | --- | --- |
-| **Checks** | 674 tests in 57 files pass (engine and game logic; pages and API routes have no tests); typecheck, lint, build and CI are green |
+| **Checks** | 1,085 tests in 80 files pass; typecheck, lint, build and CI are green |
 | **Content** | 6 hotels, 8 situations, 6 city businesses, 8 contract templates |
-| **Scope** | 26 pages, 37 API route files, 19 database tables |
-| **Development** | 671 commits and 236 merged pull requests |
+| **Scope** | 26 pages, 38 API route files, 20 database tables |
+| **Development** | 700 commits and 246 merged pull requests (236 during the hackathon) |
 
 <p align="center">
   <a href="docs/img/hotel.jpg"><img src="docs/media/hotel-pokazatelji.jpg" width="430" alt="Hotel board: five indicators from 0 to 100 (guest satisfaction, reviews, staff, operations, finance)."></a>&nbsp;&nbsp;
@@ -107,9 +107,9 @@ The main loop works end to end on real code. The figures are from [docs/STATUS.m
   <sub>Left: situations for the class (professor). Right: where every number came from (student). Click to open the full screen. Croatian interface.</sub>
 </p>
 
-**Not ready for a pilot yet.** Still missing: deleting data, email confirmation and password reset, grade export, season length, a separate database and a calibrated economy ([docs/STATUS.md](docs/STATUS.md#što-fali-za-pilot), Croatian).
+**Not ready for a pilot yet.** Still missing: manual approval of professor accounts and password reset, a PIN for student re-entry, a season length that fits a semester, and migrations with a separate pilot database ([docs/STATUS.md](docs/STATUS.md#što-fali-za-pilot), Croatian).
 
-**Not done yet:** the economy is not calibrated against real hotels, a season is fixed at four months, there are only 8 situations, everything is in Croatian and there is no grade export. Pages and API routes have no automated tests, and the flow that writes to the database is checked with a manual smoke script that CI does not run. The mentor's monthly review can also give concrete advice, and whether it should is an open question ([#302](https://github.com/leonkreso784-bit/riihack/issues/302)). What the pilot still needs: the [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6) milestone. Details and known bugs: [docs/STATUS.md](docs/STATUS.md) (Croatian).
+**Not done yet:** a season is fixed at four months, there are only 8 situations and all are about hotels, and everything is in Croatian. The flow that writes to the database is checked with a manual smoke script that CI does not run. The mentor's monthly review is becoming a question instead of advice ([#302](https://github.com/leonkreso784-bit/riihack/issues/302)). Since 26 Oct the economy is calibrated to Kvarner hotels (season margin 14 to 20 %), and a professor can export grades as CSV and delete a game. What the pilot still needs: the [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6) milestone. Details and known bugs: [docs/STATUS.md](docs/STATUS.md) (Croatian).
 
 ## Under the hood
 
