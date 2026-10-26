@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { ContractTemplate } from "@/lib/types";
 import { SEASON_DEMAND_BP } from "@/lib/rules";
-import { attractiveness, capacityNights, financeEffect, priceBp, qualityBp, refPrice, roundFinance, settleMarket } from "./economy";
+import { attractiveness, capacityNights, demandNights, demandPriceBp, financeEffect, priceBp, qualityBp, refPrice, roundFinance, settleMarket } from "./economy";
 import type { MarketInput } from "./economy";
 
 const hotel = (companyId: string, price: number, extra: Partial<MarketInput> = {}): MarketInput => ({
@@ -68,6 +68,59 @@ describe("economy", () => {
     const [a2, b2] = settleMarket(2, [hotel("A", 80), hotel("B", 80)]);
     expect(a2.nights).toBe(510);
     expect(b2.nights).toBe(510);
+  });
+
+  // ADR-059 (#198): ako svi hoteli dignu cijenu, grad ima malo manje turista. Mala, jednosmjerna elastičnost.
+  it("demandPriceBp: na ili ispod referentne ×1,00, iznad pada 20 % na svakih 100 %, najviše na 2,5× ref", () => {
+    expect(demandPriceBp(100, 100)).toBe(10000);
+    expect(demandPriceBp(50, 100)).toBe(10000); // nižom cijenom grad ne dobiva nove turiste
+    expect(demandPriceBp(0, 100)).toBe(10000);
+    expect(demandPriceBp(110, 100)).toBe(9800);
+    expect(demandPriceBp(150, 100)).toBe(9000);
+    expect(demandPriceBp(200, 100)).toBe(8000);
+    expect(demandPriceBp(250, 100)).toBe(7000);
+    expect(demandPriceBp(400, 100)).toBe(7000); // iznad 2,5× ref već nitko ne dolazi, pad se ne produbljuje
+    expect(demandPriceBp(100, 0)).toBeGreaterThan(0); // bez referentne cijene bez dijeljenja nulom
+  });
+
+  it("demandNights: skup hotel dovodi manje turista, jeftin jednako kao referentan", () => {
+    const m = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
+    expect(demandNights(3, 20, m, 100, 100)).toBe(570); // 600 noći × 95 %
+    expect(demandNights(3, 20, m, 60, 100)).toBe(570);
+    expect(demandNights(3, 20, m, 200, 100)).toBe(456); // × 0,80
+  });
+
+  it("svi hoteli dižu cijenu: ukupna potražnja pada, ali umjereno (ne više od 20 % na 2× ref)", () => {
+    const total = (price: number) =>
+      settleMarket(3, ["A", "B", "C", "D", "E"].map((id) => hotel(id, price))).reduce((s, r) => s + r.nights, 0);
+    const base = total(100);
+    expect(base).toBe(2850); // 5 × 570
+    expect(total(150)).toBeLessThan(base);
+    expect(total(200)).toBeLessThan(total(150));
+    expect(total(200)).toBe(2280); // točno −20 %
+    expect(total(200)).toBeGreaterThan(base * 0.75);
+    expect(total(250)).toBeGreaterThan(base * 0.65);
+    // jednosmjerno: nitko ne dobiva nove turiste snižavanjem cijena
+    expect(total(60)).toBe(base);
+    expect(total(30)).toBe(base);
+  });
+
+  it("jedan skup hotel smanji gradsku potražnju tek malo, a sebi uzme manje nego kad je na referentnoj cijeni", () => {
+    const others = ["B", "C", "D", "E"].map((id) => hotel(id, 100));
+    const at = (price: number) => settleMarket(3, [hotel("A", price), ...others]);
+    const total = (rows: ReturnType<typeof at>) => rows.reduce((s, r) => s + r.nights, 0);
+    expect(total(at(200))).toBeGreaterThan(total(at(100)) * 0.85); // dio pada je i kapacitet ostalih hotela (puni su)
+    expect(total(at(200))).toBeLessThan(total(at(100)));
+    expect(at(200)[0].nights).toBeLessThan(at(100)[0].nights);
+  });
+
+  // Poznata praznina (ADR-059, Otvoreno): hotel iznad 2,5× ref ne prodaje ništa, ali u grad i dalje donosi ×0,70 potražnje.
+  it("iznad 2,5× ref hotel ne prodaje ništa, a pad potražnje se ne produbljuje (ostaje ×0,70)", () => {
+    const m = { guests: 50, reviews: 50, staff: 50, operations: 50, finance: 50 };
+    const rows = settleMarket(3, [hotel("A", 260), ...["B", "C", "D", "E"].map((id) => hotel(id, 100))]);
+    expect(rows[0].nights).toBe(0);
+    expect(demandNights(3, 20, m, 260, 100)).toBe(demandNights(3, 20, m, 400, 100));
+    expect(demandNights(3, 20, m, 400, 100)).toBe(399); // 600 noći × 0,70 × 95 %: i dalje puni zajednički bazen
   });
 
   it("kapacitet i ugovori", () => {

@@ -4,6 +4,7 @@
 import { financeEffect, priceBp, refPrice, roundFinance, type MarketResult } from "@/lib/engine/economy";
 import { eur as eurRaw, num } from "@/lib/format";
 import {
+  DEMAND_ELASTICITY_PCT,
   FINANCE_EFFECT_CAP,
   FINANCE_EFFECT_DIVISOR,
   COMMISSION_PCT,
@@ -252,10 +253,11 @@ export function buildMonthFlow(
       ],
       rule: [
         `Turisti u gradu = ${demandBp / 100} % svih noćenja u gradu u ovom mjesecu; hotel s ugledom ispod 1,00 dovodi toliko manje turista.`,
+        `Hotel s cijenom iznad prosječne cijene svojih soba dovodi ${DEMAND_ELASTICITY_PCT} % manje turista na svakih 100 % iznad nje, ali najviše ${num(DEMAND_ELASTICITY_PCT * 1.5)} % manje (iznad 2,5× nitko ne dolazi).`,
         "Slobodni turisti = turisti − ugovorena noćenja svih hotela.",
         "Tvoj dio = slobodni turisti × tvoji bodovi ÷ zbroj bodova svih hotela.",
       ],
-      note: "Turisti se ne množe kad spustiš cijenu. Samo otimaš dio iste torte od drugih hotela. Brojke ostalih hotela ovdje ne prikazujemo.",
+      note: "Turisti se ne množe kad spustiš cijenu. Samo otimaš dio iste torte od drugih hotela. Ako svi hoteli dignu cijenu iznad prosječne, torta se smanji. Brojke ostalih hotela ovdje ne prikazujemo.",
       outputs: [
         { label: "Tvoja slobodna noćenja", value: num(f.nights) },
         { label: "Udio turista grada", value: `${f.marketSharePct} %`, strong: true },

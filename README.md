@@ -40,7 +40,7 @@ Simpolis zato daje sigurno mjesto za vježbu odluka s ljudima i novcem. Petlja i
 
 1. **Profesor napravi igru.** Razred ulazi kodom ili QR kodom, svaki student dobiva jedan od šest hotela na Kvarneru.
 2. **Situacije.** Svaki mjesec stižu dvije situacije: gost ili član osoblja s problemom (npr. klima ne radi usred sezone). Student s likom razgovara, do šest poruka.
-3. **Odgovor i rubrika.** Ponuđeni odgovor vrijedi najviše 4 od 5, vlastite riječi do 5 od 5. AI sudac po rubrici od pet kriterija označava što je odgovor zadovoljio.
+3. **Odgovor i rubrika.** Ponuđeni odgovor vrijedi najviše 3 od 5, vlastite riječi do 5 od 5. AI sudac po rubrici od pet kriterija označava što je odgovor zadovoljio.
 4. **Plan.** Student postavlja cijenu, marketing i ulaganja u odjele hotela.
 5. **Zatvaranje mjeseca.** Profesor zatvara mjesec, pravila izračunavaju popunjenost, novac i recenzije (svi hoteli dijele iste turiste), a razred vidi podij mjeseca.
 6. **Mentor.** Mentor postavlja pitanje o najslabijoj odluci mjeseca, student razmišlja, mentor odgovara.
@@ -61,10 +61,10 @@ Svaki AI poziv ima rok i rezervni odgovor, pa igra radi i kad AI ne odgovori. Me
 
 Verzija `ri-hack-4.0` radi od početka do kraja: ulazak kodom, ploča hotela, situacije s razgovorom i ocjenom po rubrici, plan i financije, grad s ugovorima s gradskim tvrtkama, zatvaranje mjeseca s podijem, mentor, profesorov pregled i botovi.
 
-- **Provjere:** 674 testa u 57 datoteka prolaze, typecheck i lint bez grešaka, build prolazi, CI je zelen.
+- **Provjere:** 947 testa u 70 datoteka prolaze, typecheck i lint bez grešaka, build prolazi, CI je zelen.
 - **Sadržaj:** 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora. 26 stranica, 37 datoteka API ruta, 19 tablica u bazi.
 - **Razvoj:** 671 commit i 236 spojenih pull requestova na `main`, sve tijekom hackathona.
-- **Još nije gotovo:** ekonomija nije kalibrirana prema stvarnim hotelima, sezona je fiksno četiri mjeseca, situacija je samo 8 i sve su hotelske, nema engleskog jezika ni izvoza ocjena. Prijava preko fakulteta (AAI@EduHr, Merlin) je cilj. PIN za ulazak studenta je planiran ([ADR-053](docs/records/DECISIONS.md#adr-053)).
+- **Još nije gotovo:** sezona je fiksno četiri mjeseca, situacija je samo 8 i sve su hotelske, nema engleskog jezika ni izvoza ocjena. Prijava preko fakulteta (AAI@EduHr, Merlin) je cilj. PIN za ulazak studenta je planiran ([ADR-053](docs/records/DECISIONS.md#adr-053)).
 
 Detalji i poznati bugovi: [docs/STATUS.md](docs/STATUS.md).
 

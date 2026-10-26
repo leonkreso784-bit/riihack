@@ -10,14 +10,17 @@ export const METRIC_HINTS: Record<MetricKey, string> = {
   finance: "Financijsko zdravlje hotela: dobit, rezerva novca i troškovi u odnosu na prihod.",
 };
 
+// ADR-059: the one sentence that explains the ranking rule (ranking.ts), reused by the "?" hints, the Financije rank card and the pill.
+export const BLOCKADE_RANK_RULE = "Hotel čiji je račun ispod nule (u blokadi) stoji iza svih hotela koji posluju s novcem, bez obzira na napredak.";
+
 export const HINTS = {
-  progress: "Zbroj promjena svih pokazatelja od početka igre. Po njemu se slaže ljestvica razreda.",
+  progress: `Zbroj promjena svih pokazatelja od početka igre. Po njemu se slaže ljestvica razreda. ${BLOCKADE_RANK_RULE}`,
   cash: "Novac koji hotel trenutačno ima. Mijenja se kad profesor zatvori mjesec i obračuna prihode i troškove.",
   seasonProfit: "Zbroj dobiti (ili gubitka) svih obračunatih mjeseci: prihodi minus rashodi.",
   profit: "Prihodi minus rashodi u zadnjem obračunatom mjesecu.",
   occupancy: "Koliki je dio mogućih noćenja prodan. 100 % znači da je svaka soba bila puna svaku noć.",
   avgOccupancy: "Prosjek popunjenosti svih obračunatih mjeseci.",
-  rank: "Tvoje mjesto u razredu po napretku. Tuđi novac je tajna, pa se rang ne slaže po novcu.",
+  rank: `Tvoje mjesto u razredu po napretku. Tuđi novac je tajna, pa se rang ne slaže po novcu. ${BLOCKADE_RANK_RULE}`,
   nights: "Broj prodanih noćenja: gosti koji su sami rezervirali plus noćenja iz ugovora s agencijama.",
   revenueRooms: "Novac od gostiju koji su sami rezervirali sobu, po tvojoj cijeni noćenja.",
   revenueContracts: "Novac od agencija za noćenja dogovorena ugovorom.",

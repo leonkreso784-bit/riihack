@@ -115,6 +115,39 @@ describe("toLeaderboard", () => {
   });
 });
 
+describe("toLeaderboard: insolventnost (ADR-059, #198)", () => {
+  // Primjer iz izvještaja: hotel koji je potrošio novac na ulaganja ima veći napredak (71,7) od solventnog (35,7).
+  const bankrupt = bundle("bankrupt", 1, -51600);
+  bankrupt.company.metrics = { ...metrics, guests: 95, reviews: 90, operations: 85 };
+  const solvent = bundle("solvent", 2, 104712);
+  solvent.company.metrics = { ...metrics, guests: 60 };
+
+  it("hotel s računom ispod nule ne stoji iznad solventnog, ni uz veći napredak", () => {
+    const rows = toLeaderboard([bankrupt, solvent]);
+    expect(rows.find((r) => r.companyId === "bankrupt")!.progress).toBeGreaterThan(rows.find((r) => r.companyId === "solvent")!.progress);
+    expect(rows.map((r) => r.companyId)).toEqual(["solvent", "bankrupt"]);
+  });
+  it("zastavica insolvent samo uz račun ispod nule; točno nula je još solventno", () => {
+    const rows = toLeaderboard([bankrupt, solvent, bundle("zero", 3, 0)]);
+    expect(rows.find((r) => r.companyId === "bankrupt")?.insolvent).toBe(true);
+    expect(rows.find((r) => r.companyId === "solvent")).not.toHaveProperty("insolvent");
+    expect(rows.find((r) => r.companyId === "zero")).not.toHaveProperty("insolvent");
+  });
+  it("unutar skupine ostaje napredak, pa novac, pa redoslijed ulaska", () => {
+    const worse = bundle("worse", 3, -100);
+    const rows = toLeaderboard([worse, bankrupt, solvent]);
+    expect(rows.map((r) => r.companyId)).toEqual(["solvent", "bankrupt", "worse"]);
+  });
+  it("student vidi zastavicu uz tuđi redak, ali ne i iznos računa (ADR-040)", () => {
+    const me = toMeResponse({ world, ...solvent, rooms: [], all: [bankrupt, solvent] }, NOW);
+    const other = me.leaderboard.find((r) => r.companyId === "bankrupt")!;
+    expect(other.insolvent).toBe(true);
+    expect(other).not.toHaveProperty("cash");
+    expect(me.leaderboard.find((r) => r.companyId === "solvent")?.cash).toBe(104712);
+    expect(me.city.hotels.map((h) => h.companyId)).toEqual(["solvent", "bankrupt"]);
+  });
+});
+
 describe("toMeResponse", () => {
   const a = bundle("a", 1, 20000);
   const me = toMeResponse({ world, ...a, rooms: [room("101", 70), room("102", 90), room("103", 95)], all: [a, bundle("b", 2, 20000)] }, NOW);

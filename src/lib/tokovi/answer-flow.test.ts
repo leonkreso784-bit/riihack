@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { applyRound } from "@/lib/engine/round";
 import { qualityFromVerdict } from "@/lib/engine/quality";
-import { DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
+import { CLICK_QUALITY_CAP, DEPARTMENT_METRIC, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { AnswerView, Metrics, Quality, RubricCriterion, SituationView } from "@/lib/types";
 import { buildAnswerFlow, flowInputFromSituation, LEGACY_QUALITY_NOTE, metricDelta, NO_EFFECTS_TEXT, CLOSE_NOTE, type AnswerFlowInput } from "./answer-flow";
 
@@ -54,25 +54,25 @@ describe("buildAnswerFlow", () => {
     expect(q.calc).toBe("3 kriterija → kvaliteta 3");
   });
 
-  it("klik na rubrici od 3 ili 4 kriterija: objašnjenje kaže udio i strop 4 od 5, bez računice", () => {
+  it("klik na rubrici od 3 ili 4 kriterija: objašnjenje kaže udio i strop klika, bez računice", () => {
     for (const n of [3, 4]) {
-      const click: AnswerView = { mode: "click", optionId: "o2", quality: 4, copied: false };
+      const click: AnswerView = { mode: "click", optionId: "o2", quality: CLICK_QUALITY_CAP, copied: false };
       const q = step(flow({ answer: click, rubric: RUBRIC.slice(0, n) }), "kvaliteta");
       const rule = q.rule.join(" ");
       expect(rule).toMatch(/udio kriterija/);
-      expect(rule).toMatch(/najviše 4 od 5/);
+      expect(rule).toMatch(new RegExp(`najviše ${CLICK_QUALITY_CAP} od 5`));
       expect(rule).not.toMatch(/najviše 5/);
       expect(q.calc).toBeUndefined();
     }
   });
 
-  it("klik na rubrici od 5 kriterija zadržava staro objašnjenje (broj kriterija) i strop 4 od 5", () => {
-    const click: AnswerView = { mode: "click", optionId: "o2", quality: 4, copied: false };
+  it("klik na rubrici od 5 kriterija zadržava staro objašnjenje (broj kriterija) i strop klika", () => {
+    const click: AnswerView = { mode: "click", optionId: "o2", quality: CLICK_QUALITY_CAP, copied: false };
     const q = step(flow({ answer: click, rubric: RUBRIC }), "kvaliteta");
     const rule = q.rule.join(" ");
     expect(rule).toMatch(/broj kriterija/);
     expect(rule).not.toMatch(/udio/);
-    expect(rule).toMatch(/najviše 4 od 5/);
+    expect(rule).toMatch(new RegExp(`najviše ${CLICK_QUALITY_CAP} od 5`));
     expect(q.calc).toBeUndefined();
   });
 
@@ -99,7 +99,7 @@ describe("buildAnswerFlow", () => {
   it("odgovor ocijenjen novim pravilom, zalijepljen ili s profesorovom ocjenom, nije stari", () => {
     const rubric4 = RUBRIC.slice(0, 4);
     const all = ["c1", "c2", "c3", "c4"];
-    const pasted = step(flow({ answer: own(all, { quality: 4, copied: true }), rubric: rubric4 }), "kvaliteta"); // strop 4 za zalijepljeno
+    const pasted = step(flow({ answer: own(all, { quality: CLICK_QUALITY_CAP, copied: true }), rubric: rubric4 }), "kvaliteta"); // strop klika za zalijepljeno
     expect(pasted.note).toBeUndefined();
     expect(pasted.rule.join(" ")).toMatch(/udio ispunjenih kriterija/);
     const fresh = step(flow({ answer: own(all, { quality: 5 }), rubric: rubric4 }), "kvaliteta");
@@ -173,11 +173,11 @@ describe("buildAnswerFlow", () => {
   });
 
   it("klik, prepisano, bez presude i bez odgovora", () => {
-    const click = flow({ answer: { mode: "click", optionId: "o1", quality: 4, copied: false } });
-    expect(step(click, "kvaliteta").rule.join(" ")).toMatch(/najviše 4/);
+    const click = flow({ answer: { mode: "click", optionId: "o1", quality: CLICK_QUALITY_CAP, copied: false } });
+    expect(step(click, "kvaliteta").rule.join(" ")).toMatch(new RegExp(`najviše ${CLICK_QUALITY_CAP}`));
     expect(step(click, "sudac").small).toMatch(/unaprijed/);
     const copied = flow({ answer: own(["c1", "c2", "c3"], { copied: true, quality: 3 }) });
-    expect(step(copied, "odgovor").rule.join(" ")).toMatch(/najviše 4/);
+    expect(step(copied, "odgovor").rule.join(" ")).toMatch(new RegExp(`najviše ${CLICK_QUALITY_CAP}`));
     const nojudge = flow({ answer: { mode: "own", quality: 3, copied: false } });
     expect(step(nojudge, "sudac").small).toBe("Sudac nije odgovorio");
     const none = flow({ answer: { mode: "none", quality: 1, copied: false } });

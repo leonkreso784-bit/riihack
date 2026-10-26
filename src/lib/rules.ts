@@ -7,7 +7,7 @@ export const SITUATIONS_PER_ROUND = 2;
 export const ROUND_LABELS = ["Lipanj", "Srpanj", "Kolovoz", "Rujan"];
 
 // Kvaliteta odgovora (1–5)
-export const CLICK_QUALITY_CAP = 4;
+export const CLICK_QUALITY_CAP = 3; // ADR-059: klik na ponuđeni odgovor daje najviše 3 od 5; 4 i 5 samo vlastitim riječima (prije 4: najdulja opcija bila je kvaliteta 4 u svih 8 situacija)
 export const FALLBACK_QUALITY = 3;
 export const MISSED_QUALITY = 1;
 
@@ -67,15 +67,22 @@ export const MATERIALS_PCT = 17; // izvor: Liburnia Riviera Hoteli 2025, sirovin
 export const PRICE_MIN = 30;
 export const PRICE_MAX = 400;
 export const MARKETING_MAX = 2000; // izvor: prodaja i marketing 3,5 do 4,4 % prihoda (Kvarner 2014 3,7 %, HR 3,5 %), 2.000 € je oko 4 do 6 % prihoda malog hotela u vrhu
+// Elastičnost ukupne potražnje (ADR-059): hotel čija je cijena iznad referentne dovodi u grad manje turista, za
+// DEMAND_ELASTICITY_PCT % na svakih 100 % iznad referentne cijene (najviše na 2,5× ref; dalje se pad ne produbljuje).
+// Samo prema dolje: nižom cijenom grad ne dobiva nove turiste. Izvor: elastičnost potražnje hotelskog tržišta oko
+// −0,15 do −0,17 (Corgel 2012; Singh i sur., Cornell Hospitality Quarterly 2023, 2.503 hotela), zaokruženo na −0,20.
+export const DEMAND_ELASTICITY_PCT = 20;
 export const FINANCE_EFFECT_DIVISOR = 2000;
 export const FINANCE_EFFECT_CAP = 5;
 export const START_CASH = 20000;
 
 // Ulaganje u odjele (odluka 24.10.): budžet po odjelu u planu mjeseca. Trošak ulazi u obračun, a pokazatelj odjela
 // raste za min(INVEST_EFFECT_CAP, floor(ulog / INVEST_EFFECT_DIVISOR)) po odjelu i mjesecu.
+// ADR-059: svaki odjel donosi najviše +1 mjesečno i to tek uz puni ulog (INVEST_MAX = INVEST_EFFECT_DIVISOR), jer je
+// ulaganje u svih 5 odjela (15.000 € mjesečno) prije davalo +15 na pokazateljima i bilo je dominantna strategija.
 export const INVEST_MAX = 3000;
-export const INVEST_EFFECT_DIVISOR = 1000;
-export const INVEST_EFFECT_CAP = 3;
+export const INVEST_EFFECT_DIVISOR = 3000;
+export const INVEST_EFFECT_CAP = 1;
 export const DEPARTMENT_METRIC: Record<StaffDepartment, MetricKey> = {
   reception: "guests",
   housekeeping: "reviews",

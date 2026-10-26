@@ -83,16 +83,17 @@ const COMPANY: CompanyView = {
   metrics: AFTER_JUNE,
   progress: 10,
   closedRound: 1,
-  cash: 38700,
+  cash: 24143,
   startCash: 20000,
 };
 
 const LEADERBOARD: LeaderboardRow[] = [
-  { companyId: "c-marko", hotelName: "Hotel Lungomare", playerName: "Marko Babić", place: "Opatija", progress: 14, closedRound: 1, cash: 41200, roundGain: 5 },
+  { companyId: "c-marko", hotelName: "Hotel Lungomare", playerName: "Marko Babić", place: "Opatija", progress: 14, closedRound: 1, cash: 31200, roundGain: 5 },
   { companyId: "c-ana", hotelName: COMPANY.hotelName, playerName: COMPANY.playerName, place: COMPANY.place, progress: COMPANY.progress, closedRound: 1, cash: COMPANY.cash, roundGain: 4 },
-  { companyId: "c-lucija", hotelName: "Kuća Lucija", playerName: "Lucija Perić", place: "Omišalj", progress: 6, closedRound: 1, cash: 29400, roundGain: 2 },
-  { companyId: "c-ivan", hotelName: "Hotel Kvarner", playerName: "Ivan Jurić", place: "Crikvenica", progress: 2, closedRound: 1, cash: 24100, roundGain: -1 },
-  { companyId: "c-petra", hotelName: "Villa Petra", playerName: "Petra Novak", place: "Mali Lošinj", progress: -3, closedRound: 0, cash: 17800, roundGain: -3 },
+  { companyId: "c-lucija", hotelName: "Kuća Lucija", playerName: "Lucija Perić", place: "Omišalj", progress: 6, closedRound: 1, cash: 24400, roundGain: 2 },
+  { companyId: "c-ivan", hotelName: "Hotel Kvarner", playerName: "Ivan Jurić", place: "Crikvenica", progress: 2, closedRound: 1, cash: 19100, roundGain: -1 },
+  // Najveći napredak, ali račun ispod nule: na ljestvici stoji iza svih solventnih hotela (ADR-059).
+  { companyId: "c-petra", hotelName: "Villa Petra", playerName: "Petra Novak", place: "Mali Lošinj", progress: 17, closedRound: 1, cash: -6800, roundGain: 6, insolvent: true },
 ];
 // Student sees only their own cash (ADR-040); the professor mock keeps everyone's.
 const STUDENT_LEADERBOARD: LeaderboardRow[] = LEADERBOARD.map(({ cash, ...r }) => (r.companyId === COMPANY.id ? { ...r, cash } : r));
@@ -212,12 +213,13 @@ const FINANCES: RoundFinance[] = [
     capacityNights: 480,
     occupancyPct: 79,
     marketSharePct: 24,
-    revenue: 31700,
-    costs: 13000,
-    profit: 18700,
-    cashAfter: 38700,
-    // Same items the engine settles (#144): staff 6.300 + rooms 16 × 300 + marketing 1.000 + Pekara 900 = 13.000.
-    breakdown: { revenueOwn: 31700, revenueContracts: 0, costStaff: 6300, costRooms: 4800, costMarketing: 1000, costContracts: 900, costInvestments: 0 },
+    revenue: 34420,
+    costs: 30277,
+    profit: 4143,
+    cashAfter: 24143,
+    // Same items the engine settles (economy.ts roundFinance, ADR-059 calibration): staff 9.800 + rooms 16 × 450 + marketing 1.000 +
+    // Pekara 900 + PDV 3.960 + provizija portala 2.239 + materijal 5.178 = 30.277.
+    breakdown: { revenueOwn: 31620, revenueContracts: 2800, costStaff: 9800, costRooms: 7200, costMarketing: 1000, costContracts: 900, costInvestments: 0, costVat: 3960, costCommission: 2239, costMaterials: 5178 },
   },
 ];
 
@@ -259,7 +261,7 @@ const DEPARTMENTS: DepartmentView[] = (Object.keys(STAFF_DEPARTMENT_LABELS) as S
   metricValue: AFTER_JUNE[DEPARTMENT_METRIC[d]],
   staffCount: HOTELS[0].staff.filter((s) => s.department === d).length,
   alerts: ALERTS[d] ?? [],
-  investment: d === "maintenance" ? 1000 : 0,
+  investment: d === "maintenance" ? 3000 : 0, // ADR-059: bod donosi tek puni ulog
 }));
 
 // Mail (R13): the agency's offer for k-adria, a message from another hotel, a city notice. Newest first.
@@ -291,7 +293,7 @@ export const MOCK_ME: MeResponse = {
   situations: SITUATIONS,
   leaderboard: STUDENT_LEADERBOARD,
   reports: REPORTS,
-  plan: { round: 2, price: 85, marketing: 1000, investments: { maintenance: 1000 } },
+  plan: { round: 2, price: 85, marketing: 1000, investments: { maintenance: 3000 } },
   contracts: CONTRACTS,
   finances: FINANCES,
   city: { ...CITY, hotels: STUDENT_LEADERBOARD },

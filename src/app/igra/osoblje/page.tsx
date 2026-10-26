@@ -21,6 +21,11 @@ const SHIFT: Record<StaffShift, { icon: typeof Sun; tone: Tone }> = {
 };
 // Same formula as the engine (rules.ts): the metric moves by at most INVEST_EFFECT_CAP per month.
 const effect = (eurPerMonth: number) => Math.min(INVEST_EFFECT_CAP, Math.floor(eurPerMonth / INVEST_EFFECT_DIVISOR));
+// ADR-059: a department pays back only a full budget, so say so plainly instead of "every X gives +1, at most +1".
+const INVEST_HINT =
+  INVEST_EFFECT_DIVISOR >= INVEST_MAX
+    ? `Samo puni ulog od ${eur(INVEST_MAX)} donosi +${INVEST_EFFECT_CAP}, manji ne donosi ništa`
+    : `Svakih ${eur(INVEST_EFFECT_DIVISOR)} donosi +1, najviše +${INVEST_EFFECT_CAP}`;
 
 // Departments of the hotel: each one's metric, people, warnings and this month's investment. Investments are saved with
 // the month's plan (price and marketing stay as they are). Staff never changes during a game, so it polls slowly.
@@ -161,7 +166,7 @@ function Department({
             className="w-full accent-primary disabled:opacity-50"
           />
           <p className="text-xs text-muted-foreground">
-            {plus > 0 ? `+${plus} ${METRIC_LABELS[metric].toLowerCase()} na kraju mjeseca` : `Svakih ${eur(INVEST_EFFECT_DIVISOR)} donosi +1, najviše +${INVEST_EFFECT_CAP}`}
+            {plus > 0 ? `+${plus} ${METRIC_LABELS[metric].toLowerCase()} na kraju mjeseca` : INVEST_HINT}
           </p>
         </div>
 
