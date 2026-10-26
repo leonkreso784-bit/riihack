@@ -61,7 +61,7 @@ Every AI call has a time limit and a fallback answer, so the game keeps working 
 
 The `ri-hack-4.0` version works end to end: joining with a code, hotel board, situations with a conversation and rubric grading, plan and finances, a city with contracts with local businesses, month close with a podium, mentor, professor overview and bots.
 
-- **Checks:** 983 tests in 72 files pass, typecheck and lint are clean, the build passes, CI is green.
+- **Checks:** 1030 tests in 75 files pass, typecheck and lint are clean, the build passes, CI is green.
 - **Content:** 6 hotels, 8 situations, 6 city businesses, 8 contract templates. 26 pages, 37 API route files, 19 database tables.
 - **Development:** 671 commits and 236 merged pull requests on `main`, all made during the hackathon.
 - **Not done yet:** a season is fixed at four months, there are only 8 situations and all are about hotels, and there is no English interface or grade export. Login through the faculty (AAI@EduHr, Merlin) is a goal. A PIN for student entry is planned ([ADR-053](docs/records/DECISIONS.md#adr-053)).

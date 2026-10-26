@@ -188,7 +188,7 @@ const PAST_SITUATIONS: SituationView[] = [
     answer: {
       mode: "own",
       text: "Iskreno se ispričavam, greška je naša. Smještam vas večeras u susjedni hotel iste kategorije, pokrivamo sve troškove i prijevoz, a sutra imate prednost za sobu 105.",
-      quality: 4,
+      quality: 3, // 3 of 5 criteria met: quality is the share on the 1 to 5 scale (scaleToQuality), so 3
       copied: false,
       verdict: {
         criteriaMet: ["c1", "c2", "c3"],
