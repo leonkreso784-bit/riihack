@@ -1,6 +1,6 @@
 import { PgDialect } from "drizzle-orm/pg-core";
 import { describe, expect, it } from "vitest";
-import { afterReservation, studentTurnsBelow } from "./queries";
+import { afterReservation, studentTurnsBelow, toGradeAnswer } from "./queries";
 import type { ChatTurn } from "@/lib/types";
 
 describe("studentTurnsBelow", () => {
@@ -34,5 +34,23 @@ describe("afterReservation", () => {
       { role: "student", text: "Druga" },
     ];
     expect(afterReservation(transcript).messageNo).toBe(2);
+  });
+});
+
+describe("toGradeAnswer", () => {
+  it("bez retka odgovora (leftJoin vrati sve stupce null) nema odgovora", () => {
+    expect(toGradeAnswer({ mode: null, text: null, copied: null, quality: null })).toBeNull();
+  });
+
+  it("klik na ponuđeni odgovor: red postoji iako je tekst null", () => {
+    expect(toGradeAnswer({ mode: "click", text: null, copied: false, quality: 4 })).toEqual({ mode: "click", text: null, copied: false, quality: 4 });
+  });
+
+  it("vlastiti odgovor s tekstom null (prazan) i dalje je odgovor, ne propuštena situacija", () => {
+    expect(toGradeAnswer({ mode: "own", text: null, copied: false, quality: 1 })).toEqual({ mode: "own", text: null, copied: false, quality: 1 });
+  });
+
+  it("ocjena 0 nije isto što i bez odgovora", () => {
+    expect(toGradeAnswer({ mode: "own", text: "Ispričavam se.", copied: true, quality: 0 })).toEqual({ mode: "own", text: "Ispričavam se.", copied: true, quality: 0 });
   });
 });

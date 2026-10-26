@@ -14,6 +14,7 @@ import { RoundBanner } from "./round-banner";
 import { Leaderboard } from "./leaderboard";
 import { RoundPodium, SeasonPodium } from "./round-podium";
 import { Dots } from "./loading";
+import { ExportGradesButton } from "./prof/export-grades-button";
 
 const DEADLINES = [
   { label: "Ručno", minutes: undefined },
@@ -83,9 +84,10 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
             </ul>
           </Panel>
         )}
-        <Panel
-          title="Ljestvica po napretku"
-          action={
+        <Panel>
+          {/* Own header instead of Panel title/action: three buttons must wrap under the title on a phone (375 px). */}
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+            <h2 className="text-[0.95rem] font-bold tracking-tight">Ljestvica po napretku</h2>
             <div className="flex flex-wrap items-center gap-1">
               <button type="button" aria-pressed={anonymous} onClick={() => setAnonymous((a) => !a)} className={cn(toggle, anonymous ? "bg-secondary text-secondary-foreground" : "hover:bg-muted")}>
                 Anonimno
@@ -95,9 +97,9 @@ export function ProfBoard({ state, syncedAt, onChange }: { state: ProfStateRespo
                   <Trophy className="size-4" aria-hidden /> Pokaži podij
                 </button>
               )}
+              <ExportGradesButton worldId={world.id} className={cn(toggle, "text-secondary-foreground hover:bg-muted")} />
             </div>
-          }
-        >
+          </div>
           {/* BUG-022: at season end (and under the month podium) nobody is red: the whole economy can drift down */}
           <Leaderboard rows={players} limit={players.length} anonymous={anonymous} big neutral={finished || !!podium} />
         </Panel>
