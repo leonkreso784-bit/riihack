@@ -3,9 +3,10 @@ import { streamText, type LanguageModel } from "ai";
 import { MAX_STUDENT_MESSAGES } from "@/lib/rules";
 import { renderSituationText } from "@/lib/engine/text";
 import type { CharacterInput } from "@/lib/types";
-import { AI_TIMEOUT_MS, aiEnabled, modelFor } from "./client";
+import { AI_TIMEOUT_MS, aiEnabled, maxOutputFor, modelFor, NO_THINKING } from "./client";
 import { CHARACTER_FALLBACK } from "./fallbacks";
 import { CHARACTER_SYSTEM } from "./prompts";
+import { runInScope, UsageScope } from "./usage";
 
 /** Neutralise angle brackets so student or character text cannot close or open our prompt tags. */
 const clean = (text: string) => text.replace(/</g, "‹").replace(/>/g, "›");
@@ -58,6 +59,8 @@ export function streamCharacterReply(
   const body = new ReadableStream<Uint8Array>({
     async start(controller) {
       let sent = "";
+      let usedFallback = false;
+      const scope = new UsageScope(); // the usage log marks the request(s) of this reply with usedFallback
       const send = (raw: string) => {
         const text = sent ? raw : raw.trimStart(); // no leading blank space before the first word
         if (!text) return;
@@ -65,25 +68,32 @@ export function streamCharacterReply(
         controller.enqueue(encoder.encode(text));
       };
       try {
-        if (!model && !aiEnabled()) throw new Error("no ANTHROPIC_API_KEY");
-        const result = streamText({
-          model: modelFor("character", model),
-          system: characterSystem(input),
-          prompt: transcriptPrompt(input),
-          maxOutputTokens: 300,
-          // Haiku 5.5 thinks by default and the thinking ate the whole budget, so 5 of 8 replies came back empty and
-          // the student saw the fallback line (audit 24.10. 23:50). A short line in character needs no reasoning.
-          providerOptions: { anthropic: { thinking: { type: "disabled" } } },
-          abortSignal: AbortSignal.timeout(AI_TIMEOUT_MS),
-          onError: ({ error }) => console.error("[ai]", error instanceof Error ? error.message : error),
+        if (!model && !aiEnabled("character")) throw new Error("no API key for the character provider");
+        await runInScope(scope, async () => {
+          const result = streamText({
+            model: modelFor("character", model, "lik"),
+            system: characterSystem(input),
+            prompt: transcriptPrompt(input),
+            maxOutputTokens: maxOutputFor("character", 300),
+            // Haiku 5.5 thinks by default and the thinking ate the whole budget, so 5 of 8 replies came back empty and
+            // the student saw the fallback line (audit 24.10. 23:50). A short line in character needs no reasoning.
+            providerOptions: NO_THINKING,
+            abortSignal: AbortSignal.timeout(AI_TIMEOUT_MS),
+            onError: ({ error }) => console.error("[ai]", error instanceof Error ? error.message : error),
+          });
+          for await (const delta of result.textStream) send(delta);
         });
-        for await (const delta of result.textStream) send(delta);
         if (!sent.trim()) throw new Error("empty character reply");
       } catch (error) {
         console.error("[ai]", error instanceof Error ? error.message : error);
         // Text already sent stays; a half sentence plus nothing is better than a mixed-in fallback.
-        if (!sent.trim()) send(CHARACTER_FALLBACK);
+        if (!sent.trim()) {
+          usedFallback = true;
+          send(CHARACTER_FALLBACK);
+        }
       }
+      // Not awaited: the reply never waits for the log. The records are in the scope and close() hands them to after() at once.
+      void scope.close(usedFallback).catch(() => {});
       try {
         await onDone?.(sent.trim());
       } catch (error) {

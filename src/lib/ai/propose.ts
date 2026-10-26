@@ -5,7 +5,7 @@ import { z } from "zod";
 import { validateDraft } from "@/lib/engine/draft";
 import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
 import type { MetricKey, SituationDraft, SituationIdeaInput } from "@/lib/types";
-import { aiEnabled, modelFor, withAi } from "./client";
+import { aiEnabled, CACHE_SYSTEM, GROQ_LOW_EFFORT, maxOutputFor, modelFor, withAi } from "./client";
 import { fallbackProposal, weakestMetric } from "./fallbacks";
 import { PROPOSE_SYSTEM } from "./prompts";
 
@@ -105,15 +105,17 @@ function problem(draft: SituationDraft): string | null {
  * AI off, error, timeout or two invalid drafts give the deterministic fallback. The professor reviews it either way.
  */
 export function proposeSituation(input: SituationIdeaInput, model?: LanguageModel): Promise<SituationDraft> {
-  if (!aiEnabled() && !model) return Promise.resolve(fallbackProposal(input));
+  if (!aiEnabled("mentor") && !model) return Promise.resolve(fallbackProposal(input));
   return withAi<SituationDraft>(async () => {
     let error: string | undefined;
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = await generateText({
-        model: modelFor("mentor", model),
+        model: modelFor("mentor", model, "prijedlog"),
         output: Output.object({ schema }),
-        instructions: { role: "system", content: PROPOSE_SYSTEM, providerOptions: { anthropic: { cacheControl: { type: "ephemeral" } } } },
+        instructions: { role: "system", content: PROPOSE_SYSTEM, providerOptions: CACHE_SYSTEM },
         prompt: ideaPrompt(input, error),
+        maxOutputTokens: maxOutputFor("mentor"), // Claude: no cap, as before; other providers get a ceiling
+        providerOptions: GROQ_LOW_EFFORT, // Groq reasoning would eat that ceiling; Claude ignores this key
       });
       const draft = normalizeDraft(result.output);
       const found = problem(draft);

@@ -15,10 +15,13 @@
     "db:studio": "drizzle-kit studio",
     "seed:demo": "tsx scripts/seed-demo.ts",
     "smoke": "tsx scripts/smoke.ts",
-    "ai:smoke": "tsx scripts/ai-smoke.ts"
+    "ai:smoke": "tsx scripts/ai-smoke.ts",
+    "ai:potrosnja": "tsx scripts/ai-potrosnja.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.87",
+    "@ai-sdk/groq": "^4.0.70",
+    "@ai-sdk/mistral": "^4.0.72",
     "@base-ui/react": "^1.9.0",
     "@better-auth/drizzle-adapter": "1.7.12",
     "@neondatabase/serverless": "^1.2.0",

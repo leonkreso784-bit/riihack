@@ -1,4 +1,4 @@
-import { proposeSituation } from "@/lib/ai";
+import { proposeSituation, withAiContext } from "@/lib/ai";
 import { assertProposalAllowed, parseGenerateRequest, recordProposal, situationIdeaInput } from "@/lib/game/idea";
 import { route } from "@/lib/http";
 import { readJson, requireProf } from "@/lib/session";
@@ -14,7 +14,7 @@ export const POST = route(
     const request = parseGenerateRequest(await readJson(req));
     await assertProposalAllowed(world.id);
     const input = await situationIdeaInput(world, request);
-    const draft = await proposeSituation(input);
+    const draft = await withAiContext({ worldId: world.id, companyId: request.companyId }, () => proposeSituation(input));
     await recordProposal(world, request.companyId);
     return draft;
   },

@@ -1,5 +1,5 @@
 // S3: POST /api/situations/[id]/chat. One student message in, the character's reply out as a text stream.
-import { streamCharacterReply } from "@/lib/ai";
+import { streamCharacterReply, withAiContext } from "@/lib/ai";
 import { afterReservation, appendTranscript, getSituationForCompany, reserveStudentTurn } from "@/db/queries";
 import { HttpError } from "@/lib/http";
 import { MAX_STUDENT_MESSAGES, PASTE_SHARE } from "@/lib/rules";
@@ -30,19 +30,22 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     if (!reserved) throw new HttpError(409, "Razgovor je gotov");
     const { prior, messageNo } = afterReservation(reserved);
 
-    return streamCharacterReply(
-      {
-        template,
-        hotelName: company.name,
-        roomNumber: situation.roomNumber ?? undefined,
-        transcript: prior,
-        message,
-        pasted: pastedChars / message.length > PASTE_SHARE,
-        messageNo,
-        maxMessages: MAX_STUDENT_MESSAGES,
-      },
-      undefined,
-      (reply) => appendTranscript(situation.id, [{ role: "character", text: reply }]),
+    // The usage log (ai_calls) gets the game and hotel of this call; ids only.
+    return withAiContext({ worldId: company.worldId, companyId: company.id }, () =>
+      streamCharacterReply(
+        {
+          template,
+          hotelName: company.name,
+          roomNumber: situation.roomNumber ?? undefined,
+          transcript: prior,
+          message,
+          pasted: pastedChars / message.length > PASTE_SHARE,
+          messageNo,
+          maxMessages: MAX_STUDENT_MESSAGES,
+        },
+        undefined,
+        (reply) => appendTranscript(situation.id, [{ role: "character", text: reply }]),
+      ),
     );
   } catch (err) {
     if (err instanceof HttpError) return Response.json({ error: err.message }, { status: err.status });

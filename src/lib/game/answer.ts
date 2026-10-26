@@ -3,7 +3,7 @@
 import { sql } from "drizzle-orm";
 import { db } from "@/db";
 import { getSituationForCompany, logEvent } from "@/db/queries";
-import { judge } from "@/lib/ai";
+import { judge, withAiContext } from "@/lib/ai";
 import { classifyOwnAnswer } from "@/lib/engine/copy";
 import { qualityForOwn, qualityFromClick } from "@/lib/engine/quality";
 import { roomStatusAfter } from "@/lib/engine/round";
@@ -173,7 +173,9 @@ export async function submitAnswer(ctx: PlayerCtx, situationId: string, req: Ans
     req as unknown as Record<string, unknown>,
     template.options.map((o) => o.id),
   );
-  const graded = await gradeAnswer(parsed, { template, hotelName: ctx.company.name, transcript: situation.transcript });
+  const graded = await withAiContext({ worldId: ctx.company.worldId, companyId: ctx.company.id }, () =>
+    gradeAnswer(parsed, { template, hotelName: ctx.company.name, transcript: situation.transcript }),
+  );
 
   const room =
     template.room && situation.roomNumber
