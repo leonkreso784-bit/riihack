@@ -1,8 +1,8 @@
 # Odluke (ADR)
 
 Svaka značajna odluka: kontekst, odluka, posljedice. **Najnovija na vrhu.** Odluka ovdje objašnjava **zašto**;
-**što vrijedi** piše u [ARHITEKTURA.md](../../ARHITEKTURA.md), [planu](../superpowers/plans/2026-10-24-simpolis.md) i
-kodu. Kratki popis odluka tima vodi se i u [TEAM.md › Odluke](../../TEAM.md#odluke).
+**što vrijedi** piše u [ARHITEKTURA.md](../ARHITEKTURA.md), [planu](../hackathon/plans/2026-10-24-simpolis.md) i
+kodu. Kratki popis odluka tima vodi se i u [TEAM.md › Odluke](../hackathon/TEAM.md#odluke).
 
 Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
@@ -21,7 +21,7 @@ dopisuje.
 **Posljedice.** Radi graditeljev agent: osvrt se stvara pri prvom otvaranju izvještaja nakon obračuna (`mentorText`),
 bez promjene sheme; aditivno dira Simonov `mentor.ts` i minimalno Rinov izvještaj. Namjerno: i mjesec zatvoren prije
 [#280](https://github.com/leonkreso784-bit/riihack/pull/280) dobije osvrt pri prvom otvaranju izvještaja (5–6 s, osvrt ispred starog odgovora; isto u
-`KVRNDM`) — isti mehanizam kao za refleksiju prije obračuna (graditelj ~09:12; tester 09:08). Za demo: graditelj ~09:20 unaprijed stvara osvrte za 1. mjesec `KVRNDM` (agent otvara izvještaj 1. mjeseca kao 5 posijanih studenata ponovnim ulazom istim imenom i hotelom, ništa drugo ne šalje).
+`KVRNDM`) — isti mehanizam kao za refleksiju prije obračuna (graditelj ~09:12; tester 09:08). Za demo: graditelj ~09:20 unaprijed stvara osvrte za 1. mjesec `KVRNDM` (agent otvara izvještaj 1. mjeseca za 5 posijanih studenata, ništa drugo ne šalje).
 
 <a id="adr-056"></a>
 ## ADR-056 · Dok žiri igra, nema deploya
@@ -58,22 +58,21 @@ integratoru izravno u njegovoj sesiji napisao „izravno ti dajem odobrenje za s
 treba automatizirano radit"; integrator spaja zelene PR-ove do jutra.
 
 <a id="adr-053"></a>
-## ADR-053 · Sigurnost prije predaje: granice AI-ja i tri zaglavlja, bez CSP-a
-**Datum:** 25.10. ~01:20 · **Status:** ✅ (Leon, nakon Simonovog sigurnosnog pregleda; preneseno preko graditelja) ·
+## ADR-053 · Granice AI-ja i sigurnosna zaglavlja
+**Datum:** 25.10. ~01:20 · **Status:** ✅ (Leon, na Simonov prijedlog; preneseno preko graditelja) ·
 **Vezano:** [ADR-024](#adr-024), [ADR-036](#adr-036)
 
-**Kontekst.** Igru (i kolačić profesora) može otvoriti svatko bez računa, a AI prijedlog situacije je plaćeni poziv
-modela bez granice. Rino je predložio sigurnosna zaglavlja (CSP, zabrana iframea, `nosniff`).
+**Kontekst.** AI prijedlog situacije je plaćeni poziv modela bez granice. Rino je predložio sigurnosna zaglavlja (zabrana
+iframea, `nosniff`).
 **Odluka.**
 - AI prijedlog situacije: najviše 30 po igri i 5 u minuti, inače 429
   ([#247](https://github.com/leonkreso784-bit/riihack/pull/247)).
 - Granica poruka u razgovoru s likom provjerava se atomično ([#249](https://github.com/leonkreso784-bit/riihack/pull/249)).
-- Zaglavlja `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff` i `Referrer-Policy`; stroge CSP nema
+- Zaglavlja `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff` i `Referrer-Policy`
   ([#251](https://github.com/leonkreso784-bit/riihack/pull/251)).
-- Ponovni ulaz studenta samo imenom (PIN) je za nakon natjecanja.
+- PIN za ulazak studenta je planiran ([#301](https://github.com/leonkreso784-bit/riihack/issues/301)).
 
-**Posljedice.** Trošak AI-ja po igri je ograničen, a demo radi kao i prije. Granica AI prijedloga nije atomična (mala
-utrka na granici, zapisano u #247). Radi graditelj. Zaglavlja spojena [#251](https://github.com/leonkreso784-bit/riihack/pull/251) (02:23), integrator ih je na
+**Posljedice.** Trošak AI-ja po igri je ograničen, a demo radi kao i prije. Radi graditelj. Zaglavlja spojena [#251](https://github.com/leonkreso784-bit/riihack/pull/251) (02:23), integrator ih je na
 produkciji potvrdio curlom. Granice AI prijedloga [#247](https://github.com/leonkreso784-bit/riihack/pull/247) i poruka
 [#249](https://github.com/leonkreso784-bit/riihack/pull/249) spojene su 02:38.
 
@@ -261,7 +260,7 @@ Spojeno [#252](https://github.com/leonkreso784-bit/riihack/pull/252) (02:58 CEST
 
 <a id="adr-039"></a>
 ## ADR-039 · Redoslijed do predaje: demo i smoke prvo
-**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon) · **Vezano:** [plan vala 3](../superpowers/plans/2026-10-24-simpolis-val-3.md)
+**Datum:** 24.10. ~21:15 · **Status:** ✅ (Leon) · **Vezano:** [plan vala 3](../hackathon/plans/2026-10-24-simpolis-val-3.md)
 
 **Kontekst.** Do predaje ostaju L8 (demo i smoke za val 3), L19 (suradnja među hotelima) i čišćenje baze.
 **Odluka.**
@@ -284,7 +283,7 @@ od 216 igara). Brisanje je graditeljev agent pokrenuo ~22:00: obrisano 208 igara
 
 **Kontekst.** Simon je napravio skice „Tokovi"; trebalo je odlučiti što od njih ide u aplikaciju.
 **Odluka.** Skice su samo za prezentaciju i ne idu u aplikaciju. Ruta „Što ako?" se ne radi.
-**Posljedice.** Nema novog posla u kodu; „Što ako?" je u [BACKLOG.md](BACKLOG.md). Leon (~21:30, Simonu): Simonovi
+**Posljedice.** Nema novog posla u kodu; „Što ako?" je bio u [BACKLOG.md (oznaka ri-hack-4.0)](https://github.com/leonkreso784-bit/riihack/blob/ri-hack-4.0/docs/records/BACKLOG.md). Leon (~21:30, Simonu): Simonovi
 PR-ovi [#174](https://github.com/leonkreso784-bit/riihack/pull/174) (skica 1 sa „Što ako?") i
 [#179](https://github.com/leonkreso784-bit/riihack/pull/179) (skica 2) ne idu u `main`; grane ostaju za slajdove
 (slike ili Simonov Vercel link).
@@ -301,7 +300,7 @@ lock datoteku i plan.
 idu preko njega.
 
 Odluke ADR-033 do 036 su val 3; zadaci, ugovor i raspored su u planu vala 3
-([#134](https://github.com/leonkreso784-bit/riihack/pull/134), spojen 19:16; [plan vala 3](../superpowers/plans/2026-10-24-simpolis-val-3.md)).
+([#134](https://github.com/leonkreso784-bit/riihack/pull/134), spojen 19:16; [plan vala 3](../hackathon/plans/2026-10-24-simpolis-val-3.md)).
 
 <a id="adr-036"></a>
 ## ADR-036 · Profesorski računi (Better Auth); prijava kodom ostaje
@@ -362,7 +361,7 @@ na pokazatelj odjela (1 bod na 1000 €); vrijednosti vrijede iz `rules.ts`. Mot
 
 <a id="adr-031"></a>
 ## ADR-031 · Nema zamrzavanja koda; gradi se do predaje
-**Datum:** 24.10. ~18:40 · **Status:** ✅ (Leon) · **Vezano:** [plan › Prekretnice](../superpowers/plans/2026-10-24-simpolis.md#prekretnice)
+**Datum:** 24.10. ~18:40 · **Status:** ✅ (Leon) · **Vezano:** [plan › Prekretnice](../hackathon/plans/2026-10-24-simpolis.md#prekretnice)
 
 **Kontekst.** Plan i pravila tima predviđali su zamrzavanje koda u ned 06:30, poslije samo popravci.
 **Odluka.** Zamrzavanja nema: radi se punom brzinom do predaje. Rok predaje ostaje **ned 10:30**.
@@ -415,7 +414,7 @@ konstante u `rules.ts` koje motor čita izravno.
 **Odluka.** Lagana verzija za **M3**: tip `Playbook { version: 1; name; settings: { autoDraw }; situations:
 SituationDraft[] }` u ugovoru (#89) i rute `GET` (izvoz) i `POST` (uvoz) `/api/prof/[worldId]/playbook`. Simon u S8
 dodaje gumbe „Izvezi" i „Uvezi". **Profesor ne mijenja mehaniku motora**; to je vizija.
-**Posljedice.** Ponovna upotreba radi bez računa, preko datoteke. Mehanika po igri ide u [VISION.md](../product/VISION.md).
+**Posljedice.** Ponovna upotreba radi bez računa, preko datoteke. Mehanika po igri ide u [ROADMAP.md](../ROADMAP.md#faze) (faza 3).
 **Dopuna (sub 18:28, Leon):** Simon smije u Rinov `src/lib/client.ts` dodati `exportPlaybook` i `importPlaybook` (samo
 dodavanje, lažna verzija u `mock.ts`) za gumbe u S8 ([ok na #108](https://github.com/leonkreso784-bit/riihack/pull/108)).
 
@@ -428,7 +427,7 @@ jer krivo čita postojeća unique ograničenja (BUG-006).
 **Odluka.** Nitko ne pokreće `npm run db:push`. Promjene sheme idu ručnim **aditivnim** SQL-om (`CREATE TABLE`,
 `ADD COLUMN IF NOT EXISTS`), koji pregleda Leonov graditelj. Shema L12 primjenjuje se tako: tri aditivne naredbe u jednoj
 transakciji (`custom_situations`, `dispatches`, `worlds.auto_draw` sa zadanim `true`).
-**Posljedice.** Mijenja korak „`db:push` samo aditivno" iz ADR-025. [TEAM.md](../../TEAM.md) pravilo 5 usklađeno
+**Posljedice.** Mijenja korak „`db:push` samo aditivno" iz ADR-025. [TEAM.md](../hackathon/TEAM.md) pravilo 5 usklađeno
 (`12a2f25`).
 
 <a id="adr-025"></a>
@@ -445,11 +444,11 @@ Novi tipovi: `SituationSource`, `SituationDraft`, `SituationSummary`, `DispatchV
 **Redoslijed spajanja:** ugovor (Leonovo „spoji") → L11 faza B → L12 (shema ručnim aditivnim SQL-om neposredno prije
 spajanja, [ADR-026](#adr-026)). S8 ide neovisno. L6 (#75) mora biti spojen prije demoa L12 i S8, inače je banka situacija prazna.
 **Posljedice.** S8 dira Rinove `client.ts` i `mock.ts` samo za nove pozive i lažno stanje profesorovih situacija;
-Rino je dao „ok" (~16:35, [TEAM.md](../../TEAM.md) pravilo 6). Ugovor je PR [#89](https://github.com/leonkreso784-bit/riihack/pull/89), čeka Leonovo „spoji".
+Rino je dao „ok" (~16:35, [TEAM.md](../hackathon/TEAM.md) pravilo 6). Ugovor je PR [#89](https://github.com/leonkreso784-bit/riihack/pull/89), čeka Leonovo „spoji".
 
 <a id="adr-024"></a>
 ## ADR-024 · Profesorove situacije: L12, S8, S9
-**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom, nakon obilaska žirija 1) · **Vezano:** [ADR-023](#adr-023), [ADR-025](#adr-025), [PRD](../product/PRD.md#5-kriteriji-prihvaćanja)
+**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom, nakon obilaska žirija 1) · **Vezano:** [ADR-023](#adr-023), [ADR-025](#adr-025), [PRD (oznaka ri-hack-4.0)](https://github.com/leonkreso784-bit/riihack/blob/ri-hack-4.0/docs/product/PRD.md#5-kriteriji-prihvaćanja)
 
 **Kontekst.** Profesor je glavni (ADR-023), a do sada je samo vodio mjesece; situacije je izvlačila igra iz banke.
 **Odluka.**
@@ -462,13 +461,13 @@ Rino je dao „ok" (~16:35, [TEAM.md](../../TEAM.md) pravilo 6). Ugovor je PR [#
   uvijek pregleda i spremi sam; AI ništa ne šalje studentima.**
 **Posljedice.** Rino dodaje poveznicu „Situacije" na ploči profesora; R5 mora podnijeti situaciju bez opcija; R8 u M3
 dobiva gumb „Promijeni ocjenu". „Profesor sam dodaje situacije" više nije plan nego demo
-([BACKLOG.md](BACKLOG.md)).
+([BACKLOG.md, oznaka ri-hack-4.0](https://github.com/leonkreso784-bit/riihack/blob/ri-hack-4.0/docs/records/BACKLOG.md)).
 
 <a id="adr-023"></a>
 ## ADR-023 · Jezgra odvojena od AI-ja, profesor je glavni
-**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom) · **Vezano:** [ADR-002](#adr-002), [#86](https://github.com/leonkreso784-bit/riihack/pull/86), [PROMISE.md](../../PROMISE.md)
+**Datum:** 24.10. ~16:15 · **Status:** ✅ (Leon s timom) · **Vezano:** [ADR-002](#adr-002), [#86](https://github.com/leonkreso784-bit/riihack/pull/86), [PROMISE.md](../hackathon/PROMISE.md)
 
-**Kontekst.** Obilazak žirija 1 (~15:45) je prošao. Žiri (Borna Sila): ne oslanjati se na AI i ne raditi sve kao AI
+**Kontekst.** Obilazak žirija 1 (~15:45) je prošao. Član žirija: ne oslanjati se na AI i ne raditi sve kao AI
 agente; temelj neka bude stabilna, pouzdana softverska mehanika. Žiri je pohvalio i partnerstvo tvrtki i fakulteta.
 **Odluka.** Jezgra (motor) je odvojena od AI-ja: AI glumi likove i radi kao mentor. **Profesor je glavni:** mentor je
 uvijek tu, ali iza njega stoji profesor. Mentor iz brojki jezgre objašnjava što se dogodilo i kako svijet radi
@@ -478,7 +477,7 @@ Profesor dobiva situacije (ADR-024) i promjenu ocjene mentora.
 
 <a id="adr-022"></a>
 ## ADR-022 · Smoke korak 11: Ivan postavlja 300 €, ne 150 €
-**Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ADR-019](#adr-019), [plan › L8](../superpowers/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)
+**Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ADR-019](#adr-019), [plan › L8](../hackathon/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)
 
 **Kontekst.** Korak 11 provjerava da jeftiniji hotel dobije više noćenja (Ana 60 €, Ivan 150 €). Ivanovu hotelu s
 4★ 150 € je ispod vlastite referentne cijene, pa je test bio na rubu (239 : 238 noćenja).
@@ -487,7 +486,7 @@ Profesor dobiva situacije (ADR-024) i promjenu ocjene mentora.
 
 <a id="adr-021"></a>
 ## ADR-021 · Vijesti grada bez sklonidbe
-**Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §5c](../../ARHITEKTURA.md#5c--ekonomija-grada-svi-utječu-na-sve), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)
+**Datum:** 24.10. ~16:00 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §6 (Gradsko tržište)](../ARHITEKTURA.md#motor), [#82](https://github.com/leonkreso784-bit/riihack/pull/82)
 
 **Kontekst.** Predlošci vijesti iz plana („Hotel … potpisala ugovor s Agencijom …") uvrštavaju imena u rečenicu, pa
 daju krive padeže.
@@ -507,7 +506,7 @@ slučaj**, uz uvjet da sučelje drži gumb onemogućenim dok lik odgovara.
 
 <a id="adr-019"></a>
 ## ADR-019 · Smoke (L8, koraci 1–10) gradi se usporedno s L7
-**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [plan › L8](../superpowers/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [TESTING.md](../workflow/TESTING.md)
+**Datum:** 24.10. ~15:10 · **Status:** ✅ (Leon) · **Vezano:** [plan › L8](../hackathon/plans/2026-10-24-simpolis.md#l8--smoke-skripta-i-demo-igra-m2-smoke-m3-demo), [RAZVOJ.md](../RAZVOJ.md#smoke-i-demo-igra)
 
 **Kontekst.** U planu je smoke (L8) vezan uz M2 i M3, a koraci 1–10 provjeravaju upravo rute iz L4 i L7.
 **Odluka.** Koraci 1–10 smokea grade se usporedno s L7, ne tek u M3. Koraci 11–14 (grad) dolaze nakon L11.
@@ -543,14 +542,14 @@ planu zajedno; Simon zatvara #42 kao duplikat. #63 spojen u 14:58.
 
 <a id="adr-015"></a>
 ## ADR-015 · Tri Claude sesije, a spaja samo integrator
-**Datum:** 24.10. 🟨 vrijeme · **Status:** ✅ (Leon) · **Vezano:** [SESIJE.md](../workflow/SESIJE.md), ADR-014, BUG-001
+**Datum:** 24.10. 🟨 vrijeme · **Status:** ✅ (Leon) · **Vezano:** [SESIJE.md](../hackathon/SESIJE.md), ADR-014, BUG-001
 
 **Kontekst.** Prvih sat vremena PR-ove je spajao njihov vlasnik; dvaput se isti zadatak radio dvaput
 (#36 i #37, #49 i #50), a jednom je `main` ostao crven (BUG-001).
 **Odluka.** Leonov rad ide kroz tri sesije: **graditelj** (L-zadaci s agentima), **integrator** (pregledava i spaja
 PR-ove cijelog tima, čuva `main`) i **dokumentarist** (samo `docs/`). Svaka u svom radnom stablu.
 **Posljedice.** Spaja samo integrator; autor PR-a javlja da je spreman (integrator, [ODLUKA] 24.10.). Vrijedi za
-PR-ove cijelog tima ([TEAM.md](../../TEAM.md) pravilo 3), i to **automatski** za sve što prođe provjeru na svježem
+PR-ove cijelog tima ([TEAM.md](../hackathon/TEAM.md) pravilo 3), i to **automatski** za sve što prođe provjeru na svježem
 `main`-u (Leon, ~15:00), osim iznimki iz ADR-017. Stanje PR-ova (draft, ready, spajanje) vodi **isključivo**
 integrator; graditelj samo gradi i javlja (Leon, ~15:15). **Dokumentacija je na
 `main`-u** jer po njoj grade ljudi i agenti (Leon, ~15:05; prije toga kratko samo na grani, #58 vraćen s #60).
@@ -562,7 +561,7 @@ integrator; graditelj samo gradi i javlja (Leon, ~15:15). **Dokumentacija je na
 **Kontekst.** Troje ljudi s agentima radi paralelno; nije se vidjelo tko što radi ni tko na koga čeka.
 **Odluka.** `TEAM.md` je zajednička ploča: svatko uređuje samo svoje polje, izravno na `main` bez PR-a, commit
 `ploča: <ime>`. Zajedničke dijelove (prekretnice, čekanja, pravila, odluke) smije svatko, uz poruku na Discordu.
-**Posljedice.** „Tko što radi sada" živi samo na ploči; dnevnik ([PROGRESS.md](PROGRESS.md)) to ne ponavlja.
+**Posljedice.** „Tko što radi sada" živi samo na ploči; dnevnik ([PROGRESS.md](../hackathon/PROGRESS.md)) to ne ponavlja.
 
 <a id="adr-013"></a>
 ## ADR-013 · Lažni podaci su zadani dok API ne proradi
@@ -585,7 +584,7 @@ ih vraća iz predloška; stranica `/igra/osoblje`.
 
 <a id="adr-011"></a>
 ## ADR-011 · `types.ts` je doslovno iz plana, a novo polje je neobavezno
-**Datum:** 24.10. 13:29 (L0), pravilo nakon BUG-001 (~14:10) · **Status:** ✅ (Leon) · **Vezano:** [#37](https://github.com/leonkreso784-bit/riihack/pull/37), [TEAM.md](../../TEAM.md) pravilo 2, BUG-001
+**Datum:** 24.10. 13:29 (L0), pravilo nakon BUG-001 (~14:10) · **Status:** ✅ (Leon) · **Vezano:** [#37](https://github.com/leonkreso784-bit/riihack/pull/37), [TEAM.md](../hackathon/TEAM.md) pravilo 2, BUG-001
 
 **Kontekst.** Sučelje i backend grade se usporedno preko ugovora `src/lib/types.ts`. Obavezno polje dodano u ugovor
 (#45) srušilo je build tuđeg koda koji ga još nije punio.
@@ -600,11 +599,11 @@ neobavezno (`?`)** dok ga svi ne pune; najava pod „Odluke" i na Discordu prije
 **Kontekst.** Leon i Simon su istovremeno napravili kostur iz startera.
 **Odluka.** Spaja se #37 (s CI-jem i ugovorom tipova); ljuska je usklađena sa `simon/L0-kostur`, da Rinov R0 (#40)
 prijeđe bez sukoba.
-**Posljedice.** Uvedeno pravilo „jedan zadatak, jedan čovjek" ([TEAM.md](../../TEAM.md) pravilo 1).
+**Posljedice.** Uvedeno pravilo „jedan zadatak, jedan čovjek" ([TEAM.md](../hackathon/TEAM.md) pravilo 1).
 
 <a id="adr-009"></a>
 ## ADR-009 · Napredak kao normalizirani dobitak
-**Datum:** 24.10. 13:39 · **Status:** ✅ (Leon s timom) · **Vezano:** [#31](https://github.com/leonkreso784-bit/riihack/pull/31), [#45](https://github.com/leonkreso784-bit/riihack/pull/45), [plan izvedbe](../superpowers/plans/2026-10-24-simpolis.md) (L5)
+**Datum:** 24.10. 13:39 · **Status:** ✅ (Leon s timom) · **Vezano:** [#31](https://github.com/leonkreso784-bit/riihack/pull/31), [#45](https://github.com/leonkreso784-bit/riihack/pull/45), [plan izvedbe](../hackathon/plans/2026-10-24-simpolis.md) (L5)
 
 **Kontekst.** Hoteli kreću s različito raspoređenim pokazateljima; zbroj razlika nagrađuje one koji kreću nisko.
 **Odluka.** Napredak je normalizirani dobitak (Hake 1998), raspon −100 do +100; ljestvica nosi i
@@ -613,19 +612,19 @@ prijeđe bez sukoba.
 
 <a id="adr-008"></a>
 ## ADR-008 · Grad ima zajedničko tržište turista i novac
-**Datum:** 24.10. 12:36 · **Status:** ✅ (Leon) · **Vezano:** `f91128c`, [ARHITEKTURA §5c](../../ARHITEKTURA.md#5c--ekonomija-grada-svi-utječu-na-sve), plan L9–L11
+**Datum:** 24.10. 12:36 · **Status:** ✅ (Leon) · **Vezano:** `f91128c`, [ARHITEKTURA §6 (Gradsko tržište)](../ARHITEKTURA.md#motor), plan L9–L11
 
 **Kontekst.** Najvažnija poruka (Leon, 24.10.) je „grad u simulaciji s pravom ekonomijom": odluka jednog studenta
 mora mijenjati poslovanje drugih.
 **Odluka.** Svi hoteli dijele iste turiste (potražnja po mjesecu sezone), dijele se po privlačnosti; plan kruga
 (cijena, marketing), novac i ugovori s gradskim tvrtkama. Obračun mjeseca radi se za cijeli grad odjednom kad profesor
 zatvori mjesec.
-**Posljedice.** Novi zadaci L9–L11, S5, S6. 🟨 [ARHITEKTURA §1a](../../ARHITEKTURA.md#1a--što-je-stvarno-što-je-sučelje-što-je-plan)
+**Posljedice.** Novi zadaci L9–L11, S5, S6. 🟨 [ARHITEKTURA §1a (oznaka ri-hack-4.0)](https://github.com/leonkreso784-bit/riihack/blob/ri-hack-4.0/ARHITEKTURA.md#1a--što-je-stvarno-što-je-sučelje-što-je-plan)
 pod „Što NE radimo" još navodi „pravu ekonomiju tržišta, zajedničko tržište gostiju", što je suprotno ovoj odluci.
 
 <a id="adr-007"></a>
 ## ADR-007 · Zatvaranje kruga u `db.batch`, ne u transakciji
-**Datum:** 24.10. 12:14 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** `0d7e588`, [napomene-rino.md](../napomene-rino.md) točka 7
+**Datum:** 24.10. 12:14 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** `0d7e588`, [napomene-rino.md](../hackathon/napomene-rino.md) točka 7
 
 **Kontekst.** `drizzle-orm/neon-http` nema `db.transaction()`, a zatvaranje kruga piše u više tablica; pad na pola
 ostavio bi zatvoren krug bez izvještaja.
@@ -635,7 +634,7 @@ ostavio bi zatvoren krug bez izvještaja.
 
 <a id="adr-006"></a>
 ## ADR-006 · Mentor se ne zove pri zatvaranju kruga
-**Datum:** 24.10. 12:14 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** `0d7e588`, [napomene-rino.md](../napomene-rino.md) točka 2 i 6
+**Datum:** 24.10. 12:14 · **Status:** ✅ (Leon, na Rinov prijedlog) · **Vezano:** `0d7e588`, [napomene-rino.md](../hackathon/napomene-rino.md) točka 2 i 6
 
 **Kontekst.** Kad istekne rok, polling 30 studenata zatvara krugove u istoj sekundi: 30 Sonnet poziva odjednom.
 **Odluka.** Zatvaranje upiše samo brojke; pitanje mentora nastaje kad student otvori izvještaj
@@ -644,7 +643,7 @@ ostavio bi zatvoren krug bez izvještaja.
 
 <a id="adr-005"></a>
 ## ADR-005 · Neon i Drizzle umjesto Supabasea
-**Datum:** 24.10. 11:59 · **Status:** ✅ (Leon) · **Vezano:** `bef8ab5`, `88421d4`, [ARHITEKTURA §3](../../ARHITEKTURA.md#3--stack)
+**Datum:** 24.10. 11:59 · **Status:** ✅ (Leon) · **Vezano:** `bef8ab5`, `88421d4`, [ARHITEKTURA §3](../ARHITEKTURA.md#3--stack)
 
 **Kontekst.** Zadani stack ([CLAUDE.md](../../CLAUDE.md)) bio je Supabase; Simonov starter s Neonom i Drizzleom već je
 bio isproban na Vercelu.
@@ -656,17 +655,17 @@ besplatni plan) preko Vercel Marketplacea: baza `simpolis-db` napravljena sub ~1
 
 <a id="adr-004"></a>
 ## ADR-004 · Bez računa: kodovi i httpOnly kolačići
-**Datum:** 24.10. 11:59 · **Status:** 🔁 za profesora djelomično zamijenjeno [ADR-036](#adr-036); studenti i dalje bez računa (Leon, na Rinov prijedlog) · **Vezano:** `bef8ab5`, [ARHITEKTURA §8](../../ARHITEKTURA.md#8--api), [napomene-rino.md](../napomene-rino.md) točka 1
+**Datum:** 24.10. 11:59 · **Status:** 🔁 za profesora djelomično zamijenjeno [ADR-036](#adr-036); studenti i dalje bez računa (Leon, na Rinov prijedlog) · **Vezano:** `bef8ab5`, [ARHITEKTURA §9](../ARHITEKTURA.md#api), [napomene-rino.md](../hackathon/napomene-rino.md) točka 1
 
 **Kontekst.** Računi i lozinke su izvan opsega 24 h; ulaz mora biti kao na Kahootu. Profesorova ploča ide na
 projektor, pa bi kod u adresi vidio cijeli razred.
-**Odluka.** Student ulazi kodom igre (6 znakova), imenom i imenom hotela i dobije token u kolačiću `sp_player`.
+**Odluka.** Student ulazi kodom igre (6 znakova) i dobije token u kolačiću `sp_player`.
 Profesor ima kod od 12 znakova koji **nikad nije u adresi**, samo u kolačiću `sp_prof`. U bazi su samo SHA-256 sažetci.
-**Posljedice.** Ponovni ulaz istim kodom, imenom i imenom hotela vraća isti hotel (smoke L8).
+**Posljedice.** Student koji izgubi kolačić dobije isti hotel natrag (smoke L8). PIN za ulazak studenta je planiran ([ADR-053](#adr-053)).
 
 <a id="adr-003"></a>
 ## ADR-003 · Osvježavanje pollingom svake 3 s
-**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon; Rino predložio maknuti Realtime) · **Vezano:** [ARHITEKTURA §3](../../ARHITEKTURA.md#3--stack), [napomene-rino.md](../napomene-rino.md) točka 3
+**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon; Rino predložio maknuti Realtime) · **Vezano:** [ARHITEKTURA §3](../ARHITEKTURA.md#3--stack), [napomene-rino.md](../hackathon/napomene-rino.md) točka 3
 
 **Kontekst.** Profesorova ploča i ekrani studenata moraju se osvježavati uživo; Realtime iz preglednika traži anon
 ključ i RLS.
@@ -675,7 +674,7 @@ ključ i RLS.
 
 <a id="adr-002"></a>
 ## ADR-002 · AI ne odlučuje o brojkama
-**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §2](../../ARHITEKTURA.md#2--načela), [CLAUDE.md](../../CLAUDE.md)
+**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §2](../ARHITEKTURA.md#2--načela), [CLAUDE.md](../../CLAUDE.md)
 
 **Kontekst.** Ocjena mora biti ponovljiva i objašnjiva profesoru; AI je nepredvidiv.
 **Odluka.** AI glumi likove, vraća popis ispunjenih kriterija rubrike i piše mentora. Kvalitetu i bodove računa motor
@@ -684,7 +683,7 @@ ključ i RLS.
 
 <a id="adr-001"></a>
 ## ADR-001 · Jedan Next.js projekt s API rutama
-**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §3](../../ARHITEKTURA.md#3--stack)
+**Datum:** 24.10. 11:52 · **Status:** ✅ (Leon) · **Vezano:** [ARHITEKTURA §3](../ARHITEKTURA.md#3--stack)
 
 **Kontekst.** 24 sata, troje ljudi, deploy od prvog sata.
 **Odluka.** Jedan Next.js (App Router) projekt: sučelje i `src/app/api/*`, deploy na Vercel (`main` se deploya sam).

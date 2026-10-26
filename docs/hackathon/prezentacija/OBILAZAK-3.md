@@ -12,7 +12,7 @@
 
 | Što | Tko |
 | --- | --- |
-| TV: `https://simpolis-ziri-3-share.vercel.app/?kod=KOD` (veliki QR, kod, 3 zadatka) | voditelj |
+| TV: `https://simpolis-ziri-3-share.vercel.app/?kod=KOD` (ugašeno 26. 10. 2026.) (veliki QR, kod, 3 zadatka) | voditelj |
 | Laptop: Leonov profesorski račun → Moje igre → igra za žiri | voditelj |
 | Ploča: rok za mjesec **Ručno** (zadano), 1 do 2 bota „Lako" (da je žiri iznad botova), **Pokreni** već prije 08:00 | voditelj |
 | 07:50 zagrijavanje: otvoriti `/`, `/ulaz`, ploču, jedan studentski `/igra`, `/igra/grad`, jednu situaciju i jedan izvještaj (prvi zahtjevi nakon tišine su sporiji) | bilo tko |

@@ -13,7 +13,7 @@
 
 ## Što je novo u v6
 
-Svaka izmjena ima oznaku iz `pitch-pregled/PITCH-PREGLED.md`. Oznaka (potvrditi) u tablici ispod znači: činjenica nije provjerena, netko od nas je potvrđuje prije nastupa; ne izgovara se i ne ide na slajd.
+Svaka izmjena ima oznaku E1 do E21 iz internog pregleda pitcha. Oznaka (potvrditi) u tablici ispod znači: činjenica nije provjerena, netko od nas je potvrđuje prije nastupa; ne izgovara se i ne ide na slajd.
 
 - **E1** (Rino, slajd 3): „kao Leon iz našeg tima", a 17 % je opisan točno: na ispitu bez AI-ja, u odnosu na vršnjake koji su vježbali sami.
 - **E3** (Rino, slajd 4): QR i kod ostaju na ekranu 14 s; kod i adresa se ne čitaju naglas, nego se kaže „Kod i adresa su na ekranu", pa 1 s pauze.
@@ -34,10 +34,10 @@ Svaka izmjena ima oznaku iz `pitch-pregled/PITCH-PREGLED.md`. Oznaka (potvrditi)
 - **E18**: zaglavlje „Slajdove mijenja Leon (tipkovnica). Rino drži vrijeme."
 - **E19** (slajd 3, deck): kartica „17 % lošije na ispitu bez AI-ja" i nova bilješka s izvorom.
 - **E20** (slajd 8, deck): „(procjena)" uz 0,07 $.
-- **Slajd 7, kartica „5 od 5" je skrivena** (atribut `hidden` u `index-v6.html`): tvrdnja je (U), iz `SIGURNOST.md`, nije ponovno pokrenuta, a (U) činjenice ne idu na slajd. Leon je potvrđuje ili ponovno pokreće u probi 1; tek tada ukloniti `hidden`.
+- **Slajd 7, kartica „5 od 5" je skrivena** (atribut `hidden` u `index-v6.html`): tvrdnja nije ponovno potvrđena pa ne ide na slajd.
 - Nova vremenska tablica (odjeljak 6.1 pregleda), brojke riječi i sekundi niže.
 
-**Nije primijenjeno:** E2 (skraćivanje slajda 2) crveni tim je odbacio; E21 (slajd 14) nije prošao crveni tim; P1 (paket za predaju: README, PREDAJA, PITCH.md, hosting deck) i P5 (BIZNIS.md) nisu dio ove tri datoteke.
+**Nije primijenjeno:** E2 i E21 (odbačeni u internom pregledu); P1 i P5 nisu dio ove tri datoteke.
 
 ## Rečenica koju žiri treba prepričati
 
@@ -58,7 +58,7 @@ Navodnici znače izgovoreno doslovno. Tekst bez navodnika je radnja na ekranu. K
 | 2:00 do 2:40 | **Simon** (Leon klika) | profesor, pa Grad | Leon zatvori mjesec. „Ja sam voditelj igre, zatvaram mjesec svima. Pravila sad računaju potražnju, cijene i troškove." Samo ako je Ana na podiju: „Skok mjeseca." Zatim pokaži Vijesti grada i samo ako je taj redak vidljiv: „Njezin hotel je sad najpopunjeniji u gradu." (Vijesti pišu „najpopunjeniji je Hotel Ana (63 %)"; „napunio se" ekran nikad ne kaže.) *(potvrditi u probi 1: je li Ana na podiju s dva bota „Lako", je li „napunio se" vidljiv)* | | E6 |
 | 2:40 do 3:00 | **Simon** (Leon klika) | Kako je izračunat mjesec (Tokovi) | Klik na korak Dobit, bez klizača. „Svaka brojka ima objašnjenje, korak po korak. AI ovdje ne sudjeluje." Pitanje mentora ostaje na ekranu, ne čita se. „Mentor ne kaže rješenje, nego pita." *(pitanje generira AI uživo, ne obećavati njegov tekst)* | Leon se vraća u deck tipkovnicom, → dvaput, brojač 6 / 16 | E7, E8 |
 | 3:00 do 3:20 | **Simon** | 6 · Tema | „Tema nabraja elemente igre, interaktivne izazove, personalizirani sadržaj i praćenje napretka. Simpolis ima sva četiri. Gotov odgovor vrijedi najviše 4 od 5, vlastite riječi do 5. AI glumi ljude, ne misli umjesto studenta." | „Kako je to napravljeno, Leon." | E9, E10 |
-| 3:20 do 3:48 | **Leon** | 7 · Tehnika (klip 14 s + brojke) | „U subotu nam je žiri rekao: stabilna mehanika, ne agenti. Tako smo gradili od prvog commita: AI nikad ne odlučuje o brojevima, glumi gosta i označava kriterije, a sve brojke računaju pravila. Tada smo imali oko 150 testova, sad ih je preko 550. Na produkciji smo sami provjerili svih 37 API ruta, a pet pokušaja da se sudac prevari nije uspjelo." *(potvrditi: Leon potvrđuje „oko 150 testova"; 37 ruta je izbrojeno, a „5 od 5" je iz vlastitog dokumenta SIGURNOST.md i nije ponovno pokrenuto; zato je kartica „5 od 5" skrivena na slajdu 7, a rečenica o pet pokušaja ostaje u govoru samo ako Leon potvrdi)* | „Tko to plaća, Rino." | E11, E12 |
+| 3:20 do 3:48 | **Leon** | 7 · Tehnika (klip 14 s + brojke) | „U subotu nam je žiri rekao: stabilna mehanika, ne agenti. Tako smo gradili od prvog commita: AI nikad ne odlučuje o brojevima, glumi gosta i označava kriterije, a sve brojke računaju pravila. Tada smo imali oko 150 testova, sad ih je preko 550. Na produkciji smo sami provjerili svih 37 API ruta, a pet pokušaja da se sudac prevari nije uspjelo." *(potvrditi: Leon potvrđuje „oko 150 testova"; 37 ruta je izbrojeno, a „5 od 5" je iz vlastitog pregleda i nije ponovno pokrenuto; zato je kartica „5 od 5" skrivena na slajdu 7, a rečenica o pet pokušaja ostaje u govoru samo ako Leon potvrdi)* | „Tko to plaća, Rino." | E11, E12 |
 | 3:48 do 4:03 | **Rino** | 8 · Tko plaća | „Plaća fakultet, licencu po semestru ili godini, u partnerstvu s hotelskom kućom. Svi ostali igraju u zasebnom predvorju, a studenti ostaju u svom. AI stoji oko 7 centi po studentu za sezonu." | | E13, E20 |
 | 4:03 do 4:12 | **Rino** | 9 · Isti motor | „Isti motor zasad je samo koncept za FIDIT, Medri i Gradri. Mijenja se samo sadržaj." *(prvi rez ako kasnimo)* | | E14 |
 | 4:12 do 4:35 | **Rino** | 10 · Tražimo + QR | „Tvrtke još nismo pitali. Zato tražimo jedan kolegij i jednu hotelsku kuću za pilot, a prvi razgovor može biti danas. Cesim su brojke. ChatGPT je razgovor. Simpolis je oboje: ono što kažeš gostu vidiš u blagajni." *(neobavezno, samo ako je zaključano nakon probe 1 i proba 1 završi u 4:30 ili ranije, iza zahtjeva a prije „Cesim su brojke": „Želimo da Ana ljutog gosta prvi put sretne u učionici, a ne na praksi.")* | | E15 |

@@ -1,12 +1,12 @@
 # Sesije: kako Leonove tri Claude sesije rade zajedno
 
-Odluka: [ADR-015](../records/DECISIONS.md#adr-015). Simon i Rino rade po pravilima iz [TEAM.md](../../TEAM.md).
+Odluka: [ADR-015](../records/DECISIONS.md#adr-015). Simon i Rino rade po pravilima iz [TEAM.md](TEAM.md).
 
 ## Uloge
 
 | Sesija | Radi | Radno stablo | Ne radi |
 | --- | --- | --- | --- |
-| **Graditelj** | L-zadaci iz [plana](../superpowers/plans/2026-10-24-simpolis.md) s agentima (jedan zadatak = jedan agent = jedna grana) | `Documents/riihack` (+ stabla po zadatku) | ne spaja i ne mijenja stanje PR-a |
+| **Graditelj** | L-zadaci iz [plana](plans/2026-10-24-simpolis.md) s agentima (jedan zadatak = jedan agent = jedna grana) | `Documents/riihack` (+ stabla po zadatku) | ne spaja i ne mijenja stanje PR-a |
 | **Integrator** | jedini vodi stanje PR-ova (draft, ready, spajanje), čuva zeleni `main` | `Documents/riihack-integracija` | ne piše značajke |
 | **Dokumentarist** | vodi `docs/` (PRD, ADR, dnevnik, bugovi) | `Documents/riihack-docs` | ne piše kod, ne spaja sam |
 

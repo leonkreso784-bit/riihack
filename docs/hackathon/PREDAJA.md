@@ -13,7 +13,7 @@ Predaja u #prezentacije do ned 25.10. u 10:30: prezentacija (PDF) i GitHub link.
    klika: ponuđeni ili prepisan odgovor vrijedi najviše 4 od 5, vlastite riječi do 5. Na kraju kruga mentor objasni zašto. Ocjena je napredak u
    odnosu na vlastiti početak. Tvrtke žive u istom svijetu i sklapaju ugovore s gradskim tvrtkama.
 4. **Tehnologija:** Next.js, TypeScript, Tailwind, Neon Postgres, Drizzle, Claude (AI SDK), Vercel. Vidi
-   [ARHITEKTURA.md](ARHITEKTURA.md).
+   [ARHITEKTURA.md](../ARHITEKTURA.md).
 5. **Uloga AI-ja:** AI glumi likove, provjerava koje kriterije rubrike odgovor ispunjava i piše mentorov osvrt.
    **Bodove računaju pravila igre**, uvijek jednako, pa je ocjena fer i provjerljiva.
 6. **Poslovni model:** prvi korisnici su fakulteti u partnerstvu s tvrtkama (npr. hotelska kuća donosi stvarne
@@ -30,9 +30,9 @@ Predaja u #prezentacije do ned 25.10. u 10:30: prezentacija (PDF) i GitHub link.
 9. **Tim:** Leon (motor igre, ekonomija grada, API i baza, integracija i dokumentacija), Rino (sučelje studenta i
    profesora, izgled, mobitel i projektor), Simon (AI: gost, sudac i mentor; Tokovi, karta grada, botovi, situacije
    profesora; pitch i istraživanje).
-10. **Dokumentacija:** [docs/README.md](docs/README.md) (ulaz), [docs/product/PRD.md](docs/product/PRD.md)
-    (kriteriji), [docs/records/DECISIONS.md](docs/records/DECISIONS.md) (ADR),
-    [ARHITEKTURA.md](ARHITEKTURA.md) §1a (što je stvarno).
+10. **Dokumentacija:** [docs/README.md](../README.md) (ulaz), [docs/product/PRD.md](https://github.com/leonkreso784-bit/riihack/blob/ri-hack-4.0/docs/product/PRD.md)
+    (kriteriji), [docs/records/DECISIONS.md](../records/DECISIONS.md) (ADR),
+    [ARHITEKTURA.md](../ARHITEKTURA.md) §1a (što je stvarno; danas [STATUS.md](../STATUS.md)).
 
 ## Pitch (5 minuta, ned od 10:45)
 
