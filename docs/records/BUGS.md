@@ -10,6 +10,21 @@ opis · uzrok · rješenje · **lekcija**.
 
 ## Aktivni
 
+### BUG-079 · Vercel challenge (403) za automatske zahtjeve s našeg IP-a prije pitcha
+- **Status:** 🟡 zaobiđeno (nitko ne šalje automatske zahtjeve na produkciju do kraja pitcha) · **Težina:** visok
+  (rizik za demo na pitchu), na kraju bez posljedica
+- **Opis:** ~10:20–10:29 CET. Graditelj (10:26): produkcija za curl i API zahtjeve s našeg stroja vraća 403
+  „Vercel Security Checkpoint" (`X-Vercel-Mitigated: challenge`). Na projektu nema firewall pravila ni zapisa o
+  aktivnom napadu (dokumentarist, Vercel API 10:28). Razrješenje 10:29 (graditelj, Chrome): pravi preglednik na istom
+  stroju prolazi (naslovna se učitala), žiri nije pogođen.
+- **Uzrok:** Vercelova automatska bot zaštita po IP adresi zbog našeg curl/smoke prometa: integratorov nadzornik je
+  pingao produkciju svakih 45 s, plus zahtjevi agenata tijekom noći i jutra (integrator).
+- **Rješenje:** integrator ugasio nadzornik; na Vercelu ništa nije mijenjano. Do kraja pitcha nema automatskih
+  zahtjeva prema produkciji; demo iz običnog preglednika; rezerva: hotspot s mobitela (druga IP adresa).
+- **Lekcija:** prije demoa ne puštaj skripte ni smoke na produkciju s iste mreže s koje se pokazuje demo; smoke vrti
+  na Previewu ili lokalno, a produkciju provjeri jednim otvaranjem u pregledniku. Nadzor produkcije ne pingati curlom
+  svakih 45 s.
+
 ### BUG-075 · Mentorov odgovor na refleksiju napisanu prije obračuna citira privremene brojke
 - **Status:** 🔴 otvoren (Simon, AI; poslije natjecanja) · **Težina:** srednji
 - **Opis:** tester (~09:58 CET, produkcija; raspodjela graditelja ~10:00): mentorov odgovor na refleksiju napisanu prije
