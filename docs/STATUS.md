@@ -3,7 +3,7 @@
 **TL;DR**
 
 - **Stanje na dan 26. 10. 2026.**, `main` na `b6ffb61` (oznaka `ri-hack-4.0`, verzija koja je prošla Ri-Hack 4.0).
-- **Provjere su zelene:** 947 testa u 70 datoteka, typecheck i lint bez grešaka, build prolazi, CI zelen. Testovi pokrivaju motor i logiku igre, ne stranice ni API rute.
+- **Provjere su zelene:** 983 testa u 72 datoteke, typecheck i lint bez grešaka, build prolazi, CI zelen. Testovi pokrivaju motor i logiku igre, ne stranice ni API rute.
 - **Glavna nastavna petlja radi na pravom kodu:** ulaz, hotel, gost s ocjenom po rubrici, plan i financije, zatvaranje mjeseca, podij, mentor i profesorov uvid.
 - **Za pilot još nije spremno:** fale brisanje podataka, potvrda e-pošte i reset lozinke, duljina sezone i vlastita baza ([Što fali za pilot](#što-fali-za-pilot)).
 - **Poznate greške:** 4 otvorena issuea ([#239](https://github.com/leonkreso784-bit/riihack/issues/239), [#266](https://github.com/leonkreso784-bit/riihack/issues/266), [#198](https://github.com/leonkreso784-bit/riihack/issues/198), [#110](https://github.com/leonkreso784-bit/riihack/issues/110)) i 21 zapis u [BUGS.md](records/BUGS.md), jedan srednje težine.
@@ -18,7 +18,7 @@ Izmjereno 26. 10. 2026. na `b6ffb61`, bez ikakvih varijabli okruženja.
 
 | Provjera | Naredba | Rezultat |
 | --- | --- | --- |
-| Testovi | `npm test` | prolazi: 947 testa u 70 datoteka (izmjereno na grani `simon/kalibracija` nakon rebasea na `d123305`), 0 neuspjelih, 0 preskočenih, oko 2 s |
+| Testovi | `npm test` | prolazi: 983 testa u 72 datoteke (izmjereno na grani `simon/kalibracija` nakon rebasea na `3e01fd5`), 0 neuspjelih, 0 preskočenih, oko 2 s |
 | Typecheck | `npm run typecheck` | prolazi, bez grešaka |
 | Lint | `npm run lint` | 0 grešaka, 11 upozorenja (9 u uvezenoj datoteci iz prezentacije, 2 u `src`) |
 | Build | `npm run build` | prolazi (Next.js 16.4.2); baza i prijava se inicijaliziraju tek pri radu, pa build ne treba varijable |

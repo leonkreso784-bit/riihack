@@ -322,7 +322,7 @@ Zamka: nova instalacija bez `NEXT_PUBLIC_USE_MOCK=0` prikazuje lažne podatke. T
 
 ## 13 · Testovi i CI
 
-- **947 testa u 70 datoteka**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 238, `lib/ai` 201, `lib` 154, `lib/engine` 131,
+- **983 testa u 72 datoteke**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 252, `lib/ai` 201, `lib` 154, `lib/engine` 153,
   `lib/tokovi` 90, `content` 89, `components` 31, `db` 8, `app/api` 5. AI moduli se testiraju lažnim jezičnim modelima, pa testovi ne trebaju ključ ni bazu.
 - Stranice i API rute nemaju vlastitih testova. Cijeli tok pokriva `npm run smoke` (HTTP prema pokrenutom poslužitelju i stvarnoj bazi;
   koraci 11 do 19 uz `SMOKE_CITY=1`), a `npm run ai:smoke` provjerava ključ i hrvatski izlaz.
