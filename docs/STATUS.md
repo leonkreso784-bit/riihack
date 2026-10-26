@@ -112,7 +112,7 @@ Od 78 zapisa u [BUGS.md](records/BUGS.md) 21 nije označen kao riješen: 18 otvo
 | [BUG-028](records/BUGS.md#bug-028--mentor-je-spor-ili-ne-odgovori) | visok u trenutku prijave | Mentor je spor. Rok od 20 s i jedan ponovni pokušaj; na API-ju 2 do 5 s. Provjera u pregledniku nije zabilježena. | ublaženo |
 | [BUG-006](records/BUGS.md#bug-006--dbpush-predlaže-pražnjenje-tablica-situations-i-contracts) | kritičan (alat) | `drizzle-kit push` predlaže pražnjenje tablica na zajedničkoj bazi. | zaobiđeno pravilom ([ADR-026](records/DECISIONS.md#adr-026)), alat nije popravljen |
 
-Još jedno iskustvo koje nije na `main`-u: Vercelova zaštita je neposredno prije pitcha vraćala 403 na automatske zahtjeve s mreže demonstracije, jer su istodobno radili monitor i agenti. Zapisano je kao BUG-079 u [PR-u #293](https://github.com/leonkreso784-bit/riihack/pull/293). Pouka za pilot: smoke i monitore ne pokretati prema produkcijskom linku s mreže na kojoj se održava demonstracija.
+Pouka iz pitcha ([BUG-079](records/BUGS.md#bug-079--vercel-challenge-403-za-automatske-zahtjeve-s-našeg-ip-a-prije-pitcha)): Vercelova zaštita je neposredno prije pitcha vraćala 403 na automatske zahtjeve s mreže demonstracije, jer su istodobno radili monitor i agenti. Smoke i monitore ne pokretati prema produkcijskom linku s mreže na kojoj se održava demonstracija.
 
 ## Što fali za pilot
 
@@ -141,7 +141,6 @@ Pilot na FMTU-u (Opatija) je plan tima. Popis što još treba vodi se u GitHub I
 | Mobitel i projektor | BUG-077, 078, 064, 065, 055 i stavke 3, 7 i 8 iz #266. | [#266](https://github.com/leonkreso784-bit/riihack/issues/266) |
 | Pošta među hotelima u sučelju | API već postoji, fali obrazac i profesorov pregled poruka. Uz to BUG-066, 069 i 048. | [#303](https://github.com/leonkreso784-bit/riihack/issues/303) |
 | Integracijski testovi | Stranice i API rute nemaju testova, a CI ne pokreće smoke. Greške poput #266 (zastarjeli poziv, nepostavljeno stanje sobe) zato prolaze zeleni CI. Predlaže se testna baza u CI-ju. | nema |
-| Ikona za iOS | Zadnja izmjena ikone nikad nije došla na `main`. | [PR #295](https://github.com/leonkreso784-bit/riihack/pull/295) |
 
 ## Što nije izgrađeno
 
