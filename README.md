@@ -1,115 +1,164 @@
-# Simpolis
-
-> Igra za učenje vođenja hotela: student vodi hotel, razgovara s gostima koje glumi AI, a svaki broj izračunavaju pravila igre, ne AI.
-
-English: [README.en.md](README.en.md)
-
-## TL;DR
-
-- **Simpolis** je web igra za studente ugostiteljstva i turizma. Profesor otvori igru, razred uđe kodom, svaki student vodi svoj hotel u zajedničkom gradu, mjesec po mjesec.
-- AI glumi goste i osoblje, ocjenjuje slobodne odgovore po rubrici i kao mentor postavlja pitanja za razmišljanje. **Sve brojke (novac, popunjenost, ocjene) računaju pravila igre.**
-- Izrađen u 24 sata na hackathonu Ri-Hack 4.0 (Rijeka, 24. i 25. listopada 2026.): **3. mjesto od 8 timova**. Radi uživo na <https://riihack.vercel.app/>. Isprobaj: otvori `/profesor`, napravi račun i igru, pa uđi kao student na `/ulaz`.
-- Nastavljamo kao startup: plan je besplatni pilot na FMTU-u u Opatiji, zatim licence za fakultete.
-- Sva prava pridržana. Kod je javno vidljiv samo radi pregleda i portfelja (vidi [Licenca](#licenca)).
+<p align="center"><b>Hrvatski</b> · <a href="README.en.md">English</a></p>
 
 <p align="center">
-  <img src="docs/img/hotel.jpg" alt="Ploča hotela u studentskom prikazu: pokazatelji, stanje računa i situacije ovog kruga" width="640">
+  <a href="https://riihack.vercel.app/profesor"><picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/media/banner-dark.jpg">
+    <img src="docs/media/banner.jpg" width="800" alt="Simpolis. Vodi hotel. Razgovaraj s gostima. Uči na posljedicama. Desno ilustracija primorskog gradića s lukom.">
+  </picture></a>
 </p>
+
 <p align="center">
-  <img src="docs/img/chat-mob.jpg" alt="Razgovor s likom na mobitelu: voditelj tehničke službe objašnjava kvar klime u sobi" height="360">
-  <img src="docs/img/prof.jpg" alt="Profesorov popis situacija: banka situacija, vlastite situacije i zakazana slanja" height="360">
+  <a href="https://github.com/leonkreso784-bit/riihack/releases/tag/ri-hack-4.0"><img alt="Ri-Hack 4.0: 3. mjesto od 8" src="https://img.shields.io/badge/Ri--Hack_4.0-3._mjesto_od_8-246bfd"></a>
+  <a href="https://riihack.vercel.app/profesor"><img alt="Isprobaj uživo" src="https://img.shields.io/badge/isprobaj-u%C5%BEivo-14213d"></a>
+  <a href="https://github.com/leonkreso784-bit/riihack/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/leonkreso784-bit/riihack/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="docs/ROADMAP.md"><img alt="Pilot: plan 2027." src="https://img.shields.io/badge/pilot-plan_2027-57606a"></a>
 </p>
-<p align="center"><sub>Student: ploča hotela i razgovor s likom. Profesor: situacije za razred.</sub></p>
 
-## Poveznice
+<p align="center">
+  <b>Igra za studente ugostiteljstva: vodiš hotel, razgovaraš s gostima koje glumi AI i učiš na posljedicama svojih odluka.</b><br>
+  <a href="https://riihack.vercel.app/profesor"><b>Isprobaj uživo</b></a> · <a href="#isprobaj-sam">Kako isprobati</a> · <a href="#simpolis-u-56-sekundi">Promo video</a> · <a href="https://prezentacijariihack.vercel.app/">Prezentacija</a> · <a href="docs/STATUS.md">Stanje projekta</a>
+</p>
 
-| Što | Gdje |
-| --- | --- |
-| Aplikacija uživo | <https://riihack.vercel.app/> |
-| Web prezentacija | <https://prezentacijariihack.vercel.app/> |
-| Verzija koju je ocjenjivao žiri | [release `ri-hack-4.0`](https://github.com/leonkreso784-bit/riihack/releases/tag/ri-hack-4.0) (commit `b6ffb61`) |
-| Promo video | [release `promo-video`](https://github.com/leonkreso784-bit/riihack/releases/tag/promo-video) |
+## Ukratko
 
-**Kako isprobati (detaljnije):** na `/profesor` napravite profesorski račun, otvorite igru, dodajte botove ili uđite kodom igre na `/ulaz` kao student (npr. s mobitela). Koristite izmišljene nadimke, to je demo.
+**Problem.** Studentica hotelijerstva, nazovimo je Ana, prvog ljutog gosta upozna tek na praksi. Na FMTU-u se [stručna praksa](https://fthm.uniri.hr/zivotfmtu/centar-za-karijere-i-strucnu-praksu/strucna-praksa/) (420 sati) izvodi tek u 8. semestru, na četvrtoj godini. Do tada uči iz teorije, a uz to može posegnuti za gotovim odgovorima AI-ja. To ima cijenu: u [PNAS-ovoj studiji iz 2025.](https://doi.org/10.1073/pnas.2422633122) srednjoškolci koji su vježbali uz GPT-4 bez ograda prošli su na ispitu bez AI-ja 17&nbsp;% lošije od onih koji ga nisu imali (srednjoškolska matematika; vrijedi li isto za ugostiteljstvo, nije provjereno).
 
-## Što je Simpolis
+- **Što je:** web igra za studente ugostiteljstva i turizma. Profesor otvori igru, razred uđe kodom, a svaki student vodi svoj hotel u zajedničkom gradu na Kvarneru, mjesec po mjesec.
+- **Uloga AI-ja:** glumi goste i osoblje, ocjenjuje odgovore po rubrici i kao mentor prvo pita, pa tek onda objašnjava. **Svaku brojku računaju pravila igre, ne AI.**
+- **Radi:** glavna petlja radi uživo na pravom kodu, a 674 testa (motor i logika igre) prolaze. Napravljen u 24 sata na hackathonu Ri-Hack 4.0, 3. mjesto od 8 timova.
+- **Za pilot još nije spremno:** popis što fali je u dijelu [Stanje](#stanje-radi-li).
+- **Dalje (plan):** besplatni pilot na FMTU-u u Opatiji 2027., zatim licence za fakultete. Još ništa nije dogovoreno, vidi [Plan](#plan).
 
-Studenti ugostiteljstva prve ljutite goste upoznaju tek na stručnoj praksi, kad pogreška košta pravog gosta. AI s gotovim odgovorima tu ne pomaže: učenici koji su vježbali uz GPT-4 bez ograda imali su na ispitu bez AI-a 17 % lošiji rezultat (Bastani i sur., PNAS 2025, srednjoškolska matematika).
+## Isprobaj sam
 
-Simpolis zato daje sigurno mjesto za vježbu odluka s ljudima i novcem. Petlja igre:
+Treba ti samo preglednik. Igru otvaraš sam, kao profesor, pa ti kod igre ne treba unaprijed. Koristi izmišljene podatke: brisanje igara i podataka još nije izgrađeno.
 
-1. **Profesor napravi igru.** Razred ulazi kodom ili QR kodom, svaki student dobiva jedan od šest hotela na Kvarneru.
-2. **Situacije.** Svaki mjesec stižu dvije situacije: gost ili član osoblja s problemom (npr. klima ne radi usred sezone). Student s likom razgovara, do šest poruka.
-3. **Odgovor i rubrika.** Ponuđeni odgovor vrijedi najviše 3 od 5, vlastite riječi do 5 od 5. AI sudac po rubrici od pet kriterija označava što je odgovor zadovoljio.
-4. **Plan.** Student postavlja cijenu, marketing i ulaganja u odjele hotela.
-5. **Zatvaranje mjeseca.** Profesor zatvara mjesec, pravila izračunavaju popunjenost, novac i recenzije (svi hoteli dijele iste turiste), a razred vidi podij mjeseca.
-6. **Mentor.** Mentor postavlja pitanje o najslabijoj odluci mjeseca, student razmišlja, mentor odgovara.
+1. Otvori [riihack.vercel.app/profesor](https://riihack.vercel.app/profesor) i odaberi **Napravi račun**.
+2. Odaberi **Nova igra**, upiši naziv i odaberi **Napravi igru** (broj studenata može ostati 24). Dobiješ kod igre i QR kod.
+3. Na mobitelu (ili u drugom prozoru) otvori [riihack.vercel.app/ulaz](https://riihack.vercel.app/ulaz) i upiši kod, svoje ime i ime hotela. Sad si student.
+4. Na profesorskom ekranu odaberi **Popuni do 5 hotela** (botovi daju tržište) i **Pokreni igru**.
+5. Na mobitelu otvori situaciju, razgovaraj s gostom i odgovori svojim riječima. Mjesec zatvaraš na profesorskoj ploči.
 
-Sezona traje četiri mjeseca (lipanj do rujan) i završava podijem sezone.
+## Simpolis u 56 sekundi
 
-## Kako radi
+<p align="center">
+  <a href="https://prezentacijariihack.vercel.app/video/simpolis-promo-1080p.mp4"><img src="docs/media/promo-thumb.jpg" width="640" alt="Promo video, 56 sekundi: ljuti gost na recepciji Hotela Kvarner i chat u kojem mu student odgovara. Klik pušta video."></a><br>
+  <sub>Klik pušta video u pregledniku (28 MB, sa zvukom). Za preuzimanje: <a href="https://github.com/leonkreso784-bit/riihack/releases/tag/promo-video">release <code>promo-video</code></a>.</sub>
+</p>
 
-| Tko | Što radi |
-| --- | --- |
-| **Pravila igre** (kod) | Računaju novac, popunjenost, tržište i kvalitetu odgovora. Čiste funkcije bez baze i mreže, pokrivene testovima. |
-| **AI** (Claude) | Glumi goste i osoblje (Haiku 5.5), sudi po rubrici i vodi mentora (Sonnet 5.5). Ne računa ništa: vraća oznake kriterija ili tekst, a brojke u tekstu uzima iz izračuna pravila igre. |
-| **Profesor** | Ima zadnju riječ: može promijeniti ocjenu odgovora, a svaki AI prijedlog situacije pregleda i spremi prije slanja. |
+## Kako se igra
 
-Svaki AI poziv ima rok i rezervni odgovor, pa igra radi i kad AI ne odgovori. Mentor prvo pita, tek onda objašnjava.
+Profesor otvori igru, razred uđe kodom ili QR kodom, a svaki student dobije jedan od šest hotela. Profesor može dodati botove, pa i mali razred ima tržište. Zatim svaki mjesec ide ovako:
 
-## Stanje
+1. **Gost ima problem.** Stižu dvije situacije, npr. klima ne radi usred sezone. Gosta glumi AI, a student s njim razgovara i otkrije što mu zapravo treba.
+2. **Odgovor i presuda.** Vlastite riječi vrijede do 5 od 5, ponuđeni odgovor najviše 4. AI sudac označi koje je kriterije rubrike odgovor ispunio i zašto, a bodove računaju pravila.
 
-Verzija `ri-hack-4.0` radi od početka do kraja: ulazak kodom, ploča hotela, situacije s razgovorom i ocjenom po rubrici, plan i financije, grad s ugovorima s gradskim tvrtkama, zatvaranje mjeseca s podijem, mentor, profesorov pregled i botovi.
+<p align="center">
+  <img src="docs/media/gost-i-presuda.gif" width="360" alt="Na mobitelu student piše gostu: Dobar dan, gospodine Kovaču, hvala što ste nam javili. Što vas je najviše smetalo? Gost odgovara da ga je najviše smetala buka s terase do ponoći i da mu je recepcija samo slegnula ramenima. Student zatim vlastitim riječima piše ispriku i nudi rješenje, sudac razmišlja, pa prikazuje ocjenu 4 od 5, ispunjena 4 kriterija i obrazloženje po rubrici."><br>
+  <sub>Razgovor s gostom, odgovor svojim riječima i presuda po rubrici. Čekanje na AI je skraćeno.</sub>
+</p>
 
-- **Provjere:** 1085 testova u 80 datoteka prolaze, typecheck i lint bez grešaka, build prolazi, CI je zelen.
-- **Sadržaj:** 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora. 26 stranica, 38 datoteka API ruta, 19 tablica u bazi.
-- **Razvoj:** 671 commit i 236 spojenih pull requestova na `main`, sve tijekom hackathona.
-- **Još nije gotovo:** sezona je fiksno četiri mjeseca, situacija je samo 8 i sve su hotelske, nema engleskog jezika ni izvoza ocjena. Prijava preko fakulteta (AAI@EduHr, Merlin) je cilj. PIN za ulazak studenta je planiran ([ADR-053](docs/records/DECISIONS.md#adr-053)).
+3. **Plan i zatvaranje mjeseca.** Student postavi cijenu, marketing i ulaganja u odjele. Profesor zatvori mjesec, a pravila izračunaju popunjenost, novac i recenzije za sve hotele, jer dijele iste turiste. Podij je po napretku, ne po novcu.
 
-Detalji i poznati bugovi: [docs/STATUS.md](docs/STATUS.md).
+<p align="center">
+  <img src="docs/media/zatvaranje-mjeseca.gif" width="600" alt="Profesorova ploča: profesor zatvara lipanj, pojavljuje se podij Skok mjeseca s ljestvicom po napretku, zatim počinje srpanj s novom ljestvicom. Imena igrača su zamućena.">
+  <br><sub>Profesor zatvara mjesec i razred vidi podij. Imena igrača u snimci su zamućena.</sub>
+</p>
+
+4. **Mentor prvo pita, tek onda objašnjava.** Mentor pita o najslabijoj odluci mjeseca, student razmisli, mentor odgovori. Nakon četiri mjeseca (lipanj do rujan) slijedi podij sezone.
+
+<p align="center">
+  <a href="docs/media/mentor.jpg"><img src="docs/media/mentor-isjecak.jpg" width="640" alt="Isječak stranice Mentor: student odgovara da nije dovoljno slušao gosta, a mentor nastavlja objašnjenjem što je nedostajalo i dvama pitanjima o troškovima i o tome što bi rekao obitelji."></a><br>
+  <sub>Student razmišlja, mentor nastavlja pitanjima. Klik otvara cijelu stranicu.</sub>
+</p>
 
 ## Plan
 
-- **Pilot:** besplatni pilot na FMTU-u u Opatiji (Fakultet za menadžment u turizmu i ugostiteljstvu). Popis što još treba za pilot vodi se u [GitHub Issues](https://github.com/leonkreso784-bit/riihack/issues), u milestoneu [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6).
-- **Fakulteti:** licence za fakultete, od 10 EUR po studentu godišnje. Našu procjenu troška AI-ja držimo na oko 7 centi po studentu po sezoni. Cijena je plan, još nije potvrđena.
-- **Poduzeća:** obuke za hotele i tvrtke.
-- **Kasnije:** višekorisnička web igra i integracija sa SRCE-om (Merlin preko LTI-ja, prijava AAI@EduHr). Integracija je cilj, nije dogovorena.
-- **Inkubator:** prijavljujemo se u Startup inkubator Rijeka (RiHub), 18. generacija.
+**Sve je to plan (cilj), ne dogovor.** Nijedan fakultet, hotel ni SRCE još nije pristao, razgovor s FMTU-om još nije održan, a cijenu nismo provjerili ni s jednim fakultetom. Jedini čvrsti datum je rok prijave u inkubator, 16. 11. 2026. Detalji: [docs/ROADMAP.md](docs/ROADMAP.md).
 
-Detalji: [docs/ROADMAP.md](docs/ROADMAP.md).
+<p align="center"><img src="docs/media/slide-put-do-trzista.png" width="600" alt="Slajd Put do tržišta: zima 2026. razgovor s jednim kolegijem i jednom hotelskom kućom, ljetni semestar 2027. besplatan pilot, nakon pilota licenca za fakultet. Danas hotel, sutra cijeli grad. Plan, ne dogovor."></p>
 
-## Pokretanje lokalno
+- **Inkubator:** prijava u Startup inkubator Rijeka (RiHub), 18. generacija, je u pripremi. Rok je 16. 11. 2026., a ulaz odlučuje komisija.
+- **Pilot:** planiramo besplatan pilot u jednom kolegiju na FMTU-u (Fakultet za menadžment u turizmu i ugostiteljstvu, Opatija), u ljetnom semestru 2027.
+- **Fakulteti:** nakon pilota planiramo licencu za cijeli fakultet, ciljano od 10&nbsp;€ po studentu godišnje. Naš trošak AI-ja je po našoj procjeni oko 0,07&nbsp;$ po studentu za sezonu. Uz to planiramo ulaz iz Merlina (LTI) i prijavu AAI@EduHr preko SRCE-a; suradnju sa SRCE-om tražimo, nije dogovorena.
+- **Hoteli i tvrtke:** planiramo stvarne situacije iz poslovanja i put do prakse, kasnije obuku zaposlenika. Nijednu tvrtku još nismo pitali.
+- **Mnogo kasnije:** multiplayer grad u kojem studenti sklapaju ugovore jedni s drugima, bez datuma.
+
+## Stanje: radi li?
+
+Glavna petlja radi od početka do kraja na pravom kodu. Brojke su iz [docs/STATUS.md](docs/STATUS.md) na dan 26. 10. 2026. (commit `b6ffb61`).
+
+| Što | Brojke |
+| --- | --- |
+| **Provjere** | 674 testa u 57 datoteka prolaze (motor i logika igre; stranice i API rute nemaju testova); typecheck, lint, build i CI su zeleni |
+| **Sadržaj** | 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora |
+| **Opseg** | 26 stranica, 37 datoteka API ruta, 19 tablica u bazi |
+| **Razvoj** | 671 commit i 236 spojenih pull requestova |
+
+<p align="center">
+  <a href="docs/img/hotel.jpg"><img src="docs/media/hotel-pokazatelji.jpg" width="430" alt="Ploča hotela: pet pokazatelja od 0 do 100 (zadovoljstvo gostiju, recenzije, zaposlenici, operativa, financije)."></a>&nbsp;&nbsp;
+  <a href="docs/media/grad.jpg"><img src="docs/media/grad-isjecak.jpg" width="430" alt="Izometrijski grad s hotelima studenata, hotelom računala i gradskim partnerima."></a><br>
+  <sub>Lijevo: pokazatelji hotela (student). Desno: zajednički grad (student). Klik otvara cijeli zaslon.</sub>
+</p>
+
+<p align="center">
+  <a href="docs/img/prof.jpg"><img src="docs/media/situacije-isjecak.jpg" width="430" alt="Profesorov popis situacija: situacije iz banke, vlastita situacija profesora i zakazana slanja."></a>&nbsp;&nbsp;
+  <a href="docs/media/tokovi.jpg"><img src="docs/media/tokovi-isjecak.jpg" width="430" alt="Kako je izračunat mjesec: lanac koraka od tržišta grada i popunjenosti preko prihoda do dobiti od 18.700 € i novca na računu od 38.700 €."></a><br>
+  <sub>Lijevo: situacije za razred (profesor). Desno: odakle je došla svaka brojka (student).</sub>
+</p>
+
+**Za pilot još nije spremno:** fale brisanje podataka, potvrda e-pošte i reset lozinke, izvoz ocjena, duljina sezone, vlastita baza i kalibrirana ekonomija ([docs/STATUS.md](docs/STATUS.md#što-fali-za-pilot)).
+
+**Još nije gotovo:** ekonomija nije kalibrirana prema stvarnim hotelima, sezona traje fiksno četiri mjeseca, situacija je samo 8, sve je na hrvatskom i nema izvoza ocjena. Stranice i API rute nemaju automatske testove, a tok u bazi provjeravamo ručnom smoke skriptom koju CI ne pokreće. Mentorov mjesečni osvrt zna dati i konkretan savjet, a je li to u redu, otvoreno je pitanje ([#302](https://github.com/leonkreso784-bit/riihack/issues/302)). Popis za pilot: milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6). Detalji i poznate greške: [docs/STATUS.md](docs/STATUS.md).
+
+## Pod haubom
+
+<details>
+<summary><b>Kako radi: pravila, AI i profesor</b></summary>
+
+| Tko | Što radi |
+| --- | --- |
+| **Pravila igre** (kod) | Računaju novac, popunjenost, tržište i bodove. Čiste funkcije bez baze i mreže, pokrivene testovima. |
+| **AI** (Claude) | Glumi likove (Haiku 5.5), sudi i vodi mentora (Sonnet 5.5). Ne računa ništa: vraća oznake kriterija i tekst, a brojke u tekstu uzima iz izračuna pravila. |
+| **Profesor** | Može promijeniti ocjenu svakog odgovora i pregleda svaki AI prijedlog situacije prije slanja. |
+
+Svaki AI poziv ima rok i rezervni odgovor, pa igra radi i kad AI ne odgovori.
+
+</details>
+
+<details>
+<summary><b>Ri-Hack 4.0: tema i četiri elementa</b> (elementi igre, interaktivni izazov, personalizirani sadržaj, praćenje napretka)</summary>
+
+Tema hackathona bila je „Poticanje ljudi na učenje u doba umjetne inteligencije“ i predlaže četiri elementa. Svaki od njih je stvarna funkcija u igri:
+
+| Element teme | U Simpolisu |
+| --- | --- |
+| **Elementi igre** | Vlastiti hotel, novac i pet pokazatelja, zajednički grad i tržište, podij, botovi kao suparnici. |
+| **Interaktivni izazov** | Razgovor s likom koji glumi AI, odgovor svojim riječima, presuda po rubrici. |
+| **Personalizirani sadržaj** | Profesor šalje situacije cijelom razredu ili jednom studentu. AI predlaže situaciju za najslabiji pokazatelj hotela, a profesor je pregleda prije slanja. |
+| **Praćenje napretka** | Ljestvica po napretku, mentor koji pita o najslabijoj odluci, profesorov uvid u sve odgovore i presude. |
+
+<p align="center"><img src="docs/media/slide-cetiri-elementa.png" width="720" alt="Slajd Četiri elementa teme, četiri ekrana: elementi igre (ploča hotela), interaktivni izazov (razgovor s gostom), personalizirani sadržaj (profesor šalje situaciju jednom studentu), praćenje napretka (mentor)."></p>
+
+Ocijenjena verzija: [release `ri-hack-4.0`](https://github.com/leonkreso784-bit/riihack/releases/tag/ri-hack-4.0). Arhiva natjecanja: [docs/hackathon/](docs/hackathon/README.md).
+
+</details>
+
+## Za programere
 
 Treba Node 24, npm i vlastita prazna Neon baza.
 
 ```bash
 git clone https://github.com/leonkreso784-bit/riihack.git && cd riihack
 npm ci
-cp .env.example .env.local   # upiši DATABASE_URL, ANTHROPIC_API_KEY, BETTER_AUTH_SECRET, BETTER_AUTH_URL
+cp .env.example .env.local   # DATABASE_URL, ANTHROPIC_API_KEY, BETTER_AUTH_SECRET, BETTER_AUTH_URL
 npm run db:push              # samo na svojoj praznoj bazi, nikad na zajedničkoj (ADR-026)
 npm run dev                  # http://localhost:3000
 ```
 
-- **Samo sučelje, bez baze i ključeva:** u `.env.local` postavi `NEXT_PUBLIC_USE_MOCK=1`.
-- **Pazi na `NEXT_PUBLIC_USE_MOCK`:** samo vrijednost `0` uključuje pravi API i bazu. Svaka druga vrijednost, uključujući praznu, znači lažne podatke iz `src/lib/mock.ts`.
-- Provjere prije svakog PR-a, demo podaci, smoke test i sve ostalo: [docs/RAZVOJ.md](docs/RAZVOJ.md).
-
-## Tehnologija
-
-| Sloj | Što |
-| --- | --- |
-| Sučelje | Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS 4, shadcn/ui |
-| Pravila igre | Čiste TypeScript funkcije u `src/lib/engine/`, bez baze i mreže, testirane Vitestom |
-| AI | Vercel AI SDK, Claude Haiku 5.5 (likovi, odgovori agencija), Claude Sonnet 5.5 (sudac, mentor, prijedlog situacije) |
-| Baza | Neon Postgres, Drizzle ORM |
-| Prijava | Better Auth za profesore, kod igre i nadimak za studente |
-| Hosting i CI | Vercel, GitHub Actions (typecheck, lint, testovi, build) |
-
-Arhitektura u detalje: [docs/ARHITEKTURA.md](docs/ARHITEKTURA.md). Sva dokumentacija: [docs/README.md](docs/README.md).
-
-## Ri-Hack 4.0
-
-Simpolis je nastao u 24 sata na hackathonu Ri-Hack 4.0 (Rijeka, 24. i 25. listopada 2026.) na temu „Poticanje ljudi na učenje u doba umjetne inteligencije". Tim Pojedinci osvojio je **3. mjesto od 8 timova**. Vremenska crta, plan, predaja i prezentacija: [docs/hackathon/README.md](docs/hackathon/README.md).
+- **Samo sučelje, bez baze i ključeva:** `NEXT_PUBLIC_USE_MOCK=1` u `.env.local`. Pravi API i bazu uključuje samo vrijednost `0`.
+- **Stack:** Next.js 16, React 19, TypeScript, Tailwind CSS 4 · Neon Postgres i Drizzle · Claude preko Vercel AI SDK-a · Better Auth · Vercel i GitHub Actions.
+- **Dalje:** [docs/RAZVOJ.md](docs/RAZVOJ.md) (postavljanje, testovi, pravila za PR), [docs/ARHITEKTURA.md](docs/ARHITEKTURA.md) (motor, AI sloj, baza, API), [docs/README.md](docs/README.md) (sva dokumentacija).
 
 ## Tim
 
