@@ -2,6 +2,7 @@
 import { useEffect, useEffectEvent, useState } from "react";
 import { PASTE_SHARE, POLL_MS } from "./rules";
 import { negotiate } from "./engine/negotiate";
+import { buildGradesCsv, filenameFromDisposition, gradesFilename, type GradesFile } from "./game/grades-csv";
 import { MOCK_DETAIL, MOCK_SAMPLE_DRAFT, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
 import type {
   CompanyPublicView,
@@ -78,6 +79,11 @@ const realApi = {
     post<AnswerView>(`/api/prof/${worldId}/answers/${situationId}/quality`, { quality }),
   companyDetail: (worldId: string, companyId: string) =>
     get<CompanyDetailResponse>(`/api/prof/${worldId}/companies/${companyId}`),
+  // #298: grades as CSV (UTF-8 with BOM, ";"); read as a blob, because text() would drop the BOM.
+  exportGrades: async (worldId: string): Promise<GradesFile> => {
+    const res = await send(`/api/prof/${worldId}/grades`, "GET");
+    return { filename: filenameFromDisposition(res.headers.get("content-disposition")), blob: await res.blob() };
+  },
   // L14 javni profili hotela za kartu grada (S10, uz Rinov pregled u #128): igrač ili profesor te igre.
   worldCompanies: (worldId: string) => get<CompanyPublicView[]>(`/api/world/${worldId}/companies`),
   // S8: professor's own situations, sending, settings
@@ -228,6 +234,20 @@ const mockApi: Api = {
     return wait(mockProfState());
   },
   companyDetail: () => wait(mockDetail),
+  // Every mock student gets the one mock company's situations; enough to see the button and the file.
+  exportGrades: () => {
+    const situations = mockDetail.situations.map((s) => ({
+      round: s.round,
+      templateId: s.templateId,
+      answer: s.answer ? { mode: s.answer.mode, text: s.answer.text ?? null, copied: s.answer.copied, quality: s.answer.quality } : null,
+    }));
+    const students = mockProfState()
+      .players.filter((p) => !p.isBot)
+      .map((p) => ({ nickname: p.playerName, hotel: p.hotelName, progress: p.progress, closedRound: p.closedRound, situations }));
+    const titles = Object.fromEntries(mockDetail.situations.map((s) => [s.templateId, s.title]));
+    const csv = buildGradesCsv({ students, titles });
+    return wait({ filename: gradesFilename(MOCK_PROF.world.name), blob: new Blob([csv], { type: "text/csv;charset=utf-8" }) });
+  },
   overrideQuality: (_w, id, quality) => {
     const s = mockDetail.situations.find((x) => x.id === id);
     if (!s?.answer) return Promise.reject(new Error("Na ovu situaciju još nema odgovora"));

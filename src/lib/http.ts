@@ -20,7 +20,7 @@ export function route<T>(
   return async (req, ctx) => {
     try {
       const data = await fn(req, ctx);
-      return Response.json(data);
+      return data instanceof Response ? data : Response.json(data); // datoteke (CSV) vraćaju gotov Response
     } catch (err) {
       if (err instanceof HttpError) {
         const body: ApiError = { error: err.message };

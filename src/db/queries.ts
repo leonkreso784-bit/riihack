@@ -226,6 +226,47 @@ export async function listSituationsWithAnswers(
     .orderBy(asc(situations.round), asc(situations.templateId));
 }
 
+export type WorldGradeAnswer = { mode: string; text: string | null; copied: boolean; quality: number };
+
+/**
+ * Stupci odgovora iz leftJoin-a → odgovor ili null. Bez retka odgovora su svi stupci null; `text` smije biti null i uz
+ * red (klik nema teksta), pa se red prepoznaje po stupcima koji su u bazi NOT NULL (mode, copied, quality).
+ */
+export function toGradeAnswer(cols: { mode: string | null; text: string | null; copied: boolean | null; quality: number | null }): WorldGradeAnswer | null {
+  const { mode, text, copied, quality } = cols;
+  return mode === null || copied === null || quality === null ? null : { mode, text, copied, quality };
+}
+
+/**
+ * Situacije svih tvrtki igre s ocjenom i vrstom odgovora, bez transkripta i presuda (za izvoz ocjena). Odgovor je null
+ * dok ga nema; `quality` je ocjena nakon profesorovih promjena.
+ */
+export async function listWorldGradeRows(worldId: string): Promise<
+  {
+    companyId: string;
+    round: number;
+    templateId: string;
+    answer: WorldGradeAnswer | null;
+  }[]
+> {
+  const rows = await db
+    .select({
+      companyId: situations.companyId,
+      round: situations.round,
+      templateId: situations.templateId,
+      mode: answers.mode,
+      text: answers.text,
+      copied: answers.copied,
+      quality: answers.quality,
+    })
+    .from(situations)
+    .innerJoin(companies, eq(companies.id, situations.companyId))
+    .leftJoin(answers, eq(answers.situationId, situations.id))
+    .where(eq(companies.worldId, worldId))
+    .orderBy(asc(situations.round), asc(situations.templateId));
+  return rows.map(({ mode, text, copied, quality, ...rest }) => ({ ...rest, answer: toGradeAnswer({ mode, text, copied, quality }) }));
+}
+
 export async function countSituations(companyId: string, round: number): Promise<number> {
   const [{ n }] = await db
     .select({ n: count() })

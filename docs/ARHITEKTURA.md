@@ -244,7 +244,7 @@ kodom (`sp_prof`, uz provjeru prema hashu u `worlds`) ili po Better Auth sesiji 
 | Nova igra | [worlds](../src/app/api/worlds): `POST /api/worlds` (vraća kod igre i profesorski kod) | prijavljeni profesor postaje vlasnik |
 | Profesorski račun | [prof](../src/app/api/prof): `games` (popis igara), `library` (knjižnica situacija, kopiranje u igru) | sesija računa |
 | Upravljanje igrom | [prof](../src/app/api/prof): stanje igre, `start`, `round`, `finish`, `bots`, `settings`, `dispatch`, `playbook`, `situations`, `situations/generate`, spremanje u knjižnicu | profesor igre |
-| Uvid u studenta | [prof](../src/app/api/prof): `companies/[id]`, `answers/[situationId]/quality` (promjena ocjene), `mail` | profesor igre |
+| Uvid u studenta | [prof](../src/app/api/prof): `companies/[id]`, `answers/[situationId]/quality` (promjena ocjene), `mail`, `grades` (izvoz ocjena svih studenata u CSV: UTF-8 s BOM-om, separator `;`, zaštita od formula; [#298](https://github.com/leonkreso784-bit/riihack/issues/298)) | profesor igre |
 | Grad | [world](../src/app/api/world): javni profili hotela | član igre |
 | Moj hotel | [me](../src/app/api/me): `/api/me`, `rooms`, `staff`, `plan`, `close-round`, `report/[round]`, `reflection`, `mail`, `mail/[id]/read` | igrač |
 | Situacije | [situations](../src/app/api/situations): `[id]/answer`, `[id]/chat` (stream) | igrač |

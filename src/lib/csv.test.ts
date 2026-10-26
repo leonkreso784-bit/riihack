@@ -1,0 +1,110 @@
+import { describe, expect, it } from "vitest";
+import { CSV_BOM, csvField, csvRow, formatCsvNumber, neutralizeFormula, toCsv } from "./csv";
+
+describe("neutralizeFormula", () => {
+  it.each(["=1+1", "+385911234567", "-2+3", "@SUM(A1)"])("stavlja ' ispred %j", (text) => {
+    expect(neutralizeFormula(text)).toBe(`'${text}`);
+  });
+
+  // Tab ili CR na početku: ' ide ispred, a i iza njih, jer bi ih program s tabom kao separatorom pretvorio u praznu ćeliju i formulu.
+  it.each([
+    ["\t=1", "'\t'=1"],
+    ["\r=1", "'\r'=1"],
+  ])("%j postaje %j", (text, safe) => {
+    expect(neutralizeFormula(text)).toBe(safe);
+  });
+
+  it.each(["Ana", "Hotel Lungomare", "1+1", "a=b", "'=1", "", " =1", "Villa Petra, Lošinj"])("ne dira %j", (text) => {
+    expect(neutralizeFormula(text)).toBe(text);
+  });
+
+  // Ako Excel datoteku otvori sa zarezom ili tabom kao separatorom, dio iza zareza postaje nova ćelija.
+  it.each([
+    ["Hotel,=1+1", "Hotel,'=1+1"],
+    ["a, +385", "a, '+385"],
+    ["a;@SUM(A1)", "a;'@SUM(A1)"],
+    ["a\t-2+3", "a\t'-2+3"],
+    ["a\n=1", "a\n'=1"],
+    ["=1,=2", "'=1,'=2"],
+  ])("iza separatora %j postaje %j", (text, safe) => {
+    expect(neutralizeFormula(text)).toBe(safe);
+  });
+});
+
+describe("formatCsvNumber", () => {
+  it("decimalni zarez, cijeli broj bez njega", () => {
+    expect(formatCsvNumber(12.5)).toBe("12,5");
+    expect(formatCsvNumber(4)).toBe("4");
+    expect(formatCsvNumber(-3.5)).toBe("-3,5");
+    expect(formatCsvNumber(0)).toBe("0");
+  });
+
+  it("NaN i beskonačno daju prazno polje", () => {
+    expect(formatCsvNumber(NaN)).toBe("");
+    expect(formatCsvNumber(Infinity)).toBe("");
+  });
+});
+
+describe("csvField", () => {
+  it("tekst uvijek ide u navodnike, č ć š ž đ ostaju netaknuti", () => {
+    expect(csvField("Šime Đurđević")).toBe('"Šime Đurđević"');
+  });
+
+  it("null i undefined su prazno polje", () => {
+    expect(csvField(null)).toBe("");
+    expect(csvField(undefined)).toBe("");
+  });
+
+  it("separator ; stavlja polje u navodnike", () => {
+    expect(csvField("Hotel A; Opatija")).toBe('"Hotel A; Opatija"');
+  });
+
+  it("zarez ostaje unutar navodnika (i program koji dijeli po zarezu vidi jednu ćeliju)", () => {
+    expect(csvField("Villa Petra, Lošinj")).toBe('"Villa Petra, Lošinj"');
+  });
+
+  it("navodnik se udvostruči i polje ide u navodnike", () => {
+    expect(csvField('Gost kaže "ne"')).toBe('"Gost kaže ""ne"""');
+  });
+
+  it("novi redak (LF i CRLF) ostaje unutar navodnika", () => {
+    expect(csvField("a\nb")).toBe('"a\nb"');
+    expect(csvField("a\r\nb")).toBe('"a\r\nb"');
+  });
+
+  it("formula se čuva prije navođenja: ' je unutar navodnika", () => {
+    expect(csvField('=HYPERLINK("http://x";"klik")')).toBe('"\'=HYPERLINK(""http://x"";""klik"")"');
+  });
+
+  it.each(["=cmd|' /C calc'!A0", "+1", "-1", "@x"])("tekst %j počinje s '", (text) => {
+    expect(csvField(text).startsWith("'") || csvField(text).startsWith(`"'`)).toBe(true);
+  });
+
+  it("broj se ne čuva od formule: negativan napredak ostaje broj", () => {
+    expect(csvField(-3.5)).toBe("-3,5");
+    expect(csvField("-3,5")).toBe(`"'-3,5"`); // isti znakovi kao tekst jesu opasni
+  });
+});
+
+describe("csvRow", () => {
+  it("spaja polja s ;", () => {
+    expect(csvRow(["Ana", "Hotel A", 12.5, null, 4])).toBe('"Ana";"Hotel A";12,5;;4');
+  });
+});
+
+describe("toCsv", () => {
+  it("počinje BOM-om (UTF-8 EF BB BF), a redci završavaju s CRLF", () => {
+    const csv = toCsv([["a", "b"], ["c", "d"]]);
+    expect(csv.startsWith(CSV_BOM)).toBe(true);
+    expect([...new TextEncoder().encode(csv).slice(0, 3)]).toEqual([0xef, 0xbb, 0xbf]);
+    expect(csv.slice(1)).toBe('"a";"b"\r\n"c";"d"\r\n');
+  });
+
+  it("bez redaka je samo BOM", () => {
+    expect(toCsv([])).toBe(CSV_BOM);
+  });
+
+  it("BOM je samo na početku, ne ispred svakog retka", () => {
+    expect(toCsv([["a"], ["b"]]).split(CSV_BOM)).toHaveLength(2);
+  });
+});

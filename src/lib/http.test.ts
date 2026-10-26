@@ -10,6 +10,13 @@ describe("route", () => {
     expect(await res.json()).toEqual({ ok: true });
   });
 
+  it("gotov Response (npr. CSV za preuzimanje) prolazi nepromijenjen", async () => {
+    const file = new Response("a;b", { headers: { "content-type": "text/csv" } });
+    const res = await route(async () => file)(req, {});
+    expect(res).toBe(file);
+    expect(await res.text()).toBe("a;b");
+  });
+
   it("HttpError postaje { error } sa statusom", async () => {
     const res = await route(async () => {
       throw new HttpError(409, "Igra je puna");
