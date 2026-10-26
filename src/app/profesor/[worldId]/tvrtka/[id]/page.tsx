@@ -14,6 +14,7 @@ import { FormError } from "@/components/form";
 import { Delta } from "@/components/metric-bar";
 import { BackLink } from "@/components/back-link";
 import { Dots, Loading } from "@/components/loading";
+import { RemoveStudentButton } from "@/components/prof/erase";
 
 const QUALITIES: Quality[] = [1, 2, 3, 4, 5];
 function how(a: AnswerView | undefined, state: SituationView["state"]): { label: string; tone: Tone } {
@@ -53,10 +54,14 @@ export default function StudentPage() {
             {company.playerName} · {company.place} · {"★".repeat(company.stars)} · {company.roomsCount} soba · {eur(company.cash)}
           </p>
         </div>
-        <p className="text-right">
-          <span className="block text-xs font-semibold tracking-wide text-muted-foreground uppercase">Napredak</span>
-          <Delta value={company.progress} className="text-2xl" />
-        </p>
+        <div className="flex flex-wrap items-end gap-6">
+          <p className="text-right">
+            <span className="block text-xs font-semibold tracking-wide text-muted-foreground uppercase">Napredak</span>
+            <Delta value={company.progress} className="text-2xl" />
+          </p>
+          {/* #297: trajno uklanjanje studenta iz igre */}
+          <RemoveStudentButton worldId={worldId} companyId={id} hotelName={company.hotelName} playerName={company.playerName} />
+        </div>
       </header>
 
       {rounds.length === 0 && <p className="surface rounded-[var(--radius)] p-6 text-muted-foreground">Student još nije dobio nijednu situaciju.</p>}

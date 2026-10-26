@@ -79,7 +79,7 @@ src/
     rules.ts      sve konstante igre (krugovi, ekonomija, ograničenja)
     ranking.ts    pravilo ljestvice: hotel u blokadi ne stoji iznad solventnog (ADR-059)
     engine/       motor: čiste funkcije, bez baze, mreže i AI-ja (14 modula)
-    game/         poslužiteljska orkestracija nad bazom (14 modula) i `season-sim.ts` (simulacija sezone bez baze)
+    game/         poslužiteljska orkestracija nad bazom (19 modula) i `season-sim.ts` (simulacija sezone bez baze)
     ai/           svi pozivi modela, promptovi i rezerve (promptovi su TypeScript konstante u prompts.ts)
     tokovi/       modeli prikaza za stranice „Tokovi" (čiste funkcije)
     session.ts, http.ts, auth.ts, client.ts, mock.ts   kolačići i zaštite, omotač ruta, Better Auth, API klijent, lažni podaci
@@ -246,7 +246,7 @@ Veza je lijena (`src/db/index.ts`), pa `next build` i testovi ne trebaju bazu.
 (ADR-026), nego se radi ručni aditivni SQL. Pilot treba vlastitu bazu i postupak migracija ([ROADMAP.md](ROADMAP.md)).
 
 <a id="api"></a>
-## 9 · API (37 datoteka, 41 handler: 14 GET, 27 POST)
+## 9 · API (38 datoteka, 44 handlera: 15 GET, 27 POST, 2 DELETE)
 
 Svi odgovori su JSON (osim streama razgovora s likom). Rute su tanke: provjera pristupa u `src/lib/session.ts`, posao u `src/lib/game/`.
 Student se prepoznaje po httpOnly kolačiću (`sp_player`, slučajan token, u bazi samo hash). Profesor ili po kolačiću s profesorskim
@@ -257,8 +257,8 @@ kodom (`sp_prof`, uz provjeru prema hashu u `worlds`) ili po Better Auth sesiji 
 | Prijava i ulaz | [auth](../src/app/api/auth), [join](../src/app/api/join), [logout](../src/app/api/logout): `/api/auth/[...all]`, `/api/join`, `/api/logout` | javno; ulaz traži važeći kod igre |
 | Nova igra | [worlds](../src/app/api/worlds): `POST /api/worlds` (vraća kod igre i profesorski kod) | prijavljeni profesor postaje vlasnik |
 | Profesorski račun | [prof](../src/app/api/prof): `games` (popis igara), `library` (knjižnica situacija, kopiranje u igru) | sesija računa |
-| Upravljanje igrom | [prof](../src/app/api/prof): stanje igre, `start`, `round`, `finish`, `bots`, `settings`, `dispatch`, `playbook`, `situations`, `situations/generate`, spremanje u knjižnicu | profesor igre |
-| Uvid u studenta | [prof](../src/app/api/prof): `companies/[id]`, `answers/[situationId]/quality` (promjena ocjene), `mail`, `grades` (izvoz ocjena svih studenata u CSV: UTF-8 s BOM-om, separator `;`, zaštita od formula; [#298](https://github.com/leonkreso784-bit/riihack/issues/298)) | profesor igre |
+| Upravljanje igrom | [prof](../src/app/api/prof): stanje igre, brisanje igre, `start`, `round`, `finish`, `bots`, `settings`, `dispatch`, `playbook`, `situations`, `situations/generate`, spremanje u knjižnicu | profesor igre |
+| Uvid u studenta | [prof](../src/app/api/prof): `companies/[id]` (uvid i uklanjanje), `answers/[situationId]/quality` (promjena ocjene), `mail`, `grades` (izvoz ocjena svih studenata u CSV: UTF-8 s BOM-om, separator `;`, zaštita od formula; [#298](https://github.com/leonkreso784-bit/riihack/issues/298)) | profesor igre |
 | Grad | [world](../src/app/api/world): javni profili hotela | član igre |
 | Moj hotel | [me](../src/app/api/me): `/api/me`, `rooms`, `staff`, `plan`, `close-round`, `report/[round]`, `reflection`, `mail`, `mail/[id]/read` | igrač |
 | Situacije | [situations](../src/app/api/situations): `[id]/answer`, `[id]/chat` (stream) | igrač |
@@ -272,7 +272,7 @@ Napomene
   „Mjesec se u međuvremenu promijenio. Osvježi stranicu." i ništa se ne zatvara. Prazno tijelo radi kao prije (skripte, stari klijenti).
 - Ponude ugovora stvara poslužitelj; ne postoji ruta za njihovo stvaranje.
 - Plan mjeseca: cijena 30 do 400 €, marketing 0 do 2.000 €, ulaganje 0 do 3.000 € po odjelu.
-- Bez API rute za brisanje: nema `DELETE`, `PATCH` ni `PUT` handlera.
+- Brisanje (#297): `DELETE /api/prof/[worldId]` (igra, traži `{ confirm }`) i `DELETE /api/prof/[worldId]/companies/[id]` (student), oba samo za profesora igre. Demo igra (kod `DEMO_JOIN_CODE`, zadano `KVRNDM`, i igre računa `DEMO_PROF_EMAIL`) je zaštićena: obje rute vraćaju 409 ([ADR-060](records/DECISIONS.md#adr-060)). Što se briše i čega nema: [STATUS.md](STATUS.md#podaci-i-brisanje). Nema `PATCH` ni `PUT` handlera.
 - Neki handleri nemaju sučelje: ispis pošte igre za profesora (`GET /api/prof/[worldId]/mail`). Koriste ih skripte i testovi.
 - `POST /api/me/mail` (poruka drugom hotelu): 400 oblik ili primatelj je bot, 404 hotel nije u igri, 409 igra nije u tijeku, 429 granice slanja
   (5 u minuti, 15 po primatelju, 60 po igri; provjera je u samom upisu), [ADR-058](records/DECISIONS.md#adr-058).
@@ -326,9 +326,9 @@ Zamka: nova instalacija bez `NEXT_PUBLIC_USE_MOCK=0` prikazuje lažne podatke. T
 
 ## 13 · Testovi i CI
 
-- **1030 testova u 75 datoteka**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 268, `lib/ai` 201, `lib` 174, `lib/engine` 163,
+- **1085 testova u 80 datoteka**, svi prolaze (Vitest, `npm test`). Po područjima: `lib/game` 323, `lib/ai` 201, `lib` 174, `lib/engine` 163,
   `lib/tokovi` 91, `content` 89, `components` 31, `db` 8, `app/api` 5. AI moduli se testiraju lažnim jezičnim modelima, pa testovi ne trebaju ključ ni bazu.
-- Stranice i API rute nemaju vlastitih testova. Cijeli tok pokriva `npm run smoke` (HTTP prema pokrenutom poslužitelju i stvarnoj bazi;
+- Stranice i većina API ruta nemaju vlastitih testova; imaju ih izvoz ocjena (`app/api`) i DELETE rute za brisanje (`erase-routes.test.ts`, uključujući zaštitu demo igre). Cijeli tok pokriva `npm run smoke` (HTTP prema pokrenutom poslužitelju i stvarnoj bazi;
   koraci 11 do 19 uz `SMOKE_CITY=1`), a `npm run ai:smoke` provjerava ključ i hrvatski izlaz.
 - **Provjere:** `npm run typecheck` prolazi, `npm run lint` ima 0 grešaka, `npm run build` prolazi bez ijedne varijable okoline (baza i Better Auth su lijeni).
 - **CI** (`.github/workflows/ci.yml`): na svaki `push` i `pull_request`, Node 24, `npm ci`, `typecheck`, `lint`, `npm test`, `build`. Zelen na `b6ffb61`.
@@ -341,4 +341,4 @@ Namjerno kratko; punu sliku daju [STATUS.md](STATUS.md) i [ROADMAP.md](ROADMAP.m
 - PIN za ulazak studenta (planiran, ADR-053)
 - ugovori i suradnja između hotela te botovi dobavljača (poruke između hotela postoje samo kao API)
 - sezona dulja od 4 mjeseca (`MAX_ROUNDS` je konstanta), više jezika, prava karta Kvarnera
-- brisanje i izvoz podataka studenata, prijava preko školskog sustava (SRCE, cilj, nije dogovoreno)
+- izvoz podataka studenata, prijava preko školskog sustava (SRCE, cilj, nije dogovoreno)

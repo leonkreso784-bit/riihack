@@ -61,8 +61,8 @@ Svaki AI poziv ima rok i rezervni odgovor, pa igra radi i kad AI ne odgovori. Me
 
 Verzija `ri-hack-4.0` radi od početka do kraja: ulazak kodom, ploča hotela, situacije s razgovorom i ocjenom po rubrici, plan i financije, grad s ugovorima s gradskim tvrtkama, zatvaranje mjeseca s podijem, mentor, profesorov pregled i botovi.
 
-- **Provjere:** 1030 testova u 75 datoteka prolaze, typecheck i lint bez grešaka, build prolazi, CI je zelen.
-- **Sadržaj:** 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora. 26 stranica, 37 datoteka API ruta, 19 tablica u bazi.
+- **Provjere:** 1085 testova u 80 datoteka prolaze, typecheck i lint bez grešaka, build prolazi, CI je zelen.
+- **Sadržaj:** 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora. 26 stranica, 38 datoteka API ruta, 19 tablica u bazi.
 - **Razvoj:** 671 commit i 236 spojenih pull requestova na `main`, sve tijekom hackathona.
 - **Još nije gotovo:** sezona je fiksno četiri mjeseca, situacija je samo 8 i sve su hotelske, nema engleskog jezika ni izvoza ocjena. Prijava preko fakulteta (AAI@EduHr, Merlin) je cilj. PIN za ulazak studenta je planiran ([ADR-053](docs/records/DECISIONS.md#adr-053)).
 

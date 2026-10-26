@@ -51,10 +51,11 @@ Imena su u [`.env.example`](../.env.example). Vrijednosti nikad ne idu u repo (`
 | `NEXT_PUBLIC_USE_MOCK` | prekidač sučelja | `0` = pravi API, sve ostalo = lažni podaci. Vidi niže. |
 | `BETTER_AUTH_SECRET` | profesorski računi | Tajna za Better Auth (`openssl rand -base64 32`). Bez nje ne rade prijava računom, "Moje igre" i knjižnica; igra s profesorskim kodom radi. |
 | `BETTER_AUTH_URL` | profesorski računi | Osnovni URL aplikacije: `http://localhost:3000` lokalno, produkcijski URL na Vercelu. `src/lib/auth.ts` ima ugrađene adrese Vercel projekta tima, pa je kod forka ova varijabla obavezna. |
-| `DEMO_JOIN_CODE` | `npm run seed:demo` | Kod demo igre, 6 znakova (zadano `KVRNDM`). |
+| `DEMO_JOIN_CODE` | `npm run seed:demo`, zaštita demo igre | Kod demo igre, 6 znakova (zadano `KVRNDM`). Igra s ovim kodom se ne može obrisati kroz aplikaciju ([ADR-060](records/DECISIONS.md#adr-060)). |
+| `DEMO_PROF_EMAIL` | zaštita demo igre, `seed:demo`, `cleanup-test-data` | E-pošta demo profesorskog računa. Sve njegove igre su zaštićene od brisanja kroz aplikaciju; **mora biti postavljena i na poslužitelju (Vercel)**, inače vrijedi samo zaštita po kodu igre. Neobavezna. |
 | `DEMO_PROF_CODE` | `npm run seed:demo` | Profesorski kod demo igre, 12 znakova. Nema zadane vrijednosti: skripta staje bez njega. Nikad u repo. |
 
-Kodovi koriste abecedu od 31 znaka bez `0`, `O`, `1`, `I` i `L`. Skripte čitaju još neobavezne varijable koje nisu u `.env.example`: `DEMO_PROF_EMAIL` i `DEMO_PROF_PASSWORD` (demo profesorski račun; bez njih demo igra radi samo s kodom) te `BASE_URL` i `SMOKE_CITY` za `npm run smoke`.
+Kodovi koriste abecedu od 31 znaka bez `0`, `O`, `1`, `I` i `L`. Skripte čitaju još neobavezne varijable koje nisu u `.env.example`: `DEMO_PROF_PASSWORD` (lozinka demo profesorskog računa uz `DEMO_PROF_EMAIL`; bez njih demo igra radi samo s kodom) te `BASE_URL` i `SMOKE_CITY` za `npm run smoke`.
 
 Vrijednosti: članovi tima ih dobiju od Leona (ili s `vercel link` i `vercel env pull .env.local`). Pazi, tako dobiješ i adresu **zajedničke** baze, pa pročitaj [Baza](#baza) prije prve naredbe koja piše u nju. Svi ostali koriste vlastitu Neon bazu i vlastiti ključ.
 
@@ -97,6 +98,8 @@ Neon Postgres (Frankfurt) i Drizzle ORM s driverom `neon-http`. Veza se otvara t
 | `npx tsx scripts/cleanup-test-data.ts` | Čisti testne igre i račune. Bez `--apply` je suhi prolaz (samo ispiše). Načini `--stare` i `--kodovi`. Demo igra je zaštićena. |
 
 Na zajedničkoj bazi držimo najviše 3 testne igre i koristimo ih ponovno ([ADR-055](records/DECISIONS.md#adr-055)). Zasebna baza i pravi proces migracija poznata su praznina prije pilota, vidi [STATUS.md](STATUS.md).
+
+Brisanje kroz aplikaciju ne dira demo igru: `DELETE /api/prof/[worldId]` i `DELETE /api/prof/[worldId]/companies/[id]` vraćaju 409 za igru s kodom `DEMO_JOIN_CODE` (zadano `KVRNDM`) i za igre računa `DEMO_PROF_EMAIL`, isto pravilo kao `scripts/cleanup-test-data.ts` ([ADR-060](records/DECISIONS.md#adr-060)). Za ostale igre na zajedničkoj bazi brisanje isprobavaj samo na jednokratnoj igri ili na vlastitoj bazi ([ADR-055](records/DECISIONS.md#adr-055)); `npm run seed:demo` ponovno slaže demo igru ako se izgubi.
 
 ## Pokretanje i testovi
 

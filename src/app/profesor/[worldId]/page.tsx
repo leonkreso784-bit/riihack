@@ -10,6 +10,7 @@ import { ProfBoard } from "@/components/prof-board";
 import { QrCode } from "@/components/qr-code";
 import { FormError } from "@/components/form";
 import { Loading } from "@/components/loading";
+import { DeleteGameSection } from "@/components/prof/erase";
 
 const noop = () => () => {};
 const useHost = () => useSyncExternalStore(noop, () => location.host, () => "");
@@ -20,10 +21,16 @@ export default function ProfWorld() {
   const { data, error, syncedAt, refresh } = usePoll(() => api.profState(worldId));
   if (error && !data) return <FormError>{error.message}</FormError>;
   if (!data) return <Loading />;
-  return data.world.status === "lobby" ? (
-    <Lobby state={data} onStarted={refresh} />
-  ) : (
-    <ProfBoard state={data} syncedAt={syncedAt} onChange={refresh} />
+  return (
+    <div className="space-y-10">
+      {data.world.status === "lobby" ? (
+        <Lobby state={data} onStarted={refresh} />
+      ) : (
+        <ProfBoard state={data} syncedAt={syncedAt} onChange={refresh} />
+      )}
+      {/* #297: brisanje igre i podataka studenata; hotele koje vodi računalo ne brojimo kao studente */}
+      <DeleteGameSection world={data.world} hotels={data.players.filter((p) => !p.isBot).length} />
+    </div>
   );
 }
 
