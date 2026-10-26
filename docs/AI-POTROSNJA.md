@@ -94,6 +94,27 @@ se njihov Claude zahtjev ne mijenja. Prijedlog situacije je na Groqu bez toga u 
 `AI_MODEL_*` za Groq mora biti model koji podržava `reasoning_effort` (`gpt-oss-20b`, `gpt-oss-120b`, `qwen3.8-27b`);
 drugi modeli odbijaju zahtjev s 400, a igra tada dobiva rezervni tekst.
 
+## Koji model za koji posao (test 26. 10. 2026.)
+
+Test na stvarnim produkcijskim promptovima (5 ocijenjenih odgovora puta 3 ponavljanja za suca, 6 odgovora lika, 4 teksta mentora). Hrvatski je ocijenjen strogo, od 1 do 5.
+
+| Model | Hrvatski (lik) | Sudac: točno od 15 | Napomena |
+| --- | --- | --- | --- |
+| Claude Sonnet 5.5 | **4,0** | 12, najstabilniji (5 od 5 isto u 3 ponavljanja) | jedini s 4 od 4 čista teksta mentora |
+| Claude Haiku 5.5 | 3,0 | 13 | najjeftiniji |
+| Groq gpt-oss-120b | 2,3 do 2,7 | 13 (srednje razmišljanje) | besplatni plan: oko 5 studentskih sezona dnevno |
+| Mistral Ministral 14B | 2,7 | 6 (prestrog) | Small i Medium nedostupni na besplatnom ključu |
+| Groq Qwen3.8-27B (preview) | 1,3 | 11 | iskrivljen hrvatski, nije za studente |
+
+Trošak jedne studentske sezone (24 poruke s likom, 8 presuda, 4 teksta mentora): 0,0073 $ sve na Haiku, 0,0646 $ sadašnja kombinacija (lik Haiku, sudac i mentor Sonnet), 0,149 $ sve na Sonnet. Razred od 25 studenata: 0,69 $ do 3,73 $ po sezoni.
+
+**Preporuka:** sva tri posla ostaju na Claudeu.
+- Razvoj i testiranje: lik i sudac na Haiku, mentor na Sonnet, ili sve na Groq (besplatno) kad se ne smije trošiti.
+- Pilot s razredom: sve na Sonnet (bolji hrvatski za 3,73 $ po razredu i sezoni).
+- Veći broj fakulteta: lik i sudac na Haiku, mentor na Sonnet, nakon provjere suca na barem 30 stvarnih odgovora iz pilota.
+
+**Podaci studenata:** Mistral na besplatnom planu smije koristiti ulaz i izlaz za treniranje (može se isključiti), pa tamo ne šaljemo tekst studenata. Groq po ugovoru ne trenira na podacima kupaca i po zadanom ih ne čuva, ali podaci su u SAD-u, a preview modeli nisu pokriveni ugovorom o obradi podataka.
+
 ## Cijene
 
 Jedna tablica: `PRICES` u `src/lib/ai/pricing.ts`, USD po milijun tokena.
