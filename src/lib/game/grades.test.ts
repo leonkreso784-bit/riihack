@@ -41,13 +41,13 @@ describe("toGradesInput", () => {
   it("igra bez studenata (samo botovi ili prazna) daje CSV samo sa zaglavljem", () => {
     const empty = buildGradesCsv(toGradesInput([], [], TEMPLATES));
     const onlyBots = buildGradesCsv(toGradesInput([entry("c2", "Računalo", "Hotel (bot)", { kind: "bot" })], [], TEMPLATES));
-    expect(empty).toBe(`${CSV_BOM}Nadimak;Hotel;Napredak\r\n`);
+    expect(empty).toBe(`${CSV_BOM}"Nadimak";"Hotel";"Napredak"\r\n`);
     expect(onlyBots).toBe(empty);
   });
 
   it("cijeli put: ocjena iz retka odgovora stiže u CSV", () => {
     const rows = [{ companyId: "c1", round: 1, templateId: "kvar-klime", answer: { mode: "own", text: "Ispričao sam se.", copied: false, quality: 5 } }];
     const csv = buildGradesCsv(toGradesInput([entry("c1", "Ana", "Hotel A")], rows, TEMPLATES));
-    expect(csv.split("\r\n")[1]).toBe("Ana;Hotel A;4;5;vlastiti;Lipanj");
+    expect(csv.split("\r\n")[1]).toBe('"Ana";"Hotel A";4;5;"vlastiti";"Lipanj"');
   });
 });

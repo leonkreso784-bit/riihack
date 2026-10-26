@@ -85,16 +85,36 @@ describe("columnTitle", () => {
   });
 });
 
+// Redak CSV-a u ćelije: skida navodnike i "" pretvara u ". Testovi sadržaja ne ovise o tome kako je polje citirano.
+function cells(line: string): string[] {
+  const out: string[] = [];
+  let cur = "";
+  let quoted = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (quoted) {
+      if (ch === '"' && line[i + 1] === '"') { cur += '"'; i++; }
+      else if (ch === '"') quoted = false;
+      else cur += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ";") { out.push(cur); cur = ""; }
+    else cur += ch;
+  }
+  out.push(cur);
+  return out;
+}
+const row = (text: string) => text.split(";");
+
 describe("buildGradesCsv", () => {
   it("prazna igra: BOM i samo zaglavlje", () => {
     const csv = buildGradesCsv({ students: [], titles: {} });
     expect(csv.startsWith(CSV_BOM)).toBe(true);
-    expect(lines(csv)).toEqual(["Nadimak;Hotel;Napredak"]);
+    expect(lines(csv).map(cells)).toEqual([row("Nadimak;Hotel;Napredak")]);
   });
 
   it("student bez situacija (lobby): redak s nadimkom, hotelom i napretkom", () => {
     const csv = buildGradesCsv({ students: [student({ progress: 0, closedRound: 0 })], titles: {} });
-    expect(lines(csv)).toEqual(["Nadimak;Hotel;Napredak", "Ana;Hotel Lungomare;0"]);
+    expect(lines(csv).map(cells)).toEqual([row("Nadimak;Hotel;Napredak"), row("Ana;Hotel Lungomare;0")]);
   });
 
   it("jedan redak po studentu, po situaciji ocjena, odgovor i mjesec; napredak s decimalnim zarezom", () => {
@@ -109,23 +129,26 @@ describe("buildGradesCsv", () => {
         }),
       ],
     });
-    expect(lines(csv)).toEqual([
-      "Nadimak;Hotel;Napredak;" +
-        "Klima ne radi usred sezone (Lipanj): ocjena;Klima ne radi usred sezone (Lipanj): odgovor;Klima ne radi usred sezone (Lipanj): mjesec;" +
-        "Loša recenzija na internetu (Lipanj): ocjena;Loša recenzija na internetu (Lipanj): odgovor;Loša recenzija na internetu (Lipanj): mjesec",
-      "Ana;Hotel Lungomare;12,5;4;ponuđeni;Lipanj;5;vlastiti;Lipanj",
+    expect(lines(csv).map(cells)).toEqual([
+      row(
+        "Nadimak;Hotel;Napredak;" +
+          "Klima ne radi usred sezone (Lipanj): ocjena;Klima ne radi usred sezone (Lipanj): odgovor;Klima ne radi usred sezone (Lipanj): mjesec;" +
+          "Loša recenzija na internetu (Lipanj): ocjena;Loša recenzija na internetu (Lipanj): odgovor;Loša recenzija na internetu (Lipanj): mjesec",
+      ),
+      row("Ana;Hotel Lungomare;12,5;4;ponuđeni;Lipanj;5;vlastiti;Lipanj"),
     ]);
   });
 
   it("ocjena je ona nakon profesorove promjene (quality iz retka odgovora)", () => {
     // override.ts piše novu ocjenu u answers.quality; izvoz čita taj stupac, pa je 1 → 4 odmah u CSV-u
     const csv = buildGradesCsv({ titles: TITLES, students: [student({ situations: [{ round: 1, templateId: "kvar-klime", answer: own(4) }] })] });
-    expect(lines(csv)[1]).toBe("Ana;Hotel Lungomare;12,5;4;vlastiti;Lipanj");
+    expect(cells(lines(csv)[1])).toEqual(row("Ana;Hotel Lungomare;12,5;4;vlastiti;Lipanj"));
   });
 
   it("negativan napredak ostaje broj, bez apostrofa", () => {
     const csv = buildGradesCsv({ students: [student({ progress: -3.5 })], titles: {} });
-    expect(lines(csv)[1]).toBe("Ana;Hotel Lungomare;-3,5");
+    expect(cells(lines(csv)[1])).toEqual(row("Ana;Hotel Lungomare;-3,5"));
+    expect(lines(csv)[1].endsWith(";-3,5")).toBe(true); // broj bez navodnika i bez apostrofa
   });
 
   it("stupci po mjesecu pa po šifri; student koji situaciju nije dobio ima prazna polja", () => {
@@ -136,8 +159,8 @@ describe("buildGradesCsv", () => {
         student({ nickname: "Bruno", hotel: "Villa Petra", closedRound: 2, situations: [{ round: 1, templateId: "losa-recenzija", answer: click(2) }] }),
       ],
     });
-    const [header, ana, bruno] = lines(csv);
-    expect(header.split(";").slice(3)).toEqual([
+    const [header, ana, bruno] = lines(csv).map(cells);
+    expect(header.slice(3)).toEqual([
       "Loša recenzija na internetu (Lipanj): ocjena",
       "Loša recenzija na internetu (Lipanj): odgovor",
       "Loša recenzija na internetu (Lipanj): mjesec",
@@ -145,8 +168,8 @@ describe("buildGradesCsv", () => {
       "Klima ne radi usred sezone (Srpanj): odgovor",
       "Klima ne radi usred sezone (Srpanj): mjesec",
     ]);
-    expect(ana).toBe("Ana;Hotel Lungomare;12,5;5;ponuđeni;Lipanj;3;ponuđeni;Srpanj");
-    expect(bruno).toBe("Bruno;Villa Petra;12,5;2;ponuđeni;Lipanj;;;");
+    expect(ana).toEqual(row("Ana;Hotel Lungomare;12,5;5;ponuđeni;Lipanj;3;ponuđeni;Srpanj"));
+    expect(bruno).toEqual(row("Bruno;Villa Petra;12,5;2;ponuđeni;Lipanj;;;"));
   });
 
   it("ista situacija u dva mjeseca daje dva stupca", () => {
@@ -154,9 +177,9 @@ describe("buildGradesCsv", () => {
       titles: TITLES,
       students: [student({ closedRound: 2, situations: [{ round: 1, templateId: "kvar-klime", answer: click(3) }, { round: 2, templateId: "kvar-klime", answer: click(4) }] })],
     });
-    const [header, row] = lines(csv);
-    expect(header.split(";")).toHaveLength(3 + 6);
-    expect(row).toBe("Ana;Hotel Lungomare;12,5;3;ponuđeni;Lipanj;4;ponuđeni;Srpanj");
+    const [header, ana] = lines(csv).map(cells);
+    expect(header).toHaveLength(3 + 6);
+    expect(ana).toEqual(row("Ana;Hotel Lungomare;12,5;3;ponuđeni;Lipanj;4;ponuđeni;Srpanj"));
   });
 
   it("dvije situacije s istim naslovom u istom mjesecu dobivaju različita zaglavlja (drugoj ide šifra)", () => {
@@ -164,13 +187,13 @@ describe("buildGradesCsv", () => {
       titles: { "kvar-klime": "Klima ne radi", "custom-1": "Klima ne radi" },
       students: [student({ situations: [{ round: 1, templateId: "kvar-klime", answer: click(3) }, { round: 1, templateId: "custom-1", answer: click(5) }] })],
     });
-    const [header, row] = lines(csv);
-    const columns = header.split(";").slice(3);
+    const [header, ana] = lines(csv).map(cells);
+    const columns = header.slice(3);
     expect(new Set(columns).size).toBe(6);
     // poredak po šifri: custom-1 je prvi i zadržava čisto ime, kvar-klime dobiva šifru
     expect(columns.slice(0, 3)).toEqual(["Klima ne radi (Lipanj): ocjena", "Klima ne radi (Lipanj): odgovor", "Klima ne radi (Lipanj): mjesec"]);
     expect(columns.slice(3, 6)).toEqual(["Klima ne radi (Lipanj) [kvar-klime]: ocjena", "Klima ne radi (Lipanj) [kvar-klime]: odgovor", "Klima ne radi (Lipanj) [kvar-klime]: mjesec"]);
-    expect(row).toBe("Ana;Hotel Lungomare;12,5;5;ponuđeni;Lipanj;3;ponuđeni;Lipanj");
+    expect(ana).toEqual(row("Ana;Hotel Lungomare;12,5;5;ponuđeni;Lipanj;3;ponuđeni;Lipanj"));
   });
 
   it("isti naslov u različitim mjesecima ne dobiva šifru (mjesec ih već razlikuje)", () => {
@@ -184,7 +207,7 @@ describe("buildGradesCsv", () => {
   it("redci su abecedno po nadimku (hrvatski poredak: č iza c, š iza s)", () => {
     const names = ["Šime", "Zoran", "Čedo", "Cvita", "Ana"].map((nickname) => student({ nickname }));
     const csv = buildGradesCsv({ students: names, titles: {} });
-    expect(lines(csv).slice(1).map((l) => l.split(";")[0])).toEqual(["Ana", "Cvita", "Čedo", "Šime", "Zoran"]);
+    expect(lines(csv).slice(1).map((l) => cells(l)[0])).toEqual(["Ana", "Cvita", "Čedo", "Šime", "Zoran"]);
   });
 
   it("zatvoren mjesec bez odgovora: ocjena 1 i bez odgovora; mjesec koji traje: prazna ocjena", () => {
@@ -194,7 +217,7 @@ describe("buildGradesCsv", () => {
         student({ closedRound: 1, situations: [{ round: 1, templateId: "kvar-klime", answer: null }, { round: 2, templateId: "kvar-klime", answer: null }] }),
       ],
     });
-    expect(lines(csv)[1]).toBe("Ana;Hotel Lungomare;12,5;1;bez odgovora;Lipanj;;u tijeku;Srpanj");
+    expect(cells(lines(csv)[1])).toEqual(row("Ana;Hotel Lungomare;12,5;1;bez odgovora;Lipanj;;u tijeku;Srpanj"));
   });
 
   it("citira polja s ; i navodnicima, a č ć š ž đ prolaze netaknuti", () => {
@@ -214,11 +237,19 @@ describe("buildGradesCsv", () => {
       ],
     });
     const out = lines(csv);
-    expect(out[0].startsWith("Nadimak;Hotel;Napredak;\"'=HYPERLINK(")).toBe(true);
-    expect(out[1]).toBe("'+385;'-2+3;12,5;;;");
-    expect(out[2]).toBe("'=1+1;'@SUM(A1:A9);12,5;3;ponuđeni;Lipanj");
+    expect(cells(out[0])[3].startsWith("'=HYPERLINK(")).toBe(true);
+    expect(out[1]).toBe(`"'+385";"'-2+3";12,5;;;`);
+    expect(out[2]).toBe(`"'=1+1";"'@SUM(A1:A9)";12,5;3;"ponuđeni";"Lipanj"`);
     // nijedna ćelija ne počinje opasnim znakom (osim brojeva koje piše izvoz)
-    for (const line of out.slice(1)) for (const cell of line.split(";")) expect(cell).not.toMatch(/^[=+@]/);
+    for (const line of out.slice(1)) for (const cell of cells(line)) expect(cell).not.toMatch(/^[=+@]/);
+  });
+
+  it("CSV injection preko drugog separatora: tekst iza zareza ne može postati formula", () => {
+    const csv = buildGradesCsv({ titles: {}, students: [student({ nickname: "Ana,=1+1", hotel: "Hotel\t@SUM(A1)" })] });
+    const line = lines(csv)[1];
+    // i kad ga program podijeli po zarezu ili tabu, nijedan dio ne počinje formulom
+    for (const part of line.split(/[,\t]/)) expect(part.replace(/^"/, "")).not.toMatch(/^[=+\-@]/);
+    expect(cells(line).slice(0, 2)).toEqual(["Ana,'=1+1", "Hotel\t'@SUM(A1)"]);
   });
 
   it("novi red u naslovu situacije postaje razmak, a u nadimku ostaje unutar navodnika", () => {
@@ -227,7 +258,7 @@ describe("buildGradesCsv", () => {
       students: [student({ nickname: "Ana\nEva", situations: [{ round: 1, templateId: "x", answer: click(2) }] })],
     });
     expect(csv).toContain("Prvi Drugi (Lipanj): ocjena");
-    expect(csv).toContain('"Ana\nEva";Hotel Lungomare;12,5;2;ponuđeni;Lipanj');
+    expect(csv).toContain('"Ana\nEva";"Hotel Lungomare";12,5;2;"ponuđeni";"Lipanj"');
   });
 });
 
