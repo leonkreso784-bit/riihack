@@ -255,8 +255,9 @@ Napomene
 - Ponude ugovora stvara poslužitelj; ne postoji ruta za njihovo stvaranje.
 - Plan mjeseca: cijena 30 do 400 €, marketing 0 do 5.000 €, ulaganje 0 do 3.000 € po odjelu.
 - Bez API rute za brisanje: nema `DELETE`, `PATCH` ni `PUT` handlera.
-- Neki handleri nemaju sučelje: slanje pošte između hotela (`POST /api/me/mail`) i ispis pošte igre za profesora.
-  Koriste ih skripte i testovi.
+- Neki handleri nemaju sučelje: ispis pošte igre za profesora (`GET /api/prof/[worldId]/mail`). Koriste ih skripte i testovi.
+- `POST /api/me/mail` (poruka drugom hotelu): 400 oblik ili primatelj je bot, 404 hotel nije u igri, 409 igra nije u tijeku, 429 granice slanja
+  (5 u minuti, 15 po primatelju, 60 po igri; provjera je u samom upisu), [ADR-058](records/DECISIONS.md#adr-058).
 
 <a id="ekrani"></a>
 ## 10 · Ekrani (26 stranica)

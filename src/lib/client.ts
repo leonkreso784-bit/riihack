@@ -1,6 +1,7 @@
 // Browser-side API calls. Until the backend is live every call answers from mock.ts; NEXT_PUBLIC_USE_MOCK=0 switches to the server.
 import { useEffect, useEffectEvent, useState } from "react";
 import { PASTE_SHARE, POLL_MS } from "./rules";
+import { checkMailLimit, checkSendMail, MAIL_WINDOW_SECONDS, recipientRefusal } from "./engine/mail-send";
 import { negotiate } from "./engine/negotiate";
 import { MOCK_DETAIL, MOCK_SAMPLE_DRAFT, MOCK_ME, MOCK_PROF, MOCK_ROOMS, MOCK_STAFF } from "./mock";
 import type {
@@ -37,6 +38,7 @@ import type {
   Room,
   RoundPlan,
   RoundReportView,
+  SendMailRequest,
   SituationDraft,
   SituationSummary,
   StaffMember,
@@ -108,6 +110,8 @@ const realApi = {
   plan: (req: PlanRequest) => post<RoundPlan>("/api/me/plan", req),
   // R13 mail: mark a message read; counter-offer on a contract offer (the engine decides, the agency replies by mail).
   markRead: (mailId: string) => post<{ ok: true }>(`/api/me/mail/${mailId}/read`),
+  // #303: a message to another hotel of the same game (new thread). 400/404/409/429 carry a Croatian message.
+  sendMail: (req: SendMailRequest) => post<MailMessage>("/api/me/mail", req),
   counter: (contractId: string, req: CounterOfferRequest) => post<NegotiationResult>(`/api/contracts/${contractId}/counter`, req),
   decideContract: (contractId: string, req: ContractDecisionRequest) =>
     post<ContractView>(`/api/contracts/${contractId}/decide`, req),
@@ -356,6 +360,37 @@ const mockApi: Api = {
   markRead: (id) => {
     mockMail = mockMail.map((m) => (m.id === id ? { ...m, read: true } : m));
     return wait({ ok: true as const }, 150);
+  },
+  // Same checks as the server: shared schema (400), unknown hotel (404), a bot hotel (400) and the send limits (429).
+  sendMail: (req) => {
+    const fail = (status: number, message: string) => Promise.reject(Object.assign(new Error(message), { status }));
+    const check = checkSendMail(req, MOCK_ME.company.id);
+    if (!check.ok) return fail(400, check.error);
+    const to = MOCK_ME.leaderboard.find((h) => h.companyId === check.data.toCompanyId);
+    const refusal = recipientRefusal(to && { isBot: to.isBot === true });
+    if (refusal) return fail(refusal.status, refusal.error);
+    const toName = to!.hotelName; // `to` exists: recipientRefusal returned null
+    const sentMail = mockMail.filter((m) => m.mine && m.kind === "hotel");
+    const limit = checkMailLimit({
+      total: sentMail.length,
+      recent: sentMail.filter((m) => Date.now() - Date.parse(m.at) < MAIL_WINDOW_SECONDS * 1000).length,
+      toRecipient: sentMail.filter((m) => m.toName === toName).length,
+    });
+    if (limit) return fail(429, limit);
+    const sent: MailMessage = {
+      id: `m-${Date.now()}`,
+      kind: "hotel",
+      threadId: `t-${Date.now()}`,
+      fromName: MOCK_ME.company.hotelName,
+      toName,
+      subject: check.data.subject,
+      body: check.data.body,
+      at: new Date().toISOString(),
+      read: true,
+      mine: true,
+    };
+    mockMail = [...mockMail, sent];
+    return wait(sent, 700);
   },
   counter: (id, req) => {
     const c = mockContracts.find((k) => k.id === id) ?? mockContracts[0];

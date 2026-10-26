@@ -34,7 +34,7 @@ import type {
 } from "@/lib/types";
 import { playBots } from "./bots";
 import { carryPlansForward, createOffers, listNewsEvents, settleCityRound } from "./city";
-import { MAIL_LIMIT, countUnreadMail, listMailRows } from "./mail";
+import { countUnreadMail, listMailWindow } from "./mail";
 import { closeRoundForAll, openRound } from "./round";
 import { listBank, listDispatches, loadTemplates } from "./situations";
 import { toCompanyDetail, toMeResponse, toProfGameSummary, toProfState } from "./views";
@@ -236,7 +236,7 @@ export async function loadMeState(ctx: PlayerCtx): Promise<MeResponse> {
     listFinanceRows(ctx.company.id),
     listNewsEvents(ctx.world.id),
     loadTemplates(ctx.world.id), // L12: i profesorove situacije
-    listMailRows(ctx.company.id, MAIL_LIMIT), // L15: pošta
+    listMailWindow(ctx.company.id), // L15: pošta (poruke hotela i ponude agencija u odvojenim prozorima)
     countUnreadMail(ctx.company.id),
   ]);
   return toMeResponse(

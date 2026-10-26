@@ -19,7 +19,7 @@ import { progress } from "@/lib/engine/round";
 import { renderSituationText } from "@/lib/engine/text";
 import { MAX_ROUNDS } from "@/lib/rules";
 import { buildNews, toCityLinks, toCityView, toContractView, toFinance, toPlan, type NewsEvent } from "./city";
-import { MAIL_LIMIT, toMailMessage } from "./mail";
+import { toMailMessage } from "./mail";
 import type {
   AnswerMode,
   AnswerView,
@@ -283,7 +283,7 @@ export function toMeResponse(
       rooms: rooms.map((r) => ({ number: r.number, status: r.status as RoomStatus })),
       investments: roundPlan.investments ?? {},
     }),
-    mail: mail.slice(0, MAIL_LIMIT).map((m) => toMailMessage(m, company.id, hotelNames(all))),
+    mail: mail.map((m) => toMailMessage(m, company.id, hotelNames(all))),
     unreadMail,
   };
 }

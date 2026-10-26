@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { MailRow } from "@/db/schema";
 import { CONTRACTS, getBusiness } from "@/content";
 import { MAIL_BODY_MAX, MAIL_SUBJECT_MAX } from "@/lib/rules";
-import { agencyFallback, agencyText, counterBody, offerBody, offerSubject, replySubject, sendMailError, termsText, toMailMessage } from "./mail";
+import { agencyFallback, agencyText, counterBody, mergeMailRows, offerBody, offerSubject, replySubject, termsText, toMailMessage } from "./mail";
 
 const agency = CONTRACTS.find((c) => c.id === "adria-izletnici")!;
 const laundry = CONTRACTS.find((c) => c.id === "praonica-standard")!;
@@ -102,24 +102,29 @@ describe("toMailMessage", () => {
   });
 });
 
-describe("poruka drugom hotelu (L18)", () => {
-  const ok = { toCompanyId: "ivo", subject: "Suradnja", body: "Imate li slobodnih soba za vikend?" };
+describe("mergeMailRows (prozor pošte)", () => {
+  const at = (iso: string, over: Partial<MailRow> = {}) => row({ createdAt: new Date(iso), ...over });
 
-  it("ispravna poruka nema greške", () => {
-    expect(sendMailError(ok, "ana")).toBeNull();
-    expect(sendMailError({ ...ok, subject: "x".repeat(MAIL_SUBJECT_MAX), body: "y".repeat(MAIL_BODY_MAX) }, "ana")).toBeNull();
+  it("spaja poruke hotela i ostalu poštu, najnovije prvo", () => {
+    const hotel = [at("2026-10-24T20:05:00Z", { id: "h2", kind: "hotel" }), at("2026-10-24T20:01:00Z", { id: "h1", kind: "hotel" })];
+    const other = [at("2026-10-24T20:03:00Z", { id: "a1" }), at("2026-10-24T19:00:00Z", { id: "a0" })];
+    expect(mergeMailRows(hotel, other).map((r) => r.id)).toEqual(["h2", "a1", "h1", "a0"]);
   });
 
-  it("naslov 1–80 i tekst 1–1000 znakova (bez praznina)", () => {
-    expect(sendMailError({ ...ok, subject: "   " }, "ana")).toMatch(/Naslov/);
-    expect(sendMailError({ ...ok, subject: "x".repeat(MAIL_SUBJECT_MAX + 1) }, "ana")).toMatch(/Naslov/);
-    expect(sendMailError({ ...ok, body: "" }, "ana")).toMatch(/Tekst/);
-    expect(sendMailError({ ...ok, body: "y".repeat(MAIL_BODY_MAX + 1) }, "ana")).toMatch(/Tekst/);
+  it("ista sekunda: redoslijed po id-u silazno, kao ORDER BY created_at DESC, id DESC", () => {
+    const rows = mergeMailRows([at("2026-10-24T20:00:00Z", { id: "b" })], [at("2026-10-24T20:00:00Z", { id: "c" }), at("2026-10-24T20:00:00Z", { id: "a" })]);
+    expect(rows.map((r) => r.id)).toEqual(["c", "b", "a"]);
   });
 
-  it("krivi oblik ili poruka samom sebi → greška", () => {
-    expect(sendMailError({ ...ok, toCompanyId: 5 } as never, "ana")).toMatch(/hotel/);
-    expect(sendMailError({ ...ok, subject: 3 } as never, "ana")).toMatch(/Naslov/);
-    expect(sendMailError({ ...ok, toCompanyId: "ana" }, "ana")).toMatch(/sam sebi/);
+  it("ponuda agencije ostaje u prozoru koliko god poruka hotela stiglo poslije nje", () => {
+    const offer = at("2026-10-24T08:00:00Z", { id: "ponuda" });
+    const flood = Array.from({ length: 30 }, (_, i) => at(`2026-10-24T12:${String(59 - i).padStart(2, "0")}:00Z`, { id: `h${i}`, kind: "hotel" }));
+    const rows = mergeMailRows(flood, [offer]);
+    expect(rows).toHaveLength(31);
+    expect(rows.at(-1)?.id).toBe("ponuda");
+  });
+
+  it("prazne liste", () => {
+    expect(mergeMailRows([], [])).toEqual([]);
   });
 });

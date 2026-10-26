@@ -8,6 +8,27 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-058"></a>
+## ADR-058 · Poruke među hotelima: tko ih vidi, tko ih prima i granice slanja
+**Datum:** 26.10. · **Status:** 🟨 potvrditi (graditelj uz [#303](https://github.com/leonkreso784-bit/riihack/issues/303); Leon potvrđuje pri spajanju) · **Vezano:**
+[ADR-044](#adr-044), [ADR-053](#adr-053)
+
+**Kontekst.** #303 dodaje obrazac „Nova poruka" u Poštu. To je kanal slobodnog teksta od studenta do studenta, a igru može
+otvoriti svatko. Trebalo je odlučiti tko poruku vidi, kome se smije slati i koliko.
+**Odluka.**
+- **Tko vidi:** pošiljatelj i primatelj. Profesorov pregled (`GET /api/prof/[worldId]/mail`) postoji kao API, ali sučelja za
+  njega nema, pa ga obrazac ne obećava. Kad se sučelje izgradi, obrazac opet smije reći da poruku vidi i profesor.
+- **Tko prima:** samo hotel iz iste igre koji vodi student. Bot ([ADR-044](#adr-044)) ne čita poštu, pa je slanje botu 400, a obrazac ih ne nudi.
+- **Granice po pošiljatelju:** 5 poruka u minuti, 15 po hotelu primatelju i 60 po igri, inače 429 (isti oblik kao
+  [ADR-053](#adr-053)). Granica se provjerava u samom upisu (jedna transakcija: zaključavanje po pošiljatelju, pa
+  INSERT … SELECT koji broji već upisane poruke), da je istodobni zahtjevi ne mogu prijeći.
+- **Prozor pošte u `GET /api/me`:** zadnjih 30 poruka hotela i, odvojeno, zadnjih 100 ponuda agencija i obavijesti grada.
+  Granica po primatelju štiti samo od jednog pošiljatelja; više pošiljatelja može ispuniti prozor, a ponude agencija se zbog
+  toga ne smiju izgubiti iz Pošte.
+
+**Posljedice.** Bez promjene sheme. Odgovor na poruku hotela je nova nit (`SendMailRequest` nema `threadId`); gumb „Odgovori"
+otvara obrazac s popunjenim primateljem i naslovom „Re: …". Brojač nepročitanih broji svu poštu, i onu izvan prozora.
+
 <a id="adr-057"></a>
 ## ADR-057 · Mentor sam piše osvrt mjeseca nakon obračuna
 **Datum:** 25.10. ~08:24 · **Status:** ✅ (Leon, preneseno preko graditelja); spojeno [#280](https://github.com/leonkreso784-bit/riihack/pull/280) (09:01) · **Vezano:**
