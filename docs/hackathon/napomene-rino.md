@@ -15,8 +15,7 @@ na mobitelu, tabletu, računalu i projektoru; zasebne mobilne aplikacije nema (�
 ### 1. 🔴 Profesorski kod je u adresi, a profesorova ploča ide na projektor
 
 Putanje su `/profesor/[profCode]` i `/api/prof/[profCode]/*`. Na Kahoot ulazu (§1) profesor pokazuje svoj ekran
-cijelom razredu, pa se profesorski kod vidi u adresnoj traci. Tko ga prepiše, može otvarati krugove ili završiti
-igru, i to pred žirijem.
+cijelom razredu, a profesorski kod ne smije biti u adresnoj traci.
 
 **Prijedlog:** `POST /api/prof/login {profCode}` postavi httpOnly kolačić (isto kao kod studenta), a putanje
 koriste `id` igre: `/profesor/[worldId]`, `/api/prof/[worldId]/*`.
@@ -53,8 +52,8 @@ pokazuju drukčije odbrojavanje jer satovi nisu usklađeni.
 
 - `/igra` i `/profesor` su klijentske komponente s jednom kukom za polling (`useMe()`, osvježavanje svake 3 s).
   Razgovor s likom ide preko `useChat` iz AI SDK-a.
-- Prepoznavanje lijepljenja (W1-c) u pregledniku se lako zaobiđe. To je u redu kao efekt u igri, dok poslužitelj
-  zadrži provjeru ≥ 70 % istih riječi (§6).
+- Prepoznavanje lijepljenja (W1-c) u pregledniku je pomoć u igri, ne zaštita; poslužitelj zadržava provjeru ≥ 70 %
+  istih riječi (§6).
 - Redoslijed: `lib/types.ts` s Leonom → `lib/mock.ts` → ulaz kodom → čekaonica → `/igra` → situacija s razgovorom
   → izvještaj → profesorova ploča. Živa karta (W1-a) dolazi zadnja od W1 jer joj trebaju podaci iz `events`.
 

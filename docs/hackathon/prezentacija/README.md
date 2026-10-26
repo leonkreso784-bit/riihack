@@ -8,4 +8,4 @@
 | [PITANJA-ZIRI.md](PITANJA-ZIRI.md) | Odgovori na pitanja žirija |
 | [OBILAZAK-3.md](OBILAZAK-3.md) | Obilazak 3: žiri sam igra na mobitelu |
 | [video/simpolis-demo.mp4](video/simpolis-demo.mp4) | Rezervni video demoa (80 s) |
-| [PITCH.md](PITCH.md), [OBILAZAK-1.md](OBILAZAK-1.md) | Raniji nacrti |
+| [OBILAZAK-1.md](OBILAZAK-1.md) | Raniji nacrt (obilazak 1) |

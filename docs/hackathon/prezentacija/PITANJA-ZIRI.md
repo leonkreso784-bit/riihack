@@ -23,7 +23,7 @@
 
 ## Privatnost i propisi (Rino)
 
-- Student ulazi kodom, imenom i imenom hotela; bez e-maila i lozinke. Demo koristi izmišljene podatke.
+- Student ulazi kodom igre; bez e-maila i lozinke. Demo koristi izmišljene podatke.
 - AI Act: AI koji ocjenjuje učenje je visokog rizika (Prilog III, 3b), obveze od 2.12.2027. Mi već imamo ljudski nadzor (profesor mijenja ocjenu) i pravila umjesto AI-ja za bodove. Za pilot: fakultet je voditelj obrade, mi izvršitelj (ugovor o obradi).
 - Anthropic komercijalni API ne trenira na našim podacima.
 
@@ -38,8 +38,7 @@
 
 „Nemamo taj podatak; provjerili bismo tako da …" Nikad ne izmišljati broj.
 
-## Sigurnost (Leon; pitanje ASEE-a)
+## Sigurnost (Leon)
 
-- **Što ste provjerili?** Vlastiti pregled na produkciji s testnim računima: svih 37 API ruta provjeravaju identitet na poslužitelju; profesor B dobiva 403 na svih 15 radnji u igri profesora A; student ne vidi tuđe odgovore ni poštu; 5 od 5 pokušaja prompt injectiona nije prevarilo suca (motor ionako ograničava ocjenu na 1 do 5); XSS kroz ime hotela se prikazuje kao tekst; nema tajni u kodu ni u JS-u; npm audit 0.
-- **Što smo popravili iste noći (ADR-053):** sigurnosna zaglavlja na svim rutama (stranica se ne može ugraditi u tuđi iframe, nosniff, Referrer-Policy), #251; granica poruka u razgovoru s gostom drži i pod istodobnim zahtjevima, #249; AI prijedlozi situacija imaju granicu po igri (30 ukupno, 5 u minuti), #247.
-- **Što još nije dobro (reći iskreno):** ponovni ulaz samo imenom i hotelom (sljedeći korak: PIN), stroga CSP, ograničenje brzine na ulazu. Detalji u SIGURNOST.md (ne javno dok nije popravljeno).
+- Tajne su samo na poslužitelju, AI ključ nikad nije u pregledniku, a pristup podacima igre provjerava poslužitelj.
+- Sigurnosna zaglavlja, granice AI poziva i granica poruka u razgovoru su ugrađeni ([ADR-053](../../records/DECISIONS.md#adr-053)). PIN za ulazak studenta je planiran ([ADR-053](../../records/DECISIONS.md#adr-053)).

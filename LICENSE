@@ -1,0 +1,59 @@
+Simpolis
+
+Copyright (c) 2026 Leon Kreso, Rino Tomić, Simon Seifert. Sva prava pridržana.
+
+================================================================================
+HRVATSKI
+================================================================================
+
+Ovaj repozitorij i sav njegov sadržaj (izvorni kod, sadržaj igre, dokumentacija,
+grafike, tekstovi i prezentacijski materijali) vlasništvo su gore navedenih
+nositelja autorskih prava.
+
+Kod je javno vidljiv samo radi pregleda i kao dio portfelja autora. Ova obavijest
+ne daje nikakvu licencu, a Simpolis nije softver otvorenog koda.
+
+Bez prethodnog pisanog dopuštenja svih nositelja autorskih prava nije dopušteno
+kopirati, mijenjati, distribuirati ni koristiti ovaj repozitorij ili bilo koji
+njegov dio, u cijelosti ili djelomično.
+
+Ovisnosti trećih strana (na primjer Next.js, React i druge biblioteke navedene u
+package.json) zadržavaju vlastite licence. Ova se obavijest na njih ne odnosi.
+
+Iznimka: dokumenti trećih strana u repozitoriju (npr. docs/hackathon/Ri-Hack 4.0
+Tema.pdf, dokument organizatora natjecanja) ostaju vlasništvo svojih autora.
+
+Ništa u ovoj obavijesti ne ograničava prava koja korisnicima daju Uvjeti
+korištenja GitHuba (na primjer pregled i forkanje javnih repozitorija na
+GitHubu).
+
+Za pisano dopuštenje obratite se timu putem GitHub issuea na repozitoriju.
+
+================================================================================
+ENGLISH
+================================================================================
+
+This repository and all of its contents (source code, game content,
+documentation, graphics, texts and presentation materials) are the property of
+the copyright holders named above.
+
+The code is publicly visible for review and as part of the authors' portfolio
+only. This notice grants no licence, and Simpolis is not open-source software.
+
+Without the prior written permission of all copyright holders you may not copy,
+modify, distribute or use this repository or any part of it, in whole or in
+part.
+
+Third-party dependencies (for example Next.js, React and the other libraries
+listed in package.json) keep their own licences. This notice does not apply to
+them.
+
+Exception: third-party documents in the repository (for example
+docs/hackathon/Ri-Hack 4.0 Tema.pdf, the organiser's brief) remain the property
+of their authors.
+
+Nothing in this notice limits the rights that the GitHub Terms of Service give
+users (for example, viewing and forking public repositories on GitHub).
+
+To ask for written permission, contact the team through a GitHub issue on the
+repository.

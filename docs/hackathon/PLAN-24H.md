@@ -1,7 +1,7 @@
 # Plan do predaje
 
 **Rok: nedjelja 25.10.2026. u 10:30** (prezentacija i GitHub link u #prezentacije). Detaljni zadaci i
-redoslijed po ljudima: [plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md).
+redoslijed po ljudima: [plan izvedbe](plans/2026-10-24-simpolis.md).
 
 | Prekretnica | Rok | Što žiri vidi |
 | --- | --- | --- |
@@ -9,7 +9,7 @@ redoslijed po ljudima: [plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis
 | M1 Obilazak 1 | sub 14:30 (žiri ~14:45) | 3 obećanja; profesor napravi igru, student uđe kodom i vidi hotel i sobe |
 | M2 Obilazak 2 | sub 18:45 (žiri 19:00) | 3 obećanja rade: Kahoot ulaz sa sobama, **grad** (tržište turista, novac, karta), situacija s likom |
 | M3 Obilazak 3 | ned 07:45 (žiri 08:00) | cijeli demo: ugovori s gradskim tvrtkama, vijesti grada, mentor, demo igra, responsive |
-| **Bez zamrzavanja** | — | nema zamrzavanja, gradi se do predaje (ned 10:30), [ADR-031](docs/records/DECISIONS.md#adr-031) |
+| **Bez zamrzavanja** | — | nema zamrzavanja, gradi se do predaje (ned 10:30), [ADR-031](../records/DECISIONS.md#adr-031) |
 | M4 Predaja | ned 10:15 | prezentacija, video, PREDAJA.md, link |
 
 ## Fiksne točke (ri-hack.com, program)
@@ -24,11 +24,11 @@ Sat 0 = subota 10:30. Obilasci žirija se boduju: gleda se napredak od prvog obi
 | Ned 10:30 | 24 | Kraj kodiranja |
 | Ned 10:45-12:30 | | Prezentacije (2023/2024: ~7 min + pitanja) |
 
-Napomena: nema zamrzavanja koda, gradi se do predaje (ned 10:30), [ADR-031](docs/records/DECISIONS.md#adr-031). Spavanje u smjenama tako da su uvijek dvojica budna (prijedlog u [prep/strategy.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/prep/strategy.md)).
+Napomena: nema zamrzavanja koda, gradi se do predaje (ned 10:30), [ADR-031](../records/DECISIONS.md#adr-031). Spavanje u smjenama tako da su uvijek dvojica budna.
 
 ## Pravila
 
-- Nema zamrzavanja koda, gradi se do predaje (ned 10:30); `main` uvijek zelen ([ADR-031](docs/records/DECISIONS.md#adr-031)).
+- Nema zamrzavanja koda, gradi se do predaje (ned 10:30); `main` uvijek zelen ([ADR-031](../records/DECISIONS.md#adr-031)).
 - **Grad je srž:** tržište turista, novac i ugovori s gradskim tvrtkama rade stvarno; studenti koji vode druge vrste tvrtki su plan za pitch.
 - Snimiti video demoa čim radi, za slučaj da live demo zakaže.
 - Ako je netko zapeo dulje od 30 minuta, javlja timu.

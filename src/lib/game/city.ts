@@ -1,5 +1,5 @@
 // Grad (L11): plan kruga, ponude i odluke o ugovorima, obračun mjeseca, vijesti i karta.
-// Obračun ide za cijeli grad odjednom, jer turisti biraju između svih hotela (ARHITEKTURA §5c).
+// Obračun ide za cijeli grad odjednom, jer turisti biraju između svih hotela (docs/ARHITEKTURA.md §6).
 import { and, eq, lt, sql, type SQL } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";

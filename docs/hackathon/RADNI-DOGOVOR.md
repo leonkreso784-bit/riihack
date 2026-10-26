@@ -2,7 +2,7 @@
 
 ## Podjela posla
 
-Projekt: **Simpolis** ([IDEJA.md](IDEJA.md), [ARHITEKTURA.md](ARHITEKTURA.md)). Podjela je **po mapama**, da troje
+Projekt: **Simpolis** ([IDEJA.md](IDEJA.md), [ARHITEKTURA.md](../ARHITEKTURA.md)). Podjela je **po mapama**, da troje
 ljudi ne dira iste datoteke.
 
 | Tko | Što | Mape |
@@ -13,7 +13,7 @@ ljudi ne dira iste datoteke.
 
 🟨 Podjelu backenda Leon i Simon još potvrđuju. Rino radi frontend (dogovoreno).
 
-Točan popis datoteka i redoslijed: [plan izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md). Svatko radi s više agenata usporedno.
+Točan popis datoteka i redoslijed: [plan izvedbe](plans/2026-10-24-simpolis.md). Svatko radi s više agenata usporedno.
 
 **Granica Leon i Simon:** ruta za vlastiti odgovor (`POST /api/situations/[id]/answer`) je Leonova; ona zove
 Simonovu funkciju `judge()` iz `lib/ai/`. Zatvaranje kruga je Leonovo; ono zove Simonov `mentor()`. Simon izlaže
@@ -26,7 +26,7 @@ funkcije s dogovorenim potpisom, a Leon ih zove.
 - **AI:** Claude preko AI SDK-a (Haiku za likove, Sonnet za presudu i mentora)
 - **Deploy:** Vercel
 
-Detalji i razlozi: [ARHITEKTURA.md](ARHITEKTURA.md) §3. Cilj je demo koji radi na javnom linku, a ne savršen kod.
+Detalji i razlozi: [ARHITEKTURA.md](../ARHITEKTURA.md) §3. Cilj je demo koji radi na javnom linku, a ne savršen kod.
 
 ## Prije početka (svatko provjeri)
 

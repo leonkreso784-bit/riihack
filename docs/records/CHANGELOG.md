@@ -1,7 +1,7 @@
 # Changelog
 
 Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 03:00 CEST, zatim CET (sat vraćen u 03:00 na 02:00). Priča po sesijama je u
-[PROGRESS.md](PROGRESS.md).
+[PROGRESS.md](../hackathon/PROGRESS.md).
 
 ## M3 · Obilazak 3 (rok ned 07:45)
 

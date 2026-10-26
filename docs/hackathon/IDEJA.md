@@ -40,8 +40,6 @@
 > ponuditi brze prečace do rješenja, već pronaći način kako iskoristiti tehnologiju za
 > poticanje znatiželje, dubljeg razumijevanja i trajne želje za stjecanjem novih znanja.
 
-Simonovi kandidati, ocjene i preporuka prije odabira Simpolisa: [research/tema-2026.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/research/tema-2026.md). Nacrt obećanja: [PROMISE.draft.md](https://github.com/leonkreso784-bit/ri-hack-4/blob/main/PROMISE.draft.md).
-
 Sažetak (Leon): žiri ocjenjuje **kreativnost i inovativnost** te **tehničke karakteristike** (složenost i
 ispoliranost). Rješenje mora biti pristupačno, održivo i primjenjivo u stvarnom životu.
 
@@ -86,12 +84,12 @@ ispoliranost). Rješenje mora biti pristupačno, održivo i primjenjivo u stvarn
 7. *Ako ostane vremena:* profesor ubaci „šok" situaciju svima odjednom.
 
 **Opseg:** ne gradimo proizvod koji radi do kraja. Najbitnije ide u bazu i backend, ostalo je
-sučelje na lažnim podacima ili samo plan ([ARHITEKTURA.md](ARHITEKTURA.md) §1a).
+sučelje na lažnim podacima ili samo plan ([ARHITEKTURA.md](../ARHITEKTURA.md) §1a).
 
 ### Otvoreno
 
 - **Podjela backenda** između Leona i Simona (prijedlog u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md)); frontend radi Rino.
-- 🟨 **Područje demoa:** hotel je glavni tok, agencija s ugovorom tek kad hotel radi ([ARHITEKTURA.md](ARHITEKTURA.md) §1).
+- 🟨 **Područje demoa:** hotel je glavni tok, agencija s ugovorom tek kad hotel radi ([ARHITEKTURA.md](../ARHITEKTURA.md) §1).
   Generiranje situacija iz profesorova gradiva je za poslije hackathona.
 
 ## Vizija: pravi grad, prava ekonomija

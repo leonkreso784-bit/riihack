@@ -1,7 +1,7 @@
 # Bugovi i lekcije
 
 Aktivni gore, riješeni dolje (najnoviji riješeni na vrhu). Bug prijavi dokumentaristu porukom `[BUG]` jednim
-retkom ([SESIJE.md](../workflow/SESIJE.md)) ili issueom.
+retkom ([SESIJE.md](../hackathon/SESIJE.md)) ili issueom.
 
 **Format:** ID · status (🔴 otvoren · 🟡 u radu · ✅ riješen) · težina (kritičan / visok / srednji / nizak) ·
 opis · uzrok · rješenje · **lekcija**.
@@ -721,7 +721,7 @@ opis · uzrok · rješenje · **lekcija**.
   ali bi srušio dev servere i sesije ostalih
 - **Opis:** pri gašenju svog dev servera agent je pokušao ubiti sve `node.exe` procese na računalu.
 - **Uzrok:** agent nije znao PID svog servera, pa je posegnuo za svim procesima istog imena.
-- **Rješenje:** pravilo za agente: dev server na vlastitom portu, gasi se samo taj proces ([SESIJE.md](../workflow/SESIJE.md#pravila-za-agente)).
+- **Rješenje:** pravilo za agente: dev server na vlastitom portu, gasi se samo taj proces ([SESIJE.md](../hackathon/SESIJE.md#pravila-za-agente)).
 - **Lekcija:** na računalu na kojem radi više sesija naredba „ugasi sve istog imena" nikad nije sigurna. Pokreni
   proces tako da znaš njegov port ili PID i gasi samo njega.
 
@@ -751,4 +751,4 @@ opis · uzrok · rješenje · **lekcija**.
 - **Rješenje:** `roundGain` dodan u 5 lažnih redaka ljestvice (#49). Usporedni popravak #50 zatvoren kao duplikat.
 - **Lekcija:** novo polje u ugovoru je **neobavezno** dok ga svi ne pune ([ADR-011](DECISIONS.md#adr-011)). Prije
   spajanja „Update branch" i CI na **svježem** `main`-u; nakon spajanja pogledaj CI na `main`-u
-  ([TEAM.md](../../TEAM.md) pravila 2–4).
+  ([TEAM.md](../hackathon/TEAM.md) pravila 2–4).

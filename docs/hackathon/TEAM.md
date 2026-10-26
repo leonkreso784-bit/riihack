@@ -2,7 +2,7 @@
 
 **Zajednička ploča tima.** Svatko uređuje **samo svoje polje** (Leon, Simon, Rino). Zajedničke dijelove (Prekretnice,
 Tko na koga čeka, Pravila, Odluke, Stanje main-a) smije mijenjati svatko, uz poruku na Discordu. Zadaci u detalje su u
-[planu izvedbe](docs/superpowers/plans/2026-10-24-simpolis.md) i u issueovima. Ovdje je samo tko što radi **sada**, tko
+[planu izvedbe](plans/2026-10-24-simpolis.md) i u issueovima. Ovdje je samo tko što radi **sada**, tko
 na koga čeka i što smo dogovorili.
 
 ## Kako koristimo ploču
@@ -61,26 +61,26 @@ na koga čeka i što smo dogovorili.
 | 24.10. | Ploča tima u `TEAM.md`, svatko svoje polje, izravno na `main` | Leon |
 | 24.10. | Tri Leonove sesije: graditelj, integrator (jedini spaja), dokumentacija | Leon |
 | 24.10. | Dokumentacija ipak ide na `main` preko PR-a (po njoj grade ljudi i agenti): #58 vraćen s #60, ponovno kao #71 (15:05) | Leon |
-| 24.10. ~21:20 | Integrator sam spaja aditivne neobavezne dodatke ugovoru (novi tip ili polje s `?` u `types.ts`) prepisane iz bloka „Ugovor" u planu; Leonovo „spoji" ostaje za izmjene postojećih tipova, `rules.ts`, `package.json`, lock i plan ([ADR-037](docs/records/DECISIONS.md#adr-037)) | Leon |
-| 24.10. ~21:40 | Simonove skice „Tokovi" (#174, #179) **ipak idu u aplikaciju** preko integratora, uz Rinov ok za poveznice; polja `SituationView.rubric?` i `effects?` dodaje graditelj; ruta „Što ako?" na poslužitelju se ne radi (zamjenjuje odluku od 21:15, [ADR-042](docs/records/DECISIONS.md#adr-042)) | Leon |
-| 24.10. ~21:15 | Graditelj: L8 demo i smoke za val 3 prvo, L19 samo ako ostane vremena; imena hotela u demo seedu po mjestu; stranicu knjižnice radi graditelj, Rino je stilski pregleda; skriptu za čišćenje baze graditelj radi i isproba večeras ([ADR-039](docs/records/DECISIONS.md#adr-039)) | Leon |
-| 24.10. ~21:15 | Tuđi hoteli: prihod i dobit zatvorenih mjeseci su javni (kao kod FINA-e), ostali novac skriven ([ADR-040](docs/records/DECISIONS.md#adr-040)) | Leon |
-| 24.10. ~21:15 | Demo na žiriju obavezno s profesorskim računom; tehnički detalji s Leonom ([ADR-041](docs/records/DECISIONS.md#adr-041)) | Leon |
-| 24.10. ~21:15 | Nakon svakog povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci` ([BUG-013](docs/records/BUGS.md#bug-013--provjera-pada-u-mapi-bez-npm-ci-nakon-promjene-package-lockjson)) | Leon |
-| 24.10. ~22:00 | Balans cijene (#162): u motoru privlačnost iznad 2× referentne cijene pada dalje, iznad 2,5× je 0; `PRICE_MAX` i Plan ostaju; poslije ponovno demo i smoke ([ADR-043](docs/records/DECISIONS.md#adr-043)) | Leon |
-| 24.10. ~22:20 | Botovi (hoteli i dobavljači koje vodi računalo) za igre s malo studenata: po pravilima motora, ne AI; profesor ih uključuje pri stvaranju igre; izmjena ~22:50: botove cijele radi Simon (#205), graditelj pregledava ([ADR-044](docs/records/DECISIONS.md#adr-044)) | Leon |
-| 24.10. ~22:35 | Pokazatelji jače utječu na goste (BUG-024); graditelj preuzima sve otvorene bugove s agentima, za Rinove i Simonove datoteke prvo provjeri njihove grane ([ADR-045](docs/records/DECISIONS.md#adr-045)) | Leon |
-| 24.10. ~22:50 | Učinak situacije po ocjeni: 1 (loše ili propušteno) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3× (BUG-026); radi graditelj s BUG-024 ([ADR-046](docs/records/DECISIONS.md#adr-046)) | Leon |
-| 24.10. ~23:05 | Kasni ulaz: student ulazi i u igru koja je počela, igra od trenutnog mjeseca ([ADR-048](docs/records/DECISIONS.md#adr-048)) | Leon |
-| 24.10. ~23:10 | Simonov #209 (kalibracija troškova) ne ide prije predaje; u pitchu je „sljedeći korak" ([ADR-047](docs/records/DECISIONS.md#adr-047)) | Leon |
-| 24.10. ~23:50 | Bez minimalne duljine odgovora i refleksije; prazan odgovor ocjenjuje motor s 1, bez AI-ja ([ADR-049](docs/records/DECISIONS.md#adr-049)) | Leon |
-| 25.10. ~01:10 | Kod igre i QR na ploči nakon pokretanja nisu potrebni; kasni ulaz nije prioritet ([ADR-051](docs/records/DECISIONS.md#adr-051)) | Leon |
-| 25.10. ~01:20 | Sigurnost: AI prijedlog najviše 30 po igri i 5 u minuti, atomična granica poruka s likom, zaglavlja `X-Frame-Options`, `nosniff`, `Referrer-Policy` bez CSP-a; PIN poslije natjecanja ([ADR-053](docs/records/DECISIONS.md#adr-053)) | Leon |
-| 25.10. ~01:25 | Napisan odgovor s ocjenom 1 ima množitelj 0, propušten i prazan −2× (zalijepljen odgovor s ocjenom 1 također −2×, #253) ([ADR-052](docs/records/DECISIONS.md#adr-052)); ljestvica i grad bez stanja računa tuđih hotela ([ADR-040](docs/records/DECISIONS.md#adr-040)) | Leon |
-| 25.10. ~02:38 | Leon spava; graditelj do jutra traži spajanja u njegovo ime; ~02:42 Leon integratoru izravno: odobrenje za svo spajanje ([ADR-054](docs/records/DECISIONS.md#adr-054)) | Leon |
-| 25.10. ~08:00 | Testiranje na produkciji: najviše 3 testne igre, ponovno ih koristiti ([ADR-055](docs/records/DECISIONS.md#adr-055)) | Leon |
-| 25.10. ~08:05 | Dok žiri igra (do 09:00) nema deploya ni spajanja ([ADR-056](docs/records/DECISIONS.md#adr-056)) | Leon |
-| 25.10. ~08:24 | Mentor nakon obračuna mjeseca sam piše kratak osvrt (dobro, loše, jedan savjet); pitanje i refleksija ostaju ([ADR-057](docs/records/DECISIONS.md#adr-057)) | Leon |
+| 24.10. ~21:20 | Integrator sam spaja aditivne neobavezne dodatke ugovoru (novi tip ili polje s `?` u `types.ts`) prepisane iz bloka „Ugovor" u planu; Leonovo „spoji" ostaje za izmjene postojećih tipova, `rules.ts`, `package.json`, lock i plan ([ADR-037](../records/DECISIONS.md#adr-037)) | Leon |
+| 24.10. ~21:40 | Simonove skice „Tokovi" (#174, #179) **ipak idu u aplikaciju** preko integratora, uz Rinov ok za poveznice; polja `SituationView.rubric?` i `effects?` dodaje graditelj; ruta „Što ako?" na poslužitelju se ne radi (zamjenjuje odluku od 21:15, [ADR-042](../records/DECISIONS.md#adr-042)) | Leon |
+| 24.10. ~21:15 | Graditelj: L8 demo i smoke za val 3 prvo, L19 samo ako ostane vremena; imena hotela u demo seedu po mjestu; stranicu knjižnice radi graditelj, Rino je stilski pregleda; skriptu za čišćenje baze graditelj radi i isproba večeras ([ADR-039](../records/DECISIONS.md#adr-039)) | Leon |
+| 24.10. ~21:15 | Tuđi hoteli: prihod i dobit zatvorenih mjeseci su javni (kao kod FINA-e), ostali novac skriven ([ADR-040](../records/DECISIONS.md#adr-040)) | Leon |
+| 24.10. ~21:15 | Demo na žiriju obavezno s profesorskim računom; tehnički detalji s Leonom ([ADR-041](../records/DECISIONS.md#adr-041)) | Leon |
+| 24.10. ~21:15 | Nakon svakog povlačenja koje mijenja `package-lock.json` svi pokreću `npm ci` ([BUG-013](../records/BUGS.md#bug-013--provjera-pada-u-mapi-bez-npm-ci-nakon-promjene-package-lockjson)) | Leon |
+| 24.10. ~22:00 | Balans cijene (#162): u motoru privlačnost iznad 2× referentne cijene pada dalje, iznad 2,5× je 0; `PRICE_MAX` i Plan ostaju; poslije ponovno demo i smoke ([ADR-043](../records/DECISIONS.md#adr-043)) | Leon |
+| 24.10. ~22:20 | Botovi (hoteli i dobavljači koje vodi računalo) za igre s malo studenata: po pravilima motora, ne AI; profesor ih uključuje pri stvaranju igre; izmjena ~22:50: botove cijele radi Simon (#205), graditelj pregledava ([ADR-044](../records/DECISIONS.md#adr-044)) | Leon |
+| 24.10. ~22:35 | Pokazatelji jače utječu na goste (BUG-024); graditelj preuzima sve otvorene bugove s agentima, za Rinove i Simonove datoteke prvo provjeri njihove grane ([ADR-045](../records/DECISIONS.md#adr-045)) | Leon |
+| 24.10. ~22:50 | Učinak situacije po ocjeni: 1 (loše ili propušteno) −2×, 2 → 0, 3 → +1×, 4 → +2×, 5 → +3× (BUG-026); radi graditelj s BUG-024 ([ADR-046](../records/DECISIONS.md#adr-046)) | Leon |
+| 24.10. ~23:05 | Kasni ulaz: student ulazi i u igru koja je počela, igra od trenutnog mjeseca ([ADR-048](../records/DECISIONS.md#adr-048)) | Leon |
+| 24.10. ~23:10 | Simonov #209 (kalibracija troškova) ne ide prije predaje; u pitchu je „sljedeći korak" ([ADR-047](../records/DECISIONS.md#adr-047)) | Leon |
+| 24.10. ~23:50 | Bez minimalne duljine odgovora i refleksije; prazan odgovor ocjenjuje motor s 1, bez AI-ja ([ADR-049](../records/DECISIONS.md#adr-049)) | Leon |
+| 25.10. ~01:10 | Kod igre i QR na ploči nakon pokretanja nisu potrebni; kasni ulaz nije prioritet ([ADR-051](../records/DECISIONS.md#adr-051)) | Leon |
+| 25.10. ~01:20 | Sigurnost: AI prijedlog najviše 30 po igri i 5 u minuti, atomična granica poruka s likom, zaglavlja `X-Frame-Options`, `nosniff`, `Referrer-Policy`; PIN za ulazak studenta je planiran ([ADR-053](../records/DECISIONS.md#adr-053)) | Leon |
+| 25.10. ~01:25 | Napisan odgovor s ocjenom 1 ima množitelj 0, propušten i prazan −2× (zalijepljen odgovor s ocjenom 1 također −2×, #253) ([ADR-052](../records/DECISIONS.md#adr-052)); ljestvica i grad bez stanja računa tuđih hotela ([ADR-040](../records/DECISIONS.md#adr-040)) | Leon |
+| 25.10. ~02:38 | Leon spava; graditelj do jutra traži spajanja u njegovo ime; ~02:42 Leon integratoru izravno: odobrenje za svo spajanje ([ADR-054](../records/DECISIONS.md#adr-054)) | Leon |
+| 25.10. ~08:00 | Testiranje na produkciji: najviše 3 testne igre, ponovno ih koristiti ([ADR-055](../records/DECISIONS.md#adr-055)) | Leon |
+| 25.10. ~08:05 | Dok žiri igra (do 09:00) nema deploya ni spajanja ([ADR-056](../records/DECISIONS.md#adr-056)) | Leon |
+| 25.10. ~08:24 | Mentor nakon obračuna mjeseca sam piše kratak osvrt (dobro, loše, jedan savjet); pitanje i refleksija ostaju ([ADR-057](../records/DECISIONS.md#adr-057)) | Leon |
 
 ## Stanje main-a (vodi integrator)
 
@@ -134,41 +134,26 @@ na koga čeka i što smo dogovorili.
 Podjela posla za Simpolis je u [RADNI-DOGOVOR.md](RADNI-DOGOVOR.md) i u planu izvedbe: Leon temelj, baza, motor i API;
 Simon AI, karta grada, plan i financije; Rino sučelje.
 
-### Leon Kreso — [@leonkreso784-bit](https://github.com/leonkreso784-bit)
+### Leon Kreso ([@leonkreso784-bit](https://github.com/leonkreso784-bit))
 
-Student hotelijerstva (FMTU Opatija) koji je sam naučio programirati. Drugi hackathon, prvi je bio SHAKER 2026.
+Student hotelijerstva (FMTU Opatija) koji je sam naučio programirati.
 
-- **Stack:** Rust, TypeScript/JavaScript, Python, PostgreSQL/Supabase, React, Svelte, Node, Vercel, Railway
-- **Projekti:**
-  - **Sokrat Study** ([sokratstudy.com](https://www.sokratstudy.com/)): platforma za učenje s karticama, kvizovima i vlastitim materijalima. Javno dostupna.
-  - **Sokratis:** desktop aplikacija koja analizira git repo (Rust, Tauri, Svelte).
-  - **KuhAI:** projekt sa SHAKER 2026. Plan obroka iz slike frižidera (Hono, Postgres, Claude).
+- **Stack:** Rust, TypeScript/JavaScript, Python, PostgreSQL, React, Svelte, Node, Vercel
 - **Jak u:** arhitekturi, backendu i bazama, AI integraciji, deployu i dovršavanju proizvoda.
 
-### Simon Seifert — [@simonseifert](https://github.com/simonseifert)
+### Simon Seifert ([@simonseifert](https://github.com/simonseifert))
 
 - **Stack:** Python, JavaScript/TypeScript, Astro, Tailwind
-- **Projekti:**
-  - **living-docs:** Claude Code skill koji vodi ažurne bilješke o alatima
-  - **osint-intel:** OSINT alat koji slaže izvještaj iz maila, korisničkog imena ili domene
-  - **guest-guide:** offline PWA za goste apartmana, besplatna zamjena za plaćene alate
-  - **ig-saves:** spremljeni Instagram postovi → Obsidian → Claude analiza → render videa
-  - **whatsapp-mcp-pro:** WhatsApp server za AI agente (fork)
-- **Jak u:** AI agentima, MCP-u, automatizacijama, scrapingu i spajanju vanjskih servisa.
+- **Jak u:** AI agentima, MCP-u, automatizacijama i spajanju vanjskih servisa.
 
-### Rino Tomić — [@rtomic20](https://github.com/rtomic20)
+### Rino Tomić ([@rtomic20](https://github.com/rtomic20))
 
-Student Sveučilišta u Rijeci. Bio na StemGames 2026.
+Student Sveučilišta u Rijeci.
 
 - **Stack:** TypeScript, Angular, Python/Django, Flutter/Dart, C++, C#
-- **Projekti:**
-  - **MedXpress:** ista aplikacija na tri platforme (Flutter, Django API, Angular web)
-  - **OPG app:** web aplikacija za OPG-ove, s upitnicima za OPG-ove i za kupce
-  - **Unisupport:** sustav za studentske zahtjeve u uredu Sveučilišta
 - **Jak u:** full-stack webu, mobilnim aplikacijama (Flutter) i radu s korisnicima kroz upitnike.
 
 ### Zajedno
 
 - Sva trojica rade full-stack, pa se lako možemo uskakati.
 - Leon i Simon intenzivno koriste Claude Code. Rino je jedini s Flutterom.
-- Sva trojica imaju projekte s pravim korisnicima, što pomaže za priču pred žirijem.

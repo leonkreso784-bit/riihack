@@ -111,7 +111,7 @@ const realApi = {
   counter: (contractId: string, req: CounterOfferRequest) => post<NegotiationResult>(`/api/contracts/${contractId}/counter`, req),
   decideContract: (contractId: string, req: ContractDecisionRequest) =>
     post<ContractView>(`/api/contracts/${contractId}/decide`, req),
-  // Clears the sp_player / sp_prof cookies (route is Leon's, see TEAM.md "Tko na koga čeka").
+  // Clears the sp_player / sp_prof cookies (route is Leon's, see docs/hackathon/TEAM.md).
   logout: async () => {
     await send("/api/logout", "POST", {});
   },

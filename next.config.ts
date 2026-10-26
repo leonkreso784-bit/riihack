@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
-  // Sigurnosni zaglavlja na svim rutama (bez CSP/HSTS po dogovoru)
+  // Sigurnosna zaglavlja na svim rutama
   async headers() {
     return [
       {

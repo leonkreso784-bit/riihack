@@ -6,7 +6,6 @@
   - 40 do 50 % srednjoškolaca u Hrvatskoj gotovo svaki dan uči uz AI chatbot (CARNET i HKS, 3.913 učenika, 2025).
   - Učenici koji su vježbali uz GPT-4 bez ograda imali su na ispitu bez AI-a 17 % lošiji rezultat i nisu primijetili da su naučili manje (Bastani i sur., PNAS 2025).
   - Prva prava praksa dolazi na kraju studija: 420 sati u zadnjem semestru, ocjena samo prošao/pao (FMTU, stručna praksa). 63 % sezonaca u turizmu nema turističko obrazovanje (2019.).
-  - Izvori: `ri-hack-4/research/tema-numbers.md`, `ri-hack-4/research/simpolis-status-quo.md`.
 - **3 obećanja (ista na slajdu i u demou):**
   1. **Pravi grad, prava ekonomija:** svi hoteli dijele iste turiste; cijena, marketing i recenzije jednog hotela mijenjaju goste i novac drugima, a hoteli sklapaju ugovore s gradskim tvrtkama. Karta grada to pokazuje uživo.
   2. **Odluke s ljudima, ne s gotovim odgovorima:** student rješava situacije razgovorom s ljudima koje glumi AI; vlastite riječi vrijede više od klika, a ponuđeni ili prepisan odgovor vrijedi najviše 4 od 5.
@@ -22,7 +21,7 @@
 
 - Pitanje za žiri: „Što vam je najvažnije da vidite u nedjelju?"
 - Odgovor žirija (sub ~15:45, prošli smo obilazak):
-  - **Borna Sila:** ne oslanjati se na AI i ne raditi sve kao AI agente; temelj neka bude stabilna, pouzdana
+  - **Član žirija:** ne oslanjati se na AI i ne raditi sve kao AI agente; temelj neka bude stabilna, pouzdana
     softverska mehanika.
   - **Pohvala partnerstvu tvrtki i fakulteta:** pomaže tvrtkama zapošljavati, a studentima doći do posla.
   - Ostali komentari malobrojni, ali ideja im se sviđa.
