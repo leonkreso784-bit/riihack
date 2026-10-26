@@ -129,11 +129,14 @@ plaće, cijene soba, učinci situacija) u `src/content/*.json`.
 | `draft.ts`, `validate.ts`, `codes.ts`, `rooms.ts`, `text.ts` | provjera profesorove situacije, ulaza i odgovora, kodovi i SHA-256, soba za situaciju, `{soba}`/`{hotel}` |
 
 **Kvaliteta odgovora**
-- Klik: broj kriterija koje opcija ispunjava, najmanje 1, najviše 4 (`CLICK_QUALITY_CAP`).
+- Preračunavanje (`scaleToQuality`): broj ispunjenih kriterija razmjerno duljini rubrike na ljestvicu 1 do 5, zaokruženo na najbliže cijelo, najmanje 1.
+  Rubrika od 5 kriterija daje isto što i broj kriterija; ispunjena rubrika od 3 ili 4 kriterija također daje 5 (3 od 4 daje 4, 2 od 3 daje 3).
+- Klik: udio kriterija koje opcija ispunjava, preračunat kao gore, najmanje 1, najviše 4 (`CLICK_QUALITY_CAP`, ne ovisi o duljini rubrike).
 - Vlastiti tekst: prazan daje 1 bez AI-ja. Ako je najmanje 70 % riječi odgovora (jedinstvene riječi od 3+ slova, bez kvačica) u jednoj
-  ponuđenoj opciji, računa se kao klik te opcije. Inače sudi AI, a kvaliteta je broj ispunjenih kriterija rubrike (1 do 5);
+  ponuđenoj opciji, računa se kao klik te opcije. Inače sudi AI, a kvaliteta je udio ispunjenih kriterija rubrike preračunat na 1 do 5;
   ako je više od 50 % teksta zalijepljeno, najviše 4.
 - Presuda nije dostupna: 3 (`FALLBACK_QUALITY`). Neodgovoreno do kraja mjeseca: 1.
+- Odgovori spremljeni prije preračunavanja zadržavaju staru kvalitetu (broj kriterija, bez preračuna); Tokovi to kaže bilješkom (`LEGACY_QUALITY_NOTE`).
 
 ```mermaid
 flowchart TD

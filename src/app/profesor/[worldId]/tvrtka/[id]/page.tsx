@@ -121,7 +121,7 @@ function Situation({ s, worldId, onChange }: { s: SituationView; worldId: string
         {(a?.text ?? option?.text) && <blockquote className="rounded-xl bg-muted px-4 py-3 whitespace-pre-line">{a?.text ?? option?.text}</blockquote>}
         {a?.verdict && (
           <p className="text-sm">
-            <strong>Presuda:</strong> ispunjeno kriterija {a.verdict.criteriaMet.length}. <span className="text-muted-foreground">{a.verdict.reasoning}</span>
+            <strong>Presuda:</strong> ispunjeno kriterija {a.verdict.criteriaMet.length}{s.rubric?.length ? ` od ${s.rubric.length}` : ""}. <span className="text-muted-foreground">{a.verdict.reasoning}</span>
           </p>
         )}
         {s.transcript.length > 0 && (

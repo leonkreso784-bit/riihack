@@ -1,5 +1,6 @@
 // Tokovi, skica 2: kako je odgovor prošao kroz hotel. Čista funkcija: ništa ne računa iznova, samo prikazuje pravila
 // motora (engine/quality.ts, engine/round.ts) nad podacima koje student već ima. Brojke ne izmišljamo: što nedostaje, piše da nedostaje.
+import { scaleToQuality } from "@/lib/engine/quality";
 import { isWrittenAnswer, qualityFactor } from "@/lib/engine/round";
 import { CLICK_QUALITY_CAP, DEPARTMENT_METRIC, FALLBACK_QUALITY, METRIC_LABELS, MISSED_QUALITY, STAFF_DEPARTMENT_LABELS } from "@/lib/rules";
 import type { AnswerView, MetricKey, SituationView, StaffDepartment } from "@/lib/types";
@@ -32,6 +33,7 @@ export type AnswerStep = {
 
 export const AI_NOTE = "Pravila računaju. AI samo glumi goste i označava kriterije.";
 export const NO_EFFECTS_TEXT = "Učinak na pokazatelje vidiš u izvještaju mjeseca.";
+export const LEGACY_QUALITY_NOTE = "Ovaj je odgovor ocijenjen prije promjene računanja kvalitete na kraćim rubrikama, pa kvaliteta slijedi tadašnje pravilo: broj ispunjenih kriterija.";
 export const CLOSE_NOTE = "Promjena se upisuje tek kad se mjesec zatvori (ti ga zatvoriš ili ga zatvori profesor ili rok). Do tada pokazatelji ostaju isti.";
 
 // Rubrika i učinak stižu uz situaciju kad ih ugovor ima (zahtjev #178). Do tada su prazni i tok to kaže.
@@ -138,14 +140,23 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
   // 3. Kvaliteta
   const qRule: string[] = [];
   let calc: string | undefined;
+  const rubricScaled = hasRubric && rubric.length !== 5; // rubrika od 5 kriterija: kvaliteta je izravno broj kriterija; kraća ili dulja se preračunava razmjerno
+  // Odgovor spremljen prije promjene (stara kvaliteta = broj kriterija) ne smije dobiti objašnjenje koje mu proturječi: pokazujemo staro pravilo i bilješku.
+  let legacy = false;
+  if (rubricScaled && mode === "own" && answer.verdict && !answer.overridden) {
+    const ids = new Set(rubric.map((c) => c.id));
+    const expected = scaleToQuality(met.filter((id) => ids.has(id)).length, rubric.length);
+    legacy = q !== (answer.copied ? Math.min(expected, CLICK_QUALITY_CAP) : expected);
+  }
+  const scaled = rubricScaled && !legacy;
   if (mode === "none") {
     qRule.push(`Situacija bez odgovora dobiva kvalitetu ${MISSED_QUALITY}.`);
   } else if (mode === "click") {
-    qRule.push("Kvaliteta je broj kriterija koje ponuđeni odgovor pokriva, najmanje 1.", `Ponuđeni odgovor vrijedi najviše ${CLICK_QUALITY_CAP} od 5.`);
+    qRule.push(scaled ? "Kvaliteta je udio kriterija koje ponuđeni odgovor pokriva, preračunat na ljestvicu od 1 do 5, najmanje 1." : "Kvaliteta je broj kriterija koje ponuđeni odgovor pokriva, najmanje 1.", `Ponuđeni odgovor vrijedi najviše ${CLICK_QUALITY_CAP} od 5.`);
   } else if (answer.verdict) {
-    qRule.push("Kvaliteta je broj ispunjenih kriterija, najmanje 1 i najviše 5.");
+    qRule.push(scaled ? "Kvaliteta je udio ispunjenih kriterija preračunat na ljestvicu od 1 do 5: kad su ispunjeni svi, kvaliteta je 5." : "Kvaliteta je broj ispunjenih kriterija, najmanje 1 i najviše 5.");
     if (answer.copied) qRule.push(`Prepisan ili zalijepljen odgovor vrijedi najviše ${CLICK_QUALITY_CAP}.`);
-    if (!answer.overridden) calc = `${met.length} ${met.length === 1 ? "kriterij" : "kriterija"} → kvaliteta ${q}`;
+    if (!answer.overridden) calc = scaled ? `${met.length} od ${rubric.length} kriterija → kvaliteta ${q}` : `${met.length} ${met.length === 1 ? "kriterij" : "kriterija"} → kvaliteta ${q}`;
   } else {
     qRule.push(`Bez presude suca vrijedi zadana kvaliteta ${FALLBACK_QUALITY}.`);
   }
@@ -158,12 +169,12 @@ export function buildAnswerFlow(input: AnswerFlowInput): AnswerStep[] {
     tone: q >= 4 ? "up" : q === 3 ? undefined : "down",
     inputs: [
       { label: "Način", value: mode === "own" ? "Svoj tekst" : mode === "click" ? "Klik" : "Bez odgovora" },
-      ...(mode === "own" && answer.verdict ? [{ label: "Ispunjeno kriterija", value: String(met.length) }] : []),
+      ...(mode === "own" && answer.verdict ? [{ label: "Ispunjeno kriterija", value: hasRubric ? `${met.length} od ${rubric.length}` : String(met.length) }] : []),
     ],
     rule: qRule,
     calc,
     outputs: [{ label: "Kvaliteta", value: `${q} / 5`, strong: true }, ...(answer.overridden ? [{ label: "Ocjena", value: "Promijenio profesor" }] : [])],
-    note: answer.overridden ? "Profesor je promijenio ocjenu." : undefined,
+    note: answer.overridden ? "Profesor je promijenio ocjenu." : legacy ? LEGACY_QUALITY_NOTE : undefined,
   });
 
   // 4. Učinak

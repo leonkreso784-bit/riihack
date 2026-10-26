@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CITY, CONTRACTS, HOTELS, SITUATIONS, getBusiness, getContract, getHotel, getSituation } from "@/content";
+import { validateDraft } from "@/lib/engine/draft";
 import { METRIC_TOTAL, STAFF_COST_PER_ROOM, START_CASH } from "@/lib/rules";
 import type { RoomType, StaffDepartment } from "@/lib/types";
 
@@ -86,8 +87,17 @@ describe("situacije", () => {
       it("effects ima barem jedan kljuc", () => {
         expect(Object.keys(s.effects).length).toBeGreaterThan(0);
       });
+
+      it("prolazi istu provjeru kao profesorov nacrt (validateDraft)", () => {
+        expect(validateDraft(s)).toBeNull(); // predložak je nacrt plus id
+      });
     });
   }
+
+  it("kriteriji rubrike ne sadrze rijec \"razmjern\" (#110: zbog nje je sudac bio prestrog; konkretan primjer u zagradi pomaze)", () => {
+    const hits = SITUATIONS.flatMap((s) => s.rubric.filter((c) => /razmjern/i.test(c.text)).map((c) => `${s.id}.${c.id}`));
+    expect(hits).toEqual([]);
+  });
 
   it("getSituation baca za nepoznat id", () => {
     expect(() => getSituation("nepostoji")).toThrow();
