@@ -24,6 +24,11 @@ function randomToken(): string {
 // Ponovni ulaz: ista imena bez obzira na velika slova i razmake na rubovima.
 const sameName = (a: string, b: string) => a.trim().toLocaleLowerCase("hr") === b.trim().toLocaleLowerCase("hr");
 
+/** Redni broj novog hotela: najveći postojeći + 1. Broj hotela + 1 ne vrijedi otkad se student može ukloniti (rupa bi dala dupli broj). */
+export function nextJoinIndex(taken: number[]): number {
+  return taken.reduce((m, n) => Math.max(m, n), 0) + 1;
+}
+
 export async function joinWorld(req: JoinRequest): Promise<{ token: string; res: JoinResponse }> {
   if (typeof req.joinCode !== "string") throw new HttpError(400, "Upiši kod igre");
   const joinCode = normalizeCode(req.joinCode);
@@ -68,7 +73,7 @@ export async function joinWorld(req: JoinRequest): Promise<{ token: string; res:
       metrics: hotel.startMetrics,
       cash: hotel.startCash,
       startCash: hotel.startCash,
-      joinIndex: all.length + 1,
+      joinIndex: nextJoinIndex(all.map((c) => c.company.joinIndex)),
       // kasni ulaz: igra od tekućeg mjeseca, prijašnji se ne zatvaraju za nju
       closedRound: world.status === "running" ? Math.max(0, world.round - 1) : 0,
     }),

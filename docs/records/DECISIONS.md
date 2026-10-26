@@ -8,6 +8,40 @@ Status: ✅ odlučeno · 🔁 zamijenjeno · 🟨 potvrditi
 
 ---
 
+<a id="adr-060"></a>
+## ADR-060 · Brisanje igre i studenta: trajno, bez koša, demo igra zaštićena
+**Datum:** 26.10. · **Status:** ✅ (Simon, PR [#308](https://github.com/leonkreso784-bit/riihack/pull/308)) · **Vezano:**
+[#297](https://github.com/leonkreso784-bit/riihack/issues/297), [ADR-055](#adr-055), [ADR-026](#adr-026), [ADR-004](#adr-004)
+
+**Kontekst.** Fakultet je voditelj obrade podataka studenata, a mi izvršitelj ([ROADMAP.md](../ROADMAP.md)). Profesor nije imao načina da obriše igru
+ni studenta: to je radila samo developerova skripta `scripts/cleanup-test-data.ts`. Baza je zajednička ([ADR-055](#adr-055)), a shema se ne mijenja
+([ADR-026](#adr-026)).
+
+**Odluka.**
+1. **Brisanje je trajno.** Nema koša, oznake „obrisano" ni poništavanja. Oznaka bi tražila novi stupac i rok čuvanja, a podaci koji ostanu u bazi
+   i dalje su osobni podaci.
+2. **Dvije rute, obje samo za profesora igre** (`requireProf`: kolačić s profesorskim kodom ili vlasnik igre po računu):
+   `DELETE /api/prof/[worldId]` briše cijelu igru i traži tijelo `{ "confirm": "<naziv ili kod igre>" }` (400 bez ispravne potvrde, provjerava poslužitelj);
+   `DELETE /api/prof/[worldId]/companies/[id]` briše jednog studenta (hotel), a tvrtka iz druge igre ili id koji nije uuid ne briše ništa (404).
+3. **Što se briše.** Igra: `worlds`, `companies`, `players`, `rooms`, `situations`, `answers`, `round_reports`, `plans`, `finances`, `contracts`, `mail`,
+   `events`, `custom_situations`, `dispatches`. Student: njegovi retci u istim tablicama osim onih razine igre, uključujući poštu koju je slao ili primio
+   (nestaje i iz sandučića drugih hotela, jer strani ključ to traži). Iz događaja igre se briše ime hotela u vijesti o najpopunjenijem hotelu, a iz ciljanih
+   slanja situacija njegov id. Ruta uklanja i hotele koje vodi računalo, u svakom stanju igre. Sve ide u jednom `db.batch` (jedna transakcija): ili
+   nestane sve ili ništa. Plan je u `src/lib/game/erase-plan.ts`, a test čita Drizzle shemu i pada ako netko doda tablicu s ključem na igru ili
+   tvrtku koja nije u planu.
+4. **Što se ne briše.** Račun profesora, njegove sesije i knjižnica situacija; slobodni tekst drugih studenata koji spominje obrisanog; sigurnosne
+   kopije i povijest promjena u Neonu do isteka razdoblja čuvanja; zapisi kod Anthropica. Navedeno i u [STATUS.md](../STATUS.md#podaci-i-brisanje).
+5. **Demo igra se ne briše kroz aplikaciju.** Isto pravilo kao `scripts/cleanup-test-data.ts`: zaštićena je igra s kodom `DEMO_JOIN_CODE` (zadano
+   `KVRNDM`) i svaka igra računa `DEMO_PROF_EMAIL`. Obje rute za takvu igru vraćaju **409** „Demo igra je zaštićena od brisanja.", pa i uklanjanje
+   studenta iz nje (demo je pripremljena građa: 5 hotela, odigran mjesec). Provjera je u `src/lib/game/demo-guard.ts`, ide nakon `requireProf`
+   (tko nije profesor igre i dalje dobiva 403 i ne sazna je li igra demo) i prije provjere potvrde. Poruku prikazuje dijalog za brisanje. Ako
+   provjera vlasnika padne (baza), odgovor je 500 i ništa se ne briše. Ostale testne igre nisu zaštićene ([ADR-055](#adr-055)).
+
+**Posljedice.** Bez promjene sheme, `package.json` i `drizzle.config.ts`. Zaštita po kodu radi uvijek, a zaštita igara računa samo ako je
+`DEMO_PROF_EMAIL` postavljen i na poslužitelju (Vercel), jer su ga dosad čitale samo skripte; vidi [RAZVOJ.md](../RAZVOJ.md). Demo igru i dalje slaže
+`npm run seed:demo`; skripta za čišćenje ne briše `KVRNDM` ni uz `--kodovi`. #297 ostaje otvoren: fale izjava o čuvanju podataka, rok čuvanja,
+izvoz podataka jednog studenta i brisanje računa profesora.
+
 <a id="adr-059"></a>
 ## ADR-059 · Balans ekonomije (#198): kalibracija, ulaganja, klik, marketing, stečaj, elastičnost
 **Datum:** 26.10. · **Status:** ✅ prijedlog u PR-u (Simon, grana `simon/kalibracija`); dira `rules.ts` i `types.ts`, pa čeka Leonovo „spoji"

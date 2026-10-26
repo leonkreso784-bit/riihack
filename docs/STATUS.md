@@ -3,14 +3,14 @@
 **TL;DR**
 
 - **Stanje na dan 26. 10. 2026.**, `main` na `b6ffb61` (oznaka `ri-hack-4.0`, verzija koja je prošla Ri-Hack 4.0).
-- **Provjere su zelene:** 1030 testova u 75 datoteka, typecheck i lint bez grešaka, build prolazi, CI zelen. Testovi pokrivaju motor i logiku igre, ne stranice ni API rute.
+- **Provjere su zelene:** 1085 testova u 80 datoteka, typecheck i lint bez grešaka, build prolazi, CI zelen. Testovi pokrivaju motor i logiku igre, ne stranice; od API ruta imaju testove samo izvoz ocjena i dvije DELETE rute za brisanje.
 - **Glavna nastavna petlja radi na pravom kodu:** ulaz, hotel, gost s ocjenom po rubrici, plan i financije, zatvaranje mjeseca, podij, mentor i profesorov uvid.
-- **Za pilot još nije spremno:** fale brisanje podataka, potvrda e-pošte i reset lozinke, duljina sezone i vlastita baza ([Što fali za pilot](#što-fali-za-pilot)).
+- **Za pilot još nije spremno:** fale potvrda e-pošte i reset lozinke, duljina sezone i vlastita baza ([Što fali za pilot](#što-fali-za-pilot)). Profesor može obrisati igru i pojedinog studenta ([Podaci i brisanje](#podaci-i-brisanje)); fale još izjava o čuvanju podataka i ugovor o obradi.
 - **Poznate greške:** 3 otvorena issuea ([#266](https://github.com/leonkreso784-bit/riihack/issues/266), [#198](https://github.com/leonkreso784-bit/riihack/issues/198), [#110](https://github.com/leonkreso784-bit/riihack/issues/110)) i 21 zapis u [BUGS.md](records/BUGS.md), jedan srednje težine.
 
 Ovaj dokument je poštena slika onoga što postoji, ne ono što je obećano u pitchu. Kamo dalje: [ROADMAP.md](ROADMAP.md). Kako pokrenuti i provjeriti: [RAZVOJ.md](RAZVOJ.md). Kako je sve složeno: [ARHITEKTURA.md](ARHITEKTURA.md).
 
-Veličina koda: 26 stranica, 37 datoteka API ruta (41 handler), 19 tablica u bazi. Sadržaj: 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora. Povijest: 671 commit, 236 spojenih PR-ova.
+Veličina koda: 26 stranica, 38 datoteka API ruta (44 handlera), 19 tablica u bazi. Sadržaj: 6 hotela, 8 situacija, 6 gradskih tvrtki, 8 predložaka ugovora. Povijest: 671 commit, 236 spojenih PR-ova.
 
 ## Provjere
 
@@ -18,7 +18,7 @@ Izmjereno 26. 10. 2026. na `b6ffb61`, bez ikakvih varijabli okruženja.
 
 | Provjera | Naredba | Rezultat |
 | --- | --- | --- |
-| Testovi | `npm test` | prolazi: 1030 testova u 75 datoteka (izmjereno na grani `simon/greske-266-239` nakon rebasea na `0695484`), 0 neuspjelih, 0 preskočenih, oko 2 s |
+| Testovi | `npm test` | prolazi: 1085 testova u 80 datoteka (izmjereno na grani `simon/brisanje-297` nakon rebasea na `fbfeac7`), 0 neuspjelih, 0 preskočenih, oko 2 s |
 | Typecheck | `npm run typecheck` | prolazi, bez grešaka |
 | Lint | `npm run lint` | 0 grešaka, 11 upozorenja (9 u uvezenoj datoteci iz prezentacije, 2 u `src`) |
 | Build | `npm run build` | prolazi (Next.js 16.4.2); baza i prijava se inicijaliziraju tek pri radu, pa build ne treba varijable |
@@ -26,7 +26,7 @@ Izmjereno 26. 10. 2026. na `b6ffb61`, bez ikakvih varijabli okruženja.
 
 Što ove provjere **ne** kažu:
 
-- Testovi su čiste funkcije i testovi s lažnim ovisnostima: motor (`src/lib/engine`), logika igre (`src/lib/game`), AI sloj, Tokovi i nekoliko komponenti. Za stranice i API rute (`src/app`) nema nijednog testa.
+- Testovi su čiste funkcije i testovi s lažnim ovisnostima: motor (`src/lib/engine`), logika igre (`src/lib/game`), AI sloj, Tokovi i nekoliko komponenti. Za stranice i većinu API ruta (`src/app`) nema testova; imaju ih samo izvoz ocjena i dvije DELETE rute za brisanje.
 - Logika koja piše u bazu provjerava se samo skriptom `scripts/smoke.ts` na živoj bazi. Skripte `npm run smoke` i `npm run ai:smoke` 26. 10. nisu pokretane (trebaju bazu i ključ za AI), a CI ih ne pokreće.
 - Lokalno je korišten Node 22, CI koristi Node 24.
 - Test botova „radi istodobno" mjeri stvarno vrijeme pa na sporom stroju može pasti ([BUG-040](#bugovi-u-bugsmd)). Prošao je 3 od 3 puta.
@@ -39,7 +39,7 @@ Od 18 područja koja postoje u kodu, 14 je gotovo i 4 djelomično. Pet stavki je
 
 | Područje | Stanje | Gdje u kodu | Napomena |
 | --- | --- | --- | --- |
-| Profesor: račun, nova igra, čekaonica s QR-om, pokretanje | djelomično | `src/lib/auth.ts`, `src/app/profesor/`, `src/app/api/worlds/route.ts` | Radi za demo. Za pilot fale potvrda e-pošte, reset lozinke i brisanje igre ([#296](https://github.com/leonkreso784-bit/riihack/issues/296), [#297](https://github.com/leonkreso784-bit/riihack/issues/297)). |
+| Profesor: račun, nova igra, čekaonica s QR-om, pokretanje | djelomično | `src/lib/auth.ts`, `src/app/profesor/`, `src/app/api/worlds/route.ts` | Radi za demo. Profesor može obrisati igru ili ukloniti studenta ([Podaci i brisanje](#podaci-i-brisanje), [#297](https://github.com/leonkreso784-bit/riihack/issues/297)). Za pilot fale potvrda e-pošte i reset lozinke ([#296](https://github.com/leonkreso784-bit/riihack/issues/296)). |
 | Ulazak studenta | gotovo | `src/app/ulaz`, `src/app/cekaonica`, `src/lib/game/join.ts`, `src/lib/engine/assign.ts` | Kod igre, nadimak, hotel iz banke od 6. Kasni ulaz u igru koja je počela radi ([ADR-048](records/DECISIONS.md#adr-048)). PIN za ulazak studenta je planiran ([ADR-053](records/DECISIONS.md#adr-053), [#301](https://github.com/leonkreso784-bit/riihack/issues/301)). Prijave preko LMS-a ili AAI@EduHr nema. |
 | Ploča hotela | gotovo | `src/app/igra/page.tsx`, `src/lib/game/views.ts` | Pet pokazatelja, novac, ljestvica, situacije, „Završi mjesec". Gumb šalje mjesec s ekrana, pa zastarjeli klik server odbija (409) i kartica se osvježi. |
 | Situacije, razgovor s gostom, ocjena po rubrici | gotovo | `src/lib/ai/character.ts`, `src/lib/ai/judge.ts`, `src/lib/engine/quality.ts`, `src/content/situations.json` | Do 6 poruka gostu, odgovor klikom ili vlastitim tekstom. AI ocjenjuje po rubrici, brojke računa motor. U banci je samo 8 situacija. Rubrika s 3 ili 4 kriterija preračunava se na ljestvicu od 1 do 5, pa i ona može dati 5. Greške: [#110](https://github.com/leonkreso784-bit/riihack/issues/110). |
@@ -53,7 +53,7 @@ Od 18 područja koja postoje u kodu, 14 je gotovo i 4 djelomično. Pet stavki je
 | Mentor | gotovo | `src/app/igra/mentor`, `src/lib/ai/mentor.ts` | Sokratsko pitanje, studentova refleksija, završni razgovor. Jedna srednja greška: [BUG-075](#bugovi-u-bugsmd). Savjet u mjesečnom osvrtu: [#302](https://github.com/leonkreso784-bit/riihack/issues/302). |
 | Profesorov uvid i promjena ocjene | djelomično | `src/app/profesor/[worldId]/tvrtka`, `src/lib/game/override.ts`, `src/lib/game/grades.ts` | Svi odgovori, presude, razgovori i mentorov tekst; ocjena odgovora može se promijeniti (1 do 5). Jedina ocjena je napredak u igri. Gumb „Izvezi ocjene (CSV)" na ploči izvozi jedan redak po studentu: napredak i po situaciji ocjenu (nakon promjena), vrstu odgovora i mjesec ([#298](https://github.com/leonkreso784-bit/riihack/issues/298)). Izravnog upisa u Merlin nema. |
 | Botovi (računalni hoteli) | gotovo | `src/lib/game/bots.ts` | Pravila bez AI-ja, razine Lako, Srednje, Teško ([ADR-044](records/DECISIONS.md#adr-044)). Botovi dobavljači nisu napravljeni. |
-| Demo igra | gotovo | `scripts/seed-demo.ts` | `npm run seed:demo` pripremi igru s odigranim prvim mjesecom. Treba bazu. |
+| Demo igra | gotovo | `scripts/seed-demo.ts`, `src/lib/game/demo-guard.ts` | `npm run seed:demo` pripremi igru s odigranim prvim mjesecom. Treba bazu. Aplikacija je ne briše ([ADR-060](records/DECISIONS.md#adr-060)). |
 | Otpornost | gotovo | `src/lib/ai/client.ts`, `src/lib/ai/fallbacks.ts` | Rok 20 s za AI pozive (35 s za završni razgovor mentora, 45 s za prijedlog situacije) i rezervni odgovor; dupli odgovor, odgovor na zatvoren mjesec i dvostruki obračun odbijeni su ili idempotentni (smoke 25. 10.). Zastarjeli klik na „Završi mjesec" server odbija. Jedan neuspjeli dohvat ne zamjenjuje stranicu (Igra, Plan, Financije, čekaonica); Grad i Mentor to još rade ([#266](https://github.com/leonkreso784-bit/riihack/issues/266), stavka 3). |
 | Mobitel i projektor | djelomično | `src/components/bottom-nav.tsx`, `src/components/app-frame.tsx` | Prikaz je prvo za mobitel, ploča ima projektorski raspored. Otvorene sitnice na 375 px i na velikim ekranima: BUG-077, 078, 064, 065, 055. Nisu ponovno provjerene u pregledniku 26. 10. |
 | Kalibrirana ekonomija | gotovo | `src/lib/rules.ts`, `src/lib/engine/economy.ts`, `src/lib/ranking.ts`, `src/lib/game/season-sim.ts` | PDV, provizija portala, materijal, fiksni trošak i plaće po zvjezdicama, ulaganje samo uz puni ulog, klik najviše 3, marketing do 2.000 €, hotel u blokadi (račun ispod nule) ne stoji iznad solventnog, mala elastičnost potražnje ([ADR-059](records/DECISIONS.md#adr-059)). U simulaciji botova marža sezone je 14 do 20 %. Ostaje u [#198](https://github.com/leonkreso784-bit/riihack/issues/198): rezerva suca na ocjenu 3 i ponovni ulaz (#301). |
@@ -113,6 +113,25 @@ Od 78 zapisa u [BUGS.md](records/BUGS.md) 21 nije označen kao riješen: 18 otvo
 
 Pouka iz pitcha ([BUG-079](records/BUGS.md#bug-079--vercel-challenge-403-za-automatske-zahtjeve-s-našeg-ip-a-prije-pitcha)): Vercelova zaštita je neposredno prije pitcha vraćala 403 na automatske zahtjeve s mreže demonstracije, jer su istodobno radili monitor i agenti. Smoke i monitore ne pokretati prema produkcijskom linku s mreže na kojoj se održava demonstracija.
 
+## Podaci i brisanje
+
+Brisanje je **trajno**: nema koša ni poništavanja. Radi samo profesor igre (vlasnik računa ili tko ima profesorski kod), a poslužitelj to provjerava na svakoj ruti ([#297](https://github.com/leonkreso784-bit/riihack/issues/297)).
+
+- **Obriši igru** (dno ploče igre, i u čekaonici): traži upisan naziv ili kod igre, briše igru sa svim studentima i vodi na „Moje igre". Ruta `DELETE /api/prof/[worldId]` s tijelom `{ "confirm": "<naziv ili kod>" }`; potvrdu provjerava i poslužitelj.
+- **Ukloni studenta** (stranica studenta): briše jedan hotel, uz potvrdu. Ruta `DELETE /api/prof/[worldId]/companies/[id]`; tvrtka iz druge igre ne radi ništa (404). Ruta uklanja i hotele koje vodi računalo, u svakom stanju igre; gumb „Ukloni" za botove u čekaonici radi samo prije početka igre. Student pri sljedećem osvježavanju dobije „Uđi u igru kodom"; ako sezona traje, može ući ponovno, ali dobije novi hotel i počinje ispočetka.
+- **Demo igra se ne briše.** Obje rute vraćaju 409 s porukom „Demo igra je zaštićena od brisanja." za igru s kodom `DEMO_JOIN_CODE` (zadano `KVRNDM`) i za svaku igru računa `DEMO_PROF_EMAIL`, isto pravilo kao `scripts/cleanup-test-data.ts` ([ADR-060](records/DECISIONS.md#adr-060)). Provjera ide nakon provjere profesora (tuđa igra je i dalje 403) i prije potvrde, a poruka se vidi u dijalogu. Zaštita po računu radi samo ako je `DEMO_PROF_EMAIL` postavljen i na poslužitelju (Vercel); zaštita po kodu uvijek.
+
+**Što se briše.** Igra: `worlds`, `companies`, `players`, `rooms`, `situations`, `answers`, `round_reports`, `plans`, `finances`, `contracts`, `mail`, `events`, `custom_situations`, `dispatches`. Student: njegovi retci u istim tablicama osim onih razine igre, uključujući poštu koju je slao ili primio (nestaje i iz sandučića drugih hotela). Iz događaja igre se briše ime hotela u vijesti o najpopunjenijem hotelu, a iz ciljanih slanja situacija njegov id. Sve ide u jednom `db.batch` (jedna transakcija): ili nestane sve ili ništa. Popis i redoslijed su u `src/lib/game/erase-plan.ts`; test čita Drizzle shemu i ne dopušta novu tablicu s ključem na igru ili tvrtku koja nije u planu.
+
+**Što se ne briše.**
+
+- Račun profesora, njegove sesije i knjižnica situacija (brisanje računa nije izgrađeno).
+- Slobodni tekst drugih studenata (npr. u poruci među hotelima) koji spominje obrisanog studenta.
+- Sigurnosne kopije i povijest promjena u Neonu do isteka razdoblja čuvanja koje je postavljeno na projektu (treba provjeriti i navesti u izjavi).
+- Zapisi kod Anthropica, kamo ide tekst odgovora i razgovora (treba provjeriti u ugovoru).
+
+**Otvoreno.** Izjava o čuvanju podataka i rok čuvanja (automatskog brisanja nakon roka nema), izvoz podataka jednog studenta, brisanje računa profesora. Skripta `scripts/cleanup-test-data.ts` ostaje za čišćenje testnih podataka na zajedničkoj bazi.
+
 ## Što fali za pilot
 
 Pilot na FMTU-u (Opatija) je plan tima. Popis što još treba vodi se u GitHub Issues: milestone [Pilot FMTU](https://github.com/leonkreso784-bit/riihack/milestone/6) drži devet otvorenih issueova ([svi milestoneovi](https://github.com/leonkreso784-bit/riihack/milestones)), a izvan milestonea su [#302](https://github.com/leonkreso784-bit/riihack/issues/302) i [#303](https://github.com/leonkreso784-bit/riihack/issues/303). Issueovi s oznakom `pilot` su i [popis po oznaci](https://github.com/leonkreso784-bit/riihack/issues?q=is%3Aopen+label%3Apilot).
@@ -123,7 +142,7 @@ Pilot na FMTU-u (Opatija) je plan tima. Popis što još treba vodi se u GitHub I
 | --- | --- | --- |
 | Popraviti greške koje pogađaju svaki razred | Neuspjeli dohvat na Gradu i Mentoru zamjenjuje cijelu stranicu porukom o grešci. | [#266](https://github.com/leonkreso784-bit/riihack/issues/266) |
 | Ponovno posijati demo nakon kalibracije | Ekonomija je kalibrirana ([ADR-059](records/DECISIONS.md#adr-059)), pa sve brojke igre vrijede drukčije nego u starom demu. Treba `npm run seed:demo` i jedan smoke na vlastitoj bazi; pokus s pravim razredom tek slijedi. | [#198](https://github.com/leonkreso784-bit/riihack/issues/198) |
-| Brisanje igre i podataka studenata | Nema načina da profesor obriše igru ni studenta; to radi samo developerova skripta (`scripts/cleanup-test-data.ts`). Treba i izjava o čuvanju podataka. Slobodni tekst studenta obrađuje AI pružatelj (Anthropic), a podaci su u Neon bazi (Frankfurt); to treba navesti fakultetu. Podjelu uloga (fakultet kao voditelj obrade, tim kao izvršitelj) tek treba dogovoriti. | [#297](https://github.com/leonkreso784-bit/riihack/issues/297) |
+| Izjava o čuvanju podataka | Brisanje igre i studenta radi ([Podaci i brisanje](#podaci-i-brisanje)). Fali izjava: slobodni tekst studenta obrađuje AI pružatelj (Anthropic), a podaci su u Neon bazi (Frankfurt); to, rok čuvanja i povijest u Neonu treba navesti fakultetu. Podjelu uloga (fakultet kao voditelj obrade, tim kao izvršitelj) tek treba dogovoriti. | [#297](https://github.com/leonkreso784-bit/riihack/issues/297) |
 | Profesorski račun: potvrda e-pošte i reset lozinke | Račun ima samo e-poštu i lozinku. Treba i način da fakultet upravlja računima svojih profesora. | [#296](https://github.com/leonkreso784-bit/riihack/issues/296) |
 | Izvoz ocjena | CSV izvoz je napravljen ([#298](https://github.com/leonkreso784-bit/riihack/issues/298)). Treba još potvrditi s fakultetom je li CSV dovoljan ili traži upis izravno u Merlin (LTI, nije dogovoren). | [#298](https://github.com/leonkreso784-bit/riihack/issues/298) |
 | Duljina sezone | Kolegij traje semestar (13 do 15 tjedana), a igra ima fiksna 4 mjeseca (`MAX_ROUNDS`, 7 datoteka). Ideja tjednih krugova je u [ROADMAP.md](ROADMAP.md#ideje-bez-datuma). | [#299](https://github.com/leonkreso784-bit/riihack/issues/299) |

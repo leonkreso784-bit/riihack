@@ -47,7 +47,7 @@ import type {
   WorldSettingsRequest,
 } from "./types";
 
-async function send(path: string, method: "GET" | "POST", body?: unknown): Promise<Response> {
+async function send(path: string, method: "GET" | "POST" | "DELETE", body?: unknown): Promise<Response> {
   let res: Response;
   try {
     res = await fetch(path, {
@@ -78,6 +78,7 @@ export const blocksPage = (error: Error | undefined, data: unknown): boolean => 
 
 const get = async <T>(path: string) => (await send(path, "GET")).json() as Promise<T>;
 const post = async <T>(path: string, body: unknown = {}) => (await send(path, "POST", body)).json() as Promise<T>;
+const del = async <T>(path: string, body?: unknown) => (await send(path, "DELETE", body)).json() as Promise<T>;
 
 const realApi = {
   createWorld: (req: CreateWorldRequest) => post<CreateWorldResponse>("/api/worlds", req),
@@ -100,6 +101,9 @@ const realApi = {
     const res = await send(`/api/prof/${worldId}/grades`, "GET");
     return { filename: filenameFromDisposition(res.headers.get("content-disposition")), blob: await res.blob() };
   },
+  // #297 (GDPR): trajno brisanje. Igra traži upisan naziv ili kod igre (confirm); student se uklanja samo uz potvrdu u sučelju.
+  deleteWorld: (worldId: string, confirm: string) => del<{ ok: true }>(`/api/prof/${worldId}`, { confirm }),
+  removeStudent: (worldId: string, companyId: string) => del<{ ok: true }>(`/api/prof/${worldId}/companies/${companyId}`),
   // L14 javni profili hotela za kartu grada (S10, uz Rinov pregled u #128): igrač ili profesor te igre.
   worldCompanies: (worldId: string) => get<CompanyPublicView[]>(`/api/world/${worldId}/companies`),
   // S8: professor's own situations, sending, settings
@@ -211,6 +215,12 @@ let mockLibrary: LibraryItem[] = [
   { id: "lib-2", title: "Agencija traži popust za grupu od 30 ljudi", area: "Prodaja", difficulty: 4, source: "ai", createdAt: "2026-10-05T14:10:00.000Z" },
 ];
 
+// #297: the mock list of games shrinks when a game is "deleted" (the professor lands on the list and sees it gone).
+let mockGames: ProfGameSummary[] = [
+  { worldId: MOCK_PROF.world.id, name: MOCK_PROF.world.name, joinCode: MOCK_PROF.world.joinCode, status: "running", round: 2, maxRounds: MOCK_PROF.world.maxRounds, players: MOCK_PROF.players.length, createdAt: new Date().toISOString() },
+  { worldId: "mock-old", name: "Hotelijerstvo 3B, zima", joinCode: "ZIMA42", status: "finished", round: 6, maxRounds: 6, players: 18, createdAt: new Date(Date.now() - 30 * 86_400_000).toISOString() },
+];
+
 const mockApi: Api = {
   createWorld: () => {
     mockProfOpenedAt = Date.now();
@@ -219,11 +229,7 @@ const mockApi: Api = {
     return wait({ worldId: MOCK_PROF.world.id, joinCode: MOCK_PROF.world.joinCode, profCode: "ABCDEFGHJKMN" });
   },
   profLogin: () => wait({ worldId: MOCK_PROF.world.id }),
-  profGames: () =>
-    wait<ProfGameSummary[]>([
-      { worldId: MOCK_PROF.world.id, name: MOCK_PROF.world.name, joinCode: MOCK_PROF.world.joinCode, status: "running", round: 2, maxRounds: MOCK_PROF.world.maxRounds, players: MOCK_PROF.players.length, createdAt: new Date().toISOString() },
-      { worldId: "mock-old", name: "Hotelijerstvo 3B, zima", joinCode: "ZIMA42", status: "finished", round: 6, maxRounds: 6, players: 18, createdAt: new Date(Date.now() - 30 * 86_400_000).toISOString() },
-    ]),
+  profGames: () => wait(mockGames),
   profState: () => wait(mockProfState()),
   worldCompanies: () => wait<CompanyPublicView[]>([]),
   bots: (worldId, req) => {
@@ -268,6 +274,11 @@ const mockApi: Api = {
     const csv = buildGradesCsv({ students, titles });
     return wait({ filename: gradesFilename(MOCK_PROF.world.name), blob: new Blob([csv], { type: "text/csv;charset=utf-8" }) });
   },
+  deleteWorld: (worldId) => {
+    mockGames = mockGames.filter((g) => g.worldId !== worldId);
+    return wait({ ok: true as const }, 600);
+  },
+  removeStudent: () => wait({ ok: true as const }, 600),
   overrideQuality: (_w, id, quality) => {
     const s = mockDetail.situations.find((x) => x.id === id);
     if (!s?.answer) return Promise.reject(new Error("Na ovu situaciju još nema odgovora"));

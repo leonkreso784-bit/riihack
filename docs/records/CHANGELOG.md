@@ -7,6 +7,7 @@ Spojeni PR-ovi po prekretnicama, najnovije gore. Vrijeme spajanja: CEST do ned 0
 
 | PR | Spojeno | Autor | Što |
 | --- | --- | --- | --- |
+| [#308](https://github.com/leonkreso784-bit/riihack/pull/308) | čeka spajanje | Simon | brisanje igre i studenta za profesora ([#297](https://github.com/leonkreso784-bit/riihack/issues/297), ostaje otvoren): `DELETE /api/prof/[worldId]` (traži upisan naziv ili kod igre) i `DELETE /api/prof/[worldId]/companies/[id]`, trajno i u jednoj transakciji, plan i test sheme u `erase-plan`; demo igra (`KVRNDM`, igre `DEMO_PROF_EMAIL`) zaštićena s 409 ([ADR-060](DECISIONS.md#adr-060)); bez promjene baze |
 | [#310](https://github.com/leonkreso784-bit/riihack/pull/310) | čeka spajanje | Simon | popravci iz [#266](https://github.com/leonkreso784-bit/riihack/issues/266) (zastarjeli „Završi mjesec" dobiva 409, odgovor se ne gubi nakon osvježavanja, neuspjeli dohvat ne zamjenjuje stranicu, kasni ulaz postavlja stanje sobe, redoslijed i naslovi situacija na ploči, tekstovi, sobe po broju, potvrda i podij na ploči profesora) i [#239](https://github.com/leonkreso784-bit/riihack/issues/239) (`pastSituations`, tok odgovora za zatvorene mjesece); bez promjene baze |
 
 ## M3 · Obilazak 3 (rok ned 07:45)
