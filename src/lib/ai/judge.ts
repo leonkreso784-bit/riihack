@@ -2,7 +2,7 @@
 import { generateText, Output, type LanguageModel } from "ai";
 import { z } from "zod";
 import type { JudgeInput, Verdict } from "@/lib/types";
-import { modelFor, withAi } from "./client";
+import { CACHE_SYSTEM, GROQ_LOW_EFFORT, maxOutputFor, modelFor, withAi } from "./client";
 import { JUDGE_SYSTEM } from "./prompts";
 
 /** Neutralise angle brackets so user or character text cannot close or open our prompt tags. */
@@ -73,11 +73,13 @@ export async function judge(input: JudgeInput, model?: LanguageModel): Promise<V
 
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = await generateText({
-        model: modelFor("judge", model),
+        model: modelFor("judge", model, "sudac"),
         output: Output.object({ schema }),
         // Cache breakpoint on the stable prefix; the varying answer and transcript come last.
-        instructions: { role: "system", content: system, providerOptions: { anthropic: { cacheControl: { type: "ephemeral" } } } },
+        instructions: { role: "system", content: system, providerOptions: CACHE_SYSTEM },
         prompt: user,
+        maxOutputTokens: maxOutputFor("judge"), // Claude: no cap, as before; other providers get a ceiling
+        providerOptions: GROQ_LOW_EFFORT, // Groq reasoning would eat that ceiling; Claude ignores this key
       });
       const { criteriaMet, reasoning } = result.output;
       met = [...new Set(criteriaMet.filter((id) => ids.includes(id)))];

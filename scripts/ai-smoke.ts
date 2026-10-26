@@ -1,6 +1,7 @@
 // npm run ai:smoke: one real call to the character model, to check the key and Croatian output.
 import { config } from "dotenv";
 config({ path: ".env.local" });
+delete process.env.DATABASE_URL; // the run only prints [ai-usage] lines; no smoke rows in the shared ai_calls table
 import { generateText, wrapLanguageModel } from "ai";
 import { judge } from "../src/lib/ai/judge";
 import { streamCharacterReply } from "../src/lib/ai/character";
@@ -102,7 +103,7 @@ async function smokeMentor() {
 
 async function main() {
   if (!aiEnabled()) {
-    console.error("ANTHROPIC_API_KEY nije postavljen (.env.local).");
+    console.error("Nedostaje API ključ za davatelja nekog posla (vidi docs/AI-POTROSNJA.md).");
     process.exit(1);
   }
   const started = Date.now();

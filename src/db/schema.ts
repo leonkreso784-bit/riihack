@@ -4,6 +4,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgTable,
   text,
   timestamp,
@@ -269,6 +270,34 @@ export const librarySituations = pgTable(
   (t) => [index("library_situations_owner_created_idx").on(t.ownerId, t.createdAt)],
 );
 
+// AI potrošnja: jedan redak po zahtjevu prema modelu, samo metapodaci (nikad tekst, odgovori ni imena).
+// Tablica se u zajedničkoj bazi pravi ručnim SQL-om scripts/sql/2026-10-26-ai-calls.sql (ADR-026), ne s db:push.
+// world_id i company_id nisu strani ključevi: brisanje igre ne smije brisati povijest troška.
+export const aiCalls = pgTable(
+  "ai_calls",
+  {
+    id: id(),
+    createdAt: createdAt(),
+    job: text("job").notNull(), // character | judge | mentor
+    action: text("action").notNull(), // lik, sudac, mentor-pitanje, mentor-razgovor, mentor-osvrt, agencija, prijedlog
+    provider: text("provider").notNull(), // anthropic | groq | mistral
+    model: text("model").notNull(),
+    inputTokens: integer("input_tokens"), // ukupno ulaz; cache čitanje i pisanje su dijelovi toga
+    cachedInputTokens: integer("cached_input_tokens"),
+    cacheWriteTokens: integer("cache_write_tokens"),
+    outputTokens: integer("output_tokens"),
+    costUsd: numeric("cost_usd", { precision: 14, scale: 8 }), // stvarni trošak (0 na Groq besplatnom planu)
+    listCostUsd: numeric("list_cost_usd", { precision: 14, scale: 8 }), // isti poziv po cjeniku
+    durationMs: integer("duration_ms").notNull(),
+    ok: boolean("ok").notNull(),
+    error: text("error"), // HTTP status ili klasa greške, nikad poruka
+    fallbackUsed: boolean("fallback_used").notNull().default(false),
+    worldId: uuid("world_id"),
+    companyId: uuid("company_id"),
+  },
+  (t) => [index("ai_calls_created_at_idx").on(t.createdAt), index("ai_calls_world_id_idx").on(t.worldId)],
+);
+
 export type WorldRow = typeof worlds.$inferSelect;
 export type CompanyRow = typeof companies.$inferSelect;
 export type PlayerRow = typeof players.$inferSelect;
@@ -284,3 +313,4 @@ export type CustomSituationRow = typeof customSituations.$inferSelect;
 export type DispatchRow = typeof dispatches.$inferSelect;
 export type MailRow = typeof mail.$inferSelect;
 export type LibrarySituationRow = typeof librarySituations.$inferSelect;
+export type AiCallRow = typeof aiCalls.$inferSelect;

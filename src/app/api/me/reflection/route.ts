@@ -1,6 +1,6 @@
 // S4: the student's reflection on the mentor's question; answers with the mentor's debrief.
 import { getReport, saveMentorQuestion, saveReflection } from "@/db/queries";
-import { mentorDebrief, mentorQuestion } from "@/lib/ai";
+import { mentorDebrief, mentorQuestion, withAiContext } from "@/lib/ai";
 import { buildMentorInput } from "@/lib/ai/mentor-input";
 import { appendDebrief } from "@/lib/mentor-text";
 import { validateOwnAnswer } from "@/lib/engine/validate";
@@ -27,16 +27,17 @@ export const POST = route(async (req): Promise<RoundReportView> => {
   if (report.reflection !== null) throw new HttpError(409, "Na ovo si već odgovorio");
 
   const input = await buildMentorInput(report, company.name);
+  const usage = { worldId: company.worldId, companyId: company.id }; // for the AI usage log (ai_calls)
   let question = report.mentorQuestion;
   if (!question) {
-    question = await mentorQuestion(input);
+    question = await withAiContext(usage, () => mentorQuestion(input));
     await saveMentorQuestion(company.id, request.round, question);
     question = (await getReport(company.id, request.round))?.mentorQuestion ?? question;
   }
   // Bez donje granice: prazan odgovor mentor prepozna (uvodna rečenica i bez AI-ja), pa nastavi od brojki.
   const empty = request.text === "";
   const reflection = empty ? "(Student nije ništa napisao. Mentor je to već rekao, ne ponavljaj.)" : request.text;
-  const debrief = await mentorDebrief({ ...input, question, reflection });
+  const debrief = await withAiContext(usage, () => mentorDebrief({ ...input, question, reflection }));
   // The automatic review (written once the month is settled) stays; the debrief goes below it. Read again, because
   // the review may have been saved while the debrief was being written.
   const current = (await getReport(company.id, request.round))?.mentorText ?? report.mentorText;

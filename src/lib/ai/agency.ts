@@ -3,7 +3,7 @@
 import { generateText, type LanguageModel } from "ai";
 import { MAIL_BODY_MAX } from "@/lib/rules";
 import type { AgencyReplyInput } from "@/lib/game/mail"; // type only: erased at build, so no import cycle
-import { aiEnabled, modelFor, withAi } from "./client";
+import { aiEnabled, CACHE_SYSTEM, maxOutputFor, modelFor, NO_THINKING, withAi } from "./client";
 import { agencyReplyFallback } from "./fallbacks";
 import { AGENCY_SYSTEM } from "./prompts";
 
@@ -73,16 +73,16 @@ export function agencyProblem(text: string, i: AgencyReplyInput): string | null 
  */
 export function agencyReply(i: AgencyReplyInput, model?: LanguageModel): Promise<string> {
   const fallback = agencyReplyFallback(i);
-  if (!aiEnabled() && !model) return Promise.resolve(fallback);
+  if (!aiEnabled("character") && !model) return Promise.resolve(fallback);
   return withAi<string>(async () => {
     let error: string | undefined;
     for (let attempt = 0; attempt < 2; attempt++) {
       const result = await generateText({
-        model: modelFor("character", model),
-        instructions: { role: "system", content: AGENCY_SYSTEM, providerOptions: { anthropic: { cacheControl: { type: "ephemeral" } } } },
+        model: modelFor("character", model, "agencija"),
+        instructions: { role: "system", content: AGENCY_SYSTEM, providerOptions: CACHE_SYSTEM },
         prompt: userPrompt(i, error),
-        maxOutputTokens: 1500,
-        providerOptions: { anthropic: { thinking: { type: "disabled" } } }, // a short email needs no reasoning; thinking ate the whole budget
+        maxOutputTokens: maxOutputFor("character", 1500),
+        providerOptions: NO_THINKING, // a short email needs no reasoning; thinking ate the whole budget
       });
       const text = result.text.trim();
       const found = agencyProblem(text, i);

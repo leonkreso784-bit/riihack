@@ -2,7 +2,7 @@
 import { generateText, type LanguageModel } from "ai";
 import { METRIC_LABELS, ROUND_LABELS } from "@/lib/rules";
 import type { MentorInput, MentorItem, MetricKey, RoundFinance } from "@/lib/types";
-import { modelFor, withAi } from "./client";
+import { CACHE_SYSTEM, LOW_EFFORT, maxOutputFor, modelFor, withAi } from "./client";
 import { fallbackDebrief, fallbackMentorQuestion, fallbackReview } from "./fallbacks";
 import { MENTOR_DEBRIEF_SYSTEM, MENTOR_QUESTION_SYSTEM, MENTOR_REVIEW_SYSTEM } from "./prompts";
 
@@ -78,18 +78,17 @@ export function factsBlock(input: MentorInput): string {
   return `Hotel: ${clean(input.hotelName)}\nKrug: ${month}\n\nPokazatelji (prije → poslije):\n${metrics}${finance}\n\nOdluke u krugu:\n${items || "- (nema odluka)"}`;
 }
 
-const cache = { anthropic: { cacheControl: { type: "ephemeral" as const } } };
-
-async function ask(system: string, prompt: string, model?: LanguageModel): Promise<string> {
+/** `action` is the label in the usage log: "mentor-pitanje", "mentor-razgovor" or "mentor-osvrt". */
+async function ask(action: string, system: string, prompt: string, model?: LanguageModel): Promise<string> {
   const { text } = await generateText({
-    model: modelFor("mentor", model),
-    instructions: { role: "system", content: system, providerOptions: cache },
+    model: modelFor("mentor", model, action),
+    instructions: { role: "system", content: system, providerOptions: CACHE_SYSTEM },
     prompt,
-    maxOutputTokens: 1200,
+    maxOutputTokens: maxOutputFor("mentor", 1200),
     // Sonnet 5.5 thinks by default and cannot turn it off: the debrief took 8 to 16 s per call, so two attempts ran
     // past the 20 s cap and the student got the fixed fallback text (audit 24.10.). Low effort: the mentor only
     // explains facts it is given.
-    providerOptions: { anthropic: { effort: "low" } },
+    providerOptions: LOW_EFFORT,
   });
   return text.trim();
 }
@@ -122,7 +121,7 @@ export function mentorQuestion(input: MentorInput, model?: LanguageModel): Promi
   return withAi(async () => {
     const prompt = `${factsBlock(input)}\n\nPostavi jedno pitanje o odluci označenoj kao NAJSLABIJA ODLUKA.`;
     for (let attempt = 0; attempt < 2; attempt++) {
-      const q = firstQuestion(await ask(MENTOR_QUESTION_SYSTEM, prompt, model));
+      const q = firstQuestion(await ask("mentor-pitanje", MENTOR_QUESTION_SYSTEM, prompt, model));
       if (questionOk(q)) return q;
     }
     return fallbackMentorQuestion(input);
@@ -193,7 +192,7 @@ export function mentorDebrief(
   return withAi(async () => {
     const prompt = `${factsBlock(input)}\n\n<pitanje_mentora>${clean(input.question)}</pitanje_mentora>\n\n<refleksija>${clean(input.reflection)}</refleksija>`;
     for (let attempt = 0; attempt < 2; attempt++) {
-      const text = repairDebrief(await ask(MENTOR_DEBRIEF_SYSTEM, prompt, model));
+      const text = repairDebrief(await ask("mentor-razgovor", MENTOR_DEBRIEF_SYSTEM, prompt, model));
       const problem = debriefProblem(text);
       if (problem === null) return text;
       console.warn("[ai] mentor debrief rejected:", problem);
@@ -231,7 +230,7 @@ export function mentorReview(input: MentorInput & { question?: string }, model?:
 
 Napiši osvrt na ovaj mjesec.`;
     for (let attempt = 0; attempt < 2; attempt++) {
-      const text = stripMarkdown(await ask(MENTOR_REVIEW_SYSTEM, prompt, model));
+      const text = stripMarkdown(await ask("mentor-osvrt", MENTOR_REVIEW_SYSTEM, prompt, model));
       const problem = reviewProblem(text);
       if (problem === null) return text;
       console.warn("[ai] mentor review rejected:", problem);

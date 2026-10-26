@@ -23,6 +23,7 @@ import { contractEffects, contractNightsTotal, drawOffer, isActive } from "@/lib
 import { counterError, negotiate } from "@/lib/engine/negotiate";
 import { INVESTMENT_ERROR, investmentEffects, investmentTotal, parseInvestments } from "@/lib/engine/departments";
 import { financeEffect, refPrice, roundFinance, settleMarket } from "@/lib/engine/economy";
+import { withAiContext } from "@/lib/ai";
 import { eur } from "@/lib/format";
 import { HttpError } from "@/lib/http";
 import { MARKETING_MAX, METRIC_LABELS, PRICE_MAX, PRICE_MIN, ROUND_LABELS } from "@/lib/rules";
@@ -429,13 +430,15 @@ export async function counterOffer(
     monthlyCost: req.monthlyCost ?? template.monthlyCost,
   };
   const sentAt = new Date();
-  const replyBody = await agencyText({
-    business,
-    contract: template,
-    outcome: deal.outcome,
-    studentMessage: req.message,
-    agreed,
-  });
+  const replyBody = await withAiContext({ worldId: world.id, companyId: company.id }, () =>
+    agencyText({
+      business,
+      contract: template,
+      outcome: deal.outcome,
+      studentMessage: req.message,
+      agreed,
+    }),
+  );
   const repliedAt = new Date(Math.max(Date.now(), sentAt.getTime() + 1));
   const common = { worldId: world.id, threadId, kind: "agency", businessId: business.id, subject, contractId: row.id };
   const written = await insertMail([
